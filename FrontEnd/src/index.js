@@ -6,7 +6,7 @@ import React from 'react'
 import ReactDOM from 'react-dom';
 
 import {Route, BrowserRouter, Switch, Redirect} from 'react-router-dom';
-import Header from  './common/header';
+import Header from  './components/common/header';
 
 //
 // const createStoreWithMiddleware = compose(

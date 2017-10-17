@@ -1,6 +1,9 @@
 /**
  * Created by oxchain on 2017/10/17.
  */
+/**
+ * Created by oxchain on 2017/10/17.
+ */
 import React,{ Component }from 'react';
 
 class Header extends Component{
