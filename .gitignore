@@ -1,0 +1,26 @@
+BackEnd/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+
+### BackEnd ###
+BackEnd/.idea
+BackEnd/*.iws
+BackEnd/*.iml
+BackEnd/*.ipr
+
+BackEnd/themis-user/target
+BackEnd/themis-user/*.iml
+
+### FrontEnd ###
+FrontEnd/.idea
+FrontEnd/node_modules/
+FrontEnd/bundle.js
+FrontEnd/npm-debug.log
+.DS_Store
