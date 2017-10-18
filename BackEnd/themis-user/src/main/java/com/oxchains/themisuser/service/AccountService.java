@@ -115,7 +115,6 @@ public class AccountService {
             p2SHTransaction.setSignTx(SIGNED_TX);
             p2SHTransaction.setRecvAddress(recvAddress);
 
-
             p2SHTransaction=p2SHTransactionDao.save(p2SHTransaction);
             return RestResp.success(p2SHTransaction);
         }catch (Exception e){
