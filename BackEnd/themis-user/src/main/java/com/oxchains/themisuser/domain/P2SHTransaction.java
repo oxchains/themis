@@ -18,6 +18,9 @@ public class P2SHTransaction {
     private int id;
 
     @Column(length = 35)
+    private String fromAddress;
+
+    @Column(length = 35)
     private String recvAddress;
 
     @Column(length = 35)
@@ -28,6 +31,8 @@ public class P2SHTransaction {
 
     @Column(length = 1024)
     private String signTx;
+
+    private int txStatus;
 
     public int getId() {
         return id;
@@ -67,5 +72,21 @@ public class P2SHTransaction {
 
     public void setSignTx(String signTx) {
         this.signTx = signTx;
+    }
+
+    public String getFromAddress() {
+        return fromAddress;
+    }
+
+    public void setFromAddress(String fromAddress) {
+        this.fromAddress = fromAddress;
+    }
+
+    public int getTxStatus() {
+        return txStatus;
+    }
+
+    public void setTxStatus(int txStatus) {
+        this.txStatus = txStatus;
     }
 }
