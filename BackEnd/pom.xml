@@ -18,6 +18,7 @@
 
     <modules>
         <module>themis-user</module>
+        <module>themis-chat</module>
     </modules>
 
     <properties>
