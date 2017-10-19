@@ -190,6 +190,7 @@ public class AccountService {
     public String sendToAddress(String accountName, String recvAddress, double amount) {
         BitcoindRpcClient.TxOutput pOutputs = new BitcoindRpcClient.BasicTxOutput(recvAddress, amount);
         List<BitcoindRpcClient.TxOutput> list = new ArrayList<>();
+        list.add(pOutputs);
         UTXO_TXID = client.sendMany(accountName, list);
         return UTXO_TXID;
     }

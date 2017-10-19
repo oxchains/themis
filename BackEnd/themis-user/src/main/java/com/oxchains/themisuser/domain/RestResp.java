@@ -1,9 +1,11 @@
 package com.oxchains.themisuser.domain;
 
+import java.io.Serializable;
+
 /**
  * @author aiet
  */
-public class RestResp {
+public class RestResp implements Serializable{
 
     public final int status;
     public final String message;

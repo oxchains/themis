@@ -1,7 +1,7 @@
 package com.oxchains.themisuser;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+//import org.springframework.context.annotation.Configuration;
+//import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 /**
  * @Author ccl
@@ -9,7 +9,7 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
  * @Name HttpSessionConfig
  * @Desc:
  */
-@Configuration
-@EnableRedisHttpSession
+//@Configuration
+//@EnableRedisHttpSession
 public class HttpSessionConfig {
 }
