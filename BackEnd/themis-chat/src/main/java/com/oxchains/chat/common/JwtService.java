@@ -12,8 +12,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author aiet
  */
 public class JwtService {
-      static final String SECRET = "ThisIsASecret";
-    public static Map<String,Channel> userChannels = new ConcurrentHashMap<>();
+    static final String SECRET = "ThisIsASecret";
+
+    public static Map<String,ChannelHandler> userChannels = new ConcurrentHashMap<>();
+
     public static User parse(String token) {
         try {
             Jws<Claims> jws = new DefaultJwtParser()

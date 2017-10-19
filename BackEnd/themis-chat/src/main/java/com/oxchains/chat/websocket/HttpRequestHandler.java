@@ -1,11 +1,15 @@
 package com.oxchains.chat.websocket;
 
-import com.oxchains.chat.common.JwtService;
+import com.oxchains.chat.common.*;
+import com.oxchains.chat.common.ChannelHandler;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private final String wsUri;
+    private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     public HttpRequestHandler(String wsUri) {
         this.wsUri = wsUri;
@@ -15,7 +19,7 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
         String requestUri =  request.getUri().toString();
         if (requestUri.length()>5 && requestUri.contains(wsUri)){
             String token = requestUri.substring(requestUri.lastIndexOf("?")+1);
-            JwtService.userChannels.put(JwtService.parse(token).getId()+"",ctx.channel());
+            JwtService.userChannels.put(JwtService.parse(token).getId()+"",new ChannelHandler(ctx.channel(),System.currentTimeMillis()));
             ctx.fireChannelRead(request.retain());
         }
         else {
