@@ -24,3 +24,9 @@ node_modules/
 FrontEnd/bundle.js
 FrontEnd/npm-debug.log
 .DS_Store
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
