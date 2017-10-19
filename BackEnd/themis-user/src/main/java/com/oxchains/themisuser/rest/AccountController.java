@@ -32,14 +32,16 @@ public class AccountController {
 
     @PostMapping(value = "/transfer/{accountName}")
     public RestResp transferAccounts(@PathVariable String accountName, String recvAddress,double amount,String pubKeys,int nRequired) {
-        //Arrays.asList(pubKeys.split(","));
         return accountService.createTransaction(accountName,recvAddress,amount,Arrays.asList(pubKeys.split(",")),nRequired);
     }
 
     @PostMapping(value = "/confirm/{accountName}")
     public RestResp confirmTransaction(@PathVariable String accountName, String recvAddress,double amount,String prvKeys) {
-        //Arrays.asList(pubKeys.split(","));
-        return accountService.confirmTransaction(recvAddress,amount,Arrays.asList(prvKeys.split(",")));
+        return accountService.confirmTransaction(recvAddress,amount,Arrays.asList(prvKeys.split(",")),1);
     }
 
+    @PostMapping(value = "/cancel/{accountName}")
+    public RestResp cancelTransaction(@PathVariable String accountName, String recvAddress,double amount,String prvKeys) {
+        return accountService.confirmTransaction(recvAddress,amount,Arrays.asList(prvKeys.split(",")),0);
+    }
 }

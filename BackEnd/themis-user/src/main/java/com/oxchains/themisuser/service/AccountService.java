@@ -5,6 +5,7 @@ import com.oxchains.bitcoin.rpcclient.BitcoindRpcClient;
 import com.oxchains.themisuser.dao.P2SHTransactionDao;
 import com.oxchains.themisuser.domain.P2SHTransaction;
 import com.oxchains.themisuser.domain.RestResp;
+import com.oxchains.themisuser.util.ArithmeticUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -44,9 +45,9 @@ public class AccountService {
 
     private String P2SH_ADDRESS = null;
     private String P2SH_REDEEM_SCRIPT = null;
-    private String SIGNED_TX=null;
+    private String SIGNED_TX = null;
 
-    private String UTXO_TXID = "f7deaad94a0157432fe20203e68d0f3e139dd1031da9e2e53eb52781e891a916";
+    private String UTXO_TXID = null;//"f7deaad94a0157432fe20203e68d0f3e139dd1031da9e2e53eb52781e891a916";
     private int UTXO_VOUT = 0;
     private String UTXO_OUTPUT_SCRIPT = null;
     private String RAW_TX = null;
@@ -99,42 +100,66 @@ public class AccountService {
         }
     }
 
+    /*
+    * 1. 生成公钥/私钥
+    * 2. 生成写上地址和赎回脚本
+    * 3. 发送到协商地址
+    * 4. 发送到接收地址 createrawtransaction return RAW_TX
+    * 5.
+    */
     public RestResp createTransaction(String accountName, String recvAddress, double amount, List<String> signPubKeys, int nRequired) {
         //getKeys(signAddresses);
-        if(getBalance(accountName)<amount){
+        if (getBalance(accountName) < amount) {
             return RestResp.fail("余额不足!");
         }
-        this.signPubKeys=signPubKeys;
-        try {
-            createScriptHash(nRequired);
-            sendToScriptHash(amount);
 
-            P2SHTransaction p2SHTransaction=new P2SHTransaction();
+        this.signPubKeys = signPubKeys;
+        try {
+
+            createScriptHash(nRequired);
+
+            String fromAddress = getAddress(accountName);
+            UTXO_TXID = sendToAddress(accountName, fromAddress, amount);
+
+            sendToScriptHash(accountName, amount);
+
+            P2SHTransaction p2SHTransaction = new P2SHTransaction();
+            p2SHTransaction.setFromAddress(fromAddress);
             p2SHTransaction.setP2shAddress(P2SH_ADDRESS);
             p2SHTransaction.setP2shRedeemScript(P2SH_REDEEM_SCRIPT);
             p2SHTransaction.setSignTx(SIGNED_TX);
             p2SHTransaction.setRecvAddress(recvAddress);
+            p2SHTransaction.setTxStatus(2);
 
-            p2SHTransaction=p2SHTransactionDao.save(p2SHTransaction);
+            p2SHTransaction = p2SHTransactionDao.save(p2SHTransaction);
             return RestResp.success(p2SHTransaction);
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(e.getMessage());
             return RestResp.fail(e.getMessage());
         }
     }
 
-    public RestResp confirmTransaction(String recvAddress,double amount,List<String> signPrvKeys) {
-        this.signPrvKeys=signPrvKeys;
+    public RestResp confirmTransaction(String recvAddress, double amount, List<String> signPrvKeys,int type) {//type 0:取消,1:确认
+        this.signPrvKeys = signPrvKeys;
 
         try {
-            P2SHTransaction p2SHTransaction=p2SHTransactionDao.findByRecvAddress(recvAddress);
+            P2SHTransaction p2SHTransaction = p2SHTransactionDao.findByRecvAddress(recvAddress);
             P2SH_ADDRESS = p2SHTransaction.getP2shAddress();
-            P2SH_REDEEM_SCRIPT=p2SHTransaction.getP2shRedeemScript();
-            SIGNED_TX=p2SHTransaction.getSignTx();
+            P2SH_REDEEM_SCRIPT = p2SHTransaction.getP2shRedeemScript();
+            SIGNED_TX = p2SHTransaction.getSignTx();
             rawTransaction = client.decodeRawTransaction(p2SHTransaction.getSignTx());
-            sendToUser(recvAddress, amount);
-            return RestResp.success("交易成功");
-        }catch (Exception e){
+            if(type == 0){
+                sendToUser(p2SHTransaction.getFromAddress(), amount);
+                p2SHTransaction.setTxStatus(0);
+                p2SHTransactionDao.save(p2SHTransaction);
+                return RestResp.success("交易取消成功");
+            }else {
+                sendToUser(recvAddress, amount);
+                p2SHTransaction.setTxStatus(1);
+                p2SHTransactionDao.save(p2SHTransaction);
+                return RestResp.success("交易成功");
+            }
+        } catch (Exception e) {
             logger.error(e.getMessage());
             return RestResp.fail(e.getMessage());
         }
@@ -157,6 +182,25 @@ public class AccountService {
     }
 
     /**
+     * @param accountName
+     * @param recvAddress
+     * @param amount
+     * @return txid
+     */
+    public String sendToAddress(String accountName, String recvAddress, double amount) {
+        BitcoindRpcClient.TxOutput pOutputs = new BitcoindRpcClient.BasicTxOutput(recvAddress, amount);
+        List<BitcoindRpcClient.TxOutput> list = new ArrayList<>();
+        UTXO_TXID = client.sendMany(accountName, list);
+        return UTXO_TXID;
+    }
+
+    @Deprecated
+    public String sendToAddress(String address, double amount) {
+        UTXO_TXID = client.sendToAddress(address, amount);
+        return UTXO_TXID;
+    }
+
+    /**
      * create script hash
      *
      * @param nRequired
@@ -165,11 +209,6 @@ public class AccountService {
         multiSig = client.createMultiSig(nRequired, signPubKeys);
         P2SH_ADDRESS = multiSig.address();
         P2SH_REDEEM_SCRIPT = multiSig.redeemScript();
-    }
-
-    public String sendToAddress(String address, double amount) {
-        UTXO_TXID = client.sendToAddress(address, amount);
-        return UTXO_TXID;
     }
 
     public void getRawTransactin(String utxo_txid) {
@@ -183,12 +222,13 @@ public class AccountService {
      *
      * @param inputAmount
      */
-    private void sendToScriptHash(double inputAmount) {
+    private void sendToScriptHash(String accountName, double inputAmount) {
+
         List<BitcoindRpcClient.TxInput> txInputs = new ArrayList<>();
         List<BitcoindRpcClient.TxOutput> txOutputs = new ArrayList<>();
-        BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.ExtendedTxInput(UTXO_TXID, 1);//UTXO_VOUT
+        BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.ExtendedTxInput(UTXO_TXID, UTXO_VOUT);//UTXO_VOUT
         txInputs.add(txInput);
-        inputAmount=(inputAmount - TX_FEE);
+        inputAmount = ArithmeticUtils.minus(inputAmount, TX_FEE);
         BitcoindRpcClient.TxOutput txOutput = new BitcoindRpcClient.BasicTxOutput(P2SH_ADDRESS, inputAmount);
         txOutputs.add(txOutput);
         String rawTx = client.createRawTransaction(txInputs, txOutputs);
@@ -203,14 +243,13 @@ public class AccountService {
      * @param recvAddress
      */
     private void sendToUser(String recvAddress, double inputAmount) {
-        //rawTransaction = client.decodeRawTransaction(SIGNED_TX);
         List<BitcoindRpcClient.TxInput> txInputs = new ArrayList<>();
         List<BitcoindRpcClient.TxOutput> txOutputs = new ArrayList<>();
         List<BitcoindRpcClient.RawTransaction.Out> outs = rawTransaction.vOut();
         BitcoindRpcClient.RawTransaction.Out.ScriptPubKey scriptPubKey = outs.get(0).scriptPubKey();
         BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), P2SH_REDEEM_SCRIPT, BigDecimal.valueOf(inputAmount));
         txInputs.add(txInput);
-        BitcoindRpcClient.TxOutput txOutput = new BitcoindRpcClient.BasicTxOutput(recvAddress, inputAmount - TX_FEE);//outputAmount
+        BitcoindRpcClient.TxOutput txOutput = new BitcoindRpcClient.BasicTxOutput(recvAddress, ArithmeticUtils.minus(inputAmount, TX_FEE));//outputAmount
         txOutputs.add(txOutput);
 
         String rawTx = client.createRawTransaction(txInputs, txOutputs);

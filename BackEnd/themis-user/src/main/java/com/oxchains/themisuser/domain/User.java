@@ -35,6 +35,9 @@ public class User {
     @Column(length = 64)
     private String password;
 
+    @Column(length = 35)
+    private String firstAddress;
+
     public int getId() {
         return id;
     }
@@ -81,5 +84,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getFirstAddress() {
+        return firstAddress;
+    }
+
+    public void setFirstAddress(String firstAddress) {
+        this.firstAddress = firstAddress;
     }
 }
