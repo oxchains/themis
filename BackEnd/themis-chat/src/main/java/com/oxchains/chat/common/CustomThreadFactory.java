@@ -18,6 +18,7 @@ public class CustomThreadFactory implements ThreadFactory, Thread.UncaughtExcept
 		this.daemon = daemon;
 	}
 
+	@Override
 	public Thread newThread(Runnable r) {
 		Thread t = new Thread(r, this.threadName);
 		t.setDaemon(this.daemon);
@@ -25,6 +26,7 @@ public class CustomThreadFactory implements ThreadFactory, Thread.UncaughtExcept
 		return t;
 	}
 
+	@Override
 	public void uncaughtException(Thread thread, Throwable throwable) {
 		logger.error("Uncaught Exception in thread " + thread.getName(), throwable);
 	}
