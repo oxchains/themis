@@ -1,5 +1,6 @@
 package com.oxchains.chat.common;
 
+import com.oxchains.chat.websocket.TextWebSocketFrameHandler;
 import io.netty.channel.ChannelFuture;
 
 import java.util.concurrent.ScheduledExecutorService;
@@ -16,15 +17,15 @@ public class KeepAliveChannelThread implements Runnable {
         this.keepAliveScheduler = keepAliveScheduler;
         this.keepTime = keepTime;
     }
-
     @Override
     public void run() {
         for (String s : JwtService.userChannels.keySet()) {
-                if (System.currentTimeMillis() - JwtService.userChannels.get(s).getLastUseTime()>100){
+                if (System.currentTimeMillis() - JwtService.userChannels.get(s).getLastUseTime()>100*1000){
                     ChannelFuture cf =  JwtService.userChannels.get(s).getChannel().closeFuture();
                     try {
                         cf.channel().close().sync();
                         JwtService.userChannels.remove(s);
+                        TextWebSocketFrameHandler.channels.remove(cf.channel());
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

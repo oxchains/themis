@@ -1,6 +1,4 @@
 package com.oxchains.chat.websocket;
-
-
 import com.oxchains.chat.common.ChatContent;
 import com.oxchains.chat.common.JsonUtil;
 import com.oxchains.chat.common.JwtService;
@@ -26,13 +24,17 @@ public class TextWebSocketFrameHandler extends
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx,
 			TextWebSocketFrame msg) throws Exception {
-
 		ChatContent chatContent= (ChatContent) JsonUtil.fromJson(msg.text(), ChatContent.class);
+		String message = JsonUtil.toJson(chatContent).toString();
+		/*
+		* if id is not  null , this  is health test
+		* if id is null , this is chat for other
+		* */
 		if(chatContent.getId()!=null){
 			JwtService.userChannels.get(chatContent.getId()).setLastUseTime(System.currentTimeMillis());
+			ctx.channel().writeAndFlush(new TextWebSocketFrame(message));
 		}else{
 			chatContent.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-			String message = JsonUtil.toJson(chatContent).toString();
 			KafkaUtil.send(message);
 			ctx.channel().writeAndFlush(new TextWebSocketFrame(message));
 			if(JwtService.userChannels.get(chatContent.getDid()+"") != null){
@@ -59,7 +61,6 @@ public class TextWebSocketFrameHandler extends
         Channel incoming = ctx.channel();
         incoming.closeFuture();
 		channels.remove(incoming);
-
     }
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
