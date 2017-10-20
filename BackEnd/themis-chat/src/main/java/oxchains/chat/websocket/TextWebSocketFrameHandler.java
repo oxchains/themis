@@ -15,7 +15,6 @@ import oxchains.chat.entity.ChatContent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
-
 public class TextWebSocketFrameHandler extends
 		SimpleChannelInboundHandler<TextWebSocketFrame> {
 	public static ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
@@ -43,6 +42,7 @@ public class TextWebSocketFrameHandler extends
 			KafkaUtil.send(message);
 			ctx.channel().writeAndFlush(new TextWebSocketFrame(message));
 			if( channelHandlerMap!= null && channelHandlerMap.get(keyIDs)!=null){
+				channelHandlerMap = JwtService.userChannels.get(chatContent.getReceiverId()+"");
 				channelHandlerMap.get(keyIDs).getChannel().writeAndFlush(new TextWebSocketFrame(message));
 			}
 		}
