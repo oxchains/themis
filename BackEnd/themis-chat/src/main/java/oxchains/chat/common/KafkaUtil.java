@@ -1,10 +1,11 @@
-package com.oxchains.chat.common;
-import java.util.Properties;
+package oxchains.chat.common;
 
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 import kafka.producer.ProducerConfig;
 import kafka.serializer.StringEncoder;
+
+import java.util.Properties;
 
 /**
  * Created by xuqi on 2017/10/17.

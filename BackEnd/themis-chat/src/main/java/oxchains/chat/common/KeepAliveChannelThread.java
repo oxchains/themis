@@ -1,7 +1,7 @@
-package com.oxchains.chat.common;
+package oxchains.chat.common;
 
-import com.oxchains.chat.websocket.TextWebSocketFrameHandler;
 import io.netty.channel.ChannelFuture;
+import oxchains.chat.websocket.TextWebSocketFrameHandler;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +26,6 @@ public class KeepAliveChannelThread implements Runnable {
                     try {
                         cf.channel().close().sync();
                         JwtService.userChannels.get(s).remove(s1);
-                        System.out.println("被消灭：....."+cf.channel());
                         TextWebSocketFrameHandler.channels.remove(cf.channel());
                     } catch (InterruptedException e) {
                         e.printStackTrace();

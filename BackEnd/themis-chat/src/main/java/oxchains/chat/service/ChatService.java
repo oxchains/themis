@@ -2,6 +2,7 @@ package oxchains.chat.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import oxchains.chat.common.JwtService;
 import oxchains.chat.entity.ChatContent;
 import oxchains.chat.repo.MongoRepo;
 import oxchains.chat.repo.UserRepo;
@@ -23,19 +24,20 @@ public class ChatService {
     public List<ChatContent> getChatHistroy(ChatContent chatContent){
         try{
 
-            String username  = userRepo.findOne(chatContent.getBid()).getUsername();
-            String dusername  = userRepo.findOne(chatContent.getDid()).getUsername();
-            List<ChatContent> list = mongoRepo.findChatContentByChatId(String.valueOf((chatContent.getBid()+chatContent.getDid()) * (chatContent.getBid()* chatContent.getDid())));
+            String username  = userRepo.findOne(chatContent.getSenderId()).getUsername();
+            String dusername  = userRepo.findOne(chatContent.getReceiverId()).getUsername();
+            String keyIDs = JwtService.getIDS(chatContent.getSenderId().toString(),chatContent.getReceiverId().toString());
+            List<ChatContent> list = mongoRepo.findChatContentByChatId(keyIDs);
             for (ChatContent content:list) {
-                if(content.getBid().longValue()==chatContent.getBid().longValue())
+                if(content.getSenderId().longValue()==chatContent.getSenderId().longValue())
                 {
-                    content.setUsername(username);
+                    content.setSenderName(username);
                 }
-                else{content.setUsername(dusername);}
+                else{content.setSenderName(dusername);}
 
                 System.out.println(content);
             }
-            return mongoRepo.findChatContentByChatId(String.valueOf((chatContent.getBid()+chatContent.getDid()) * (chatContent.getBid()* chatContent.getDid())));
+            return mongoRepo.findChatContentByChatId(keyIDs);
         }
         catch (Exception e){
             e.printStackTrace();

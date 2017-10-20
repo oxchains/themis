@@ -1,9 +1,8 @@
-package com.oxchains.chat.common;
+package oxchains.chat.common;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.impl.DefaultJwtParser;
-import io.netty.channel.Channel;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,7 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class JwtService {
       static final String SECRET = "ThisIsASecret";
-    //public static Map<String,Channel> userChannels = new ConcurrentHashMap<>();
     public static Map<String,Map<String,ChannelHandler>> userChannels = new ConcurrentHashMap<>();
     public static User parse(String token) {
         try {

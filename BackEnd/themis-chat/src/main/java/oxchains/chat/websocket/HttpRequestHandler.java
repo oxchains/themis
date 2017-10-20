@@ -1,10 +1,14 @@
-package com.oxchains.chat.websocket;
+package oxchains.chat.websocket;
 
-import com.oxchains.chat.common.ChannelHandler;
-import com.oxchains.chat.common.JwtService;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
+import oxchains.chat.common.ChannelHandler;
+import oxchains.chat.common.JwtService;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
@@ -20,11 +24,17 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
             String message = requestUri.substring(requestUri.lastIndexOf("?")+1);
             String token = message.substring(0,message.lastIndexOf("_"));
             String id = JwtService.parse(token).getId()+"";
-            String did = message.substring(message.lastIndexOf("_")+1);
+            String receiverId = message.substring(message.lastIndexOf("_")+1);
             if(JwtService.userChannels.get(id) == null){
                 JwtService.userChannels.put(id,new ConcurrentHashMap<String ,ChannelHandler>());
             }
-            JwtService.userChannels.get(id).put(JwtService.getIDS(id,did),new ChannelHandler(ctx.channel(),System.currentTimeMillis()));
+            String keyIds = JwtService.getIDS(id,receiverId);
+            Map<String,ChannelHandler> channelHandlerMap =  JwtService.userChannels.get(id);
+            if(channelHandlerMap.get(keyIds) != null){
+                channelHandlerMap.get(keyIds).close();
+                channelHandlerMap.remove(keyIds);
+            }
+            channelHandlerMap.put(keyIds,new ChannelHandler(ctx.channel(),System.currentTimeMillis()));
             ctx.fireChannelRead(request.retain());
         }
         else {

@@ -1,4 +1,4 @@
-package com.oxchains.chat.common;
+package oxchains.chat.common;
 
 /**
  * Created by xuqi on 2017/10/12.

@@ -25,7 +25,6 @@ public class Listener {
         if (kafkaMessage.isPresent()) {
             Object message = kafkaMessage.get();
             ChatContent chatContent = (ChatContent) JsonUtil.fromJson((String)message, ChatContent.class);
-            chatContent.setChatId(String.valueOf((chatContent.getBid()+chatContent.getDid()) * (chatContent.getBid()* chatContent.getDid())));
             mongoRepo.save(chatContent);
         }
     }

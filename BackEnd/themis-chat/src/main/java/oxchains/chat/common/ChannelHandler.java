@@ -1,6 +1,7 @@
-package com.oxchains.chat.common;
+package oxchains.chat.common;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 
 /**
  * Created by xuqi on 2017/10/19.
@@ -27,5 +28,11 @@ public class ChannelHandler {
     public ChannelHandler(Channel channel, long lastUseTime) {
         this.channel = channel;
         this.lastUseTime = lastUseTime;
+    }
+    public void close(){
+        if(this.channel!=null){
+            ChannelFuture cf = this.channel.closeFuture();
+            cf.channel().close();
+        }
     }
 }
