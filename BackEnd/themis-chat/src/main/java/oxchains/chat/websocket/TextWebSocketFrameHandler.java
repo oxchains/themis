@@ -10,7 +10,6 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 import oxchains.chat.common.ChannelHandler;
 import oxchains.chat.common.JsonUtil;
 import oxchains.chat.common.JwtService;
-import oxchains.chat.common.KafkaUtil;
 import oxchains.chat.entity.ChatContent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
