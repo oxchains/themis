@@ -19,7 +19,7 @@ public class P2SHTransactionService {
     @Resource
     private P2SHTransactionDao p2SHTransactionDao;
 
-    P2SHTransaction findByRecvAddress(String recvAddress){
+    P2SHTransaction findByRecvAddress(String recvAddress) {
         return p2SHTransactionDao.findByRecvAddress(recvAddress);
     }
 }

@@ -3,6 +3,7 @@ package com.oxchains.themisuser.rest;
 import com.oxchains.themisuser.domain.RestResp;
 import com.oxchains.themisuser.domain.User;
 import com.oxchains.themisuser.service.UserService;
+import com.oxchains.themisuser.util.VerifyCodeUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,4 +39,14 @@ public class UserController {
     public RestResp list(){
         return userService.findUsers();
     }
+
+    /**
+     * Verification Code
+     * @return
+     */
+    @GetMapping(value = "/verifyCode")
+    public RestResp verifyCode(){
+        return RestResp.success(VerifyCodeUtils.getRandCode(6));
+    }
+
 }

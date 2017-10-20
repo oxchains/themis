@@ -46,7 +46,7 @@ public class UserService extends BaseService{
             return RestResp.fail("操作失败");
         }
         //注册比特币账户
-        accountService.enrollAccount(user.getLoginname());
+        String address = accountService.enrollAccount(user.getLoginname());
 
         return RestResp.success("操作成功");
     }

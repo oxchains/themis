@@ -1,12 +1,12 @@
-package com.oxchains.themisuser.domain;
+package oxchains.chat.common;
 
-import java.io.Serializable;
+import io.netty.util.internal.StringUtil;
 
 /**
  * @author aiet
  */
-public class RestResp implements Serializable{
-
+public class RestResp {
+    public static ThreadLocal<String> threadLocal = new ThreadLocal<>();
     public final int status;
     public final String message;
     public final Object data;
@@ -34,11 +34,16 @@ public class RestResp implements Serializable{
     }
 
     public static RestResp fail(String message){
+        if(StringUtil.isNullOrEmpty(message)){
+            message = "fail";
+        }
         return new RestResp(-1, message);
     }
 
     public static RestResp fail(){
         return new RestResp(-1, "fail");
     }
+
+
 
 }

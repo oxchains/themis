@@ -1,4 +1,4 @@
-BackEnd/target/
+target/
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###
@@ -20,7 +20,13 @@ BackEnd/themis-user/*.iml
 
 ### FrontEnd ###
 FrontEnd/.idea
-FrontEnd/node_modules/
+node_modules/
 FrontEnd/bundle.js
 FrontEnd/npm-debug.log
 .DS_Store
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr

@@ -1,12 +1,8 @@
-package com.oxchains.themisuser;
+package oxchains.chat.common;
 
-import com.oxchains.themisuser.auth.AuthError;
-import com.oxchains.themisuser.auth.JwtAuthenticationProvider;
-import com.oxchains.themisuser.auth.JwtTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,39 +11,43 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-
+import oxchains.chat.auth.AuthError;
+import oxchains.chat.auth.JwtAuthenticationProvider;
+import oxchains.chat.auth.JwtTokenFilter;
 
 /**
- * @Author ccl
- * @Time 2017-10-12 11:21
- * @Name ApplicationConfiguration
- * @Desc:
+ * @author aiet
  */
-
 @EnableWebSecurity
 @Configuration
-public class ApplicationConfiguration extends WebSecurityConfigurerAdapter{
+public class ChainAppConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final JwtAuthenticationProvider jwtAuthenticationProvider;
     private final JwtTokenFilter jwtTokenFilter;
-    private AuthError authError;
+    private final JwtAuthenticationProvider jwtAuthenticationProvider;
+    private final AuthError authError;
 
-    public ApplicationConfiguration(@Autowired JwtTokenFilter jwtTokenFilter, @Autowired JwtAuthenticationProvider jwtAuthenticationProvider, @Autowired AuthError authError) {
+    public ChainAppConfiguration(@Autowired JwtTokenFilter jwtTokenFilter, @Autowired JwtAuthenticationProvider jwtAuthenticationProvider, @Autowired AuthError authError) {
         this.jwtTokenFilter = jwtTokenFilter;
         this.jwtAuthenticationProvider = jwtAuthenticationProvider;
         this.authError = authError;
     }
-
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        //http.csrf().disable().authorizeRequests().antMatchers("/", "/").permitAll();
-        http.cors().and().csrf().disable().authorizeRequests().antMatchers(HttpMethod.POST,"/login","/token","/register","/account/*").permitAll()
-                .antMatchers(HttpMethod.GET,"/verifyCode").permitAll().antMatchers("/**/*")
-                .authenticated().and()
-                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling()
-                .authenticationEntryPoint(authError)
-                .accessDeniedHandler(authError);
+        http
+          .cors()
+          .and()
+          .csrf()
+          .disable()
+          .authorizeRequests()
+          .antMatchers("/user/login")
+          .permitAll()
+          .antMatchers("/**/*")
+          .authenticated()
+          .and()
+          .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+          .exceptionHandling()
+          .authenticationEntryPoint(authError)
+          .accessDeniedHandler(authError);
     }
 
     @Override
