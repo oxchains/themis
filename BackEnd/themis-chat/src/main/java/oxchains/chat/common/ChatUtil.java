@@ -19,7 +19,7 @@ public class JwtService {
               .setSigningKey(SECRET)
               .parseClaimsJws(token);
             Claims claims = jws.getBody();
-            User user = new User(claims.get("id",Integer.class),claims.getSubject());
+            User user = new User(claims.get("id",Long.class),claims.getSubject());
             return user;
         } catch (Exception e) {
             e.printStackTrace();
