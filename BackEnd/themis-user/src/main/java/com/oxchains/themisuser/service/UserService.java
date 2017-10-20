@@ -68,8 +68,13 @@ public class UserService extends BaseService{
         user.setPassword(EncryptUtils.encodeSHA256(user.getPassword()));
         Optional<User> optional=findUser(user);
         return optional.map(u -> {
+            if (u.getLoginStatus() != 0 ){
+                return RestResp.fail("用户已经登录");
+            }
             String token="Bearer "+jwtService.generate(user);
             logger.info("token = "+token);
+            u.setLoginStatus(1);
+            userDao.save(u);
             ConstantUtils.USER_TOKEN.put(u.getLoginname(),token);
             return RestResp.success("登录成功",new UserToken(u.getUsername(),token));
         }).orElse(RestResp.fail("登录失败"));

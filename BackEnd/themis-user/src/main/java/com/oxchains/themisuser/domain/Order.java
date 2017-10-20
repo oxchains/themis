@@ -16,7 +16,7 @@ import java.util.Date;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long id;
 
     @Column(length = 35)
     private String fromAddress;
@@ -33,19 +33,19 @@ public class Order {
     @Column(length = 1024)
     private String signTx;
 
-    private int orderStatus;
+    private Integer orderStatus;
 
-    private int orderType;
+    private Integer orderType;
 
     private String orderNo;
 
     private Date createTime;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -89,19 +89,19 @@ public class Order {
         this.fromAddress = fromAddress;
     }
 
-    public int getOrderStatus() {
+    public Integer getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(int orderStatus) {
+    public void setOrderStatus(Integer orderStatus) {
         this.orderStatus = orderStatus;
     }
 
-    public int getOrderType() {
+    public Integer getOrderType() {
         return orderType;
     }
 
-    public void setOrderType(int orderType) {
+    public void setOrderType(Integer orderType) {
         this.orderType = orderType;
     }
 
@@ -119,5 +119,25 @@ public class Order {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    private Double amount;
+
+    private Double money;
+
+    public Double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
+    public Double getMoney() {
+        return money;
+    }
+
+    public void setMoney(Double money) {
+        this.money = money;
     }
 }

@@ -18,7 +18,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long id;
 
     @Column(length = 32)
     private String username;
@@ -39,11 +39,13 @@ public class User {
     @Column(length = 35)
     private String firstAddress;
 
-    public int getId() {
+    private Integer loginStatus;
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -93,5 +95,13 @@ public class User {
 
     public void setFirstAddress(String firstAddress) {
         this.firstAddress = firstAddress;
+    }
+
+    public Integer getLoginStatus() {
+        return loginStatus;
+    }
+
+    public void setLoginStatus(Integer loginStatus) {
+        this.loginStatus = loginStatus;
     }
 }
