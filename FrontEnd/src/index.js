@@ -2,35 +2,46 @@
  * Created by oxchain on 2017/10/17.
  */
 import React from 'react'
-
+import { createStore, applyMiddleware, compose } from 'redux';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { Router, browserHistory } from 'react-router';
+import reduxThunk from 'redux-thunk';
+import reducers from './reducers';
 
 import {Route, BrowserRouter, Switch, Redirect} from 'react-router-dom';
-import Header from  './common/header';
+import Header from  './components/common/header';
+import Singin from  './components/auth/signin';
+import Singup from  './components/auth/signup';
+import Home from './components/home';
+const createStoreWithMiddleware = compose(
+    applyMiddleware(reduxThunk),
+    window.devToolsExtension ? window.devToolsExtension() : f => f
+)(createStore);
+const store = createStoreWithMiddleware(reducers);
 
-//
-// const createStoreWithMiddleware = compose(
-//     applyMiddleware(reduxThunk),
-//     window.devToolsExtension ? window.devToolsExtension() : f => f
-// )(createStore);
-// const store = createStoreWithMiddleware(reducers);
+const token = localStorage.getItem('token');
+// If token exist, singin automatic
+if (token) {
+    store.dispatch({type: AUTH_USER});
+}
 
 ReactDOM.render(
+    <Provider store={store}>
     <BrowserRouter>
         <div>
             <main>
                 <Header/>
                 <Switch>
-                    {/*<Route path="/ico" component={Ico}/>*/}
-                    {/*<Route path="/team" component={Team}/>*/}
-                    {/*<Route path="/law" component={Law}/>*/}
+                    <Route path="/signin" component={Singin}/>
+                    <Route path="/signup" component={Singup}/>
+                    {/*<Route path="/signout" component={Signout} />*/}
                     {/*<Route path="/" component={Home}/>*/}
-
                 </Switch>
-                {/*<Footer/>*/}
             </main>
         </div>
     </BrowserRouter>
-    ,document.querySelector('.app')
+    </Provider>
+    ,document.querySelector('.wrapper')
 );
 

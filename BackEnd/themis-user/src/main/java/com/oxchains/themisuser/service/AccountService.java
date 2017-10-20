@@ -102,7 +102,7 @@ public class AccountService {
 
     /*
     * 1. 生成公钥/私钥
-    * 2. 生成写上地址和赎回脚本
+    * 2. 生成协商地址和赎回脚本
     * 3. 发送到协商地址
     * 4. 发送到接收地址 createrawtransaction return RAW_TX
     * 5.
@@ -190,6 +190,7 @@ public class AccountService {
     public String sendToAddress(String accountName, String recvAddress, double amount) {
         BitcoindRpcClient.TxOutput pOutputs = new BitcoindRpcClient.BasicTxOutput(recvAddress, amount);
         List<BitcoindRpcClient.TxOutput> list = new ArrayList<>();
+        list.add(pOutputs);
         UTXO_TXID = client.sendMany(accountName, list);
         return UTXO_TXID;
     }
