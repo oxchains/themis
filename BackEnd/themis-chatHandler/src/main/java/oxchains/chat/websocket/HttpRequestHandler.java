@@ -1,15 +1,14 @@
 package com.oxchains.chat.websocket;
 
-import com.oxchains.chat.common.*;
 import com.oxchains.chat.common.ChannelHandler;
+import com.oxchains.chat.common.JwtService;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private final String wsUri;
-    private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     public HttpRequestHandler(String wsUri) {
         this.wsUri = wsUri;
@@ -18,8 +17,14 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
     public void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
         String requestUri =  request.getUri().toString();
         if (requestUri.length()>5 && requestUri.contains(wsUri)){
-            String token = requestUri.substring(requestUri.lastIndexOf("?")+1);
-            JwtService.userChannels.put(JwtService.parse(token).getId()+"",new ChannelHandler(ctx.channel(),System.currentTimeMillis()));
+            String message = requestUri.substring(requestUri.lastIndexOf("?")+1);
+            String token = message.substring(0,message.lastIndexOf("_"));
+            String id = JwtService.parse(token).getId()+"";
+            String did = message.substring(message.lastIndexOf("_")+1);
+            if(JwtService.userChannels.get(id) == null){
+                JwtService.userChannels.put(id,new ConcurrentHashMap<String ,ChannelHandler>());
+            }
+            JwtService.userChannels.get(id).put(JwtService.getIDS(id,did),new ChannelHandler(ctx.channel(),System.currentTimeMillis()));
             ctx.fireChannelRead(request.retain());
         }
         else {
@@ -53,4 +58,6 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
         }
         return userId;
     }
+
+
 }

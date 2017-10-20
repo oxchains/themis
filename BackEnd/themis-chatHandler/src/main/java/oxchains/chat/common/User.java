@@ -63,4 +63,10 @@ public class User {
         this.mobilephone = mobilephone;
     }
 
+    public static void main(String[] args) {
+        String s = "123456789_9";
+        System.out.println(s.substring(s.lastIndexOf("_")));
+        System.out.println(s);
+    }
+
 }

@@ -20,16 +20,20 @@ public class KeepAliveChannelThread implements Runnable {
     @Override
     public void run() {
         for (String s : JwtService.userChannels.keySet()) {
-                if (System.currentTimeMillis() - JwtService.userChannels.get(s).getLastUseTime()>100*1000){
-                    ChannelFuture cf =  JwtService.userChannels.get(s).getChannel().closeFuture();
+            for (String s1 :JwtService.userChannels.get(s).keySet()){
+                if (System.currentTimeMillis() - JwtService.userChannels.get(s).get(s1).getLastUseTime()>10*1000){
+                    ChannelFuture cf =  JwtService.userChannels.get(s).get(s1).getChannel().closeFuture();
                     try {
                         cf.channel().close().sync();
-                        JwtService.userChannels.remove(s);
+                        JwtService.userChannels.get(s).remove(s1);
+                        System.out.println("被消灭：....."+cf.channel());
                         TextWebSocketFrameHandler.channels.remove(cf.channel());
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
+            }
+
         }
         this.keepAliveScheduler.schedule(this,keepTime, TimeUnit.SECONDS);
 

@@ -8,25 +8,22 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static java.util.concurrent.Executors.*;
+import static java.util.concurrent.Executors.newScheduledThreadPool;
 
 public class WebSocketServer{
-    private Logger LOG = LoggerFactory.getLogger(this.getClass());
     private  Integer port = 9999;
-    protected ScheduledExecutorService keepAliveScheduler = null;
     private WebSocketServer() {}
+    protected ScheduledExecutorService keepAliveScheduler = null;
     /*
     * running websocket
     * */
     public void running(){
         this.keepAliveScheduler =newScheduledThreadPool(5,new CustomThreadFactory("keep-alive-channel",true));
-        this.keepAliveScheduler.schedule(new KeepAliveChannelThread(this.keepAliveScheduler,60),60, TimeUnit.SECONDS);
+        this.keepAliveScheduler.schedule(new KeepAliveChannelThread(this.keepAliveScheduler,20),5, TimeUnit.SECONDS);
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
