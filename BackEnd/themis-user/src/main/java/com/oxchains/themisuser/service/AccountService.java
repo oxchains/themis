@@ -2,10 +2,11 @@ package com.oxchains.themisuser.service;
 
 import com.oxchains.bitcoin.rpcclient.BitcoinJSONRPCClient;
 import com.oxchains.bitcoin.rpcclient.BitcoindRpcClient;
+import com.oxchains.common.model.RestResp;
+import com.oxchains.common.util.ArithmeticUtils;
 import com.oxchains.themisuser.dao.P2SHTransactionDao;
 import com.oxchains.themisuser.domain.P2SHTransaction;
-import com.oxchains.themisuser.domain.RestResp;
-import com.oxchains.themisuser.util.ArithmeticUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -139,7 +140,7 @@ public class AccountService {
         }
     }
 
-    public RestResp confirmTransaction(String recvAddress, double amount, List<String> signPrvKeys,int type) {//type 0:取消,1:确认
+    public RestResp confirmTransaction(String recvAddress, double amount, List<String> signPrvKeys, int type) {//type 0:取消,1:确认
         this.signPrvKeys = signPrvKeys;
 
         try {
