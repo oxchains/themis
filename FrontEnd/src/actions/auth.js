@@ -22,8 +22,9 @@ export function signinAction({loginname, password}) {
             .then(response => {
                 console.log(response)
                 if(response.data.status == 1) {
+                    debugger;
                     localStorage.setItem('token', response.data.data.token);
-                    localStorage.setItem('username', username);
+                    localStorage.setItem('username', loginname);
                     dispatch({type: AUTH_USER});
                     browserHistory.push('/');
                 } else {
