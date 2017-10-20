@@ -79,4 +79,14 @@ public class AccountController {
     public RestResp cancelTransaction(@PathVariable String accountName, String recvAddress,double amount,String prvKeys) {
         return accountService.confirmTransaction(recvAddress,amount,Arrays.asList(prvKeys.split(",")),0);
     }
+
+    /**
+     * 获取公私钥
+     * @param accountName
+     * @return
+     */
+    @GetMapping(value = "/key/{accountName}")
+    public RestResp getKeys(@PathVariable String accountName){
+        return accountService.getKeys(accountName);
+    }
 }
