@@ -19,7 +19,8 @@ class Header extends Component{
                 <nav  className="header">
                    <span>这是导航条</span>
                     <a className="logincolor" href="/">首页 </a>
-                    <a className="logincolor" href="/signin">登录 </a>
+                    <a className="logincolor" href="/releaseadvert"> 发布广告 </a>
+                    <a className="logincolor" href="/signin"> 登录 </a>
                     <a className="logincolor" href="/signup"> 注册 </a>
                     <a className="logincolor" href="/usercenter"> 用户中心 </a>
                 </nav>

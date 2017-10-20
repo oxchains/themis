@@ -19,6 +19,8 @@ import Singin from  './components/auth/signin';
 import Singup from  './components/auth/signup';
 import Usercenter from './components/usercenter';
 import Home from './components/home';
+import Releaseadvert from './components/releaseadvert';
+
 
 const createStoreWithMiddleware = compose(
     applyMiddleware(reduxThunk),
@@ -43,6 +45,7 @@ ReactDOM.render(
                     <Route path="/signup" component={Singup}/>
                     {/*<Route path="/signout" component={Signout} />*/}
                     <Route path="/usercenter" component={Usercenter}/>
+                    <Route path="/releaseadvert" component={Releaseadvert}/>
                     <Route path="/" component={Home}/>
                 </Switch>
             </main>

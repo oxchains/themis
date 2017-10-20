@@ -25,7 +25,8 @@ class Signup extends Component {
             actionResult: '',
             count: 60,
             liked: true,
-            // value:
+            index:2,
+            choosenum:''
         };
         this.handlesend = this.handlesend.bind(this)
     }
@@ -36,9 +37,11 @@ class Signup extends Component {
         });
     };
     handleFormSubmit({ loginname, mobilephone, email,password }) {
-        this.setState({ spin:true });
+        this.setState({ choosenum:this.state.index });
+       const choosenum = this.state.choosenum
+        console.log("choosenum" + this.state.choosenum)
         if(loginname && password && mobilephone)
-            this.props.signupUser({ loginname, mobilephone, email,password }, err => {
+            this.props.signupUser({ loginname, mobilephone, email,password ,choosenum}, err => {
                 this.setState({ isModalOpen: true , error: err , actionResult: err||'注册成功!' , spin:false });
             });
     }
@@ -71,17 +74,33 @@ class Signup extends Component {
                 });
             }.bind(this), 1000);
         }
-        this.props.GetverifyCode({})
+        const phonenum = localStorage.getItem("phonenum")
+        this.props.GetverifyCode({phonenum},()=>{})
 
     }
     handleChange(e) {
-        console.log(e.target.value)
+        let {index} = this.state;
+        index++;
+        if (index%2 == 0) {
+            index = 2;
+        }else {
+            index = 1;
+        }
         this.setState({
-            value: e.target.value,
+            index
         })
+        console.log("选中状态" + this.state.index)
     }
     phoneChange(e){
         console.log(e.target.value)
+        const phonenum = localStorage.setItem("phonenum",e.target.value)
+
+        var regex = /^1[3|4|5|8][0-9]\d{4,8}$/
+        if (regex.test(e.target.value) ) {
+
+        } else{
+            alert('请输入正确的手机号码！');
+        }
     }
 
 
@@ -95,7 +114,6 @@ class Signup extends Component {
         )}
     render() {
         const { handleSubmit} = this.props;
-        // let {value} = this.state;
 
         var text = this.state.liked ? '发送验证码' : this.state.count + ' s 后重新发' ;
         return (
@@ -110,17 +128,15 @@ class Signup extends Component {
                         {this.renderAlert()}
                         <form className="form-signin" onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
                             <Field name="loginname" component={this.renderField} type="text"  label="请输入用户名"  />
-                            <Field name="mobilephone" component={this.renderField} type="text"  onChange={this.phoneChange} label="请输入手机号"  />
-                            {/*<Field name="userrealname"  component={this.renderField} type="text"  label="请输入验证码"  />*/}
+                            <Field name="mobilephone" component={this.renderField} type="text"  onBlur={this.phoneChange} label="请输入手机号"  />
                             <div className="form-style-test">
                                <Field name="email" className="form-test " component={this.renderField} type="text" label="请输入验证码"/>
                                 <span className={`send-testcode  ${this.state.liked?"" :"time-color"}`} onClick={this.handlesend}>{text}</span>
                             </div>
                             <Field name="password" component={this.renderField} type="password" label="请输入密码" icon="lock" />
-                            {/*<Field name="passwordConfirm" component={this.renderField} type="password" label="确认密码" icon="lock" />*/}
                             <div className="row ">
                                 <div className="form-style checkbox-margin">
-                                    <input type="checkbox"   className="checkbox-width" onChange={this.handleChange.bind(this)}/><span> 我已阅读themis用户手册及相关法律</span>
+                                    <input type="checkbox"  defaultChecked className="checkbox-width"  onChange={this.handleChange.bind(this)}/><span> 我已阅读themis用户手册及相关法律</span>
                                 </div>
                                 <div className="form-style">
                                     <button type="submit" className="btn   form-register"><i className={`fa fa-spinner fa-spin ${this.state.spin?'':'hidden'}`}></i> 注册</button>

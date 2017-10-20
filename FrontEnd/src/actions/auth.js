@@ -21,12 +21,9 @@ export function signinAction({mobilephone, password}) {
         axios.post(`${ROOT_URL}/login`, { mobilephone, password})
             .then(response => {
                 console.log(response)
-<<<<<<< HEAD
+
                 if(response.data.data.status == 1) {
-=======
-                if(response.data.status == 1) {
-                    debugger;
->>>>>>> fa159dbf21106c1b7e7694c06641bf9f65397c10
+
                     localStorage.setItem('token', response.data.data.token);
                     localStorage.setItem('username', loginname);
                     dispatch({type: AUTH_USER});
@@ -60,10 +57,10 @@ export function signoutUser() {
  * 注册
  */
 
-export function signupUser({ loginname, mobilephone, email,password }, callback) {
-    console.log(`注册传送的数据: ${loginname}, ${mobilephone},${email}, ${password}`);
+export function signupUser({ loginname, mobilephone, email,password,choosenum }, callback) {
+    console.log(`注册传送的数据: ${loginname}, ${mobilephone},${email}, ${password},${choosenum}`);
     return function(dispatch) {
-        axios.post(`${ROOT_URL}/register`, { loginname, mobilephone, email,password })
+        axios.post(`${ROOT_URL}/register`, { loginname, mobilephone, email,password ,choosenum})
             .then(response => {
                 console.log(response)
                 if(response.data.status == 1) {
@@ -80,9 +77,10 @@ export function signupUser({ loginname, mobilephone, email,password }, callback)
  * 获取验证码
  */
 
-export function GetverifyCode({},callback) {
+export function GetverifyCode({phonenum},callback) {
+    console.log("点击发送验证码带过来的手机号" + phonenum)
     return function(dispatch) {
-        axios.get(`${ROOT_URL}/verifyCode`)
+        axios.get(`${ROOT_URL}/verifyCode`,{phonenum})
             .then(response => {
                 console.log("获取验证码的接口通了")
                 console.log(response)
