@@ -1,7 +1,7 @@
 package com.oxchains.themisuser.rest;
 
+import com.oxchains.common.model.RestResp;
 import com.oxchains.themisuser.auth.JwtService;
-import com.oxchains.themisuser.domain.RestResp;
 import com.oxchains.themisuser.domain.User;
 import com.oxchains.themisuser.service.UserService;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,4 +1,4 @@
-package com.oxchains.themisuser.util;
+package com.oxchains.common.util;
 
 import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;

@@ -1,6 +1,6 @@
 package com.oxchains.themisuser.dao;
 
-import com.oxchains.themisuser.domain.P2SHTransaction;
+import com.oxchains.themisuser.domain.Order;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
  * @Desc:
  */
 @Repository
-public interface P2SHTransactionDao extends CrudRepository<P2SHTransaction,Integer> {
-    P2SHTransaction findByRecvAddress(String recvAddress);
+public interface OrderDao extends CrudRepository<Order,Integer> {
+    Order findByRecvAddress(String recvAddress);
 }

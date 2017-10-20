@@ -3,16 +3,17 @@ package com.oxchains.themisuser.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * @Author ccl
  * @Time 2017-10-17 11:11
- * @Name P2SHTransaction
+ * @Name Order
  * @Desc:
  */
 @Entity
-@Table(name = "tbl_biz_p2shtransaction")
-public class P2SHTransaction {
+@Table(name = "tbl_biz_order")
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -32,7 +33,13 @@ public class P2SHTransaction {
     @Column(length = 1024)
     private String signTx;
 
-    private int txStatus;
+    private int orderStatus;
+
+    private int orderType;
+
+    private String orderNo;
+
+    private Date createTime;
 
     public int getId() {
         return id;
@@ -82,11 +89,35 @@ public class P2SHTransaction {
         this.fromAddress = fromAddress;
     }
 
-    public int getTxStatus() {
-        return txStatus;
+    public int getOrderStatus() {
+        return orderStatus;
     }
 
-    public void setTxStatus(int txStatus) {
-        this.txStatus = txStatus;
+    public void setOrderStatus(int orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public int getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(int orderType) {
+        this.orderType = orderType;
+    }
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

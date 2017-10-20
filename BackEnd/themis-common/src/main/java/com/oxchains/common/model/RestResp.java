@@ -1,4 +1,4 @@
-package com.oxchains.themisuser.domain;
+package com.oxchains.common.model;
 
 import java.io.Serializable;
 

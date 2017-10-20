@@ -15,6 +15,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "tbl_sys_user")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -31,7 +32,7 @@ public class User {
     @Column(length = 11)
     private String mobilephone;
 
-    @JsonIgnore
+    //@JsonIgnore
     @Column(length = 64)
     private String password;
 

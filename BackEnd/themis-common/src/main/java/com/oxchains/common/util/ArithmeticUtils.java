@@ -1,4 +1,4 @@
-package com.oxchains.themisuser.util;
+package com.oxchains.common.util;
 
 import java.math.BigDecimal;
 

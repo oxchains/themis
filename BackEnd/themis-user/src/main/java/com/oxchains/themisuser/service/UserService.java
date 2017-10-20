@@ -1,12 +1,14 @@
 package com.oxchains.themisuser.service;
 
+import com.oxchains.common.model.RestResp;
+import com.oxchains.common.util.ConstantUtils;
+import com.oxchains.common.util.EncryptUtils;
 import com.oxchains.themisuser.auth.JwtService;
 import com.oxchains.themisuser.dao.UserDao;
-import com.oxchains.themisuser.domain.RespDTO;
-import com.oxchains.themisuser.domain.RestResp;
 import com.oxchains.themisuser.domain.User;
-import com.oxchains.themisuser.util.ConstantUtils;
-import com.oxchains.themisuser.util.EncryptUtils;
+import com.oxchains.themisuser.domain.UserToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -25,6 +27,8 @@ import static com.google.common.collect.Lists.newArrayList;
 @Transactional
 @Service
 public class UserService extends BaseService{
+
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Resource
     private UserDao userDao;
@@ -64,10 +68,10 @@ public class UserService extends BaseService{
         user.setPassword(EncryptUtils.encodeSHA256(user.getPassword()));
         Optional<User> optional=findUser(user);
         return optional.map(u -> {
-            String token=jwtService.generate(user);
-            System.out.println("token = "+token);
+            String token="Bearer "+jwtService.generate(user);
+            logger.info("token = "+token);
             ConstantUtils.USER_TOKEN.put(u.getLoginname(),token);
-            return RestResp.success("登录成功","Bearer "+token);
+            return RestResp.success("登录成功",new UserToken(u.getUsername(),token));
         }).orElse(RestResp.fail("登录失败"));
     }
 

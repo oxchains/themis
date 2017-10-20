@@ -3,7 +3,6 @@ package oxchains.chat.rest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import oxchains.chat.auth.UserToken;
-import oxchains.chat.common.RestResp;
 import oxchains.chat.entity.User;
 import oxchains.chat.service.UserService;
 

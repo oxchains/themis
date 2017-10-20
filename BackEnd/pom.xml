@@ -19,6 +19,7 @@
     <modules>
         <module>themis-user</module>
         <module>themis-chat</module>
+        <module>themis-common</module>
     </modules>
 
     <properties>
@@ -103,6 +104,12 @@
             <groupId>com.google.zxing</groupId>
             <artifactId>javase</artifactId>
             <version>3.3.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.6</version>
         </dependency>
     </dependencies>
     <build>
