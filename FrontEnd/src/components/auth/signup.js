@@ -36,7 +36,6 @@ class Signup extends Component {
         });
     };
     handleFormSubmit({ loginname, mobilephone, email,password }) {
-
         this.setState({ spin:true });
         if(loginname && password && mobilephone)
             this.props.signupUser({ loginname, mobilephone, email,password }, err => {
@@ -81,6 +80,9 @@ class Signup extends Component {
             value: e.target.value,
         })
     }
+    phoneChange(e){
+        console.log(e.target.value)
+    }
 
 
     renderField({ input, label, type, icon, meta: { touched, error } }) {
@@ -99,7 +101,7 @@ class Signup extends Component {
         return (
             <div>
                 <div className="login-box">
-                    <div className="login-logo form-style">
+                    <div className="form-style">
                         <div className=" login-box-msg" style={{fontSize: 24+'px'}}>手机注册</div>
                     </div>
 
@@ -108,7 +110,7 @@ class Signup extends Component {
                         {this.renderAlert()}
                         <form className="form-signin" onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
                             <Field name="loginname" component={this.renderField} type="text"  label="请输入用户名"  />
-                            <Field name="mobilephone" component={this.renderField} type="text"  label="请输入手机号"  />
+                            <Field name="mobilephone" component={this.renderField} type="text"  onChange={this.phoneChange} label="请输入手机号"  />
                             {/*<Field name="userrealname"  component={this.renderField} type="text"  label="请输入验证码"  />*/}
                             <div className="form-style-test">
                                <Field name="email" className="form-test " component={this.renderField} type="text" label="请输入验证码"/>

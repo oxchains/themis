@@ -2,7 +2,7 @@
  * Created by oxchain on 2017/10/18.
  */
 import axios from 'axios';
-import { browserHistory } from 'react-router';
+import { browserHistory ,hashHistory} from 'react-router';
 import {
     ROOT_URL,
     AUTH_USER,
@@ -15,17 +15,18 @@ import {
 /**
  * 登录
  */
-export function signinAction({loginname, password}) {
-    console.log(`点击登录按钮传过来的数据是 ${loginname},${password}`)
+export function signinAction({mobilephone, password}) {
+    console.log(`点击登录按钮传过来的数据是 ${mobilephone},${password}`)
     return function(dispatch) {
-        axios.post(`${ROOT_URL}/login`, { loginname, password})
+        axios.post(`${ROOT_URL}/login`, { mobilephone, password})
             .then(response => {
                 console.log(response)
-                if(response.data.status == 1) {
+                if(response.data.data.status == 1) {
                     localStorage.setItem('token', response.data.data.token);
-                    localStorage.setItem('username', username);
+                    localStorage.setItem('username', loginname);
                     dispatch({type: AUTH_USER});
                     browserHistory.push('/');
+                    // hashHistory.push('/')
                 } else {
                     dispatch(authError(response.data.message));
                 }
