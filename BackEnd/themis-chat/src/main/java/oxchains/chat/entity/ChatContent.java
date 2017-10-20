@@ -1,17 +1,31 @@
 package oxchains.chat.entity;
 
+import javax.persistence.*;
+
 /**
  * Created by xuqi on 2017/10/17.
  */
+@Entity
 public class ChatContent {
-    private Long id;
+    @Id
+    private String id;
     private Long senderId;
     private String chatContent;
     private String createTime;
     private String senderName;
     private Long receiverId;
     private String chatId;
+    @Transient
     private Integer msgType;
+    @Transient
+    private String status;
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public String getChatId() {
         return chatId;
@@ -21,16 +35,16 @@ public class ChatContent {
         this.chatId = chatId;
     }
 
-    public Long getId() {
+    public String getChatContent() {
+        return chatContent;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
-    }
-
-    public String getChatContent() {
-        return chatContent;
     }
 
     public void setChatContent(String chatContent) {
@@ -48,7 +62,7 @@ public class ChatContent {
     @Override
     public String toString() {
         return "ChatContent{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", senderId=" + senderId +
                 ", chatContent='" + chatContent + '\'' +
                 ", createTime='" + createTime + '\'' +
@@ -56,6 +70,7 @@ public class ChatContent {
                 ", receiverId=" + receiverId +
                 ", chatId='" + chatId + '\'' +
                 ", msgType=" + msgType +
+                ", status='" + status + '\'' +
                 '}';
     }
 

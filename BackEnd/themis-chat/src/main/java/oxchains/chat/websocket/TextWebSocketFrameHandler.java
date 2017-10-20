@@ -24,19 +24,19 @@ public class TextWebSocketFrameHandler extends
 								TextWebSocketFrame msg) throws Exception {
 		ChatContent chatContent= (ChatContent) JsonUtil.fromJson(msg.text(), ChatContent.class);
 
-		Map<String,ChannelHandler> channelHandlerMap = JwtService.userChannels.get(chatContent.getReceiverId()+"");
+		Map<String,ChannelHandler> channelHandlerMap = JwtService.userChannels.get(chatContent.getSenderId()+"");
 		String keyIDs = JwtService.getIDS(chatContent.getSenderId().toString(),chatContent.getReceiverId().toString());
-
-		if(chatContent.getMsgType().equals("2")){
+		if(chatContent.getMsgType()==2){
 			ChannelHandler channelHandler = channelHandlerMap.get(keyIDs);
 			if(channelHandler!=null){
 				channelHandler.setLastUseTime(System.currentTimeMillis());
-				channelHandler.getChannel().writeAndFlush(new TextWebSocketFrame("success"));
+				chatContent.setStatus("success");
 			}
 			else{
-				channelHandler.getChannel().writeAndFlush(new TextWebSocketFrame("error"));
+				chatContent.setStatus("error");
 			}
-		}else if(chatContent.getMsgType().equals("1")){
+			channelHandler.getChannel().writeAndFlush(new TextWebSocketFrame(JsonUtil.toJson(chatContent)));
+		}else if(chatContent.getMsgType()==1){
 			chatContent.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 			chatContent.setChatId(keyIDs);
 			String message = JsonUtil.toJson(chatContent).toString();
