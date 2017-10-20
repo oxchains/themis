@@ -1,11 +1,10 @@
 package com.oxchains.themisuser.rest;
 
-import com.oxchains.themisuser.domain.RestResp;
+import com.oxchains.common.model.RestResp;
 import com.oxchains.themisuser.service.AccountService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -17,6 +16,7 @@ import java.util.Arrays;
 @RestController
 @RequestMapping(value = "/account")
 public class AccountController {
+
     @Resource
     private AccountService accountService;
 

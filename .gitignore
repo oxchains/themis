@@ -18,6 +18,9 @@ BackEnd/*.ipr
 BackEnd/themis-user/target
 BackEnd/themis-user/*.iml
 
+BackEnd/themis-common/target
+BackEnd/themis-common/*.iml
+
 ### FrontEnd ###
 FrontEnd/.idea
 node_modules/

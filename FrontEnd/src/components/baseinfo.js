@@ -1,9 +1,6 @@
 /**
  * Created by oxchain on 2017/10/20.
  */
-/**
- * Created by oxchain on 2017/10/20.
- */
 import React, { Component } from 'react';
 
 import { Field } from 'redux-form';
@@ -19,7 +16,7 @@ class Baseinfo extends Component {
 
         return (
             <div>
-                <h1>主页</h1>
+                <h1>基本信息</h1>
             </div>
         );
     }

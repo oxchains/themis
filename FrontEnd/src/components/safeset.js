@@ -1,15 +1,12 @@
 /**
  * Created by oxchain on 2017/10/20.
  */
-/**
- * Created by oxchain on 2017/10/20.
- */
 import React, { Component } from 'react';
 
 import { Field } from 'redux-form';
 import { connect } from 'react-redux';
 
-class Baseinfo extends Component {
+class Safeset extends Component {
     constructor(props) {
         super(props);
         this.state = {}
@@ -19,7 +16,7 @@ class Baseinfo extends Component {
 
         return (
             <div>
-                <h1>主页</h1>
+                <h1>安全设置</h1>
             </div>
         );
     }
@@ -33,4 +30,4 @@ function mapStateToProps(state) {
         errorMessage: state.auth.error
     };
 }
-export default connect(mapStateToProps,{})(Baseinfo);
+export default connect(mapStateToProps,{})(Safeset);

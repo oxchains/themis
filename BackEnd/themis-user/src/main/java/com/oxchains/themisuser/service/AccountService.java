@@ -2,10 +2,11 @@ package com.oxchains.themisuser.service;
 
 import com.oxchains.bitcoin.rpcclient.BitcoinJSONRPCClient;
 import com.oxchains.bitcoin.rpcclient.BitcoindRpcClient;
-import com.oxchains.themisuser.dao.P2SHTransactionDao;
-import com.oxchains.themisuser.domain.P2SHTransaction;
-import com.oxchains.themisuser.domain.RestResp;
-import com.oxchains.themisuser.util.ArithmeticUtils;
+import com.oxchains.common.model.RestResp;
+import com.oxchains.common.util.ArithmeticUtils;
+import com.oxchains.themisuser.dao.OrderDao;
+import com.oxchains.themisuser.domain.Order;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -59,7 +60,7 @@ public class AccountService {
     private BitcoindRpcClient.RawTransaction rawTransaction = null;
 
     @Resource
-    private P2SHTransactionDao p2SHTransactionDao;
+    private OrderDao orderDao;
 
     /**
      * Sign up for an account
@@ -123,40 +124,40 @@ public class AccountService {
 
             sendToScriptHash(accountName, amount);
 
-            P2SHTransaction p2SHTransaction = new P2SHTransaction();
-            p2SHTransaction.setFromAddress(fromAddress);
-            p2SHTransaction.setP2shAddress(P2SH_ADDRESS);
-            p2SHTransaction.setP2shRedeemScript(P2SH_REDEEM_SCRIPT);
-            p2SHTransaction.setSignTx(SIGNED_TX);
-            p2SHTransaction.setRecvAddress(recvAddress);
-            p2SHTransaction.setTxStatus(2);
+            Order order = new Order();
+            order.setFromAddress(fromAddress);
+            order.setP2shAddress(P2SH_ADDRESS);
+            order.setP2shRedeemScript(P2SH_REDEEM_SCRIPT);
+            order.setSignTx(SIGNED_TX);
+            order.setRecvAddress(recvAddress);
+            order.setOrderStatus(2);
 
-            p2SHTransaction = p2SHTransactionDao.save(p2SHTransaction);
-            return RestResp.success(p2SHTransaction);
+            order = orderDao.save(order);
+            return RestResp.success(order);
         } catch (Exception e) {
             logger.error(e.getMessage());
             return RestResp.fail(e.getMessage());
         }
     }
 
-    public RestResp confirmTransaction(String recvAddress, double amount, List<String> signPrvKeys,int type) {//type 0:取消,1:确认
+    public RestResp confirmTransaction(String recvAddress, double amount, List<String> signPrvKeys, int type) {//type 0:取消,1:确认
         this.signPrvKeys = signPrvKeys;
 
         try {
-            P2SHTransaction p2SHTransaction = p2SHTransactionDao.findByRecvAddress(recvAddress);
-            P2SH_ADDRESS = p2SHTransaction.getP2shAddress();
-            P2SH_REDEEM_SCRIPT = p2SHTransaction.getP2shRedeemScript();
-            SIGNED_TX = p2SHTransaction.getSignTx();
-            rawTransaction = client.decodeRawTransaction(p2SHTransaction.getSignTx());
+            Order order = orderDao.findByRecvAddress(recvAddress);
+            P2SH_ADDRESS = order.getP2shAddress();
+            P2SH_REDEEM_SCRIPT = order.getP2shRedeemScript();
+            SIGNED_TX = order.getSignTx();
+            rawTransaction = client.decodeRawTransaction(order.getSignTx());
             if(type == 0){
-                sendToUser(p2SHTransaction.getFromAddress(), amount);
-                p2SHTransaction.setTxStatus(0);
-                p2SHTransactionDao.save(p2SHTransaction);
+                sendToUser(order.getFromAddress(), amount);
+                order.setOrderStatus(0);
+                orderDao.save(order);
                 return RestResp.success("交易取消成功");
             }else {
                 sendToUser(recvAddress, amount);
-                p2SHTransaction.setTxStatus(1);
-                p2SHTransactionDao.save(p2SHTransaction);
+                order.setOrderStatus(1);
+                orderDao.save(order);
                 return RestResp.success("交易成功");
             }
         } catch (Exception e) {

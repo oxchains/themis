@@ -12,12 +12,12 @@
 {
 
 }
-.login-box
-{
-    position: relative;
-    /*left:100px;*/
-    top:100px;
-}
+/*.login-box*/
+/*{*/
+    /*position: relative;*/
+    /*!*left:100px;*!*/
+    /*top:50px;*/
+/*}*/
 .input
 {
     width: 300px;
@@ -81,7 +81,7 @@
 .form-login
 {
     display:block;
-    width:25%!important;
+    width:95%!important;
     height: 40px;
     margin-bottom: 15px;
     border-radius:3px;
@@ -123,7 +123,8 @@
 }
 .login-box-msg
 {
-  margin-bottom: 35px;
+  /*margin-bottom: 15px;*/
+    color: #444444;
 }
 .time-color
 {
@@ -136,4 +137,92 @@
     background-color: #444444;
     border:2px solid #444444;
     color: white;
+}
+.mainbar
+{
+    width: 60%;
+    margin: 50px auto;
+}
+.sildbar
+{
+    list-style: none;
+}
+.loginul
+{
+    list-style: none;
+    width: 100%;
+    padding-left: 0;
+    text-align: center;
+}
+.liheight
+{
+    width: 60%;
+    background-color: #bfbfbf;
+    padding: 11px 20px;
+    color: white;
+    margin-bottom: 3px;
+    text-align: center;
+    border-radius: 3px;
+
+}
+.liheight:active
+{
+    background-color: #444444;
+}
+.tab-title-item.active{
+    background-color: #444444;
+    color: #fff;
+}
+
+.login-title-item.active{
+    color: #444444;
+    cursor: pointer;
+}
+
+.tab-content-item{
+    display: none;
+}
+.tab-content-item.active{
+    display: block;
+}
+
+.baswinfo {
+    /*background-color: red;*/
+
+}
+.safeset {
+    /*background-color: yellow;*/
+}
+.trust {
+    /*background-color: blue;*/
+}
+.loginli
+{
+    color: #dddddd;
+    float: left;
+    width: 50%;
+    font-size: 25px;
+    padding-top: 15px;
+    padding-bottom: 5px;
+    margin-bottom: 40px;
+   cursor: pointer;
+}
+.loginli:nth-child(1)
+{
+    border-right: 1px solid #bfbfbf;
+}
+.clear
+{
+    clear: both;
+}
+.forgetpwd
+{
+    color: #444444;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 15px;
+}
+.forgetpwd:hover,.forgetpwd:active
+{
+    color: #444444;
 }

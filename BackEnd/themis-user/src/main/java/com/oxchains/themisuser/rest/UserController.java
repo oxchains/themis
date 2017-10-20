@@ -1,11 +1,12 @@
 package com.oxchains.themisuser.rest;
 
-import com.oxchains.themisuser.domain.RestResp;
+import com.oxchains.common.model.RestResp;
+import com.oxchains.common.util.VerifyCodeUtils;
 import com.oxchains.themisuser.domain.User;
 import com.oxchains.themisuser.service.UserService;
-import com.oxchains.themisuser.util.VerifyCodeUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -27,7 +28,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/login")
-    public RestResp login(User user){
+    public RestResp login(@RequestBody User user){
         return userService.login(user);
     }
 

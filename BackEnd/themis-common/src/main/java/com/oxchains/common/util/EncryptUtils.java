@@ -1,4 +1,4 @@
-package com.oxchains.themisuser.util;
+package com.oxchains.common.util;
 
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;

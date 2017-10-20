@@ -1,6 +1,10 @@
 /**
  * Created by oxchain on 2017/10/17.
  */
+import {
+    AUTH_USER
+} from './actions/types';
+
 import React from 'react'
 import { createStore, applyMiddleware, compose } from 'redux';
 import ReactDOM from 'react-dom';
@@ -13,7 +17,9 @@ import {Route, BrowserRouter, Switch, Redirect} from 'react-router-dom';
 import Header from  './components/common/header';
 import Singin from  './components/auth/signin';
 import Singup from  './components/auth/signup';
+import Usercenter from './components/usercenter';
 import Home from './components/home';
+
 const createStoreWithMiddleware = compose(
     applyMiddleware(reduxThunk),
     window.devToolsExtension ? window.devToolsExtension() : f => f
@@ -27,7 +33,7 @@ if (token) {
 }
 
 ReactDOM.render(
-    <Provider store={store}>
+    <Provider store={store} >
     <BrowserRouter>
         <div>
             <main>
@@ -36,7 +42,8 @@ ReactDOM.render(
                     <Route path="/signin" component={Singin}/>
                     <Route path="/signup" component={Singup}/>
                     {/*<Route path="/signout" component={Signout} />*/}
-                    {/*<Route path="/" component={Home}/>*/}
+                    <Route path="/usercenter" component={Usercenter}/>
+                    <Route path="/" component={Home}/>
                 </Switch>
             </main>
         </div>
