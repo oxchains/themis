@@ -1,5 +1,6 @@
-package com.oxchains.themisuser.service;
+package com.oxchains.themis.user.service;
 
+<<<<<<< HEAD:BackEnd/themis-user/src/main/java/com/oxchains/themisuser/service/UserService.java
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.util.ConstantUtils;
 import com.oxchains.themis.common.util.EncryptUtils;
@@ -7,6 +8,15 @@ import com.oxchains.themisuser.auth.JwtService;
 import com.oxchains.themisuser.dao.UserDao;
 import com.oxchains.themisuser.domain.User;
 import com.oxchains.themisuser.domain.UserToken;
+=======
+import com.oxchains.common.model.RestResp;
+import com.oxchains.common.util.ConstantUtils;
+import com.oxchains.common.util.EncryptUtils;
+import com.oxchains.themis.user.auth.JwtService;
+import com.oxchains.themis.user.dao.UserDao;
+import com.oxchains.themis.user.domain.User;
+import com.oxchains.themis.user.domain.UserToken;
+>>>>>>> ffe9dab4d05c462f166e3295cebed61ff970bd49:BackEnd/themis-user/src/main/java/com/oxchains/themis/user/service/UserService.java
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

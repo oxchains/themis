@@ -1,7 +1,7 @@
-package com.oxchains.themisuser.service;
+package com.oxchains.themis.user.service;
 
-import com.oxchains.themisuser.dao.OrderDao;
-import com.oxchains.themisuser.domain.Order;
+import com.oxchains.themis.user.dao.OrderDao;
+import com.oxchains.themis.user.domain.Order;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

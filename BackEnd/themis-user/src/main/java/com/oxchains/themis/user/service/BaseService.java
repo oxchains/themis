@@ -1,11 +1,11 @@
-package com.oxchains.themisuser.service;
+package com.oxchains.themis.user.service;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
- * @Author oxchains
+ * @Author ccl
  * @Time 2017-10-12 17:31
  * @Name BaseService
  * @Desc:

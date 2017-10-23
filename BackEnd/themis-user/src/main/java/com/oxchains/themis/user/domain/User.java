@@ -1,7 +1,4 @@
-package com.oxchains.themisuser.domain;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+package com.oxchains.themis.user.domain;
 
 import javax.persistence.*;
 

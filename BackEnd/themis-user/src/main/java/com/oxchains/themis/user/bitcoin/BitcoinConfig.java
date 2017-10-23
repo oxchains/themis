@@ -1,4 +1,4 @@
-package com.oxchains.themisuser.bitcoin;
+package com.oxchains.themis.user.bitcoin;
 
 /**
  * @Author ccl

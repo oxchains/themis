@@ -1,9 +1,16 @@
-package com.oxchains.themisuser.rest;
+package com.oxchains.themis.user.rest;
 
+<<<<<<< HEAD:BackEnd/themis-user/src/main/java/com/oxchains/themisuser/rest/UserController.java
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.util.VerifyCodeUtils;
 import com.oxchains.themisuser.domain.User;
 import com.oxchains.themisuser.service.UserService;
+=======
+import com.oxchains.common.model.RestResp;
+import com.oxchains.common.util.VerifyCodeUtils;
+import com.oxchains.themis.user.domain.User;
+import com.oxchains.themis.user.service.UserService;
+>>>>>>> ffe9dab4d05c462f166e3295cebed61ff970bd49:BackEnd/themis-user/src/main/java/com/oxchains/themis/user/rest/UserController.java
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

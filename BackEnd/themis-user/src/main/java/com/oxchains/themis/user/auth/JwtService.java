@@ -1,7 +1,7 @@
-package com.oxchains.themisuser.auth;
+package com.oxchains.themis.user.auth;
 
-import com.oxchains.themisuser.dao.UserDao;
-import com.oxchains.themisuser.domain.User;
+import com.oxchains.themis.user.dao.UserDao;
+import com.oxchains.themis.user.domain.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.SignatureAlgorithm;

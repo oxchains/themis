@@ -1,7 +1,12 @@
-package com.oxchains.themisuser.rest;
+package com.oxchains.themis.user.rest;
 
+<<<<<<< HEAD:BackEnd/themis-user/src/main/java/com/oxchains/themisuser/rest/AccountController.java
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themisuser.service.AccountService;
+=======
+import com.oxchains.common.model.RestResp;
+import com.oxchains.themis.user.service.AccountService;
+>>>>>>> ffe9dab4d05c462f166e3295cebed61ff970bd49:BackEnd/themis-user/src/main/java/com/oxchains/themis/user/rest/AccountController.java
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;

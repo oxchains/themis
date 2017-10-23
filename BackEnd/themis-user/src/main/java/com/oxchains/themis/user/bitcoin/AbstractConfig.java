@@ -1,4 +1,4 @@
-package com.oxchains.themisuser.bitcoin;
+package com.oxchains.themis.user.bitcoin;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

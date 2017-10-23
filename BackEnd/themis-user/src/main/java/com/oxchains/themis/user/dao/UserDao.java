@@ -1,7 +1,7 @@
-package com.oxchains.themisuser.dao;
+package com.oxchains.themis.user.dao;
 
 
-import com.oxchains.themisuser.domain.User;
+import com.oxchains.themis.user.domain.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
