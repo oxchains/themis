@@ -12,7 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+<<<<<<< HEAD:BackEnd/themis-user/src/main/java/com/oxchains/themisuser/auth/AuthError.java
+import static com.oxchains.common.model.RestResp.fail;
+=======
 import static com.oxchains.themis.common.model.RestResp.fail;
+>>>>>>> b54ef991ebf23b343ec4f70ab27edc8e081f0b78:BackEnd/themis-user/src/main/java/com/oxchains/themis/user/auth/AuthError.java
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 

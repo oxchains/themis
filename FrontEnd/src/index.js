@@ -15,10 +15,17 @@ import reducers from './reducers';
 
 import {Route, BrowserRouter, Switch, Redirect} from 'react-router-dom';
 import Header from  './components/common/header';
+import Footer from  './components/common/footer';
 import Singin from  './components/auth/signin';
 import Singup from  './components/auth/signup';
 import Usercenter from './components/usercenter';
+import Buybtc from './components/buybtc';
+import Sellbtc from './components/sellbtc';
+import Selldetail from './components/selldetail';
+import Myadvert from './components/myadvert';
 import Home from './components/home';
+import Releaseadvert from './components/releaseadvert';
+
 
 const createStoreWithMiddleware = compose(
     applyMiddleware(reduxThunk),
@@ -43,8 +50,14 @@ ReactDOM.render(
                     <Route path="/signup" component={Singup}/>
                     {/*<Route path="/signout" component={Signout} />*/}
                     <Route path="/usercenter" component={Usercenter}/>
+                    <Route path="/releaseadvert" component={Releaseadvert}/>
+                    <Route path="/buybtc" component={Buybtc}/>
+                    <Route path="/sellbtc" component={Sellbtc}/>
+                    <Route path="/selldetail" component={Selldetail}/>
+                    <Route path="/myadvert" component={Myadvert}/>
                     <Route path="/" component={Home}/>
                 </Switch>
+                {/*<Footer/>*/}
             </main>
         </div>
     </BrowserRouter>
