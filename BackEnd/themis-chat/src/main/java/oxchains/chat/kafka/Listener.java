@@ -8,6 +8,7 @@ import oxchains.chat.common.JsonUtil;
 import oxchains.chat.entity.ChatContent;
 import oxchains.chat.repo.MongoRepo;
 
+import javax.annotation.Resource;
 import java.util.Optional;
 
 /**
@@ -15,7 +16,7 @@ import java.util.Optional;
  */
 @Component
 public class Listener {
-    @Autowired
+    @Resource
     private MongoRepo mongoRepo;
     public Listener(){};
 
