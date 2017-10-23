@@ -1,8 +1,8 @@
-package com.oxchains.notice.rest;
+package com.oxchains.themis.notice.rest;
 
-import com.oxchains.notice.common.RestResp;
-import com.oxchains.notice.domain.Notice;
-import com.oxchains.notice.service.NoticeService;
+import com.oxchains.themis.notice.common.RestResp;
+import com.oxchains.themis.notice.domain.Notice;
+import com.oxchains.themis.notice.service.NoticeService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -34,6 +34,15 @@ public class NoticeController {
     @GetMapping(value = "/queryAll")
     public RestResp queryAllNotice(){
         return noticeService.queryAllNotice();
+    }
+
+    /**
+     * 查询所有非交易状态公告
+     * @return
+     */
+    @GetMapping(value = "/queryUnDone")
+    public RestResp queryAllUnDone(){
+        return noticeService.querAllUnDone();
     }
 
     /**

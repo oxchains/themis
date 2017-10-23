@@ -1,4 +1,4 @@
-package com.oxchains.notice.domain;
+package com.oxchains.themis.notice.domain;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -55,7 +55,7 @@ public class Notice {
     private Integer searchType;
 
     @Column(name = "txstatus")
-    private Integer txStatus = 0;           // 交易状态，默认0 是非交易
+    private Integer txStatus = 0;           // 交易状态，默认0:非交易,1:交易进行,2:交易完成
 
     public Notice(){}
 }

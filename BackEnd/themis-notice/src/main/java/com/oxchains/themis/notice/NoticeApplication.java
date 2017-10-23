@@ -1,4 +1,4 @@
-package com.oxchains.notice;
+package com.oxchains.themis.notice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

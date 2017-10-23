@@ -1,15 +1,12 @@
-package com.oxchains.notice.service;
+package com.oxchains.themis.notice.service;
 
-import com.oxchains.notice.common.RestResp;
-import com.oxchains.notice.dao.NoticeDao;
-import com.oxchains.notice.domain.Notice;
-import org.hibernate.hql.internal.ast.tree.RestrictableStatement;
+import com.oxchains.themis.notice.common.RestResp;
+import com.oxchains.themis.notice.dao.NoticeDao;
+import com.oxchains.themis.notice.domain.Notice;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.swing.text.html.Option;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Created by Luo_xuri on 2017/10/20.
@@ -38,15 +35,22 @@ public class NoticeService {
      */
     public RestResp broadcastNotice(Notice notice){
         try {
-            Optional<Notice> optional_1 = noticeDao.findByLoginnameAndNoticeType(notice.getLoginname(), notice.getNoticeType());
-            Optional<Notice> optional_2 = noticeDao.findByLoginnameAndNoticeTypeAndTxStatus(notice.getLoginname(), notice.getNoticeType(), 1);
-            if (optional_2.isPresent()){
-                return RestResp.fail("已经有一条此类型公告且正在交易");
-            } else if (optional_1.isPresent()) {
-                return RestResp.fail("已经有一条此类型公告");
-            } else {
+            List<Notice> noticeListUnDone = noticeDao.findByLoginnameAndNoticeTypeAndTxStatus(notice.getLoginname(), notice.getNoticeType(), 0);
+            List<Notice> noticeListDoing = noticeDao.findByLoginnameAndNoticeTypeAndTxStatus(notice.getLoginname(), notice.getNoticeType(), 1);
+            List<Notice> noticeListDone = noticeDao.findByLoginnameAndNoticeTypeAndTxStatus(notice.getLoginname(), notice.getNoticeType(), 2);
+
+            if (!noticeListDone.isEmpty() && noticeListDoing.isEmpty()){
                 Notice n = noticeDao.save(notice);
                 return RestResp.success("操作成功", n);
+            }else {
+                if (!noticeListDoing.isEmpty()){
+                    return RestResp.fail("已经有一条此类型公告且正在交易");
+                } else if (!noticeListUnDone.isEmpty()) {
+                    return RestResp.fail("已经有一条此类型公告");
+                } else {
+                    Notice n = noticeDao.save(notice);
+                    return RestResp.success("操作成功", n);
+                }
             }
         } catch (Exception e){
             e.printStackTrace();
@@ -66,6 +70,19 @@ public class NoticeService {
             e.printStackTrace();
         }
         return RestResp.fail("操作失败");
+    }
+
+    public RestResp querAllUnDone(){
+        try {
+            List<Notice> noticeList = noticeDao.findByTxStatus(0);
+            if (!noticeList.isEmpty()){
+                return RestResp.success("操作成功", noticeList);
+            }else {
+                return RestResp.fail("操作失败");
+            }
+        }catch (Exception e) {
+            return RestResp.fail("操作失败", e.getMessage());
+        }
     }
 
     /**

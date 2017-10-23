@@ -1,4 +1,4 @@
-package com.oxchains.notice.common;
+package com.oxchains.themis.notice.common;
 
 import java.io.Serializable;
 

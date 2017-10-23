@@ -1,11 +1,10 @@
-package com.oxchains.notice.dao;
+package com.oxchains.themis.notice.dao;
 
-import com.oxchains.notice.domain.Notice;
+import com.oxchains.themis.notice.domain.Notice;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by Luo_xuri on 2017/10/20.
@@ -14,8 +13,8 @@ import java.util.Optional;
 public interface NoticeDao extends CrudRepository<Notice,Long> {
 
     // 发布公告需要提前判断的接口
-    Optional<Notice> findByLoginnameAndNoticeType(String loginName, String noticeType);
-    Optional<Notice> findByLoginnameAndNoticeTypeAndTxStatus(String loginName, String noticeType, int txStatus);
+    List<Notice> findByLoginnameAndNoticeType(String loginName, String noticeType);
+    List<Notice> findByLoginnameAndNoticeTypeAndTxStatus(String loginName, String noticeType, int txStatus);
 
     // 搜索广告用到的接口
     List<Notice> findByNoticeType(String noticeType);
@@ -26,4 +25,7 @@ public interface NoticeDao extends CrudRepository<Notice,Long> {
     List<Notice> findByLocationAndPayTypeAndNoticeType(String location, String payType, String noticeType);
     List<Notice> findByCurrencyAndPayTypeAndNoticeType(String currency, String payType, String noticeType);
     List<Notice> findByLocationAndCurrencyAndPayTypeAndNoticeType(String location, String currency, String payType, String noticeType);
+
+    // 查询所有未完成订单
+    List<Notice> findByTxStatus(Integer txStatus);
 }
