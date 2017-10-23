@@ -5,6 +5,8 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import oxchains.chat.common.ChannelHandler;
 import oxchains.chat.common.ChatUtil;
 
@@ -13,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private final String wsUri;
+    private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     public HttpRequestHandler(String wsUri) {
         this.wsUri = wsUri;

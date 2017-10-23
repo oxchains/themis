@@ -5,6 +5,8 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import oxchains.chat.common.CustomThreadFactory;
 import oxchains.chat.common.KeepAliveChannelThread;
@@ -16,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 import static java.util.concurrent.Executors.newScheduledThreadPool;
 
 public class WebSocketServer implements Runnable{
+    private final Logger LOG = LoggerFactory.getLogger(this.getClass());
     private KafkaService kafkaService;
     private Integer port;
     public WebSocketServer(KafkaService kafkaService,Integer port){
@@ -45,7 +48,7 @@ public class WebSocketServer implements Runnable{
             ChannelFuture f = b.bind(port).sync();
             f.channel().closeFuture().sync();
         }catch (Exception e){
-            e.printStackTrace();
+            LOG.debug("websocket start faild :",e.getMessage());
         }
         finally {
             workerGroup.shutdownGracefully();

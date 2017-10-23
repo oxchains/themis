@@ -1,5 +1,7 @@
 package oxchains.chat.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import oxchains.chat.common.ChatUtil;
@@ -17,7 +19,7 @@ import java.util.List;
 public class ChatService {
     @Autowired
     private MongoRepo mongoRepo;
-
+    private final Logger LOG = LoggerFactory.getLogger(this.getClass());
     @Resource
     private UserRepo userRepo;
 
@@ -39,7 +41,7 @@ public class ChatService {
             return mongoRepo.findChatContentByChatId(keyIDs);
         }
         catch (Exception e){
-            e.printStackTrace();
+            LOG.debug("faild get chat history :",e.getMessage());
         }
         return null;
     }

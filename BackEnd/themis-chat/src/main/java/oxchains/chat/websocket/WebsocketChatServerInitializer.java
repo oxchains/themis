@@ -7,13 +7,16 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import oxchains.chat.service.KafkaService;
 
 public class WebsocketChatServerInitializer extends
         ChannelInitializer<SocketChannel> {
+	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 	private KafkaService kafkaService;
-	public WebsocketChatServerInitializer(@Autowired KafkaService kafkaService){
+	public WebsocketChatServerInitializer(KafkaService kafkaService){
 		this.kafkaService = kafkaService;
 	}
 	@Override
