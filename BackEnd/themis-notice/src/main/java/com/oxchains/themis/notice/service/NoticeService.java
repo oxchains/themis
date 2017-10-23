@@ -58,6 +58,34 @@ public class NoticeService {
         return RestResp.fail("操作失败");
     }
 
+    public RestResp queryPartNotice(){
+        try {
+            List<Notice> partList = new ArrayList<>();
+            List<Notice> buyNoticeList = noticeDao.findByNoticeType("购买");
+            List<Notice> sellNoticeList = noticeDao.findByNoticeType("出售");
+
+            int buySize = new Random().nextInt(buyNoticeList.size() - 2);
+            int sellSize = new Random().nextInt(sellNoticeList.size() - 2);
+
+            if (buyNoticeList.size() > 2 && sellNoticeList.size() > 2){
+                partList.addAll(buyNoticeList.subList(buySize, buySize + 2));
+                partList.addAll(sellNoticeList.subList(sellSize, sellSize + 2));
+            }else if (buyNoticeList.size() < 2 && sellNoticeList.size() > 2){
+                partList.addAll(buyNoticeList);
+                partList.addAll(sellNoticeList.subList(sellSize, sellSize + 2));
+            }else if (buyNoticeList.size() > 2 && sellNoticeList.size() < 2){
+                partList.addAll(buyNoticeList.subList(buySize, buySize + 2));
+                partList.addAll(sellNoticeList);
+            }else {
+                partList.addAll(buyNoticeList);
+                partList.addAll(sellNoticeList);
+            }
+            return RestResp.success("操作成功", partList);
+        }catch (Exception e){
+            return RestResp.fail("操作失败", e.getMessage());
+        }
+    }
+
     public RestResp queryAllNotice(){
         try {
             Iterable<Notice> it = noticeDao.findAll();
@@ -126,5 +154,14 @@ public class NoticeService {
             e.printStackTrace();
         }
         return RestResp.fail("操作失败");
+    }
+
+    public RestResp querMeNotice(String loginname, String noticeType){
+        try {
+            List<Notice> noticeList = noticeDao.findByLoginnameAndNoticeType(loginname, noticeType);
+            return RestResp.success("操作成功", noticeList);
+        }catch (Exception e){
+            return RestResp.fail("操作失败", e.getMessage());
+        }
     }
 }
