@@ -7,6 +7,8 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.util.concurrent.GlobalEventExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import oxchains.chat.common.ChannelHandler;
 import oxchains.chat.common.JsonUtil;
@@ -19,9 +21,10 @@ import java.util.Date;
 import java.util.Map;
 public class TextWebSocketFrameHandler extends
 		SimpleChannelInboundHandler<TextWebSocketFrame> {
+	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
 	private KafkaService kafkaService;
-	public TextWebSocketFrameHandler(@Autowired KafkaService kafkaService){
+	public TextWebSocketFrameHandler(KafkaService kafkaService){
 		this.kafkaService = kafkaService;
 	}
 

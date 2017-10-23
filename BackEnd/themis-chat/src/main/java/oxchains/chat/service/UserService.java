@@ -1,6 +1,8 @@
 package oxchains.chat.service;
 
 import org.apache.commons.collections.IteratorUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import oxchains.chat.auth.JwtService;
 import oxchains.chat.auth.UserToken;
@@ -16,6 +18,7 @@ import java.util.List;
  */
 @Service
 public class UserService {
+    private final Logger LOG = LoggerFactory.getLogger(this.getClass());
     private UserRepo userRepo;
     private UserTokenRepo userTokenRepo;
     private JwtService jwtService;
@@ -30,12 +33,19 @@ public class UserService {
        return userRepo.findUserByUsernameAndPassword(username, EncryptUtils.encodeSHA256(password));
     };
     public UserToken tokenForUser(User user){
-        User users = userRepo.findUserByUsernameAndPassword(user.getUsername(), EncryptUtils.encodeSHA256(user.getPassword()));
-        if(users==null){
-            return null;
+        User users = null;
+        UserToken userToken =null;
+        try {
+            users = userRepo.findUserByUsernameAndPassword(user.getUsername(), EncryptUtils.encodeSHA256(user.getPassword()));
+            if(users==null){
+                return null;
+            }
+            userToken = new UserToken(users, jwtService.generate(users));
+            userTokenRepo.save(userToken);
+        }catch (Exception e){
+             LOG.debug("faild generate token:",e.getMessage());
         }
-        UserToken userToken = new UserToken(users, jwtService.generate(users));
-        userTokenRepo.save(userToken);
+
         return userToken;
     }
 

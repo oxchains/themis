@@ -1,6 +1,8 @@
 package oxchains.chat.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -8,6 +10,7 @@ import oxchains.chat.common.JsonUtil;
 import oxchains.chat.entity.ChatContent;
 import oxchains.chat.repo.MongoRepo;
 
+import javax.annotation.Resource;
 import java.util.Optional;
 
 /**
@@ -15,18 +18,24 @@ import java.util.Optional;
  */
 @Component
 public class Listener {
-    @Autowired
+    private final Logger LOG = LoggerFactory.getLogger(this.getClass());
+    @Resource
     private MongoRepo mongoRepo;
     public Listener(){};
 
     @KafkaListener(topics = {"chatContent"})
     public void listen(ConsumerRecord<?, ?> record) {
-        Optional<?> kafkaMessage = Optional.ofNullable(record.value());
-        if (kafkaMessage.isPresent()) {
-            Object message = kafkaMessage.get();
-            ChatContent chatContent = (ChatContent) JsonUtil.fromJson((String)message, ChatContent.class);
-            mongoRepo.save(chatContent);
+        try {
+            Optional<?> kafkaMessage = Optional.ofNullable(record.value());
+            if (kafkaMessage.isPresent()) {
+                Object message = kafkaMessage.get();
+                ChatContent chatContent = (ChatContent) JsonUtil.fromJson((String)message, ChatContent.class);
+                mongoRepo.save(chatContent);
+            }
+        }catch (Exception e){
+         LOG.debug("faild to save chatContent to mongo",e.getMessage());
         }
+
     }
 
 }

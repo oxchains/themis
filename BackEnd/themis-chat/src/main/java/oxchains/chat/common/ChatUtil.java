@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author aiet
  */
 public class ChatUtil {
-      static final String SECRET = "ThisIsASecret";
+    static final String SECRET = "ThisIsASecret";
     public static Map<String,Map<String,ChannelHandler>> userChannels = new ConcurrentHashMap<>();
     public static User parse(String token) {
         try {
