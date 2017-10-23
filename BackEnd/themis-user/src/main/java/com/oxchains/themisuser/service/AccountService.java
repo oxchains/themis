@@ -2,9 +2,9 @@ package com.oxchains.themisuser.service;
 
 import com.oxchains.bitcoin.rpcclient.BitcoinJSONRPCClient;
 import com.oxchains.bitcoin.rpcclient.BitcoindRpcClient;
-import com.oxchains.common.model.AddressKeys;
-import com.oxchains.common.model.RestResp;
-import com.oxchains.common.util.ArithmeticUtils;
+import com.oxchains.themis.common.model.AddressKeys;
+import com.oxchains.themis.common.model.RestResp;
+import com.oxchains.themis.common.util.ArithmeticUtils;
 import com.oxchains.themisuser.dao.OrderDao;
 import com.oxchains.themisuser.domain.Order;
 

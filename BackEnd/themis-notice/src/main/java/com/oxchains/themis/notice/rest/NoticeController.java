@@ -28,6 +28,15 @@ public class NoticeController {
     }
 
     /**
+     * 随机查询两条购买公告、两条出售公告
+     * @return
+     */
+    @GetMapping(value = "/queryPart")
+    public RestResp queryPartNotice(){
+        return noticeService.queryPartNotice();
+    }
+
+    /**
      * 查询所有公告
      * @return
      */
@@ -59,5 +68,16 @@ public class NoticeController {
             // 不是0 就是搜用户，暂时都是搜公告
             return noticeService.searchNotice(notice);
         }
+    }
+
+    /**
+     * 查询自己的公告
+     * @param loginname
+     * @param noticeType
+     * @return
+     */
+    @GetMapping(value = "/queryMe")
+    public RestResp queryMeNotice(@RequestParam String loginname, @RequestParam String noticeType){
+        return noticeService.querMeNotice(loginname, noticeType);
     }
 }

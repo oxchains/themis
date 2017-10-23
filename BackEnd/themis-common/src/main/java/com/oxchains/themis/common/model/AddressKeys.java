@@ -1,4 +1,4 @@
-package com.oxchains.common.model;
+package com.oxchains.themis.common.model;
 
 /**
  * @Author ccl

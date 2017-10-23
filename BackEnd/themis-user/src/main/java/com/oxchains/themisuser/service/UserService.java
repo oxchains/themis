@@ -1,8 +1,8 @@
 package com.oxchains.themisuser.service;
 
-import com.oxchains.common.model.RestResp;
-import com.oxchains.common.util.ConstantUtils;
-import com.oxchains.common.util.EncryptUtils;
+import com.oxchains.themis.common.model.RestResp;
+import com.oxchains.themis.common.util.ConstantUtils;
+import com.oxchains.themis.common.util.EncryptUtils;
 import com.oxchains.themisuser.auth.JwtService;
 import com.oxchains.themisuser.dao.UserDao;
 import com.oxchains.themisuser.domain.User;

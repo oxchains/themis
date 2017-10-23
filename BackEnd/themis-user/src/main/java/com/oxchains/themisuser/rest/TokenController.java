@@ -1,6 +1,6 @@
 package com.oxchains.themisuser.rest;
 
-import com.oxchains.common.model.RestResp;
+import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themisuser.auth.JwtService;
 import com.oxchains.themisuser.domain.User;
 import com.oxchains.themisuser.service.UserService;

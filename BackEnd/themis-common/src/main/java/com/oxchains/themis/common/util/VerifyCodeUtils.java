@@ -1,4 +1,4 @@
-package com.oxchains.common.util;
+package com.oxchains.themis.common.util;
 
 import java.util.Random;
 
