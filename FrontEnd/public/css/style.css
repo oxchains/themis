@@ -1,23 +1,23 @@
-.header
+.headerwidth
 {
     width: 100%;
-    height: 50px;
-    background-color: black;
-    color: white;
-    text-align: center;
-    padding-top: 10px;
+    height: 80px;
+    /*position: fixed;*/
+    background-color: #F8F8F8;
+    /*top:0px;*/
+
+}
+.header
+{
+    width: 70%;
+    margin: 0 auto;
+    padding-top: 15px;
     font-size: 20px;
 }
 .logincolor
 {
 
 }
-/*.login-box*/
-/*{*/
-    /*position: relative;*/
-    /*!*left:100px;*!*/
-    /*top:50px;*/
-/*}*/
 .input
 {
     width: 300px;
@@ -47,7 +47,24 @@
         width: 60%;
         margin: 50px auto;
     }
-    .sildbar
+    .sildbar,.titleul
+    {
+        list-style: none;
+    }
+}
+@media screen and (max-width: 796px)
+{
+    .form-signin
+    {
+        display:block;
+        width:100%!important;
+    }
+    .mainbar
+    {
+        width: 60%;
+        margin: 50px auto;
+    }
+    .sildbar,.titleul
     {
         list-style: none;
     }
@@ -64,7 +81,9 @@
         width: 100%;
         margin: 10px auto;
     }
-    .sildbar{
+    .sildbar,.titleul
+    {
+        list-style: none;
         padding: 0;
     }
 
@@ -81,7 +100,9 @@
         width: 100%;
         margin: 10px auto;
     }
-    .sildbar{
+    .sildbar,.titleul
+    {
+        list-style: none;
         padding: 0;
     }
 }
@@ -103,6 +124,8 @@
     border-radius:3px;
     background-color: #444444;
     color: white;
+    border:1px solid #444444;
+
 }
 .form-login
 {
@@ -145,7 +168,6 @@
 }
 .login-box-msg
 {
-  /*margin-bottom: 15px;*/
     color: #444444;
 }
 .time-color
@@ -160,11 +182,6 @@
     border:2px solid #444444;
     color: white;
 }
-/*.mainbar*/
-/*{*/
-    /*width: 60%;*/
-    /*margin: 50px auto;*/
-/*}*/
 .checkbox-width
 {
     width: 16px;
@@ -187,7 +204,7 @@
     margin-bottom: 3px;
     text-align: center;
     border-radius: 3px;
-
+    cursor: pointer;
 }
 .liheight:active
 {
@@ -196,10 +213,16 @@
 .tab-title-item.active{
     background-color: #444444;
     color: #fff;
+    cursor: pointer;
 }
 
 .login-title-item.active{
     color: #444444;
+    cursor: pointer;
+}
+.ad-title-item.active
+{
+    border-bottom: 1px solid #BBBBBB;
     cursor: pointer;
 }
 
@@ -276,6 +299,7 @@
 {
     font-size: 16px;
     display: inline-block;
+    margin: 20px 0;
 }
 .tipspan
 {
@@ -291,14 +315,134 @@
 .buytype>li
 {
     float: left;
-    background-color: #444444;
+    background-color: #dddddd;
     padding: 5px 10px;
     color: white;
     margin-right: 10px;
     border-radius: 3px;
     font-size: 13px;
+    border:1px solid #BBBBBB;
 }
 .display
 {
     display: block;
+}
+.slectoption
+{
+  width: 20%;
+    height: 40px;
+    background-color: #fff;
+    color: grey;
+}
+.text-content
+{
+    font-size: 11px;
+    padding: 0 5px;
+    color: grey;
+}
+.form-apply,.form-apply:hover,.form-apply:active
+{
+    width: 20%;
+    background-color: #444444;
+    color: white;
+    margin-top: 20px;
+    border:1px solid #444444;
+    height: 40px;
+    border-radius: 3px;
+}
+.footer
+{
+    width: 100%;
+    height: 80px;
+    background-color: #F8F8F8;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    position: fixed;
+    bottom: 0;
+}
+.footer-content
+{
+    padding: 30px 0;
+    margin: 0;
+}
+.mainbuy
+{
+    width: 50%;
+    margin: 40px auto;
+}
+.titleslect
+{
+    width: 13%;
+    height: 40px;
+    margin-right: 40px;
+    background-color: #fff;
+    border:1px solid #BBBBBB;
+    color: #BBBBBB;
+}
+.form-seach
+{
+    width: 14%;
+    background-color: #444444;
+    color: white;
+    margin-top: 20px;
+    border:1px solid #444444;
+    height: 40px;
+    border-radius: 3px;
+}
+.tableborder
+{
+   width: 90%;
+}
+.bottomcontent>td
+{
+    color: #BBBBBB;
+}
+.contentborder
+{
+    border:1px solid #BBBBBB;
+}
+.contentborder>td,.contentborder>th
+{
+    padding: 10px 0px;
+    text-align: center;
+    font-weight: 400;
+    font-size: 12px;
+}
+.tablebuy
+{
+   padding: 3px 15px;
+    background-color: #444444;
+    color: white;
+    border:1px solid #444444;
+    border-radius: 3px;
+}
+.titlemargin
+{
+    line-height: 60px;
+}
+/*.title-border.active*/
+/*{*/
+    /*border-bottom: 1px solid grey;*/
+/*}*/
+.title-border
+{
+    float: left;
+    padding: 10px 5px;
+    margin-right: 50px;
+    margin-bottom: 30px;
+    cursor: pointer;
+}
+.titleadvert
+{
+    margin-top: 0px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+.buyadvert
+{
+    width: 100%;
+    margin: 0 auto;
+    cursor: pointer;
 }

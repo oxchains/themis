@@ -139,7 +139,7 @@ class Signup extends Component {
                                     <input type="checkbox"  defaultChecked className="checkbox-width"  onChange={this.handleChange.bind(this)}/><span> 我已阅读themis用户手册及相关法律</span>
                                 </div>
                                 <div className="form-style">
-                                    <button type="submit" className="btn   form-register"><i className={`fa fa-spinner fa-spin ${this.state.spin?'':'hidden'}`}></i> 注册</button>
+                                    <button type="submit" className="   form-register"><i className={`fa fa-spinner fa-spin ${this.state.spin?'':'hidden'}`}></i> 注册</button>
                                 </div>
                             </div>
                         </form>
