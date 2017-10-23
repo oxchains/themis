@@ -1,7 +1,7 @@
 package com.oxchains.themis.chat.websocket;
-import com.oxchains.common.util.JsonUtil;
 import com.oxchains.themis.chat.entity.ChatContent;
 import com.oxchains.themis.chat.service.KafkaService;
+import com.oxchains.themis.common.util.JsonUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

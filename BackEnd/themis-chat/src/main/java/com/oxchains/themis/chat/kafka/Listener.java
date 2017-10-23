@@ -1,8 +1,8 @@
 package com.oxchains.themis.chat.kafka;
 
-import com.oxchains.common.util.JsonUtil;
 import com.oxchains.themis.chat.entity.ChatContent;
 import com.oxchains.themis.chat.repo.MongoRepo;
+import com.oxchains.themis.common.util.JsonUtil;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

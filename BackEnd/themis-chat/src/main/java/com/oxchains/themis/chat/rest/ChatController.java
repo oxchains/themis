@@ -1,8 +1,8 @@
 package com.oxchains.themis.chat.rest;
 
-import com.oxchains.common.model.RestResp;
 import com.oxchains.themis.chat.entity.ChatContent;
 import com.oxchains.themis.chat.service.ChatService;
+import com.oxchains.themis.common.model.RestResp;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

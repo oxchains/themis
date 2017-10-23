@@ -1,7 +1,7 @@
 package com.oxchains.themis.chat.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oxchains.common.model.RestResp;
+import com.oxchains.themis.common.model.RestResp;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

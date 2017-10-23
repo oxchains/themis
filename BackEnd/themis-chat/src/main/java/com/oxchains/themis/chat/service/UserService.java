@@ -1,11 +1,11 @@
 package com.oxchains.themis.chat.service;
 
-import com.oxchains.common.util.EncryptUtils;
 import com.oxchains.themis.chat.auth.JwtService;
 import com.oxchains.themis.chat.auth.UserToken;
 import com.oxchains.themis.chat.common.User;
 import com.oxchains.themis.chat.repo.UserRepo;
 import com.oxchains.themis.chat.repo.UserTokenRepo;
+import com.oxchains.themis.common.util.EncryptUtils;
 import org.apache.commons.collections.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
