@@ -1,4 +1,4 @@
-package com.oxchains.themisuser.auth;
+package com.oxchains.themis.user.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.access.AccessDeniedException;

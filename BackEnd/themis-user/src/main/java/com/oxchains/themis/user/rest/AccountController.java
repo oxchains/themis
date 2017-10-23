@@ -1,7 +1,7 @@
-package com.oxchains.themisuser.rest;
+package com.oxchains.themis.user.rest;
 
 import com.oxchains.common.model.RestResp;
-import com.oxchains.themisuser.service.AccountService;
+import com.oxchains.themis.user.service.AccountService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;

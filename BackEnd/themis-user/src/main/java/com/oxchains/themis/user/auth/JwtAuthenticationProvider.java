@@ -1,4 +1,4 @@
-package com.oxchains.themisuser.auth;
+package com.oxchains.themis.user.auth;
 
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;

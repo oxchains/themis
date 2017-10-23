@@ -1,4 +1,4 @@
-package com.oxchains.themisuser.domain;
+package com.oxchains.themis.user.domain;
 
 /**
  * @Author ccl

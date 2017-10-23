@@ -1,4 +1,4 @@
-package com.oxchains.themisuser.auth;
+package com.oxchains.themis.user.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;

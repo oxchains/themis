@@ -1,6 +1,4 @@
-package com.oxchains.themisuser.domain;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+package com.oxchains.themis.user.domain;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -40,6 +38,18 @@ public class Order {
     private String orderNo;
 
     private Date createTime;
+
+    private Date finishTime;
+
+    private Double amount;
+
+    private Double money;
+
+    private Integer currency;
+
+    private Integer vcurrency;
+
+    private Integer payment;
 
     public Long getId() {
         return id;
@@ -121,10 +131,6 @@ public class Order {
         this.createTime = createTime;
     }
 
-    private Double amount;
-
-    private Double money;
-
     public Double getAmount() {
         return amount;
     }
@@ -139,5 +145,37 @@ public class Order {
 
     public void setMoney(Double money) {
         this.money = money;
+    }
+
+    public Date getFinishTime() {
+        return finishTime;
+    }
+
+    public void setFinishTime(Date finishTime) {
+        this.finishTime = finishTime;
+    }
+
+    public Integer getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Integer currency) {
+        this.currency = currency;
+    }
+
+    public Integer getVcurrency() {
+        return vcurrency;
+    }
+
+    public void setVcurrency(Integer vcurrency) {
+        this.vcurrency = vcurrency;
+    }
+
+    public Integer getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Integer payment) {
+        this.payment = payment;
     }
 }

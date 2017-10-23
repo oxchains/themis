@@ -1,14 +1,12 @@
-package com.oxchains.themisuser.auth;
+package com.oxchains.themis.user.auth;
 
-import com.oxchains.themisuser.domain.User;
+import com.oxchains.themis.user.domain.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 

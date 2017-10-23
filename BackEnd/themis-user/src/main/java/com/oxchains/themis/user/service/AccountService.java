@@ -1,12 +1,12 @@
-package com.oxchains.themisuser.service;
+package com.oxchains.themis.user.service;
 
 import com.oxchains.bitcoin.rpcclient.BitcoinJSONRPCClient;
 import com.oxchains.bitcoin.rpcclient.BitcoindRpcClient;
 import com.oxchains.common.model.AddressKeys;
 import com.oxchains.common.model.RestResp;
 import com.oxchains.common.util.ArithmeticUtils;
-import com.oxchains.themisuser.dao.OrderDao;
-import com.oxchains.themisuser.domain.Order;
+import com.oxchains.themis.user.dao.OrderDao;
+import com.oxchains.themis.user.domain.Order;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
