@@ -19,7 +19,14 @@
     <modules>
         <module>themis-user</module>
         <module>themis-chat</module>
+<<<<<<< HEAD
         <module>themis-common</module>
+=======
+        <module>themis-notice</module>
+        <module>themis-common</module>
+        <module>themis-order</module>
+
+>>>>>>> b54ef991ebf23b343ec4f70ab27edc8e081f0b78
     </modules>
 
     <properties>
@@ -29,10 +36,10 @@
     </properties>
 
     <dependencies>
-        <dependency>
+        <!--<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
