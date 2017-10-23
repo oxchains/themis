@@ -70,11 +70,11 @@ public class NoticeService {
 
     /**
      * 搜索公告需要传递的数据：
-     * searchType   搜索类型(搜用户:0/搜公告)
+     * searchType   搜索类型(搜公告:0/搜用户:非0)
      * noticeType   公告类型(出售/购买)
-     * location     地区
-     * currency     货币
-     * payType      支付方式
+     * location     地区(可选)
+     * currency     货币(可选)
+     * payType      支付方式(可选)
      * @param notice
      * @return
      */
