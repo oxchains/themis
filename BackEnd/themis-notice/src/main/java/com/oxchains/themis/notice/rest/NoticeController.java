@@ -1,6 +1,6 @@
 package com.oxchains.themis.notice.rest;
 
-import com.oxchains.themis.notice.common.RestResp;
+import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.notice.domain.Notice;
 import com.oxchains.themis.notice.service.NoticeService;
 import org.springframework.web.bind.annotation.*;
@@ -72,8 +72,8 @@ public class NoticeController {
 
     /**
      * 查询自己的公告
-     * @param loginname
-     * @param noticeType
+     * @param loginname     登录名
+     * @param noticeType    公告类型
      * @return
      */
     @GetMapping(value = "/queryMe")

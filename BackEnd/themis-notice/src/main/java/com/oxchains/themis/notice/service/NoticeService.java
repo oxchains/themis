@@ -1,6 +1,6 @@
 package com.oxchains.themis.notice.service;
 
-import com.oxchains.themis.notice.common.RestResp;
+import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.notice.dao.NoticeDao;
 import com.oxchains.themis.notice.domain.Notice;
 import org.springframework.stereotype.Service;
