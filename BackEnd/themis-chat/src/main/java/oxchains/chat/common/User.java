@@ -1,28 +1,27 @@
 package oxchains.chat.common;
 
+import javax.persistence.*;
+
 /**
  * Created by xuqi on 2017/10/12.
  */
+@Entity
+@Table(name = "tbl_sys_user")
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String username;
     private String email;
     private String password;
     private String mobilephone;
-    private String token;
     public User(Integer id,String username){
         this.id = id;
         this.username = username;
     }
+    public User(){
 
-    public String getToken() {
-        return token;
     }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     public Integer getId() {
         return id;
     }
@@ -63,10 +62,5 @@ public class User {
         this.mobilephone = mobilephone;
     }
 
-    public static void main(String[] args) {
-        String s = "123456789_9";
-        System.out.println(s.substring(s.lastIndexOf("_")));
-        System.out.println(s);
-    }
 
 }

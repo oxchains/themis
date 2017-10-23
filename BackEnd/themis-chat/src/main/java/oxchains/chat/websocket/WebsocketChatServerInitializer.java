@@ -7,9 +7,15 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import oxchains.chat.service.KafkaService;
 
 public class WebsocketChatServerInitializer extends
         ChannelInitializer<SocketChannel> {
+	private KafkaService kafkaService;
+	public WebsocketChatServerInitializer(@Autowired KafkaService kafkaService){
+		this.kafkaService = kafkaService;
+	}
 	@Override
     public void initChannel(SocketChannel ch) throws Exception {
 		ChannelPipeline pipeline = ch.pipeline();
@@ -18,7 +24,7 @@ public class WebsocketChatServerInitializer extends
 		pipeline.addLast(new ChunkedWriteHandler());
 		pipeline.addLast(new HttpRequestHandler("/ws"));
 		pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
-		pipeline.addLast(new TextWebSocketFrameHandler());
+		pipeline.addLast(new TextWebSocketFrameHandler(kafkaService));
 
     }
 }

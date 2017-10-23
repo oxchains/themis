@@ -3,7 +3,8 @@ package oxchains.chat.rest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import oxchains.chat.auth.UserToken;
-import oxchains.chat.entity.User;
+import oxchains.chat.common.RestResp;
+import oxchains.chat.common.User;
 import oxchains.chat.service.UserService;
 
 import javax.servlet.http.HttpServletResponse;
@@ -25,7 +26,7 @@ public class UserController {
       UserToken userToken = userService.tokenForUser(user);
       if(userToken!=null){
       }
-      return userToken!=null?RestResp.success(userToken):RestResp.fail();
+      return userToken!=null? RestResp.success(userToken):RestResp.fail();
     }
 
     @RequestMapping("/user/findUser")

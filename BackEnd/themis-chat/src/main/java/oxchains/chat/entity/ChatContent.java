@@ -9,11 +9,11 @@ import javax.persistence.*;
 public class ChatContent {
     @Id
     private String id;
-    private Long senderId;
+    private Integer senderId;
     private String chatContent;
     private String createTime;
     private String senderName;
-    private Long receiverId;
+    private Integer receiverId;
     private String chatId;
     @Transient
     private Integer msgType;
@@ -82,19 +82,19 @@ public class ChatContent {
         this.senderName = senderName;
     }
 
-    public Long getSenderId() {
+    public Integer getSenderId() {
         return senderId;
     }
 
-    public void setSenderId(Long senderId) {
+    public void setSenderId(Integer senderId) {
         this.senderId = senderId;
     }
 
-    public Long getReceiverId() {
+    public Integer getReceiverId() {
         return receiverId;
     }
 
-    public void setReceiverId(Long receiverId) {
+    public void setReceiverId(Integer receiverId) {
         this.receiverId = receiverId;
     }
 

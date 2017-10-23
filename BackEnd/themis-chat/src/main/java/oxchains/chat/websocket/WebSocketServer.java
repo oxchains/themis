@@ -5,15 +5,24 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import org.springframework.beans.factory.annotation.Autowired;
 import oxchains.chat.common.CustomThreadFactory;
 import oxchains.chat.common.KeepAliveChannelThread;
+import oxchains.chat.service.KafkaService;
+
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.Executors.newScheduledThreadPool;
 
 public class WebSocketServer implements Runnable{
-    private  Integer port = 9999;
+    private KafkaService kafkaService;
+    private Integer port;
+    public WebSocketServer(KafkaService kafkaService,Integer port){
+        this.kafkaService = kafkaService;
+        this.port = port;
+    }
+
     public WebSocketServer() {}
     protected ScheduledExecutorService keepAliveScheduler = null;
     /*
@@ -30,7 +39,7 @@ public class WebSocketServer implements Runnable{
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
-                    .childHandler(new WebsocketChatServerInitializer())
+                    .childHandler(new WebsocketChatServerInitializer(kafkaService))
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
             ChannelFuture f = b.bind(port).sync();

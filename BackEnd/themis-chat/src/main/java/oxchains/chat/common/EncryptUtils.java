@@ -1,4 +1,4 @@
-package com.oxchains.common.util;
+package oxchains.chat.common;
 
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;

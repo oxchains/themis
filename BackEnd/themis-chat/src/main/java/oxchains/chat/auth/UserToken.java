@@ -2,7 +2,7 @@ package oxchains.chat.auth;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import oxchains.chat.entity.User;
+import oxchains.chat.common.User;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,7 +29,7 @@ public class UserToken {
 
     public UserToken(User user, String token) {
         this.user = user;
-        this.id = user.getId();
+        this.id = user.getId().longValue();
         this.token = token;
         this.username = user.getUsername();
     }

@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author aiet
  */
-public class JwtService {
+public class ChatUtil {
       static final String SECRET = "ThisIsASecret";
     public static Map<String,Map<String,ChannelHandler>> userChannels = new ConcurrentHashMap<>();
     public static User parse(String token) {
@@ -19,7 +19,7 @@ public class JwtService {
               .setSigningKey(SECRET)
               .parseClaimsJws(token);
             Claims claims = jws.getBody();
-            User user = new User(claims.get("id",Long.class),claims.getSubject());
+            User user = new User(claims.get("id",Integer.class),claims.getSubject());
             return user;
         } catch (Exception e) {
             e.printStackTrace();

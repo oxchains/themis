@@ -2,7 +2,7 @@ package oxchains.chat.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import oxchains.chat.common.JwtService;
+import oxchains.chat.common.ChatUtil;
 import oxchains.chat.entity.ChatContent;
 import oxchains.chat.repo.MongoRepo;
 import oxchains.chat.repo.UserRepo;
@@ -26,7 +26,7 @@ public class ChatService {
 
             String username  = userRepo.findOne(chatContent.getSenderId()).getUsername();
             String dusername  = userRepo.findOne(chatContent.getReceiverId()).getUsername();
-            String keyIDs = JwtService.getIDS(chatContent.getSenderId().toString(),chatContent.getReceiverId().toString());
+            String keyIDs = ChatUtil.getIDS(chatContent.getSenderId().toString(),chatContent.getReceiverId().toString());
             List<ChatContent> list = mongoRepo.findChatContentByChatId(keyIDs);
             for (ChatContent content:list) {
                 if(content.getSenderId().longValue()==chatContent.getSenderId().longValue())
@@ -35,7 +35,6 @@ public class ChatService {
                 }
                 else{content.setSenderName(dusername);}
 
-                System.out.println(content);
             }
             return mongoRepo.findChatContentByChatId(keyIDs);
         }

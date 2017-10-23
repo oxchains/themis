@@ -6,7 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
 import oxchains.chat.common.ChannelHandler;
-import oxchains.chat.common.JwtService;
+import oxchains.chat.common.ChatUtil;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,13 +23,13 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
         if (requestUri.length()>5 && requestUri.contains(wsUri)){
             String message = requestUri.substring(requestUri.lastIndexOf("?")+1);
             String token = message.substring(0,message.lastIndexOf("_"));
-            String id = JwtService.parse(token).getId()+"";
+            String id = ChatUtil.parse(token).getId()+"";
             String receiverId = message.substring(message.lastIndexOf("_")+1);
-            if(JwtService.userChannels.get(id) == null){
-                JwtService.userChannels.put(id,new ConcurrentHashMap<String ,ChannelHandler>());
+            if(ChatUtil.userChannels.get(id) == null){
+                ChatUtil.userChannels.put(id,new ConcurrentHashMap<String ,ChannelHandler>());
             }
-            String keyIds = JwtService.getIDS(id,receiverId);
-            Map<String,ChannelHandler> channelHandlerMap =  JwtService.userChannels.get(id);
+            String keyIds = ChatUtil.getIDS(id,receiverId);
+            Map<String,ChannelHandler> channelHandlerMap =  ChatUtil.userChannels.get(id);
             if(channelHandlerMap.get(keyIds) != null){
                 channelHandlerMap.get(keyIds).close();
                 channelHandlerMap.remove(keyIds);

@@ -4,7 +4,8 @@ import org.apache.commons.collections.IteratorUtils;
 import org.springframework.stereotype.Service;
 import oxchains.chat.auth.JwtService;
 import oxchains.chat.auth.UserToken;
-import oxchains.chat.entity.User;
+import oxchains.chat.common.EncryptUtils;
+import oxchains.chat.common.User;
 import oxchains.chat.repo.UserRepo;
 import oxchains.chat.repo.UserTokenRepo;
 
@@ -26,10 +27,10 @@ public class UserService {
     }
 
     public User findUserByUsernameAndPassword(String username, String password){
-       return userRepo.findUserByUsernameAndPassword(username,password);
+       return userRepo.findUserByUsernameAndPassword(username, EncryptUtils.encodeSHA256(password));
     };
     public UserToken tokenForUser(User user){
-        User users = userRepo.findUserByUsernameAndPassword(user.getUsername(),user.getPassword());
+        User users = userRepo.findUserByUsernameAndPassword(user.getUsername(), EncryptUtils.encodeSHA256(user.getPassword()));
         if(users==null){
             return null;
         }
@@ -37,6 +38,7 @@ public class UserService {
         userTokenRepo.save(userToken);
         return userToken;
     }
+
     public List<User> findUser(){
         return IteratorUtils.toList(userRepo.findAll().iterator());
     }

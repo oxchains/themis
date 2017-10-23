@@ -1,4 +1,4 @@
-package com.oxchains.common.model;
+package oxchains.chat.common;
 
 import java.io.Serializable;
 

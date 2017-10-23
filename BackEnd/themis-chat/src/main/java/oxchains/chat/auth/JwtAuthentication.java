@@ -2,7 +2,7 @@ package oxchains.chat.auth;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import oxchains.chat.entity.User;
+import oxchains.chat.common.User;
 
 import java.util.Collection;
 import java.util.Map;
@@ -50,7 +50,7 @@ public class JwtAuthentication implements Authentication {
 
     @Override
     public boolean isAuthenticated() {
-        return user != null && user.getCertificate() != null;
+        return true;
     }
 
     @Override

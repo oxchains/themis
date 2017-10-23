@@ -7,23 +7,32 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.util.concurrent.GlobalEventExecutor;
+import org.springframework.beans.factory.annotation.Autowired;
 import oxchains.chat.common.ChannelHandler;
 import oxchains.chat.common.JsonUtil;
-import oxchains.chat.common.JwtService;
+import oxchains.chat.common.ChatUtil;
 import oxchains.chat.entity.ChatContent;
+import oxchains.chat.service.KafkaService;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 public class TextWebSocketFrameHandler extends
 		SimpleChannelInboundHandler<TextWebSocketFrame> {
+
+	private KafkaService kafkaService;
+	public TextWebSocketFrameHandler(@Autowired KafkaService kafkaService){
+		this.kafkaService = kafkaService;
+	}
+
 	public static ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx,
 								TextWebSocketFrame msg) throws Exception {
 		ChatContent chatContent= (ChatContent) JsonUtil.fromJson(msg.text(), ChatContent.class);
 
-		Map<String,ChannelHandler> channelHandlerMap = JwtService.userChannels.get(chatContent.getSenderId()+"");
-		String keyIDs = JwtService.getIDS(chatContent.getSenderId().toString(),chatContent.getReceiverId().toString());
+		Map<String,ChannelHandler> channelHandlerMap = ChatUtil.userChannels.get(chatContent.getSenderId()+"");
+		String keyIDs = ChatUtil.getIDS(chatContent.getSenderId().toString(),chatContent.getReceiverId().toString());
 		if(chatContent.getMsgType()==2){
 			ChannelHandler channelHandler = channelHandlerMap.get(keyIDs);
 			if(channelHandler!=null){
@@ -38,10 +47,10 @@ public class TextWebSocketFrameHandler extends
 			chatContent.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 			chatContent.setChatId(keyIDs);
 			String message = JsonUtil.toJson(chatContent).toString();
-			KafkaUtil.send(message);
+			kafkaService.send(message);
 			ctx.channel().writeAndFlush(new TextWebSocketFrame(message));
+			channelHandlerMap = ChatUtil.userChannels.get(chatContent.getReceiverId()+"");
 			if( channelHandlerMap!= null && channelHandlerMap.get(keyIDs)!=null){
-				channelHandlerMap = JwtService.userChannels.get(chatContent.getReceiverId()+"");
 				channelHandlerMap.get(keyIDs).getChannel().writeAndFlush(new TextWebSocketFrame(message));
 			}
 		}

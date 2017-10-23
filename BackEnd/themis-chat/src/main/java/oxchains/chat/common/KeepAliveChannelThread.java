@@ -19,13 +19,13 @@ public class KeepAliveChannelThread implements Runnable {
     }
     @Override
     public void run() {
-        for (String s : JwtService.userChannels.keySet()) {
-            for (String s1 :JwtService.userChannels.get(s).keySet()){
-                if (System.currentTimeMillis() - JwtService.userChannels.get(s).get(s1).getLastUseTime()>(15*1000)){
-                    ChannelFuture cf =  JwtService.userChannels.get(s).get(s1).getChannel().closeFuture();
+        for (String s : ChatUtil.userChannels.keySet()) {
+            for (String s1 : ChatUtil.userChannels.get(s).keySet()){
+                if (System.currentTimeMillis() - ChatUtil.userChannels.get(s).get(s1).getLastUseTime()>(15*1000)){
+                    ChannelFuture cf =  ChatUtil.userChannels.get(s).get(s1).getChannel().closeFuture();
                     try {
                         cf.channel().close().sync();
-                        JwtService.userChannels.get(s).remove(s1);
+                        ChatUtil.userChannels.get(s).remove(s1);
                         System.out.println("消灭.......................");
                         TextWebSocketFrameHandler.channels.remove(cf.channel());
                     } catch (InterruptedException e) {
