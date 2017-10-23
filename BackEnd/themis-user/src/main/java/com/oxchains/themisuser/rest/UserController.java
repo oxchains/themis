@@ -23,7 +23,7 @@ public class UserController {
     UserService userService;
 
     @PostMapping(value = "/register")
-    public RestResp register(User user){
+    public RestResp register(@RequestBody User user){
         return userService.addUser(user);
     }
 
@@ -31,6 +31,8 @@ public class UserController {
     public RestResp login(@RequestBody User user){
         return userService.login(user);
     }
+
+
 
     @PostMapping(value = "/update")
     public RestResp update(User user){

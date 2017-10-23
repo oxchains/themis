@@ -2,6 +2,7 @@ package com.oxchains.themisuser.service;
 
 import com.oxchains.bitcoin.rpcclient.BitcoinJSONRPCClient;
 import com.oxchains.bitcoin.rpcclient.BitcoindRpcClient;
+import com.oxchains.common.model.AddressKeys;
 import com.oxchains.common.model.RestResp;
 import com.oxchains.common.util.ArithmeticUtils;
 import com.oxchains.themisuser.dao.OrderDao;
@@ -164,6 +165,23 @@ public class AccountService {
             logger.error(e.getMessage());
             return RestResp.fail(e.getMessage());
         }
+    }
+
+    public RestResp getKeys(String accountName){
+        List<String> addresses = client.getAddressesByAccount(accountName);
+        List<AddressKeys> addressKeysList=new ArrayList<>();
+        Iterator<String> it = addresses.iterator();
+        while (it.hasNext()) {
+           String address = it.next();
+            String pubKey = getPublicKey(address);
+            String prvKey = getPrivateKey(address);
+            //pubKeyMap.put(address, pubKey);
+            //prvKeyMap.put(address, prvKey);
+            addressKeysList.add(new AddressKeys(address,pubKey,prvKey));
+        }
+
+        return RestResp.success(addressKeysList);
+
     }
 
     /**
