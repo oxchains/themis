@@ -21,6 +21,7 @@
         <module>themis-chat</module>
         <module>themis-notice</module>
         <module>themis-common</module>
+        <module>themis-order</module>
 
     </modules>
 
