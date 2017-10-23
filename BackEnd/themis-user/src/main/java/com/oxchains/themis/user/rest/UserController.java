@@ -1,7 +1,7 @@
 package com.oxchains.themis.user.rest;
 
-import com.oxchains.common.model.RestResp;
-import com.oxchains.common.util.VerifyCodeUtils;
+import com.oxchains.themis.common.model.RestResp;
+import com.oxchains.themis.common.util.VerifyCodeUtils;
 import com.oxchains.themis.user.domain.User;
 import com.oxchains.themis.user.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
