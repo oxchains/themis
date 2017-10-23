@@ -1,5 +1,5 @@
 package com.oxchains.themis.chat.websocket;
-import com.oxchains.common.util.CustomThreadFactory;
+import com.oxchains.themis.common.util.CustomThreadFactory;
 import com.oxchains.themis.chat.service.KafkaService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
