@@ -1,6 +1,11 @@
 package com.oxchains.themis.user.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import javax.transaction.Transactional;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @Author ccl
@@ -12,6 +17,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "tbl_sys_user")
 public class User {
+
+    public User(){}
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -100,5 +107,39 @@ public class User {
 
     public void setLoginStatus(Integer loginStatus) {
         this.loginStatus = loginStatus;
+    }
+
+    //@JsonIgnore
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<String> authorities = new HashSet<>();
+
+    public Set<String> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(Set<String> authorities) {
+        this.authorities = authorities;
+    }
+
+    @Transient
+    private String token;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public User(User user){
+        setAuthorities(user.getAuthorities());
+        setEmail(user.getEmail());
+        setLoginname(user.getLoginname());
+        setUsername(user.getUsername());
+        setFirstAddress(user.getFirstAddress());
+        setId(user.getId());
+        setMobilephone(user.getMobilephone());
+        setLoginStatus(user.getLoginStatus());
     }
 }

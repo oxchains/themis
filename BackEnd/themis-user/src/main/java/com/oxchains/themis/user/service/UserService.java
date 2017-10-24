@@ -1,14 +1,5 @@
 package com.oxchains.themis.user.service;
 
-<<<<<<< HEAD:BackEnd/themis-user/src/main/java/com/oxchains/themisuser/service/UserService.java
-import com.oxchains.common.model.RestResp;
-import com.oxchains.common.util.ConstantUtils;
-import com.oxchains.common.util.EncryptUtils;
-import com.oxchains.themisuser.auth.JwtService;
-import com.oxchains.themisuser.dao.UserDao;
-import com.oxchains.themisuser.domain.User;
-import com.oxchains.themisuser.domain.UserToken;
-=======
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.util.ConstantUtils;
 import com.oxchains.themis.common.util.EncryptUtils;
@@ -16,7 +7,6 @@ import com.oxchains.themis.user.auth.JwtService;
 import com.oxchains.themis.user.dao.UserDao;
 import com.oxchains.themis.user.domain.User;
 import com.oxchains.themis.user.domain.UserToken;
->>>>>>> b54ef991ebf23b343ec4f70ab27edc8e081f0b78:BackEnd/themis-user/src/main/java/com/oxchains/themis/user/service/UserService.java
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -46,8 +36,8 @@ public class UserService extends BaseService{
     @Resource
     JwtService jwtService;
 
-    @Resource
-    AccountService accountService;
+//    @Resource
+//    AccountService accountService;
 
     public RestResp addUser(User user){
         user.setPassword(EncryptUtils.encodeSHA256(user.getPassword()));
@@ -60,7 +50,7 @@ public class UserService extends BaseService{
             return RestResp.fail("操作失败");
         }
         //注册比特币账户
-        String address = accountService.enrollAccount(user.getLoginname());
+        //String address = accountService.enrollAccount(user.getLoginname());
 
         return RestResp.success("操作成功");
     }
@@ -78,20 +68,19 @@ public class UserService extends BaseService{
         user.setPassword(EncryptUtils.encodeSHA256(user.getPassword()));
         Optional<User> optional=findUser(user);
         return optional.map(u -> {
-<<<<<<< HEAD:BackEnd/themis-user/src/main/java/com/oxchains/themisuser/service/UserService.java
-            String token="Bearer "+jwtService.generate(user);
-            logger.info("token = "+token);
-=======
-            if (u.getLoginStatus() != 0 ){
+            /*if (u.getLoginStatus() != 0 ){
                 return RestResp.fail("用户已经登录");
-            }
+            }*/
             String token="Bearer "+jwtService.generate(user);
             logger.info("token = "+token);
-            u.setLoginStatus(1);
-            userDao.save(u);
->>>>>>> b54ef991ebf23b343ec4f70ab27edc8e081f0b78:BackEnd/themis-user/src/main/java/com/oxchains/themis/user/service/UserService.java
+            User userInfo=new User(u);
+            userInfo.setPassword(null);
+            userInfo.setToken(token);
+            //u.setLoginStatus(1);
+            //userDao.save(u);
+
             ConstantUtils.USER_TOKEN.put(u.getLoginname(),token);
-            return RestResp.success("登录成功",new UserToken(u.getUsername(),token));
+            return RestResp.success("登录成功",userInfo); //new UserToken(u.getUsername(),token)
         }).orElse(RestResp.fail("登录失败"));
     }
 
@@ -99,12 +88,15 @@ public class UserService extends BaseService{
         Optional<User> optional = null;
         if(null != user.getLoginname()){
             optional = userDao.findByLoginnameAndPassword(user.getLoginname(),user.getPassword());
+            if (optional.isPresent()) return optional;
         }
         if(null != user.getEmail()){
             optional = userDao.findByEmailAndPassword(user.getEmail(),user.getPassword());
+            if (optional.isPresent()) return optional;
         }
         if(null != user.getMobilephone()){
             optional = userDao.findByMobilephoneAndPassword(user.getMobilephone(),user.getPassword());
+            if (optional.isPresent()) return optional;
         }
         return optional;
     }

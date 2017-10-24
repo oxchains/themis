@@ -1,17 +1,10 @@
 package com.oxchains.themis.user.rest;
 
-<<<<<<< HEAD:BackEnd/themis-user/src/main/java/com/oxchains/themisuser/rest/TokenController.java
-import com.oxchains.common.model.RestResp;
-import com.oxchains.themisuser.auth.JwtService;
-import com.oxchains.themisuser.domain.User;
-import com.oxchains.themisuser.service.UserService;
-=======
-
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.user.auth.JwtService;
 import com.oxchains.themis.user.domain.User;
 import com.oxchains.themis.user.service.UserService;
->>>>>>> b54ef991ebf23b343ec4f70ab27edc8e081f0b78:BackEnd/themis-user/src/main/java/com/oxchains/themis/user/rest/TokenController.java
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
