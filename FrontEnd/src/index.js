@@ -22,6 +22,7 @@ import Usercenter from './components/usercenter';
 import Buybtc from './components/buybtc';
 import Sellbtc from './components/sellbtc';
 import Selldetail from './components/selldetail';
+import Buydetail from './components/buydetail';
 import Myadvert from './components/myadvert';
 import Home from './components/home';
 import Releaseadvert from './components/releaseadvert';
@@ -54,10 +55,11 @@ ReactDOM.render(
                     <Route path="/buybtc" component={Buybtc}/>
                     <Route path="/sellbtc" component={Sellbtc}/>
                     <Route path="/selldetail" component={Selldetail}/>
+                    <Route path="/buydetail" component={Buydetail}/>
                     <Route path="/myadvert" component={Myadvert}/>
                     <Route path="/" component={Home}/>
                 </Switch>
-                {/*<Footer/>*/}
+                <Footer/>
             </main>
         </div>
     </BrowserRouter>
