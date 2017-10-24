@@ -1,6 +1,7 @@
 package com.oxchains.themis.notice.domain;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javafx.beans.DefaultProperty;
@@ -18,32 +19,31 @@ public class Notice {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String loginname;       // 登录名
-
-    private String username;        // 用户名
+    @Column(name = "userid")
+    private Long userId;       // user表的id
 
     @Column(name = "noticetype")
-    private String noticeType;      // 购买BTC/出售BTC
+    private Long noticeType;      // 购买BTC/出售BTC
 
-    private String location;        // 所在地
+    private Long location;        // 所在地
 
-    private String currency;        // 货币类型
+    private Long currency;        // 货币类型
 
     private Double premium = 0D;         // 溢价
 
-    private Double price;           // 价格
+    private BigDecimal price;           // 价格
 
     @Column(name = "minprice")
-    private Double minPrice;        // 最低价
+    private BigDecimal minPrice;        // 最低价
 
     @Column(name = "mintxlimit")
-    private Double minTxLimit;      // 最小交易限额
+    private BigDecimal minTxLimit;      // 最小交易限额
 
     @Column(name = "maxtxlimit")
-    private Double maxTxLimit;      // 最大交易限额
+    private BigDecimal maxTxLimit;      // 最大交易限额
 
     @Column(name = "paytype")
-    private String payType;         // 支付方式/付款方式
+    private Long payType;         // 支付方式/付款方式
 
     @Column(name = "noticecontent")
     private String noticeContent;   // 公告内容

@@ -35,9 +35,9 @@ public class NoticeService {
      */
     public RestResp broadcastNotice(Notice notice){
         try {
-            List<Notice> noticeListUnDone = noticeDao.findByLoginnameAndNoticeTypeAndTxStatus(notice.getLoginname(), notice.getNoticeType(), 0);
-            List<Notice> noticeListDoing = noticeDao.findByLoginnameAndNoticeTypeAndTxStatus(notice.getLoginname(), notice.getNoticeType(), 1);
-            List<Notice> noticeListDone = noticeDao.findByLoginnameAndNoticeTypeAndTxStatus(notice.getLoginname(), notice.getNoticeType(), 2);
+            List<Notice> noticeListUnDone = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(notice.getUserId(), notice.getNoticeType(), 0);
+            List<Notice> noticeListDoing = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(notice.getUserId(), notice.getNoticeType(), 1);
+            List<Notice> noticeListDone = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(notice.getUserId(), notice.getNoticeType(), 2);
 
             if (!noticeListDone.isEmpty() && noticeListDoing.isEmpty()){
                 Notice n = noticeDao.save(notice);
@@ -61,8 +61,8 @@ public class NoticeService {
     public RestResp queryPartNotice(){
         try {
             List<Notice> partList = new ArrayList<>();
-            List<Notice> buyNoticeList = noticeDao.findByNoticeType("购买");
-            List<Notice> sellNoticeList = noticeDao.findByNoticeType("出售");
+            List<Notice> buyNoticeList = noticeDao.findByNoticeType(1L);
+            List<Notice> sellNoticeList = noticeDao.findByNoticeType(2L);
 
             int buySize = new Random().nextInt(buyNoticeList.size() - 2);
             int sellSize = new Random().nextInt(sellNoticeList.size() - 2);
@@ -125,10 +125,10 @@ public class NoticeService {
      */
     public RestResp searchNotice(Notice notice){
         try {
-            String location = notice.getLocation();
-            String currency = notice.getCurrency();
-            String payType = notice.getPayType();
-            String noticeType = notice.getNoticeType();
+            Long location = notice.getLocation();
+            Long currency = notice.getCurrency();
+            Long payType = notice.getPayType();
+            Long noticeType = notice.getNoticeType();
             List<Notice> noticeList = null;
             if (null != location && null != currency && null != payType) {
                 noticeList = noticeDao.findByLocationAndCurrencyAndPayTypeAndNoticeType(location, currency, payType, noticeType);
@@ -156,9 +156,9 @@ public class NoticeService {
         return RestResp.fail("操作失败");
     }
 
-    public RestResp querMeNotice(String loginname, String noticeType){
+    public RestResp querMeNotice(Long userId, Long noticeType){
         try {
-            List<Notice> noticeList = noticeDao.findByLoginnameAndNoticeType(loginname, noticeType);
+            List<Notice> noticeList = noticeDao.findByUserIdAndNoticeType(userId, noticeType);
             return RestResp.success("操作成功", noticeList);
         }catch (Exception e){
             return RestResp.fail("操作失败", e.getMessage());
