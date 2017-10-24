@@ -72,12 +72,12 @@ public class NoticeController {
 
     /**
      * 查询自己的公告
-     * @param loginname     登录名
+     * @param userId     登录id
      * @param noticeType    公告类型
      * @return
      */
     @GetMapping(value = "/queryMe")
-    public RestResp queryMeNotice(@RequestParam String loginname, @RequestParam String noticeType){
-        return noticeService.querMeNotice(loginname, noticeType);
+    public RestResp queryMeNotice(@RequestParam Long userId, @RequestParam Long noticeType){
+        return noticeService.querMeNotice(userId, noticeType);
     }
 }

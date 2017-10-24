@@ -13,19 +13,23 @@ import java.util.List;
 public interface NoticeDao extends CrudRepository<Notice,Long> {
 
     // 发布公告需要提前判断的接口
-    List<Notice> findByLoginnameAndNoticeType(String loginName, String noticeType);
-    List<Notice> findByLoginnameAndNoticeTypeAndTxStatus(String loginName, String noticeType, int txStatus);
+
+    List<Notice> findByUserIdAndNoticeType(Long loginName, Long noticeType);
+    List<Notice> findByUserIdAndNoticeTypeAndTxStatus(Long loginName, Long noticeType, Integer txStatus);
 
     // 搜索广告用到的接口
-    List<Notice> findByNoticeType(String noticeType);
-    List<Notice> findByLocationAndNoticeType(String location, String noticeType);
-    List<Notice> findByCurrencyAndNoticeType(String currency, String noticeType);
-    List<Notice> findByPayTypeAndNoticeType(String payType, String noticeType);
-    List<Notice> findByLocationAndCurrencyAndNoticeType(String location, String currency, String noticeType);
-    List<Notice> findByLocationAndPayTypeAndNoticeType(String location, String payType, String noticeType);
-    List<Notice> findByCurrencyAndPayTypeAndNoticeType(String currency, String payType, String noticeType);
-    List<Notice> findByLocationAndCurrencyAndPayTypeAndNoticeType(String location, String currency, String payType, String noticeType);
+
+    List<Notice> findByNoticeType(Long noticeType);
+    List<Notice> findByLocationAndNoticeType(Long location, Long noticeType);
+    List<Notice> findByCurrencyAndNoticeType(Long currency, Long noticeType);
+    List<Notice> findByPayTypeAndNoticeType(Long payType, Long noticeType);
+    List<Notice> findByLocationAndCurrencyAndNoticeType(Long location, Long currency, Long noticeType);
+    List<Notice> findByLocationAndPayTypeAndNoticeType(Long location, Long payType, Long noticeType);
+    List<Notice> findByCurrencyAndPayTypeAndNoticeType(Long currency, Long payType, Long noticeType);
+    List<Notice> findByLocationAndCurrencyAndPayTypeAndNoticeType(Long location, Long currency, Long payType, Long noticeType);
 
     // 查询所有未完成订单
+
     List<Notice> findByTxStatus(Integer txStatus);
+
 }
