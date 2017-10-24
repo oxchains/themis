@@ -2,20 +2,12 @@ package com.oxchains.themis.user.service;
 
 import com.oxchains.bitcoin.rpcclient.BitcoinJSONRPCClient;
 import com.oxchains.bitcoin.rpcclient.BitcoindRpcClient;
-<<<<<<< HEAD:BackEnd/themis-user/src/main/java/com/oxchains/themisuser/service/AccountService.java
-import com.oxchains.common.model.RestResp;
-import com.oxchains.common.util.ArithmeticUtils;
-import com.oxchains.themisuser.dao.OrderDao;
-import com.oxchains.themisuser.domain.Order;
-=======
 
 import com.oxchains.themis.common.model.AddressKeys;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.util.ArithmeticUtils;
-
-import com.oxchains.themis.user.dao.OrderDao;
-import com.oxchains.themis.user.domain.Order;
->>>>>>> b54ef991ebf23b343ec4f70ab27edc8e081f0b78:BackEnd/themis-user/src/main/java/com/oxchains/themis/user/service/AccountService.java
+import com.oxchains.themis.user.dao.TransactionDao;
+import com.oxchains.themis.user.domain.Transaction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +62,7 @@ public class AccountService {
     private BitcoindRpcClient.RawTransaction rawTransaction = null;
 
     @Resource
-    private OrderDao orderDao;
+    private TransactionDao transactionDao;
 
     /**
      * Sign up for an account
@@ -134,15 +126,15 @@ public class AccountService {
 
             sendToScriptHash(accountName, amount);
 
-            Order order = new Order();
+            Transaction order = new Transaction();
             order.setFromAddress(fromAddress);
             order.setP2shAddress(P2SH_ADDRESS);
             order.setP2shRedeemScript(P2SH_REDEEM_SCRIPT);
             order.setSignTx(SIGNED_TX);
             order.setRecvAddress(recvAddress);
-            order.setOrderStatus(2);
+            order.setTxStatus(2);
 
-            order = orderDao.save(order);
+            order = transactionDao.save(order);
             return RestResp.success(order);
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -154,20 +146,20 @@ public class AccountService {
         this.signPrvKeys = signPrvKeys;
 
         try {
-            Order order = orderDao.findByRecvAddress(recvAddress);
+            Transaction order = transactionDao.findByRecvAddress(recvAddress);
             P2SH_ADDRESS = order.getP2shAddress();
             P2SH_REDEEM_SCRIPT = order.getP2shRedeemScript();
             SIGNED_TX = order.getSignTx();
             rawTransaction = client.decodeRawTransaction(order.getSignTx());
             if(type == 0){
                 sendToUser(order.getFromAddress(), amount);
-                order.setOrderStatus(0);
-                orderDao.save(order);
+                order.setTxStatus(0);
+                transactionDao.save(order);
                 return RestResp.success("交易取消成功");
             }else {
                 sendToUser(recvAddress, amount);
-                order.setOrderStatus(1);
-                orderDao.save(order);
+                order.setTxStatus(1);
+                transactionDao.save(order);
                 return RestResp.success("交易成功");
             }
         } catch (Exception e) {

@@ -1,9 +1,4 @@
-<<<<<<< HEAD:BackEnd/themis-common/src/main/java/com/oxchains/common/util/VerifyCodeUtils.java
-package com.oxchains.common.util;
-=======
 package com.oxchains.themis.common.util;
->>>>>>> b54ef991ebf23b343ec4f70ab27edc8e081f0b78:BackEnd/themis-common/src/main/java/com/oxchains/themis/common/util/VerifyCodeUtils.java
-
 import java.util.Random;
 
 /**

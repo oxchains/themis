@@ -1,6 +1,4 @@
-package com.oxchains.themisuser.domain;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+package com.oxchains.themis.user.domain;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -8,15 +6,15 @@ import java.util.Date;
 /**
  * @Author ccl
  * @Time 2017-10-17 11:11
- * @Name Order
+ * @Name Transaction
  * @Desc:
  */
 @Entity
-@Table(name = "tbl_biz_order")
-public class Order {
+@Table(name = "tbl_biz_transaction")
+public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long id;
 
     @Column(length = 35)
     private String fromAddress;
@@ -33,20 +31,24 @@ public class Order {
     @Column(length = 1024)
     private String signTx;
 
-    private int orderStatus;
+    private String orderId;
 
-    private int orderType;
+    private Integer txStatus;
 
-    private String orderNo;
-
-    private Date createTime;
-
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getFromAddress() {
+        return fromAddress;
+    }
+
+    public void setFromAddress(String fromAddress) {
+        this.fromAddress = fromAddress;
     }
 
     public String getRecvAddress() {
@@ -81,43 +83,19 @@ public class Order {
         this.signTx = signTx;
     }
 
-    public String getFromAddress() {
-        return fromAddress;
+    public String getOrderId() {
+        return orderId;
     }
 
-    public void setFromAddress(String fromAddress) {
-        this.fromAddress = fromAddress;
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 
-    public int getOrderStatus() {
-        return orderStatus;
+    public Integer getTxStatus() {
+        return txStatus;
     }
 
-    public void setOrderStatus(int orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public int getOrderType() {
-        return orderType;
-    }
-
-    public void setOrderType(int orderType) {
-        this.orderType = orderType;
-    }
-
-    public String getOrderNo() {
-        return orderNo;
-    }
-
-    public void setOrderNo(String orderNo) {
-        this.orderNo = orderNo;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public void setTxStatus(Integer txStatus) {
+        this.txStatus = txStatus;
     }
 }
