@@ -1,4 +1,4 @@
-package com.oxchains.themis.common.util;
+package com.oxchains.themis.common.model;
 
 /**
  * @Author ccl
@@ -23,6 +23,13 @@ public class ScriptHash {
     }
 
     public void setRedeemScript(String redeemScript) {
+        this.redeemScript = redeemScript;
+    }
+
+    public ScriptHash(){}
+
+    public ScriptHash(String address, String redeemScript) {
+        this.address = address;
         this.redeemScript = redeemScript;
     }
 }

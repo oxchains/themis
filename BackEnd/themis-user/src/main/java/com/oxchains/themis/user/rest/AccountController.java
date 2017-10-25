@@ -115,7 +115,7 @@ public class AccountController {
         return bitcoinService.confirmTransaction(toAddress,amount,Arrays.asList(prvKeys.split(",")),1);
     }
 
-    public RestResp getScriptHash(){
+    public RestResp getScriptHash(String orderId,String keyPair,double amount){
         return null;
     }
 }
