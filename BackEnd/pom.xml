@@ -21,11 +21,7 @@
         <module>themis-notice</module>
         <module>themis-common</module>
         <module>themis-order</module>
-<<<<<<< Updated upstream
-=======
         <module>themis-arbitrate</module>
-
->>>>>>> Stashed changes
     </modules>
 
     <properties>
@@ -128,8 +124,6 @@
 
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-<<<<<<< HEAD
-=======
             <artifactId>spring-cloud-starter-eureka</artifactId>
         </dependency>
 
@@ -145,11 +139,6 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
->>>>>>> 07ed9f8fdc06c294817ef6b21a7e635b5bf4ab46
-            <artifactId>spring-cloud-netflix-eureka-client</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-netflix-eureka-client</artifactId>

@@ -41,8 +41,8 @@ public class ApplicationConfiguration extends WebSecurityConfigurerAdapter{
     @Override
     public void configure(HttpSecurity http) throws Exception {
         //http.csrf().disable().authorizeRequests().antMatchers("/", "/").permitAll();
-        http.cors().and().csrf().disable().authorizeRequests().antMatchers(HttpMethod.POST,"/login","/token","/register","/account/*").permitAll()
-                .antMatchers(HttpMethod.GET,"/verifyCode","/account/*").permitAll().antMatchers("/**/*")
+        http.cors().and().csrf().disable().authorizeRequests().antMatchers("/login","/token","/register","/account/*").permitAll()
+                 .antMatchers("/**/*")
                 .authenticated().and()
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()

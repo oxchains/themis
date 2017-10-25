@@ -112,7 +112,8 @@ public class AccountController {
         return bitcoinService.confirmTransaction(toAddress,amount,Arrays.asList(prvKeys.split(",")),1);
     }
 
-    public RestResp getScriptHash(String orderId,String keyPair,double amount){
-        return null;
+    @PostMapping(value = "/p2sh")
+    public RestResp getScriptHash(String orderId,String pubKeys,double amount){
+        return bitcoinService.getScriptHash(orderId,Arrays.asList(pubKeys.split(",")),amount);
     }
 }

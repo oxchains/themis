@@ -55,14 +55,30 @@ public class BitcoinService {
         return  RestResp.success(new AddressKeys(address,pubKey,prvKey));
     }
 
-    public RestResp getScriptHash(String orderId,String keyPair,double amount,List<String> signPubKeys){
-        BitcoindRpcClient.MultiSig multiSig = client.createMultiSig(nRequired, signPubKeys);
-        String p2shAddress = multiSig.address();
-        String redeemScript = multiSig.redeemScript();
+    public RestResp getScriptHash(String orderId,List<String> signPubKeys,double amount){
+        try{
+            BitcoindRpcClient.MultiSig multiSig = client.createMultiSig(nRequired, signPubKeys);
+            String p2shAddress = multiSig.address();
+            String redeemScript = multiSig.redeemScript();
 
-        client.addMultiSigAddress(nRequired,signPubKeys,"201710251728");
+            client.addMultiSigAddress(nRequired,signPubKeys,"201710251728");
 
-        return RestResp.success(new ScriptHash(p2shAddress,redeemScript));
+            Transaction order = new Transaction();
+            order.setOrderId(orderId);
+            order.setFromAddress(null);
+            order.setP2shAddress(p2shAddress);
+            order.setP2shRedeemScript(redeemScript);
+            order.setSignTx(null);
+            order.setRecvAddress(null);
+            order.setTxStatus(2);
+            order = transactionDao.save(order);
+
+            return RestResp.success(new ScriptHash(p2shAddress,redeemScript,"bitcoin:"+p2shAddress+"?amount="+ArithmeticUtils.multiply(amount,1,8)));
+
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            return RestResp.fail(e.getMessage());
+        }
     }
     /*
     * 1. 生成公钥/私钥
