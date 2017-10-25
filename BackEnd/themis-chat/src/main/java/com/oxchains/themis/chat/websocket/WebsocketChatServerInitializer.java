@@ -8,12 +8,20 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
+<<<<<<< Updated upstream:BackEnd/themis-chat/src/main/java/com/oxchains/themis/chat/websocket/WebsocketChatServerInitializer.java
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class WebsocketChatServerInitializer extends
         ChannelInitializer<SocketChannel> {
 	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
+=======
+import org.springframework.stereotype.Component;
+import oxchains.chat.service.KafkaService;
+
+public class WebsocketChatServerInitializer extends
+        ChannelInitializer<SocketChannel> {
+>>>>>>> Stashed changes:BackEnd/themis-chat/src/main/java/oxchains/chat/websocket/WebsocketChatServerInitializer.java
 	private KafkaService kafkaService;
 	public WebsocketChatServerInitializer(KafkaService kafkaService){
 		this.kafkaService = kafkaService;
