@@ -94,12 +94,25 @@ public class AccountController {
         return accountService.getKeys(accountName);
     }
 
+    /**
+     * 获取公私钥
+     * @return
+     */
+    @GetMapping(value = "/keys")
+    public RestResp getKeys(){
+        return bitcoinService.getKeys();
+    }
+
     @PostMapping(value = "/transaction")
-    public RestResp createTransaction(String fromAddress,String txId,String toAddress,String pubKeys,double amount,int required){
-        return bitcoinService.createTransaction(fromAddress,txId,toAddress,amount,Arrays.asList(pubKeys.split(",")),required);
+    public RestResp createTransaction(String fromAddress,String txId,String prvKey,String toAddress,String pubKeys,double amount,int required){
+        return bitcoinService.createTransaction(fromAddress,txId,prvKey,toAddress,amount,Arrays.asList(pubKeys.split(",")),required);
     }
     @PostMapping(value = "/finish")
     public RestResp finishTransaction(String fromAddress,String toAddress,String prvKeys,double amount){
         return bitcoinService.confirmTransaction(toAddress,amount,Arrays.asList(prvKeys.split(",")),1);
+    }
+
+    public RestResp getScriptHash(){
+        return null;
     }
 }
