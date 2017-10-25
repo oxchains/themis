@@ -2,6 +2,7 @@ package com.oxchains.themis.user.service;
 
 import com.oxchains.bitcoin.rpcclient.BitcoinJSONRPCClient;
 import com.oxchains.bitcoin.rpcclient.BitcoindRpcClient;
+import com.oxchains.themis.common.model.AddressKeys;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.util.ArithmeticUtils;
 import com.oxchains.themis.user.dao.TransactionDao;
@@ -30,7 +31,7 @@ public class BitcoinService {
 
     static {
         try {
-            URL url = new URL("http://admin1:123@192.168.1.192:8332/");
+            URL url = new URL("http://admin1:123@192.168.1.195:18332/");
             client = new BitcoinJSONRPCClient(url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -44,6 +45,22 @@ public class BitcoinService {
     @Resource
     private TransactionDao transactionDao;
 
+    public RestResp getKeys(){
+        String address=client.getNewAddress("AllKeys");
+        String pubKey=client.validateAddress(address).pubKey();
+        String prvKey=client.dumpPrivKey(address);
+        return  RestResp.success(new AddressKeys(address,pubKey,prvKey));
+    }
+
+    public RestResp getP2SHAddress(String toAddress,double amount,List<String> signPubKeys, int nRequired){
+        BitcoindRpcClient.MultiSig multiSig = client.createMultiSig(nRequired, signPubKeys);
+        String p2shAddress = multiSig.address();
+        String redeemScript = multiSig.redeemScript();
+
+        client.addMultiSigAddress(nRequired,signPubKeys,"201710251728");
+
+        return null;
+    }
     /*
     * 1. 生成公钥/私钥
     * 2. 生成协商地址和赎回脚本
@@ -51,7 +68,7 @@ public class BitcoinService {
     * 4. 发送到接收地址 createrawtransaction return RAW_TX
     * 5.
     */
-    public RestResp createTransaction(String fromAddress,String UTXO_TXID, String recvAddress, double amount, List<String> signPubKeys, int nRequired) {
+    public RestResp createTransaction(String fromAddress,String UTXO_TXID, String prvKey,String recvAddress, double amount, List<String> signPubKeys, int nRequired) {
         try {
             BitcoindRpcClient.MultiSig multiSig = client.createMultiSig(nRequired, signPubKeys);
             String P2SH_ADDRESS = multiSig.address();
@@ -65,11 +82,17 @@ public class BitcoinService {
             amount = ArithmeticUtils.minus(amount, TX_FEE);
             BitcoindRpcClient.TxOutput txOutput = new BitcoindRpcClient.BasicTxOutput(P2SH_ADDRESS, amount);
             txOutputs.add(txOutput);
+
+            // TODO
+            client.importPrivKey(prvKey,fromAddress,true);//dangerous ！！！
+
             String rawTx = client.createRawTransaction(txInputs, txOutputs);
             String SIGNED_TX = client.signRawTransaction(rawTx);
             //rawTransaction = client.decodeRawTransaction(SIGNED_TX);
             //submitRawTransaction(SIGNED_TX);
-            client.sendRawTransaction(SIGNED_TX);
+            String txId = client.sendRawTransaction(SIGNED_TX);
+
+            logger.info(txId);
 
             Transaction order = new Transaction();
             order.setFromAddress(fromAddress);

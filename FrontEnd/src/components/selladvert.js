@@ -103,10 +103,10 @@ let Adverting = React.createClass({
                 </tr>
                 {TableLinks.map(this.handleRow)}
                 <tr className="contentborder bottomcontent">
-                    <td> 没有更多内容了</td>
+                    <td> </td>
                     <td></td>
                     <td></td>
-                    <td></td>
+                    <td>没有更多内容了</td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -153,10 +153,10 @@ let Adverted = React.createClass({
                 </tr>
                 {TableLinks.map(this.handleRow)}
                 <tr className="contentborder bottomcontent">
-                    <td> 没有更多内容了</td>
+                    <td> </td>
                     <td></td>
                     <td></td>
-                    <td></td>
+                    <td>没有更多内容了</td>
                     <td></td>
                     <td></td>
                     <td></td>

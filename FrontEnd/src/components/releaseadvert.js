@@ -14,25 +14,36 @@ class Releaseadvert extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentIndex:0
+            currentIndex:0,
+        option: "0"
         }
     }
+    handleChangecounty(e){
+        console.log(e.target.value)
+        this.setState({option: e.target.value});
+    }
+
     handleFormSubmit(e){
-        e.preventDefault()
-        // const loginname= localStorage.getItem('username');
-        const loginname= "fengxiaoli"
-        const premium = this.refs.premium.value;
-        const price = this.refs.price.value;
-        const minPrice = this.refs.minPrice.value;
-        const minTxLimit = this.refs.minTxLimit.value;
-        const maxTxLimit = this.refs.maxTxLimit.value;
-        const noticeContent = this.refs.noticeContent.value;
-        const noticeType = "1";
-        const location = '中国';
-        const currency = '人民币';
-        const payType = "微信支付"
-        console.log(noticeType)
-        this.props.releaseAdvert({loginname ,noticeType  ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType  ,noticeContent},()=>{});
+        if(this.props.authenticated){
+            e.preventDefault()
+            // const loginname= localStorage.getItem('username');
+            const loginname= "fengxiaoli"
+            const premium = this.refs.premium.value;
+            const price = this.refs.price.value;
+            const minPrice = this.refs.minPrice.value;
+            const minTxLimit = this.refs.minTxLimit.value;
+            const maxTxLimit = this.refs.maxTxLimit.value;
+            const noticeContent = this.refs.noticeContent.value;
+            const noticeType = "1";
+            const location = '中国';
+            const currency = '人民币';
+            const payType = "微信支付"
+            console.log(noticeType)
+            this.props.releaseAdvert({loginname ,noticeType  ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType  ,noticeContent},()=>{});
+
+        }else {
+                alert('请先登录')
+        }
     }
     render() {
 
@@ -59,7 +70,7 @@ class Releaseadvert extends Component {
                     <div className="clear display"></div>
                     <h5 className="h3title clear">*所在地</h5>
                     <span  className="tipspan"> 请选择你要发布广告的国家。</span>
-                    <select name="" id="" className="display slectoption">
+                    <select name="" id="" className="display slectoption" value={this.state.option}  onChange={this.handleChangecounty}>
                         <option value="0">选择国家</option>
                         <option value="1">中国</option>
                         <option value="2">美国</option>
@@ -78,19 +89,19 @@ class Releaseadvert extends Component {
                     </select>
                     <h5 className="h3title clear">*溢价: </h5>
                     <span  className="tipspan">基于市场价的溢出比例，市场价是根据部分大型交易所实时价格得出的，确保您的报价趋于一个相对合理的范围，比如当前价格为7000，溢价比例为10%，那么价格为7700。</span>
-                    <input type="text" placeholder="%" className="display slectoption" ref="premium"/>
+                    <input type="text" placeholder="%" className="display slectoption" ref="premium" required/>
                     <h5 className="h3title clear">*价格: </h5>
                     <span  className="tipspan">基于溢价比例得出的报价，10分钟更新一次。</span>
-                    <input type="text" placeholder="CNY" className="display slectoption" ref="price"/>
+                    <input type="text" placeholder="CNY" className="display slectoption" ref="price" required/>
                     <h5 className="h3title clear">*最低价:</h5>
                     <span  className="tipspan">最低可成交的价格，可帮助您在价格剧烈波动时保持稳定的盈利，比如最低价为12000，市场价处于12000以下时，您的广告将依旧以12000的价格展示出来。</span>
-                    <input type="text" placeholder="CNY" className="display slectoption" ref="minPrice"/>
+                    <input type="text" placeholder="CNY" className="display slectoption" ref="minPrice" required/>
                     <h5 className="h3title clear">*最小限额: </h5>
                     <span  className="tipspan">一次交易的最低交易限制。</span>
-                    <input type="text" placeholder="请输入最小限额 CNY" className="display slectoption" ref="minTxLimit"/>
+                    <input type="text" placeholder="请输入最小限额 CNY" className="display slectoption" ref="minTxLimit" required/>
                     <h5 className="h3title clear">*最大限额: </h5>
                     <span  className="tipspan">一次交易中的最大交易限制，您的钱包余额也会影响最大量的设置。</span>
-                    <input type="text" placeholder="请输入最大限额 CNY" className="display slectoption" ref="maxTxLimit"/>
+                    <input type="text" placeholder="请输入最大限额 CNY" className="display slectoption" ref="maxTxLimit" required/>
                     <h5 className="h3title clear">*收款方式:</h5>
                     <span  className="tipspan"> 您希望交易付款的货币类型。</span>
                     <select name="" id="" className="display slectoption">
@@ -101,7 +112,7 @@ class Releaseadvert extends Component {
                         <option value="4">Apple pay</option>
                     </select>
                     <h5 className="h3title clear">*广告内容:</h5>
-                    <textarea name="" id="" cols="150" rows="6" className="display text-content" ref="noticeContent" placeholder="请说明有关您交易的相关条款或备注您的支付方式，如微信号，支付宝号等，以便对方可以快速和您交易。(下单前后都可见)"></textarea>
+                    <textarea name="" id="" cols="150" rows="6" className="display text-content" ref="noticeContent" placeholder="请说明有关您交易的相关条款或备注您的支付方式，如微信号，支付宝号等，以便对方可以快速和您交易。(下单前后都可见)" ></textarea>
                     <button type="submit" className="  form-apply">申请发布</button>
                 </form>
 
@@ -142,7 +153,7 @@ let Tab = React.createClass({
 function mapStateToProps(state) {
     console.log(state)
     return {
-
+        authenticated: state.auth.authenticated
     };
 }
 export default connect(mapStateToProps,{releaseAdvert})(Releaseadvert);
