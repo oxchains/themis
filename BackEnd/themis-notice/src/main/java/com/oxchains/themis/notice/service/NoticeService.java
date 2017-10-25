@@ -1,7 +1,9 @@
 package com.oxchains.themis.notice.service;
 
 import com.oxchains.themis.common.model.RestResp;
+import com.oxchains.themis.notice.dao.BTCTickerDao;
 import com.oxchains.themis.notice.dao.NoticeDao;
+import com.oxchains.themis.notice.domain.BTCTicker;
 import com.oxchains.themis.notice.domain.Notice;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,9 @@ public class NoticeService {
 
     @Resource
     private NoticeDao noticeDao;
+
+    @Resource
+    private BTCTickerDao btcTickerDao;
 
     /**
      * 发布公告需要传递的参数：
@@ -164,4 +169,32 @@ public class NoticeService {
             return RestResp.fail("操作失败", e.getMessage());
         }
     }
+
+    public RestResp queryBTCMarket(){
+        try {
+            List<BTCTicker> btcTickerList = btcTickerDao.findBySymbol("btccny");
+            if (!btcTickerList.isEmpty()){
+                return RestResp.success("操作成功", btcTickerList);
+            }else {
+                return RestResp.fail("操作失败");
+            }
+
+            // TODO 关于价格之间的计算
+            /*Double premium = notice.getPremium();// 溢价
+            BTCTicker btcTicker = btcTickerDao.findBySymbol("btccny");
+            BigDecimal last = btcTicker.getLast();
+            String newLast = last.toString();
+
+            Double m = premium/100;
+            System.out.println("溢价倍数：" + m);
+            Double n = 1 + m;
+            String per = n.toString();
+
+            // 基于溢价之后的价格
+            BigDecimal price = ArithmeticUtils.multiply(newLast, per);*/
+        }catch (Exception e){
+            return RestResp.fail("操作失败", e.getMessage());
+        }
+    }
+
 }
