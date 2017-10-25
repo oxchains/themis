@@ -21,12 +21,8 @@ export function signinAction({mobilephone, password}) {
         axios.post(`${ROOT_URL}/login`, { mobilephone, password})
             .then(response => {
                 console.log(response)
-<<<<<<< HEAD
-                if(response.data.data.status == 1) {
-=======
                 if(response.data.status == 1) {
                     debugger;
->>>>>>> fa159dbf21106c1b7e7694c06641bf9f65397c10
                     localStorage.setItem('token', response.data.data.token);
                     localStorage.setItem('username', loginname);
                     dispatch({type: AUTH_USER});
