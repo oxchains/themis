@@ -38,7 +38,7 @@ class PageComponent extends  Component{
         return(
             <div>
                 <div className="paginationDiv">
-                    <a className={this.props.current == 1? 'prev disable' : 'prev'} onClick={this.props.goPrev.bind(this)}></a>
+                    <a className={this.props.current == 1? 'prev disable' : 'prev'} onClick={this.props.goPrev.bind(this)}> 上一页</a>
                     <span>
                         {
                             pageNum.map(function(curPageNum){
@@ -48,7 +48,7 @@ class PageComponent extends  Component{
                             })
                         }
                     </span>
-                    <a className={this.props.current == this.props.total? 'next disable' : 'next'} onClick={this.props.goNext.bind(this)}></a>
+                    <a className={this.props.current == this.props.total? 'next disable' : 'next'} onClick={this.props.goNext.bind(this)}>下一页</a>
                     <div className="rightDiv">
                         总共<span className="num-total">{_this.props.total}</span>条，
                         共

@@ -56,7 +56,7 @@ class Header extends Component{
                 <nav  className="header">
                     <div className="navdivimg">
                         <img src="./public/img/nl_logo.png" className="navimg" alt=""/>
-                        <img src="./public/img/themis.png" className="navthemis" alt=""/>
+                        {/*<img src="./public/img/themis.png" className="navthemis" alt=""/>*/}
                     </div>
 
                     <ul className="headerul" >
@@ -64,8 +64,8 @@ class Header extends Component{
                         <li ><a href="/buybtc"  >购买比特币</a></li>
                         <li ><a href="/sellbtc" >出售比特币</a></li>
                         <li ><a href="/releaseadvert" >发布广告</a></li>
-                        <li ><a href="/myadvert" >我的广告</a></li>
-                        <li ><a href="/usercenter" >用户中心</a></li>
+                        {/*<li ><a href="/myadvert" >我的广告</a></li>*/}
+                        {/*<li ><a href="/usercenter" >用户中心</a></li>*/}
                         <li className="registerlia"><a href="/signup" >注册</a></li>
                         <li  className="loginlia"><a href="/signin"  >登录</a></li>
                     </ul>

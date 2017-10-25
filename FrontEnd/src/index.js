@@ -18,6 +18,7 @@ import Header from  './components/common/header';
 import Footer from  './components/common/footer';
 import Singin from  './components/auth/signin';
 import Singup from  './components/auth/signup';
+import Signout from  './components/auth/signout';
 import Usercenter from './components/usercenter';
 import Buybtc from './components/buybtc';
 import Sellbtc from './components/sellbtc';
@@ -49,7 +50,7 @@ ReactDOM.render(
                 <Switch>
                     <Route path="/signin" component={Singin}/>
                     <Route path="/signup" component={Singup}/>
-                    {/*<Route path="/signout" component={Signout} />*/}
+                    <Route path="/signout" component={Signout} />
                     <Route path="/usercenter" component={Usercenter}/>
                     <Route path="/releaseadvert" component={Releaseadvert}/>
                     <Route path="/buybtc" component={Buybtc}/>

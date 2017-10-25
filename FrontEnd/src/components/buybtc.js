@@ -103,7 +103,7 @@ class Buybtc extends Component {
 
         return (
             <div className="mainbuy">
-             <div className="tableborder">
+             <div className="">
                  <select className="titleslect">
                      <option value="0">搜用户&nbsp; ></option>
                      <option value="1">搜广告 ></option>
