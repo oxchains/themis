@@ -82,6 +82,15 @@ public class NoticeController {
     }
 
     /**
+     * 实时获取(火币网)BTC价格
+     * @return
+     */
+    @GetMapping(value = "/query/BTCPrice")
+    public RestResp queryBTCPrice(){
+        return noticeService.queryBTCPrice();
+    }
+
+    /**
      * 实时获取(火币网)BTC行情信息
      * @return
      */
