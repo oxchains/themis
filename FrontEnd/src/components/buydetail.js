@@ -10,30 +10,16 @@ import { connect } from 'react-redux';
 class Selldetail extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            message:'',
-            messagenum:'',
-            price:'34567'
-        }
-        this.handelChangemoney = this.handelChangemoney.bind(this)
-        this.handelChangenum = this.handelChangenum.bind(this)
+        this.state = {}
+        this.handelChange = this.handelChange.bind(this)
     }
-    handelChangemoney(event){
-    console.log(event.target);
-    this.setState({
-        message:(event.target.value) / this.state.price
-    })
-    }
-    handelChangenum(event){
+    handelChange(event){
         console.log(event.target);
-        this.setState({
-            messagenum:(event.target.value) * this.state.price
-        })
+        this.setState({message:event.target.value})
     }
 
     render() {
-        var messmoney = this.state.message;
-        var messnum = this.state.messagenum;
+        var mess = this.state.message;
         return (
             <div className="maincontent">
                 <div className="detail-title">
@@ -73,23 +59,22 @@ class Selldetail extends Component {
                                 <li>付款方式 : &#x3000;&#x3000;&#x3000;支付宝</li>
                                 <li>付款期限 : &#x3000;&#x3000;&#x3000;30 分钟</li>
                             </ul>
-                            <h4 className="sellwhat">你想出售多少？</h4>
-                            <input type="text" className="inputmoney sellmoney" onChange={this.handelChangemoney} name="amount" value={messnum} placeholder="请输入你想出售的金额"/>
-
+                            <h4 className="sellwhat">你想购买多少？</h4>
+                            <input type="text" className="inputmoney sellmoney" onChange={this.handelChange} value={mess} placeholder="请输入你想出售的金额"/>
                             <i className="fa fa-exchange" aria-hidden="true"></i>
-                            <input type="text" className="inputmoney sellmoney" onChange={this.handelChangenum} name="qty" value={messmoney} placeholder="请输入你想出售的数量"/>
-                            <button className="form-sell">立刻出售</button>
+                            <input type="text" className="inputmoney sellmoney" onChange={this.handelChange} value={mess} placeholder="请输入你想出售的数量"/>
+                            <button className="form-sell">立刻购买</button>
                         </div>
 
                     </div>
-                    <div className="col-lg-3 col-xs-3 col-md-3">
-                          <h5 className="adcontent">广告内容</h5>
-                        <div className="ad-info">
-                          <p> 秒付款，支付宝优先。【不留支付宝名字的一律视为恶意竞拍】</p>
-                            <p>拍下的请您提供支付宝账号:</p>
-                            <p>支付宝姓名:</p>
-                        </div>
-                    </div>
+                    {/*<div className="col-lg-3 col-xs-3 col-md-3">*/}
+                        {/*<h5 className="adcontent">广告内容</h5>*/}
+                        {/*<div className="ad-info">*/}
+                            {/*<p> 秒付款，支付宝优先。【不留支付宝名字的一律视为恶意竞拍】</p>*/}
+                            {/*<p>拍下的请您提供支付宝账号:</p>*/}
+                            {/*<p>支付宝姓名:</p>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
                 </div>
 
                 <div className="detail-notice">

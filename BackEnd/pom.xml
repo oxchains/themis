@@ -124,6 +124,8 @@
 
         <dependency>
             <groupId>org.springframework.cloud</groupId>
+<<<<<<< HEAD
+=======
             <artifactId>spring-cloud-starter-eureka</artifactId>
         </dependency>
 
@@ -141,6 +143,7 @@
 
         <dependency>
             <groupId>org.springframework.cloud</groupId>
+>>>>>>> 07ed9f8fdc06c294817ef6b21a7e635b5bf4ab46
             <artifactId>spring-cloud-netflix-eureka-client</artifactId>
         </dependency>
         <dependency>

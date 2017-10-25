@@ -48,6 +48,8 @@ public class NoticeService {
             List<Notice> noticeListUnDone = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(notice.getUserId(), notice.getNoticeType(), 0);
             List<Notice> noticeListDoing = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(notice.getUserId(), notice.getNoticeType(), 1);
             List<Notice> noticeListDone = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(notice.getUserId(), notice.getNoticeType(), 2);
+<<<<<<< HEAD
+=======
 
             List<BTCTicker> btcTickerList = btcTickerDao.findBySymbol("btccny");
             for (BTCTicker btcTicker : btcTickerList) {
@@ -62,6 +64,7 @@ public class NoticeService {
                     }
                 }
             }
+>>>>>>> 07ed9f8fdc06c294817ef6b21a7e635b5bf4ab46
 
             if (!noticeListDone.isEmpty() && noticeListDoing.isEmpty()){
                 Notice n = noticeDao.save(notice);

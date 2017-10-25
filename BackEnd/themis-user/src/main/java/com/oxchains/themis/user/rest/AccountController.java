@@ -2,7 +2,10 @@ package com.oxchains.themis.user.rest;
 
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.user.service.AccountService;
+<<<<<<< HEAD
+=======
 import com.oxchains.themis.user.service.BitcoinService;
+>>>>>>> 07ed9f8fdc06c294817ef6b21a7e635b5bf4ab46
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
