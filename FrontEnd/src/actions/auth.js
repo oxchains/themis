@@ -23,7 +23,6 @@ export function signinAction({mobilephone, password}) {
                 console.log(response)
 
                 if(response.data.data.status == 1) {
-
                     localStorage.setItem('token', response.data.data.token);
                     localStorage.setItem('username', loginname);
                     dispatch({type: AUTH_USER});

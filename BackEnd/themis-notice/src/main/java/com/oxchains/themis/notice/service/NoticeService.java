@@ -1,11 +1,19 @@
 package com.oxchains.themis.notice.service;
 
 import com.oxchains.themis.common.model.RestResp;
+import com.oxchains.themis.common.util.ArithmeticUtils;
+import com.oxchains.themis.notice.dao.BTCMarketDao;
+import com.oxchains.themis.notice.dao.BTCResultDao;
+import com.oxchains.themis.notice.dao.BTCTickerDao;
 import com.oxchains.themis.notice.dao.NoticeDao;
+import com.oxchains.themis.notice.domain.BTCMarket;
+import com.oxchains.themis.notice.domain.BTCResult;
+import com.oxchains.themis.notice.domain.BTCTicker;
 import com.oxchains.themis.notice.domain.Notice;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -14,8 +22,10 @@ import java.util.*;
 @Service
 public class NoticeService {
 
-    @Resource
-    private NoticeDao noticeDao;
+    @Resource private NoticeDao noticeDao;
+    @Resource private BTCTickerDao btcTickerDao;
+    @Resource private BTCResultDao btcResultDao;
+    @Resource private BTCMarketDao btcMarketDao;
 
     /**
      * 发布公告需要传递的参数：
@@ -39,6 +49,20 @@ public class NoticeService {
             List<Notice> noticeListDoing = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(notice.getUserId(), notice.getNoticeType(), 1);
             List<Notice> noticeListDone = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(notice.getUserId(), notice.getNoticeType(), 2);
 
+            List<BTCTicker> btcTickerList = btcTickerDao.findBySymbol("btccny");
+            for (BTCTicker btcTicker : btcTickerList) {
+                Double low = btcTicker.getLow().doubleValue();
+                Double minPrice = notice.getMinPrice().doubleValue();
+                if (null == notice.getMinPrice()){
+                    notice.setMinPrice(btcTicker.getLow());
+                }else {
+                    // 市场价低于定义的最低价，那么价格就是自己定义的最低价
+                    if (ArithmeticUtils.minus(low, minPrice) < 0){
+                        notice.setPrice(notice.getMinPrice());
+                    }
+                }
+            }
+
             if (!noticeListDone.isEmpty() && noticeListDoing.isEmpty()){
                 Notice n = noticeDao.save(notice);
                 return RestResp.success("操作成功", n);
@@ -53,9 +77,9 @@ public class NoticeService {
                 }
             }
         } catch (Exception e){
-            e.printStackTrace();
+            return RestResp.fail("操作失败", e.getMessage());
         }
-        return RestResp.fail("操作失败");
+
     }
 
     public RestResp queryPartNotice(){
@@ -64,16 +88,19 @@ public class NoticeService {
             List<Notice> buyNoticeList = noticeDao.findByNoticeType(1L);
             List<Notice> sellNoticeList = noticeDao.findByNoticeType(2L);
 
-            int buySize = new Random().nextInt(buyNoticeList.size() - 2);
-            int sellSize = new Random().nextInt(sellNoticeList.size() - 2);
+            // size 判断
 
             if (buyNoticeList.size() > 2 && sellNoticeList.size() > 2){
+                int buySize = new Random().nextInt(buyNoticeList.size() - 2);
+                int sellSize = new Random().nextInt(sellNoticeList.size() - 2);
                 partList.addAll(buyNoticeList.subList(buySize, buySize + 2));
                 partList.addAll(sellNoticeList.subList(sellSize, sellSize + 2));
             }else if (buyNoticeList.size() < 2 && sellNoticeList.size() > 2){
+                int sellSize = new Random().nextInt(sellNoticeList.size() - 2);
                 partList.addAll(buyNoticeList);
                 partList.addAll(sellNoticeList.subList(sellSize, sellSize + 2));
             }else if (buyNoticeList.size() > 2 && sellNoticeList.size() < 2){
+                int buySize = new Random().nextInt(buyNoticeList.size() - 2);
                 partList.addAll(buyNoticeList.subList(buySize, buySize + 2));
                 partList.addAll(sellNoticeList);
             }else {
@@ -95,9 +122,8 @@ public class NoticeService {
                 return RestResp.fail("操作失败");
             }
         }catch (Exception e){
-            e.printStackTrace();
+            return RestResp.fail("操作失败", e.getMessage());
         }
-        return RestResp.fail("操作失败");
     }
 
     public RestResp querAllUnDone(){
@@ -151,15 +177,67 @@ public class NoticeService {
             }
             return RestResp.success(noticeList);
         }catch (Exception e){
-            e.printStackTrace();
+            return RestResp.fail("操作失败", e.getMessage());
         }
-        return RestResp.fail("操作失败");
+
     }
 
     public RestResp querMeNotice(Long userId, Long noticeType){
         try {
             List<Notice> noticeList = noticeDao.findByUserIdAndNoticeType(userId, noticeType);
             return RestResp.success("操作成功", noticeList);
+        }catch (Exception e){
+            return RestResp.fail("操作失败", e.getMessage());
+        }
+    }
+
+    public RestResp queryBTCPrice(){
+        try {
+            List<BTCTicker> btcTickerList = btcTickerDao.findBySymbol("btccny");
+            if (!btcTickerList.isEmpty()){
+                return RestResp.success("操作成功", btcTickerList);
+            }else {
+                return RestResp.fail("操作失败");
+            }
+
+            // TODO 关于价格之间的计算
+            /*Double premium = notice.getPremium();// 溢价
+            BTCTicker btcTicker = btcTickerDao.findBySymbol("btccny");
+            BigDecimal last = btcTicker.getLast();
+            String newLast = last.toString();
+
+            Double m = premium/100;
+            System.out.println("溢价倍数：" + m);
+            Double n = 1 + m;
+            String per = n.toString();
+
+            // 基于溢价之后的价格
+            BigDecimal price = ArithmeticUtils.multiply(newLast, per);*/
+        }catch (Exception e){
+            return RestResp.fail("操作失败", e.getMessage());
+        }
+    }
+
+    public RestResp queryBTCMarket(){
+        try {
+            List<BTCResult> btcResultList = btcResultDao.findByIsSuc("true");
+            List<BTCMarket> btcMarketList = btcMarketDao.findBySymbol("huobibtccny");
+            List<BTCTicker> btcTickerList = btcTickerDao.findBySymbol("btccny");
+            BTCResult btcResult = null;
+            BTCMarket btcMarket = null;
+            BTCTicker btcTicker = null;
+            for (int i = 0; i < btcResultList.size(); i++){
+                btcResult = btcResultList.get(i);
+            }
+            for (int i = 0; i < btcMarketList.size(); i++){
+                btcMarket = btcMarketList.get(i);
+            }
+            for (int i = 0; i < btcTickerList.size(); i++){
+                btcTicker = btcTickerList.get(i);
+            }
+            btcMarket.setTicker(btcTicker);
+            btcResult.setDatas(btcMarket);
+            return RestResp.success("操作成功", btcResultList);
         }catch (Exception e){
             return RestResp.fail("操作失败", e.getMessage());
         }

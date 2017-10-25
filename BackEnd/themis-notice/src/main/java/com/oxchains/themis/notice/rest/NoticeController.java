@@ -31,7 +31,7 @@ public class NoticeController {
      * 随机查询两条购买公告、两条出售公告
      * @return
      */
-    @GetMapping(value = "/queryPart")
+    @GetMapping(value = "/query/part")
     public RestResp queryPartNotice(){
         return noticeService.queryPartNotice();
     }
@@ -40,7 +40,7 @@ public class NoticeController {
      * 查询所有公告
      * @return
      */
-    @GetMapping(value = "/queryAll")
+    @GetMapping(value = "/query/all")
     public RestResp queryAllNotice(){
         return noticeService.queryAllNotice();
     }
@@ -49,7 +49,7 @@ public class NoticeController {
      * 查询所有非交易状态公告
      * @return
      */
-    @GetMapping(value = "/queryUnDone")
+    @GetMapping(value = "/query/unDone")
     public RestResp queryAllUnDone(){
         return noticeService.querAllUnDone();
     }
@@ -76,8 +76,26 @@ public class NoticeController {
      * @param noticeType    公告类型
      * @return
      */
-    @GetMapping(value = "/queryMe")
+    @GetMapping(value = "/query/me")
     public RestResp queryMeNotice(@RequestParam Long userId, @RequestParam Long noticeType){
         return noticeService.querMeNotice(userId, noticeType);
+    }
+
+    /**
+     * 实时获取(火币网)BTC价格
+     * @return
+     */
+    @GetMapping(value = "/query/BTCPrice")
+    public RestResp queryBTCPrice(){
+        return noticeService.queryBTCPrice();
+    }
+
+    /**
+     * 实时获取(火币网)BTC行情信息
+     * @return
+     */
+    @GetMapping(value = "/query/BTCMarket")
+    public RestResp queryBTCMarket(){
+        return noticeService.queryBTCMarket();
     }
 }
