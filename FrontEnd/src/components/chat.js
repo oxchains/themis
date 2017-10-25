@@ -42,7 +42,7 @@ class Chat extends Component{
                         <li className="text-center"><a href="javascript:(0);" className="gray g-pt-10 g-pb-10 getMore">获取更多聊天记录</a></li>
                     </ul>
                 </div>
-                <div className="footer clearfix">
+                <div className="clearfix">
                     <input type="text" className="message"/>
                     <button className="btn btn-primary send float-right">发送</button>
                 </div>

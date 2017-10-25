@@ -37,9 +37,7 @@ class Signin extends Component {
             <div>
 
                 <div className="login-box">
-
                     <div className="login-box-body">
-
                         <TabsControl >
                             <Tab name="手机登录">
                                 <div className="phone" ><Phonelogin/></div>

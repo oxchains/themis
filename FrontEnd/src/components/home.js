@@ -1,9 +1,7 @@
 /**
  * Created by oxchain on 2017/10/20.
  */
-/**
- * Created by oxchain on 2017/10/20.
- */
+
 import React, { Component } from 'react';
 
 import { Field } from 'redux-form';
