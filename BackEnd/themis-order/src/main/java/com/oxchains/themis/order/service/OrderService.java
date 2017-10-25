@@ -35,7 +35,9 @@ public class OrderService {
         this.orderArbitrateRepo = orderArbitrateRepo;
         this.restTemplate = restTemplate;
     }
-
+   /* public void souts(){
+        String s = restTemplate.
+    };*/
     /*
     * 查询所有订单
     * */

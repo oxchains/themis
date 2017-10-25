@@ -15,13 +15,17 @@
         <version>1.5.7.RELEASE</version>
         <relativePath/>
     </parent>
-
     <modules>
         <module>themis-user</module>
         <module>themis-chat</module>
         <module>themis-notice</module>
         <module>themis-common</module>
         <module>themis-order</module>
+<<<<<<< Updated upstream
+=======
+        <module>themis-arbitrate</module>
+
+>>>>>>> Stashed changes
     </modules>
 
     <properties>
