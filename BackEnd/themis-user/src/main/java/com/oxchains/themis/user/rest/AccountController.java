@@ -2,6 +2,10 @@ package com.oxchains.themis.user.rest;
 
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.user.service.AccountService;
+<<<<<<< HEAD
+=======
+import com.oxchains.themis.user.service.BitcoinService;
+>>>>>>> 07ed9f8fdc06c294817ef6b21a7e635b5bf4ab46
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -19,6 +23,9 @@ public class AccountController {
 
     @Resource
     private AccountService accountService;
+
+    @Resource
+    private BitcoinService bitcoinService;
 
     /**
      * 查询余额
@@ -88,5 +95,27 @@ public class AccountController {
     @GetMapping(value = "/key/{accountName}")
     public RestResp getKeys(@PathVariable String accountName){
         return accountService.getKeys(accountName);
+    }
+
+    /**
+     * 获取公私钥
+     * @return
+     */
+    @GetMapping(value = "/keys")
+    public RestResp getKeys(){
+        return bitcoinService.getKeys();
+    }
+
+    @PostMapping(value = "/transaction")
+    public RestResp createTransaction(String fromAddress,String txId,String prvKey,String toAddress,String pubKeys,double amount,int required){
+        return bitcoinService.createTransaction(fromAddress,txId,prvKey,toAddress,amount,Arrays.asList(pubKeys.split(",")),required);
+    }
+    @PostMapping(value = "/finish")
+    public RestResp finishTransaction(String fromAddress,String toAddress,String prvKeys,double amount){
+        return bitcoinService.confirmTransaction(toAddress,amount,Arrays.asList(prvKeys.split(",")),1);
+    }
+
+    public RestResp getScriptHash(){
+        return null;
     }
 }

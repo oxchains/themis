@@ -21,10 +21,16 @@
   "dependencies": {
     "axios": "^0.16.2",
     "babel-preset-stage-1": "^6.24.1",
+<<<<<<< HEAD
     "bootstrap": "^3.3.7",
+=======
+    "jquery": "^3.2.1",
+>>>>>>> 07ed9f8fdc06c294817ef6b21a7e635b5bf4ab46
     "moment": "^2.19.1",
     "react": "^15.6.1",
+    "react-bootstrap": "^0.31.3",
     "react-dom": "^15.6.1",
+    "react-dropzone": "^4.2.1",
     "react-modal-bootstrap": "^1.1.1",
     "react-moment": "^0.6.5",
     "react-redux": "^5.0.6",
@@ -41,6 +47,7 @@
     "babel-preset-react": "^6.24.1",
     "css-loader": "^0.28.7",
     "webpack": "^3.7.1",
-    "webpack-dev-server": "^2.9.2"
+    "webpack-dev-server": "^2.9.2",
+    "style-loader": "^0.19.0"
   }
 }
