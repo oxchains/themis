@@ -141,6 +141,9 @@ class Signup extends Component {
                                 <div className="form-style">
                                     <button type="submit" className="btn   form-register"><i className={`fa fa-spinner fa-spin ${this.state.spin?'':'hidden'}`}></i> 注册</button>
                                 </div>
+                                <div className="form-group">
+                                    <a className="forgetpwd" href="/signin">已有账户 ? 点击登录</a>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -159,7 +162,7 @@ class Signup extends Component {
                     </ModalBody>
                     <ModalFooter>
                         <button className='btn btn-default' onClick={this.hideModal}>
-                            <a href="/signin" style={{color:black}}>关闭</a>
+                            <a href="/signin" >关闭</a>
                         </button>
                     </ModalFooter>
                 </Modal>
