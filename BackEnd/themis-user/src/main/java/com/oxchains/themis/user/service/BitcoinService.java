@@ -4,6 +4,7 @@ import com.oxchains.bitcoin.rpcclient.BitcoinJSONRPCClient;
 import com.oxchains.bitcoin.rpcclient.BitcoindRpcClient;
 import com.oxchains.themis.common.model.AddressKeys;
 import com.oxchains.themis.common.model.RestResp;
+import com.oxchains.themis.common.model.ScriptHash;
 import com.oxchains.themis.common.util.ArithmeticUtils;
 import com.oxchains.themis.user.dao.TransactionDao;
 import com.oxchains.themis.user.domain.Transaction;
@@ -42,6 +43,8 @@ public class BitcoinService {
     private final double TX_FEE = 0.0001d;
     private int UTXO_VOUT = 0;
 
+    private int nRequired = 2;
+
     @Resource
     private TransactionDao transactionDao;
 
@@ -52,14 +55,14 @@ public class BitcoinService {
         return  RestResp.success(new AddressKeys(address,pubKey,prvKey));
     }
 
-    public RestResp getP2SHAddress(String toAddress,double amount,List<String> signPubKeys, int nRequired){
+    public RestResp getScriptHash(String orderId,String keyPair,double amount,List<String> signPubKeys){
         BitcoindRpcClient.MultiSig multiSig = client.createMultiSig(nRequired, signPubKeys);
         String p2shAddress = multiSig.address();
         String redeemScript = multiSig.redeemScript();
 
         client.addMultiSigAddress(nRequired,signPubKeys,"201710251728");
 
-        return null;
+        return RestResp.success(new ScriptHash(p2shAddress,redeemScript));
     }
     /*
     * 1. 生成公钥/私钥
