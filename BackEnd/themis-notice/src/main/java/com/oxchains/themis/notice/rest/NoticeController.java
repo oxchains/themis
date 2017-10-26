@@ -55,7 +55,7 @@ public class NoticeController {
     }
 
     /**
-     * 搜索公告
+     * 搜索公告(未分页)
      * @param notice
      * @return
      */
@@ -76,14 +76,21 @@ public class NoticeController {
      * @param noticeType    公告类型
      * @return
      */
-<<<<<<< HEAD
-    @GetMapping(value = "/queryMe")
-    public RestResp queryMeNotice(@RequestParam Long userId, @RequestParam Long noticeType){
-        return noticeService.querMeNotice(userId, noticeType);
-=======
     @GetMapping(value = "/query/me")
     public RestResp queryMeNotice(@RequestParam Long userId, @RequestParam Long noticeType){
         return noticeService.querMeNotice(userId, noticeType);
+    }
+
+    /**
+     * 根据交易状态查询自己的公告
+     * @param userId
+     * @param noticeType
+     * @param txStatus
+     * @return
+     */
+    @GetMapping(value = "/query/me2")
+    public RestResp queryMeAllNotice(@RequestParam Long userId, @RequestParam Long noticeType, @RequestParam Integer txStatus){
+        return noticeService.queryMeAllNotice(userId, noticeType, txStatus);
     }
 
     /**
@@ -102,6 +109,49 @@ public class NoticeController {
     @GetMapping(value = "/query/BTCMarket")
     public RestResp queryBTCMarket(){
         return noticeService.queryBTCMarket();
->>>>>>> 07ed9f8fdc06c294817ef6b21a7e635b5bf4ab46
+    }
+
+    /**
+     * 分页搜索所有公告
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @GetMapping(value = "/search/pageAll")
+    public RestResp searchPageAll(@RequestParam Integer pageNum, @RequestParam Integer pageSize){
+        return noticeService.searchPageAll(pageNum, pageSize);
+    }
+
+    /**
+     * 分页搜索公告 @RequestParam 如果不传会报空指针
+     */
+    /*@GetMapping(value = "search/page")
+    public RestResp searchPage(@RequestParam Long location,
+                               @RequestParam Long currency,
+                               @RequestParam Long payType,
+                               @RequestParam Long noticeType,
+                               @RequestParam Integer pageNum,
+                               @RequestParam Integer pageSize){
+        return noticeService.searchPage(location, currency, payType, noticeType, pageNum, pageSize);
+    }*/
+
+    /**
+     * 分页搜索公告
+     * @param notice
+     * @return
+     */
+    @PostMapping(value = "search/page")
+    public RestResp searchPage(@RequestBody Notice notice){
+        if (notice.getSearchType() == 0){
+            return noticeService.searchPage(notice);
+        }else {
+            return noticeService.searchPage(notice);
+        }
+    }
+
+    // 点击购买/出售公告显示的默认第一页数据
+    @GetMapping(value = "/search/default")
+    public RestResp DefaultSearch(@RequestParam Long noticeType){
+            return noticeService.defaultSearch(noticeType);
     }
 }

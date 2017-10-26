@@ -24,6 +24,10 @@ public class RestResp implements Serializable{
         return new RestResp(1, "success", data);
     }
 
+    public static RestResp success() {
+        return new RestResp(1, "success");
+    }
+
     public static RestResp success(String message, Object data){
         return new RestResp(1, message, data);
     }

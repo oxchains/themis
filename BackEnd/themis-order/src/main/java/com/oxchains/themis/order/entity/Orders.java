@@ -4,7 +4,7 @@ import org.apache.poi.ss.formula.functions.T;
 import javax.persistence.*;
 import java.math.BigDecimal;
 /**
- * Created by xuqi on 2017/10/23.
+ * Created by huohuo on 2017/10/23.
  */
 @Entity
 @Table(name = "tbl_biz_orders")
@@ -15,28 +15,55 @@ public class Orders {
     private String createTime;  //下单时间
     private String finishTime;//完成时间
     private BigDecimal amount; //交易数量
-    private Long paymentId; //支付方式编号  1 现金 2 转账 3 支付宝 4 微信 5 Apple Pay
+   // private Long paymentId; //支付方式编号  1 现金 2 转账 3 支付宝 4 微信 5 Apple Pay
     private Long vcurrencyId; //数字货币币种 1 比特币
     private Long currencyId;  //纸币币种    1  人民币 2  美元
     private Long buyerId;     // 买家id
     private Long sellerId;    //卖家id
-    private Long orderStatus; // 订单状态    1  待确认 2 代付款  3 待收货 4  待评价 5 完成 6  已取消
-    private Long noticeId;   //公告id
-    private int arbitrate;   //是否在仲裁中 默认 0： 不在仲裁中 1： 在仲裁中
+    private Long orderStatus; // 订单状态    1  待确认 2 代付款  3 待收货 4  待评价 5 完成 6  已取消 7等待卖家退款 8 仲裁中
+   // private Long noticeId;
+   //公告id
+    @Transient
+    private String orderStatusName;
+    @ManyToOne
+    private Notice notice;
+    @ManyToOne
+    private Payment payment;
+
+    private int arbitrate;   //是否在仲裁中 默认 0： 不在仲裁中 1： 在仲裁中 2:仲裁结束
     @Transient
     private String orderType;  //  交易类型     购买  或 出售
     @Transient
     private String friendUsername;
     @Transient
-    private String userIds;
+    private String buyerUsername;
+    @Transient
+    private String sellerUsername;
 
-    public String getUserIds() {
-        return userIds;
+    public String getOrderStatusName() {
+        return orderStatusName;
     }
 
-    public void setUserIds(String userIds) {
-        this.userIds = userIds;
+    public void setOrderStatusName(String orderStatusName) {
+        this.orderStatusName = orderStatusName;
     }
+
+    public String getBuyerUsername() {
+        return buyerUsername;
+    }
+
+    public void setBuyerUsername(String buyerUsername) {
+        this.buyerUsername = buyerUsername;
+    }
+
+    public String getSellerUsername() {
+        return sellerUsername;
+    }
+
+    public void setSellerUsername(String sellerUsername) {
+        this.sellerUsername = sellerUsername;
+    }
+
     public String getFriendUsername() {
         return friendUsername;
     }
@@ -93,12 +120,20 @@ public class Orders {
         this.amount = amount;
     }
 
-    public Long getPaymentId() {
-        return paymentId;
+    public Notice getNotice() {
+        return notice;
     }
 
-    public void setPaymentId(Long paymentId) {
-        this.paymentId = paymentId;
+    public void setNotice(Notice notice) {
+        this.notice = notice;
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
     }
 
     public Long getVcurrencyId() {
@@ -139,14 +174,6 @@ public class Orders {
 
     public void setOrderStatus(Long orderStatus) {
         this.orderStatus = orderStatus;
-    }
-
-    public Long getNoticeId() {
-        return noticeId;
-    }
-
-    public void setNoticeId(Long noticeId) {
-        this.noticeId = noticeId;
     }
 
     public String getOrderType() {

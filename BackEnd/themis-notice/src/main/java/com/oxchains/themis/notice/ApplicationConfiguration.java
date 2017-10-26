@@ -1,8 +1,8 @@
-package com.oxchains.themis;
+package com.oxchains.themis.notice;
 
-import com.oxchains.themis.user.auth.AuthError;
-import com.oxchains.themis.user.auth.JwtAuthenticationProvider;
-import com.oxchains.themis.user.auth.JwtTokenFilter;
+import com.oxchains.themis.notice.auth.AuthError;
+import com.oxchains.themis.notice.auth.JwtAuthenticationProvider;
+import com.oxchains.themis.notice.auth.JwtTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,8 +41,8 @@ public class ApplicationConfiguration extends WebSecurityConfigurerAdapter{
     @Override
     public void configure(HttpSecurity http) throws Exception {
         //http.csrf().disable().authorizeRequests().antMatchers("/", "/").permitAll();
-        http.cors().and().csrf().disable().authorizeRequests().antMatchers(HttpMethod.POST,"/login","/token","/register","/account/*", "/notice/search/*").permitAll()
-                .antMatchers(HttpMethod.GET,"/verifyCode","/account/*", "/notice/search/*").permitAll().antMatchers("/**/*")
+        http.cors().and().csrf().disable().authorizeRequests().antMatchers(HttpMethod.POST,"/login","/token","/register","/account/*", "/notice/**/*").permitAll()
+                .antMatchers(HttpMethod.GET,"/verifyCode","/account/*", "/notice/**/*").permitAll().antMatchers("/**/*")
                 .authenticated().and()
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
