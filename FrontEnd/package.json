@@ -21,11 +21,16 @@
   "dependencies": {
     "axios": "^0.16.2",
     "babel-preset-stage-1": "^6.24.1",
+<<<<<<< HEAD
 
     "bootstrap": "^3.3.7",
 
     "jquery": "^3.2.1",
 
+=======
+    "bootstrap": "^3.3.7",
+    "jquery": "^3.2.1",
+>>>>>>> c2debf82de0be5f6808de6594277b3af2a1523ac
     "moment": "^2.19.1",
     "react": "^15.6.1",
     "react-bootstrap": "^0.31.3",

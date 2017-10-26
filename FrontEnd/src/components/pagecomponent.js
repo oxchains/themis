@@ -4,6 +4,14 @@
 
 import React, { Component } from 'react';
 class PageComponent extends  Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+
+          }
+        }
+
+
     render(){
         let _this = this;
         //当前页码

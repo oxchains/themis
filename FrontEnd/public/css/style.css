@@ -327,6 +327,7 @@ div {
     display: flex;
     justify-content: flex-end;
     padding-right: 15px;
+    font-size: 13px;
 }
 .forgetpwd:hover,.forgetpwd:active
 {
@@ -458,20 +459,22 @@ div {
 }
 .h2title
 {
-    font-weight: 400;
-    margin-bottom: 40px;
+    font-weight: 600;
+    font-size: 25px;
+    /*margin-bottom: 40px;*/
 }
 .tipcontent
 {
     color: #A6A6A6;
     margin: 20px 0 ;
     font-size: 13px;
-    line-height: 11px;
+    line-height: 19px;
 }
 .h4title
 {
     padding-bottom: 20px;
     border-bottom: 1px solid #A6A6A6;
+    margin-top: 20px;
 }
 .h3title
 {
@@ -511,6 +514,7 @@ div {
     height: 40px;
     background-color: #fff;
     color: grey;
+    font-size: 14px;
 }
 .text-content
 {
@@ -600,7 +604,7 @@ div {
 }
 .tabletitle
 {
-    padding: 10px 0px;
+    /*padding: 10px 0px;*/
     text-align: center;
     font-weight: 400;
     font-size: 12px;
@@ -769,7 +773,7 @@ div {
     list-style: none;
     display: inline-block;
     position: relative;
-    top:20px;
+    /*top:20px;*/
     /*width: 75%;*/
     padding: 0;
 }
@@ -797,7 +801,7 @@ div {
 html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
 /*table样式*/
 .table-bordered {  border: 1px solid #ddd; }
-.table { width: 100%;  max-width: 37%; margin-bottom: 20px; }
+.table { width: 100%;  font-size: 14px ;margin-bottom:0;}
 table { background-color: transparent; }
 table { border-spacing: 0;  border-collapse: collapse; }
 .table-bordered>tbody>tr>td, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>td, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>thead>tr>th {
@@ -982,6 +986,7 @@ table { border-spacing: 0;  border-collapse: collapse; }
 {
     margin-bottom: 5px;
     color: #757575;
+    font-size: 14px;
 }
 .list-border>hr
 {
@@ -993,7 +998,8 @@ table { border-spacing: 0;  border-collapse: collapse; }
 {
     width: 70%;
     margin: 0 auto;
-    text-align: center;
+    text-align: left;
+    font-size: 14px;
 }
 .home-button
 {
@@ -1038,6 +1044,10 @@ table { border-spacing: 0;  border-collapse: collapse; }
 .list-item>p,.home-content>p
 {
     color: #757575;
+}
+.buy-header
+{
+    margin: 40px 0;
 }
 
 

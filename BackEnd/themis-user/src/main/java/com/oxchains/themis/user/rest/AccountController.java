@@ -116,4 +116,14 @@ public class AccountController {
     public RestResp getScriptHash(String orderId,String pubKeys,double amount){
         return bitcoinService.getScriptHash(orderId,Arrays.asList(pubKeys.split(",")),amount);
     }
+
+    @PostMapping(value = "/{orderId}")
+    public RestResp addTxid(@PathVariable String orderId,String txId){
+        return bitcoinService.addTxid(orderId,txId);
+    }
+
+    @PostMapping(value = "/p2ur")
+    public RestResp payToUser(String orderId,String txId,String recvAddress,String prvKeys,double amount){
+        return bitcoinService.payToUser(orderId,txId,recvAddress,Arrays.asList(prvKeys.split(",")),amount);
+    }
 }

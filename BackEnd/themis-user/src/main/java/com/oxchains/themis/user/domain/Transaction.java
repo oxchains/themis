@@ -98,4 +98,14 @@ public class Transaction {
     public void setTxStatus(Integer txStatus) {
         this.txStatus = txStatus;
     }
+
+    private String utxoTxid;
+
+    public String getUtxoTxid() {
+        return utxoTxid;
+    }
+
+    public void setUtxoTxid(String utxoTxid) {
+        this.utxoTxid = utxoTxid;
+    }
 }

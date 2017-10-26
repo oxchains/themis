@@ -42,6 +42,7 @@ public class BitcoinService {
 
     private final double TX_FEE = 0.0001d;
     private int UTXO_VOUT = 0;
+    private int DEFAULT_CONFIRMATIONS = 6;
 
     private int nRequired = 2;
 
@@ -54,6 +55,7 @@ public class BitcoinService {
         String prvKey=client.dumpPrivKey(address);
         return  RestResp.success(new AddressKeys(address,pubKey,prvKey));
     }
+
 
     public RestResp getScriptHash(String orderId,List<String> signPubKeys,double amount){
         try{
@@ -73,8 +75,70 @@ public class BitcoinService {
             order.setTxStatus(2);
             order = transactionDao.save(order);
 
-            return RestResp.success(new ScriptHash(p2shAddress,redeemScript,"bitcoin:"+p2shAddress+"?amount="+ArithmeticUtils.multiply(amount,1,8)));
+            return RestResp.success(new ScriptHash(p2shAddress,redeemScript,"bitcoin:"+p2shAddress+"?amount="+amount));
 
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            return RestResp.fail(e.getMessage());
+        }
+    }
+
+    public RestResp addTxid(String orderId,String txId){
+        try{
+            Transaction transaction = transactionDao.findByOrderId(orderId);
+            if(null!= transaction){
+                transaction.setUtxoTxid(txId);
+                transactionDao.save(transaction);
+            }
+            return RestResp.success(transaction);
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            return RestResp.fail(e.getMessage());
+        }
+    }
+
+    public RestResp getTransactionStatus(String txId){
+        BitcoindRpcClient.RawTransaction rawTransaction = client.getRawTransaction(txId);
+        int confirmations = rawTransaction.confirmations();
+        double value = rawTransaction.vOut().get(0).value();
+        return null;
+    }
+
+    public RestResp payToUser(String orderId,String txId,String recvAddress,List<String> signPrvKeys,double amount){
+        try {
+            Transaction order = transactionDao.findByOrderId(orderId);
+            String P2SH_ADDRESS = order.getP2shAddress();
+            String P2SH_REDEEM_SCRIPT = order.getP2shRedeemScript();
+            String SIGNED_TX = order.getSignTx();
+            BitcoindRpcClient.RawTransaction rawTransaction = client.getRawTransaction(order.getUtxoTxid());
+
+            List<BitcoindRpcClient.TxInput> txInputs = new ArrayList<>();
+            List<BitcoindRpcClient.TxOutput> txOutputs = new ArrayList<>();
+            List<BitcoindRpcClient.RawTransaction.Out> outs = rawTransaction.vOut();
+            for(BitcoindRpcClient.RawTransaction.Out out : outs){
+                BitcoindRpcClient.RawTransaction.Out.ScriptPubKey scriptPubKey = out.scriptPubKey();
+                String type = scriptPubKey.type();
+                if("scripthash".equals(type)){
+                    //BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), P2SH_REDEEM_SCRIPT, BigDecimal.valueOf(amount));
+                    BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT);
+                    txInputs.add(txInput);
+                    BitcoindRpcClient.TxOutput txOutput = new BitcoindRpcClient.BasicTxOutput(recvAddress, ArithmeticUtils.minus(amount, TX_FEE));//outputAmount
+                    txOutputs.add(txOutput);
+
+                    String rawTx = client.createRawTransaction(txInputs, txOutputs);
+
+                    List<BitcoindRpcClient.ExtendedTxInput> txInputs1 = new ArrayList<>();
+                    //BitcoindRpcClient.ExtendedTxInput txInput1 = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), P2SH_REDEEM_SCRIPT, BigDecimal.valueOf(amount - TX_FEE));//outputAmount
+                    BitcoindRpcClient.ExtendedTxInput txInput1 = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), P2SH_REDEEM_SCRIPT);//outputAmount
+                    txInputs1.add(txInput1);
+                    String lastTx = client.signRawTransaction1(rawTx, txInput1, signPrvKeys);
+                    client.sendRawTransaction(lastTx);
+
+
+                    return RestResp.success("----------");
+                }
+            }
+            return RestResp.fail("++++++++++");
         }catch (Exception e){
             logger.error(e.getMessage());
             return RestResp.fail(e.getMessage());

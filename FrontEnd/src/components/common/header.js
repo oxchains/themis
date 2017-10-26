@@ -68,6 +68,7 @@ class Header extends Component{
                         <li  className="loginlia"><a href="/signin"  >登录</a></li>
                     </ul>
                     {/*{this.renderUserInfo()}*/}
+<<<<<<< HEAD
                    <span>这是导航条</span>
                     <a className="logincolor" href="/">首页 </a>
                     <a className="logincolor" href="/releaseadvert"> 发布广告 </a>
@@ -78,6 +79,9 @@ class Header extends Component{
                     <a className="logincolor" href="/usercenter"> 用户中心 </a>
                     <a className="logincolor" href="/orderinprogress">订单</a>
                     <a className="logincolor" href="/myadvert"> 我的广告 </a>
+=======
+
+>>>>>>> c2debf82de0be5f6808de6594277b3af2a1523ac
                 </nav>
             </div>
     )

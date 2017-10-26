@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 
 import { Field } from 'redux-form';
 import { connect } from 'react-redux';
-import { signinAction } from '../actions/auth'
+import { fetctSellBTC,fetctSellSeach } from '../actions/releaseadvert'
 import PageComponent from './pageComponent';
 class Buybtc extends Component {
     constructor(props) {
@@ -22,15 +22,25 @@ class Buybtc extends Component {
             totalPage:'',//总页数
         }
         this.handleRow = this.handleRow.bind(this)
+        this.handleSeach = this.handleSeach.bind(this)
+    }
+
+    componentWillMount(){
+        this.props.fetctSellBTC({}, ()=>{});
+    }
+
+    handleSeach(){
+        console.log("点击了搜索")
+        this.props.fetctSellSeach({}, ()=>{});
     }
     handleFormSubmit(){
-        this.props.signinAction({  },()=>{});
+        // this.props.signinAction({  },()=>{});
     }
     handleRow( item,index){
         return(
             <tr key={index} className="contentborder">
                 <td className="tabletitle">{item.name}</td>
-                <td className="tabletitle">交易 {item.num}| 好评度 {item.bili} | 信任 {item.trust}</td>
+                <td className="tabletitle">交易 {item.num} | 好评度 {item.bili} | 信任 {item.trust}</td>
                 <td className="tabletitle"> {item.payway} </td>
                 <td className="tabletitle"> {item.money} CNY</td>
                 <td className="tabletitle">{item.jiage}</td>
@@ -124,7 +134,7 @@ class Buybtc extends Component {
                         <option value="1">Apple pay </option>
                         <option value="2">银联 </option>
                     </select>
-                    <button type="submit" className="  form-seach">搜索</button>
+                    <button type="submit" className="  form-seach" onClick={this.handleSeach()}>搜索</button>
                 </div>
                 <table className="tableborder">
                     <tbody>
@@ -164,4 +174,4 @@ function mapStateToProps(state) {
         errorMessage: state.auth.error
     };
 }
-export default connect(mapStateToProps,{signinAction})(Buybtc);
+export default connect(mapStateToProps,{fetctSellBTC,fetctSellSeach})(Buybtc);
