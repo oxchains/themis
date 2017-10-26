@@ -3,6 +3,8 @@ package com.oxchains.themis.notice.rest;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.notice.domain.Notice;
 import com.oxchains.themis.notice.service.NoticeService;
+import org.hibernate.hql.internal.ast.tree.RestrictableStatement;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -55,7 +57,7 @@ public class NoticeController {
     }
 
     /**
-     * 搜索公告
+     * 搜索公告(未分页)
      * @param notice
      * @return
      */
@@ -82,6 +84,18 @@ public class NoticeController {
     }
 
     /**
+     * 根据交易状态查询自己的公告
+     * @param userId
+     * @param noticeType
+     * @param txStatus
+     * @return
+     */
+    @GetMapping(value = "/query/me2")
+    public RestResp queryMeAllNotice(@RequestParam Long userId, @RequestParam Long noticeType, @RequestParam Integer txStatus){
+        return noticeService.queryMeAllNotice(userId, noticeType, txStatus);
+    }
+
+    /**
      * 实时获取(火币网)BTC价格
      * @return
      */
@@ -98,4 +112,36 @@ public class NoticeController {
     public RestResp queryBTCMarket(){
         return noticeService.queryBTCMarket();
     }
+
+    /**
+     * 分页搜索所有公告
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @GetMapping(value = "/search/pageAll")
+    public RestResp searchPageAll(@RequestParam("pageNum") Integer pageNum, @RequestParam Integer pageSize){
+        return noticeService.searchPageAll(pageNum, pageSize);
+    }
+
+    /**
+     * 分页搜索公告
+     * @param location
+     * @param currency
+     * @param payType
+     * @param noticeType
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @GetMapping(value = "search/page")
+    public RestResp searchPage(@RequestParam Long location,
+                               @RequestParam Long currency,
+                               @RequestParam Long payType,
+                               @RequestParam Long noticeType,
+                               @RequestParam Integer pageNum,
+                               @RequestParam Integer pageSize){
+        return noticeService.searchPage(location, currency, payType, noticeType, pageNum, pageSize);
+    }
+
 }

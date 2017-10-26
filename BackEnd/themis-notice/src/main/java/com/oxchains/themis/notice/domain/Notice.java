@@ -57,5 +57,21 @@ public class Notice {
     @Column(name = "txstatus")
     private Integer txStatus = 0;           // 交易状态，默认0:非交易,1:交易进行,2:交易完成
 
+    // 以下是暂时展示的数据，实际使用时在从对应的表中获取
+    @Transient
+    @Column(name = "txnum")
+    private Integer txNum;
+
+    @Transient
+    @Column(name = "trustnum")
+    private Integer trustNum;
+
+    @Transient
+    @Column(name = "trustpercent")
+    private Integer trustPercent;
+
+    @Transient
+    private String loginname;
+
     public Notice(){}
 }
