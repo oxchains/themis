@@ -1,5 +1,6 @@
 package com.oxchains.themis.notice.rest;
 
+import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.notice.domain.Notice;
 import com.oxchains.themis.notice.service.NoticeService;
@@ -142,16 +143,30 @@ public class NoticeController {
      */
     @PostMapping(value = "search/page")
     public RestResp searchPage(@RequestBody Notice notice){
-        if (notice.getSearchType() == 0){
+        if (notice.getSearchType() == 0){// 0 默认是搜公告
             return noticeService.searchPage(notice);
         }else {
             return noticeService.searchPage(notice);
         }
     }
 
-    // 点击购买/出售公告显示的默认第一页数据
+    /**
+     * 点击 购买/出售公告 显示的默认第一页数据
+     * @param noticeType
+     * @return
+     */
     @GetMapping(value = "/search/default")
     public RestResp DefaultSearch(@RequestParam Long noticeType){
-            return noticeService.defaultSearch(noticeType);
+        return noticeService.defaultSearch(noticeType);
     }
+
+    /**
+     * 发布公告页面要返回的状态列表
+     * @return
+     */
+    @GetMapping(value = "/query/statusKV")
+    public RestResp queryStatusKV(){
+        return noticeService.queryStatusKV();
+    }
+
 }
