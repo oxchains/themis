@@ -22,6 +22,10 @@
         <module>themis-common</module>
         <module>themis-order</module>
         <module>themis-arbitrate</module>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 68b2492994e1c09fdca23a9941e8720b66b8aa9c
     </modules>
 
     <properties>
@@ -138,8 +142,17 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+        <dependency>
+<<<<<<< HEAD
+=======
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.31</version>
+        </dependency>
 
         <dependency>
+>>>>>>> 68b2492994e1c09fdca23a9941e8720b66b8aa9c
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-netflix-eureka-client</artifactId>
         </dependency>

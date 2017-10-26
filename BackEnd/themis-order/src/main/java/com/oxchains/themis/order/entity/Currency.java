@@ -5,7 +5,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * Created by xuqi on 2017/10/23.
+ * Created by huohuo on 2017/10/23.
  */
 @Entity
 @Table(name = "tbl_biz_currency")

@@ -14,4 +14,6 @@ import java.util.List;
 public interface BTCTickerDao extends CrudRepository<BTCTicker, Long>{
 
     List<BTCTicker> findBySymbol(String symbol);
+
+    Iterable<BTCTicker> findBTCTickerBySymbol(String symbol);
 }

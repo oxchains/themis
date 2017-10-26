@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Created by xuqi on 2017/10/24.
+ * Created by huohuo on 2017/10/24.
  */
 @Repository
 public interface NoticeRepo extends CrudRepository<Notice,Long> {
