@@ -2,36 +2,52 @@
  * Created by zhangxiaojing on 2017/10/20.
  */
 import React,{ Component }from 'react';
+import {connect} from 'react-redux';
+import { Link } from 'react-router-dom';
+import {fetchCompletedOrders} from '../actions/order';
 
 class OrderCompleted extends Component {
     constructor(props) {
         super(props);
         this.renderrow = this.renderrow.bind(this);
     }
+    componentWillMount() {
 
-    renderrow(val, index) {
-        return (
-            <tr key={index}>
-                <td>{val.src}</td>
-                <td>{val.name}</td>
-                <td>{val.info}</td>
-                <td>{val.src}</td>
-                <td>{val.name}</td>
-                <td>{val.info}</td>
-                <td>{val.src}</td>
-                <td><a className="btn btn-primary" href="/orderprogress">详情</a></td>
-                <td><a href="/arbitrationbuyer">THEMIS仲裁</a></td>
-            </tr>
-        )
+        const userId={userId:"1"}
+        this.props.fetchCompletedOrders({userId},()=>{});
+    }
+
+    renderrow(){
+        return this.props.completed_orders.map((item,index)=>{
+            const data = {id:item.id,userId:1,partnerId:item.orderType == "购买"?item.sellerId:item.buyerId};
+            const path = {
+                pathname:'/orderprogress',
+                state:data,
+            }
+            return(
+                <tr key={index}>
+                    <td>{item.friendUsername}</td>
+                    <td>{item.id}</td>
+                    <td>{item.orderType}</td>
+                    <td>{item.money}</td>
+                    <td>{item.amount}</td>
+                    <td>{item.createTime}</td>
+                    <td>{item.orderStatusName}</td>
+                    <td><Link className="btn btn-primary" to={path}>详情</Link></td>
+                    <td><Link className="btn btn-primary" to="/arbitrationbuyer">THEMIS仲裁</Link></td>
+                </tr>
+            )
+        })
     }
     render() {
-        const imgLinks = [
-            { src: 2, name: 2, info: "haha"},
-            { src: 2, name: 2, info: "haha"},
-            { src: 1, name: 2, info: "haha"},
-            { src: 2, name: 2, info: "haha"},
-            { src: 4, name: 2, info: "haha"},
-        ]
+        console.log(this.props.completed_orders)
+        if(this.props.completed_orders===null){
+            return(
+                <div className="container">
+                    <div className="h1 text-center">Loading...</div>
+                </div>
+            )
+        }
         return (
             <div className="container">
                 <div className="orderType text-center g-pt-50 g-pb-50">
@@ -57,7 +73,7 @@ class OrderCompleted extends Component {
                             </tr>
                             </thead>
                             <tbody>
-                            {imgLinks.map(this.renderrow)}
+                            {this.renderrow()}
                             </tbody>
                         </table>
                     </div>
@@ -67,4 +83,10 @@ class OrderCompleted extends Component {
         )
     }
 }
-export default  OrderCompleted;
+function mapStateToProps(state) {
+    return {
+        completed_orders: state.order.completed_orders
+    };
+}
+
+export default connect(mapStateToProps, { fetchCompletedOrders })(OrderCompleted);
