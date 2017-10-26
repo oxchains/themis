@@ -22,23 +22,32 @@ public class Orders {
     private Long sellerId;    //卖家id
     private Long orderStatus; // 订单状态    1  待确认 2 代付款  3 待收货 4  待评价 5 完成 6  已取消 7等待卖家退款 8 仲裁中
    // private Long noticeId;
-   //公告id
     @Transient
-    private String orderStatusName;
+    private String p2shAddress;  //协商地址
+    @Transient
+    private String orderStatusName; //订单状态名称
     @ManyToOne
-    private Notice notice;
+    private Notice notice;  //相关联的公告信息
     @ManyToOne
-    private Payment payment;
+    private Payment payment; //相关联的 支付方式信息
 
     private int arbitrate;   //是否在仲裁中 默认 0： 不在仲裁中 1： 在仲裁中 2:仲裁结束
     @Transient
     private String orderType;  //  交易类型     购买  或 出售
     @Transient
-    private String friendUsername;
+    private String friendUsername; //交易伙伴名称
     @Transient
-    private String buyerUsername;
+    private String buyerUsername; //买家名称
     @Transient
-    private String sellerUsername;
+    private String sellerUsername; //卖家名称
+
+    public String getP2shAddress() {
+        return p2shAddress;
+    }
+
+    public void setP2shAddress(String p2shAddress) {
+        this.p2shAddress = p2shAddress;
+    }
 
     public String getOrderStatusName() {
         return orderStatusName;
