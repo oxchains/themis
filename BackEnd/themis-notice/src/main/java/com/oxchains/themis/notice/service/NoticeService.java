@@ -3,11 +3,9 @@ package com.oxchains.themis.notice.service;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.util.ArithmeticUtils;
 import com.oxchains.themis.notice.dao.*;
-import com.oxchains.themis.notice.domain.BTCMarket;
-import com.oxchains.themis.notice.domain.BTCResult;
-import com.oxchains.themis.notice.domain.BTCTicker;
-import com.oxchains.themis.notice.domain.Notice;
+import com.oxchains.themis.notice.domain.*;
 import com.oxchains.themis.notice.rest.dto.PageDTO;
+import org.omg.CORBA.INTERNAL;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +25,7 @@ public class NoticeService {
     @Resource private BTCTickerDao btcTickerDao;
     @Resource private BTCResultDao btcResultDao;
     @Resource private BTCMarketDao btcMarketDao;
+    @Resource private UserDao userDao;
 
     /**
      * 发布公告需要传递的参数：
@@ -50,6 +49,9 @@ public class NoticeService {
             List<Notice> noticeListDoing = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(notice.getUserId(), notice.getNoticeType(), 1);
             List<Notice> noticeListDone = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(notice.getUserId(), notice.getNoticeType(), 2);
 
+            User userInfo = userDao.findOne(notice.getUserId().intValue());
+            String loginname = userInfo.getLoginname();
+
             List<BTCTicker> btcTickerList = btcTickerDao.findBySymbol("btccny");
             for (BTCTicker btcTicker : btcTickerList) {
                 Double low = btcTicker.getLow().doubleValue();
@@ -66,6 +68,7 @@ public class NoticeService {
 
 
             if (!noticeListDone.isEmpty() && noticeListDoing.isEmpty()){
+                notice.setLoginname(loginname);
                 Notice n = noticeDao.save(notice);
                 return RestResp.success("操作成功", n);
             }else {
@@ -74,6 +77,7 @@ public class NoticeService {
                 } else if (!noticeListUnDone.isEmpty()) {
                     return RestResp.fail("已经有一条此类型公告");
                 } else {
+                    notice.setLoginname(loginname);
                     Notice n = noticeDao.save(notice);
                     return RestResp.success("操作成功", n);
                 }
@@ -165,16 +169,6 @@ public class NoticeService {
         }
     }
 
-    /**
-     * 搜索公告需要传递的数据：
-     * searchType   搜索类型(搜公告:0/搜用户:非0)
-     * noticeType   公告类型(出售/购买)
-     * location     地区(可选)
-     * currency     货币(可选)
-     * payType      支付方式(可选)
-     * @param notice
-     * @return
-     */
     public RestResp searchNotice(Notice notice){
         try {
             Long location = notice.getLocation();
@@ -306,7 +300,7 @@ public class NoticeService {
      * @param sortType  排序
      * @return
      */
-    private PageRequest buildPageRequest(int pageNum, int pageSize, String sortType){
+    private PageRequest buildPageRequest(Integer pageNum, Integer pageSize, String sortType){
         Sort sort = null;
         if("auto".equals(sortType)){
             sort = new Sort(Sort.Direction.DESC, "id");
@@ -316,10 +310,16 @@ public class NoticeService {
         return new PageRequest(pageNum - 1, pageSize, sort);
     }
 
-    public RestResp searchPage(Long location, Long currency, Long payType, Long noticeType, Integer pageNum, Integer pageSize){
+    public RestResp searchPage(Notice notice){
         try {
-//            Sort sort = new Sort(Sort.Direction.DESC, "id");
-            Pageable pageable = buildPageRequest(pageNum, pageSize, null);
+            Long location = notice.getLocation();
+            Long currency = notice.getCurrency();
+            Long payType = notice.getPayType();
+            Long noticeType = notice.getNoticeType();
+            Integer pageNum = notice.getPageNum();
+            // Integer pageSize = notice.getPageSize();
+            // Sort sort = new Sort(Sort.Direction.DESC, "id");
+            Pageable pageable = buildPageRequest(pageNum, 8, null);
             Page<Notice> page = null;
             if (null != location && null != currency && null != payType) {
                 page = noticeDao.findByLocationAndCurrencyAndPayTypeAndNoticeType(location, currency, payType, noticeType, pageable);
@@ -348,7 +348,7 @@ public class NoticeService {
 
             PageDTO<Notice> pageDTO = new PageDTO<>();
             pageDTO.setCurrentPage(pageNum);
-            pageDTO.setPageSize(pageSize);
+            pageDTO.setPageSize(8);
             pageDTO.setRowCount(page.getTotalElements());
             pageDTO.setTotalPage(page.getTotalPages());
             pageDTO.setPageList(resultList);
@@ -359,5 +359,28 @@ public class NoticeService {
         }
     }
 
+    public RestResp defaultSearch(Long noticeType){
+        try {
+            Pageable pageable = buildPageRequest(1, 8, null);
+            Page<Notice> page = noticeDao.findByNoticeType(noticeType, pageable);
+            List<Notice> resultList = new ArrayList<>();
+            Iterator<Notice> it = page.iterator();
+            while (it.hasNext()){
+                resultList.add(it.next());
+            }
+            PageDTO<Notice> pageDTO = new PageDTO<>();
+            pageDTO.setCurrentPage(1);
+            pageDTO.setPageSize(8);
+            pageDTO.setRowCount(page.getTotalElements());
+            pageDTO.setTotalPage(page.getTotalPages());
+            pageDTO.setPageList(resultList);
+            return RestResp.success("操作成功", pageDTO);
+        }catch (Exception e){
+            e.printStackTrace();
+            return RestResp.fail("操作失败", e.getMessage());
+        }
+
+
+    }
 
 }

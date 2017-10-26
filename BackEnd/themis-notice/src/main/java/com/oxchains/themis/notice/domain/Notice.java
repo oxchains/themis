@@ -1,8 +1,11 @@
 package com.oxchains.themis.notice.domain;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
+import java.security.PrivateKey;
 import java.util.Date;
+import java.util.PrimitiveIterator;
 
 import javafx.beans.DefaultProperty;
 import lombok.Data;
@@ -70,8 +73,13 @@ public class Notice {
     @Column(name = "trustpercent")
     private Integer trustPercent;
 
-    @Transient
     private String loginname;
+
+    @Transient
+    private Integer pageNum;
+
+    @Transient
+    private Integer pageSize;
 
     public Notice(){}
 }

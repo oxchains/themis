@@ -4,14 +4,8 @@ import com.oxchains.themis.chat.common.User;
 import com.oxchains.themis.common.model.RestResp;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-<<<<<<< HEAD:BackEnd/themis-chat/src/main/java/oxchains/chat/rest/UserController.java
-import oxchains.chat.auth.UserToken;
-import oxchains.chat.entity.User;
-import oxchains.chat.service.UserService;
-=======
 import com.oxchains.themis.chat.auth.UserToken;
 import com.oxchains.themis.chat.service.UserService;
->>>>>>> b54ef991ebf23b343ec4f70ab27edc8e081f0b78:BackEnd/themis-chat/src/main/java/com/oxchains/themis/chat/rest/UserController.java
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;

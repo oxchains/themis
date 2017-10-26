@@ -118,21 +118,14 @@ public class NoticeController {
      * @return
      */
     @GetMapping(value = "/search/pageAll")
-    public RestResp searchPageAll(@RequestParam("pageNum") Integer pageNum, @RequestParam Integer pageSize){
+    public RestResp searchPageAll(@RequestParam Integer pageNum, @RequestParam Integer pageSize){
         return noticeService.searchPageAll(pageNum, pageSize);
     }
 
     /**
-     * 分页搜索公告
-     * @param location
-     * @param currency
-     * @param payType
-     * @param noticeType
-     * @param pageNum
-     * @param pageSize
-     * @return
+     * 分页搜索公告 @RequestParam 如果不传会报空指针
      */
-    @GetMapping(value = "search/page")
+    /*@GetMapping(value = "search/page")
     public RestResp searchPage(@RequestParam Long location,
                                @RequestParam Long currency,
                                @RequestParam Long payType,
@@ -140,6 +133,25 @@ public class NoticeController {
                                @RequestParam Integer pageNum,
                                @RequestParam Integer pageSize){
         return noticeService.searchPage(location, currency, payType, noticeType, pageNum, pageSize);
+    }*/
+
+    /**
+     * 分页搜索公告
+     * @param notice
+     * @return
+     */
+    @PostMapping(value = "search/page")
+    public RestResp searchPage(@RequestBody Notice notice){
+        if (notice.getSearchType() == 0){
+            return noticeService.searchPage(notice);
+        }else {
+            return noticeService.searchPage(notice);
+        }
     }
 
+    // 点击购买/出售公告显示的默认第一页数据
+    @GetMapping(value = "/search/default")
+    public RestResp DefaultSearch(@RequestParam Long noticeType){
+            return noticeService.defaultSearch(noticeType);
+    }
 }
