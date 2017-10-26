@@ -4,22 +4,35 @@
 
 import React, { Component } from 'react';
 
-import { Field } from 'redux-form';
 import { connect } from 'react-redux';
-
-class Selldetail extends Component {
+import { fetctBuyBtcDetail} from '../actions/releaseadvert'
+class Buydetail extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            message:"",
+            messnum:""
+
+        }
         this.handelChange = this.handelChange.bind(this)
     }
-    handelChange(event){
-        console.log(event.target);
-        this.setState({message:event.target.value})
+    handelChange(e){
+        const data = this.props.all.notice || [];
+        this.setState({
+            message:e.target.value,
+            messnum:(e.target.value) / data.price
+        })
     }
-
+    componentWillMount(){
+        const noticeId = "1"
+        this.props.fetctBuyBtcDetail({noticeId});
+    }
     render() {
-        var mess = this.state.message;
+        const messmoney = this.state.message;
+        const messnum = this.state.messnum;
+        const data = this.props.all.notice || [];
+        const datanum = this.props.all
+     const time = data.validPayTime/1000/60
         return (
             <div className="maincontent">
                 <div className="detail-title">
@@ -28,22 +41,22 @@ class Selldetail extends Component {
                             <img src="./public/img/touxiang.jpg" style={{width:100+'px'}} alt=""/>
                         </div>
                         <div className="col-lg-9 col-xs-9 col-md-9 title-img">
-                            <h4 style={{marginBottom:10+'px',paddingLeft:15+'px'}}>HALLAY</h4>
+                            <h4 style={{marginBottom:10+'px',paddingLeft:15+'px'}}>{datanum.username}</h4>
                             <ul className="detailul">
                                 <li>
-                                    <p>390</p>
+                                    <p>{datanum.txNum}</p>
                                     <p>交易次数</p>
                                 </li>
                                 <li>
-                                    <p>1190</p>
+                                    <p>{datanum.believeNum}</p>
                                     <p>信任人数</p>
                                 </li>
                                 <li>
-                                    <p>99%</p>
+                                    <p>{datanum.goodDegree}</p>
                                     <p>好评度</p>
                                 </li>
                                 <li>
-                                    <p>2-98btc</p>
+                                    <p>{datanum.goodDegree}</p>
                                     <p>历史成交数</p>
                                 </li>
                             </ul>
@@ -54,27 +67,18 @@ class Selldetail extends Component {
                     <div className="col-lg-9 col-xs-9 col-md-9">
                         <div>
                             <ul className="priceul">
-                                <li>报价 : &#x3000;&#x3000;&#x3000;&#x3000;&#x3000;34567CNY/BTC</li>
-                                <li>交易额度 : &#x3000;&#x3000;&#x3000;2000-2000 CNY</li>
-                                <li>付款方式 : &#x3000;&#x3000;&#x3000;支付宝</li>
-                                <li>付款期限 : &#x3000;&#x3000;&#x3000;30 分钟</li>
+                                <li>报价 : &#x3000;&#x3000;&#x3000;&#x3000;&#x3000;{data.price}CNY/BTC</li>
+                                <li>交易额度 : &#x3000;&#x3000;&#x3000;{data.minTxLimit}-{data.maxTxLimit} CNY</li>
+                                <li>付款方式 : &#x3000;&#x3000;&#x3000;{data.payType}</li>
+                                <li>付款期限 : &#x3000;&#x3000;&#x3000;{time}分钟</li>
                             </ul>
                             <h4 className="sellwhat">你想购买多少？</h4>
-                            <input type="text" className="inputmoney sellmoney" onChange={this.handelChange} value={mess} placeholder="请输入你想出售的金额"/>
+                            <input type="text" className="inputmoney sellmoney" onChange={this.handelChange} value={messmoney} placeholder="请输入你想出售的金额"/>
                             <i className="fa fa-exchange" aria-hidden="true"></i>
-                            <input type="text" className="inputmoney sellmoney" onChange={this.handelChange} value={mess} placeholder="请输入你想出售的数量"/>
+                            <input type="text" className="inputmoney sellmoney" onChange={this.handelChange} value={messnum} placeholder="请输入你想出售的数量"/>
                             <button className="form-sell">立刻购买</button>
                         </div>
-
                     </div>
-                    {/*<div className="col-lg-3 col-xs-3 col-md-3">*/}
-                        {/*<h5 className="adcontent">广告内容</h5>*/}
-                        {/*<div className="ad-info">*/}
-                            {/*<p> 秒付款，支付宝优先。【不留支付宝名字的一律视为恶意竞拍】</p>*/}
-                            {/*<p>拍下的请您提供支付宝账号:</p>*/}
-                            {/*<p>支付宝姓名:</p>*/}
-                        {/*</div>*/}
-                    {/*</div>*/}
                 </div>
 
                 <div className="detail-notice">
@@ -96,8 +100,9 @@ class Selldetail extends Component {
 
 function mapStateToProps(state) {
     return {
-        success: state.auth.authenticated,
+        all:state.advert.all,
+        authenticated: state.auth.authenticated,
         errorMessage: state.auth.error
     };
 }
-export default connect(mapStateToProps,{})(Selldetail);
+export default connect(mapStateToProps,{ fetctBuyBtcDetail })(Buydetail);

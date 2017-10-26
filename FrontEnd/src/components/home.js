@@ -35,13 +35,13 @@ class Baseinfo extends Component {
                         <p>{item.bili}</p>
                         <p>信誉度</p>
                     </div>
-                    <hr/>
-                    <div className="home-content">
+                    <hr className="clear"/>
+                    <div className=" home-content">
                         <p>交易价格:{item.price}CNY</p>
                         <p>交易限额:{item.limprice} CNY</p>
                         <p>付款方式:{item.payway}</p>
                     </div>
-                    <button className="home-button" ><a href="">购买比特币</a></button>
+                    <button className="home-button" ><a href="/buybtc">购买比特币</a></button>
                 </div>
 
         )
@@ -75,7 +75,7 @@ class Baseinfo extends Component {
 
 
         return (
-            <div className="">
+            <div className="clear">
                 <div className="headermain">
                     <div className="bannertitle">
                         <h2>THEMIS</h2>

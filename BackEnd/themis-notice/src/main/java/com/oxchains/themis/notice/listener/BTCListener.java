@@ -31,8 +31,8 @@ public class BTCListener {
     @Resource private BTCMarketDao btcMarketDao;
     @Resource private BTCTickerDao btcTickerDao;
 
-    // @Scheduled(cron="0 0/12 0-23 * * ?")//每12min 0-23点 执行一次
-    @Scheduled(fixedRate = 1000 * 60 * 12)//12分钟执行一次
+    //@Scheduled(cron="0 0/12 0-23 * * ?") // 每12min 0-23点 执行一次
+    @Scheduled(fixedRate = 1000 * 720)  // 12分钟执行一次
     public void BTCListener(){
         try {
             String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());

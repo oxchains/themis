@@ -5,11 +5,6 @@ import com.oxchains.themis.chat.service.ChatService;
 import com.oxchains.themis.common.model.RestResp;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-<<<<<<< HEAD:BackEnd/themis-chat/src/main/java/oxchains/chat/rest/ChatController.java
-import oxchains.chat.entity.ChatContent;
-import oxchains.chat.service.ChatService;
-=======
->>>>>>> b54ef991ebf23b343ec4f70ab27edc8e081f0b78:BackEnd/themis-chat/src/main/java/com/oxchains/themis/chat/rest/ChatController.java
 
 import javax.annotation.Resource;
 
