@@ -87,15 +87,15 @@ let Tab = React.createClass({
 
 class Phonelogin extends Component {
 // let Phonelogin = React.createClass({
-
     handlePhoneSubmit() {
         console.log("222")
 
         // const num= this.refs.num.value ;
         const mobilephone= this.refs.loginname.value ;
         const password = this.refs.password.value ;
-        if(mobilephone && password)
-            signinAction({ mobilephone, password },()=>{});
+        if(mobilephone && password) {
+            signinAction({mobilephone, password});
+        }
     }
     render(){
         return (<div>
@@ -132,7 +132,7 @@ class Emiallogin extends Component {
         const email= this.refs.email.value ;
         const password = this.refs.password.value ;
         if(email && password)
-            signinAction({ email, password },()=>{});
+            this.props.signinAction({ email, password },()=>{});
     }
     render(){
         return (<div>
