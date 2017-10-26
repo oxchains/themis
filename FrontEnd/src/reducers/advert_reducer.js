@@ -9,10 +9,11 @@ import {
     FETCH_BUY_SECAT,
     FETCH_SELL_SECAT,
     FETCH_BUY_BTC_DETAIL,
+    FETCH_ARRAY,
 
 } from '../actions/types';
 
-const INITIAL_STATE = { all: [] ,data:null,refuse:null};
+const INITIAL_STATE = { all: [] ,array: [] ,data:null,refuse:null};
 
 export default function(state = INITIAL_STATE, action) {
     switch(action.type) {
@@ -28,6 +29,8 @@ export default function(state = INITIAL_STATE, action) {
             return { ...state, all:action.payload.data.data};
         case FETCH_BUY_BTC_DETAIL:
             return { ...state, all:action.payload.data.data};
+        case FETCH_ARRAY:
+            return { ...state, array:action.payload.data.data};
     }
 
     return state;

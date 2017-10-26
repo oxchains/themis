@@ -16,8 +16,9 @@ export const FETCH_ADVERT = 'FETCH_ADVERT'                          //发布广�
 export const FETCH_BUY_BTC = 'fetch_buy_btc'                        //购买比特币
 export const FETCH_SELL_BTC = 'fetch_sell_btc'                      //出售比特币
 export const FETCH_SELL_SECAT = 'fetch_sell_seach'                  //出售比特币搜索广告
-export const FETCH_BUY_SECAT = 'fetch_buy_seach'                   //购买比特币搜索广告
+export const FETCH_BUY_SECAT = 'fetch_buy_seach'                    //购买比特币搜索广告
 export const FETCH_BUY_BTC_DETAIL = 'fetch_buy_btc_detail'           //购买比特币广告详情
+export const FETCH_ARRAY = 'fetch_array'                            //获取选择框数据
 
 
 export function getAuthorizedHeader() {
