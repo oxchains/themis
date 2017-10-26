@@ -1,10 +1,8 @@
 package com.oxchains.themis.order.rest;
 
 import com.oxchains.themis.common.model.RestResp;
-import com.oxchains.themis.order.entity.OrderAddresskeys;
-import com.oxchains.themis.order.entity.OrderArbitrate;
-import com.oxchains.themis.order.entity.Orders;
-import com.oxchains.themis.order.entity.Pojo;
+import com.oxchains.themis.order.common.Pojo;
+import com.oxchains.themis.order.entity.*;
 import com.oxchains.themis.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,17 +31,24 @@ public class OrderController {
     * */
     @RequestMapping("/order/findOrdersDetails")
     public RestResp findOrdersDetails(@RequestBody Pojo pojo){
-        System.out.println(pojo);
         Orders o = orderService.findOrdersDetails(pojo);
      return o!=null?RestResp.success(o): RestResp.fail();
     }
     /*
-    * 下个订单 订单信息和仲裁人列表
+    * 添加订单
     * */
     @RequestMapping("/order/addOrder")
     public RestResp addOrder(@RequestBody  Orders orders){
         Orders orders1 = orderService.addOrders(orders);
         return orders1 !=null?RestResp.success(orders1):RestResp.fail();
+    }
+    /*
+    * 卖家上传公私钥
+    * */
+    @RequestMapping("/order/saveAddresskey")
+    public RestResp saveAddresskey(@RequestBody OrderAddresskeys orderAddresskeys){
+        Orders orders = orderService.saveAddresskey(orderAddresskeys);
+        return orderAddresskeys==null?RestResp.fail():RestResp.success(orders);
     }
     /*
  * 根据id查询自己已完成的的订单
@@ -74,7 +79,7 @@ public class OrderController {
     * */
     @RequestMapping("/order/confirmOrders")
     public RestResp confirmOrders(@RequestBody Pojo pojo){
-        Orders o = orderService.confirmOrders(pojo.getId());
+        Orders o = orderService.confirmOrders(pojo);
         return o!=null?RestResp.success(o):RestResp.fail();
     }
     /*
@@ -109,14 +114,7 @@ public class OrderController {
         List<Orders> list = orderService.findArbitrareOrderById(pojo.getUserId());
         return RestResp.success(list);
     }
-    /*
-    * 卖家上传公私钥
-    * */
-    @RequestMapping("/order/saveAddresskey")
-    public RestResp saveAddresskey(@RequestBody OrderAddresskeys orderAddresskeys){
-        OrderAddresskeys orderAddresskeyss = orderService.saveAddresskey(orderAddresskeys);
-      return orderAddresskeys==null?RestResp.fail():RestResp.success(orderAddresskeyss);
-    }
+
 
     /*
     * 仲裁者仲裁将密匙碎片给胜利者
@@ -126,8 +124,33 @@ public class OrderController {
        OrderArbitrate orderArbitrate = orderService.arbitrateOrderToUser(pojo);
        return orderArbitrate!=null?RestResp.success():RestResp.fail();
     }
-
-
+    /*
+    * 获取卖家历史交易资料有 好评率 交易次数 第一次购买时间 用户创建时间 交易量 电子邮箱验证否 电话号码验证否 实名认证否 信任量
+    * */
+    @RequestMapping("/order/findUserTxDetail")
+    public RestResp findUserTxDetail(@RequestBody Pojo pojo){
+        System.out.println(pojo);
+        UserTxDetail userTxDetail = orderService.findUserTxDetail(pojo);
+        System.out.println(userTxDetail);
+        return userTxDetail!=null?RestResp.success(userTxDetail):RestResp.fail();
+    }
+    /*
+    * 张晓晶 调试状态用
+    * */
+    @RequestMapping("/order/{orderid}/{status}")
+    public RestResp updateOrderStatus(@PathVariable("orderid") String orderId,@PathVariable("status") Long  status){
+        Orders o = orderService.updateOrderStatus(orderId,status);
+     return o==null?RestResp.fail():RestResp.success(o);
+    }
+    /*
+    * 购买出售详情页面需要查的用户的历史交易信息 和公告的信息
+    * */
+    @RequestMapping("/order/findUserTxDetailAndNotice")
+    public RestResp findUserTxDetailAndNotice(@RequestBody Pojo pojo){
+        System.out.println(pojo);
+        UserTxDetail userTxDetailAndNotice = orderService.findUserTxDetailAndNotice(pojo);
+        return userTxDetailAndNotice==null?RestResp.fail():RestResp.success(userTxDetailAndNotice);
+    }
 }
 
 

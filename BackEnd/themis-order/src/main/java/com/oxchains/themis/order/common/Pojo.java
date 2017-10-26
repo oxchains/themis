@@ -1,4 +1,4 @@
-package com.oxchains.themis.order.entity;
+package com.oxchains.themis.order.common;
 
 /**
  * Created by huohuo on 2017/10/25.
@@ -7,6 +7,14 @@ public class Pojo {
     private Long userId;
     private String id;
     private Long successId;
+    private Long noticeId;
+    public Long getNoticeId() {
+        return noticeId;
+    }
+
+    public void setNoticeId(Long noticeId) {
+        this.noticeId = noticeId;
+    }
 
     public Long getSuccessId() {
         return successId;
@@ -37,7 +45,8 @@ public class Pojo {
         return "Pojo{" +
                 "userId=" + userId +
                 ", id='" + id + '\'' +
-                ", successId='" + successId + '\'' +
+                ", successId=" + successId +
+                ", noticeId=" + noticeId +
                 '}';
     }
 }

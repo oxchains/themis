@@ -1,10 +1,11 @@
 package com.oxchains.themis.order.service;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.oxchains.themis.common.model.AddressKeys;
 import com.oxchains.themis.common.util.DateUtil;
 import com.oxchains.themis.common.util.JsonUtil;
+import com.oxchains.themis.order.common.OrdersKeyAmount;
+import com.oxchains.themis.order.common.Pojo;
 import com.oxchains.themis.order.common.ShamirUtil;
 import com.oxchains.themis.order.entity.*;
 import com.oxchains.themis.order.repo.*;
@@ -12,6 +13,9 @@ import org.apache.commons.collections.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -30,6 +34,8 @@ public class OrderService {
     private OrderArbitrateRepo orderArbitrateRepo;
     @Autowired
     private OrderAddresskeyRepo orderAddresskeyRepo;
+    @Autowired
+    UserTxDetailRepo userTxDetailRepo;
 
     public OrderService(@Autowired OrderRepo orderRepo,@Autowired NoticeRepo noticeRepo,@Autowired UserRepo userRepo,@Autowired OrderArbitrateRepo orderArbitrateRepo,@Autowired RestTemplate restTemplate) {
         this.orderRepo = orderRepo;
@@ -68,6 +74,7 @@ public class OrderService {
     public Orders addOrders(Orders orders){
         Orders orders1 =null;
         try {
+            //生成一条订单信息
             orders.setCreateTime(DateUtil.getPresentDate());
             orders.setId(DateUtil.getOrderId());
             //Notice notice = noticeRepo.findOne(orders.getNoticeId());
@@ -75,19 +82,19 @@ public class OrderService {
             orders.setArbitrate(0);
             orders1 =orderRepo.save(orders);
 
-            //生成买家的公私匙 存到 订单买家卖家仲裁者表里
+            //生成买家用户的公私匙 存到 订单买家卖家仲裁者表里 order_address_key 每个订单对应一条
             AddressKeys addressKeys = this.getAddressKeys();
             OrderAddresskeys orderAddresskeys = new OrderAddresskeys();
             orderAddresskeys.setOrderId(orders1.getId());
             orderAddresskeys.setBuyerPubAuth(addressKeys.getPublicKey());
             orderAddresskeys.setBuyerPriAuth(addressKeys.getPrivateKey());
 
-            //生成仲裁者家的公私匙 存到 订单买家卖家仲裁者表里
+            //生成仲裁者用户的公私匙 存到 订单买家卖家仲裁者表里 order_address_key 每个订单对应一条
             AddressKeys addressKeys1 = this.getAddressKeys();
             orderAddresskeys.setUserPubAuth(addressKeys1.getPublicKey());
             orderAddresskeys.setUserPriAuth(addressKeys1.getPrivateKey());
             orderAddresskeyRepo.save(orderAddresskeys);
-
+            //将仲裁者用户的私匙 分为三个密匙碎片分别分给三个人 存储在 订单仲裁表里面 每个订单对应三条信息
             String[] strArr = ShamirUtil.splitAuth(addressKeys1.getPrivateKey());
             List<User> userList = userRepo.findUserByRoleId(3L);
             for(int i = 0;i<strArr.length;i++){
@@ -207,23 +214,28 @@ public class OrderService {
     }
     /*
     * 发布公告人确认订单
+    * description     发布公告的人确认交易
     * */
-    public Orders confirmOrders(String id){
+    public Orders confirmOrders(Pojo pojo){
         Orders o = null;
         try {
-            o = orderRepo.findOne(id);
-            if(o.getOrderStatus()==1){
-                o.setOrderStatus(2L);
-                o = orderRepo.save(o);
-                if(o.getOrderStatus()==2){
-                    //掉接口把卖家的BTB转移到协商地址
+            o = orderRepo.findOne(pojo.getId());
+            Notice notice = o.getNotice();
+            if(notice.getUserId()==pojo.getUserId()){
+                if(o.getOrderStatus()==1){
+                    //查询BTC有没有到协商地址如果到了地址
+                    if(true){
+                        o.setOrderStatus(2L);
+                        o = orderRepo.save(o);
+                        this.setOrderStatusName(o);
+                        return o;
+                    }
                 }
             }
-            this.setOrderStatusName(o);
         } catch (Exception e) {
             LOG.debug("confirm order faild :",e.getMessage());
         }
-        return o;
+        return null;
     }
     /*
     * 查询发布公告的人的所有待确认的订单
@@ -317,18 +329,30 @@ public class OrderService {
         }
         return ordersList;
     }
-    //获取卖家的公私匙 存到 订单买家卖家仲裁者表里
-    public OrderAddresskeys saveAddresskey(OrderAddresskeys orderAddresskeys){
+    //卖家上传公私钥
+    public Orders saveAddresskey(OrderAddresskeys orderAddresskeys){
         OrderAddresskeys orderAddresskeys1 = null;
+        Orders orders = null;
         try {
             orderAddresskeys1 = orderAddresskeyRepo.findOrderAddresskeysByOrderId(orderAddresskeys.getOrderId());
             orderAddresskeys1.setSellerPubAuth(orderAddresskeys.getSellerPubAuth());
             orderAddresskeys1.setSellerPriAuth(orderAddresskeys.getSellerPriAuth());
             orderAddresskeys1 = orderAddresskeyRepo.save(orderAddresskeys1);
+            orders = orderRepo.findOne(orderAddresskeys1.getOrderId());
+            //调用用户中心接口生成协商地址
+            String[] s = {orderAddresskeys1.getBuyerPubAuth(),orderAddresskeys1.getSellerPubAuth(),orderAddresskeys1.getUserPubAuth()};
+            OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orderAddresskeys1.getOrderId(),s,orders.getAmount());
+            HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), this.getHttpHeader());
+            JSONObject jsonObject = restTemplate.postForObject("http://themis-user/account/p2sh",formEntity,JSONObject.class);
+            Integer status =  (Integer) jsonObject.get("status");
+            if(status==1){
+                OrderTransaction orderTransaction = (OrderTransaction) JsonUtil.fromJson(jsonObject.get("data").toString(), OrderTransaction.class);
+                orders.setP2shAddress(orderTransaction.getP2shAddress());
+            }
         } catch (Exception e) {
             LOG.debug("save address key faild :",e.getMessage());
         }
-        return  orderAddresskeys1;
+        return  orders;
 
     }
     /*
@@ -378,11 +402,51 @@ public class OrderService {
             if(o.getOrderStatus()==7){
                 o.setOrderStatusName("退款中");
             }
-            if(o.getOrderStatus()==8){
-                o.setOrderStatusName("仲裁中");
-            }
         } catch (Exception e) {
             LOG.debug("set order status value faild",e.getMessage());
         }
+    }
+
+    public UserTxDetail findUserTxDetailAndNotice(Pojo pojo){
+        Notice notice = noticeRepo.findOne(pojo.getNoticeId());
+        pojo.setUserId(notice.getUserId());
+        UserTxDetail userTxDetail = this.findUserTxDetail(pojo);
+        userTxDetail.setNotice(notice);
+        userTxDetail.setUsername(userRepo.findOne(notice.getUserId()).getLoginname());
+        return userTxDetail;
+    }
+
+    public UserTxDetail findUserTxDetail(Pojo pojo){
+     UserTxDetail userTxDetail = userTxDetailRepo.findOne(pojo.getUserId());
+     String goodDegree = ((userTxDetail.getGoodDesc() / (userTxDetail.getGoodDesc()+userTxDetail.getBadDesc()))*100)+"%";
+     User user = userRepo.findOne(pojo.getUserId());
+     userTxDetail.setEmailVerify("未验证");
+     userTxDetail.setUsernameVerify("未验证");
+     userTxDetail.setMobilePhoneVerify("未验证");
+     if(user.getEmail()!=null){
+         userTxDetail.setEmailVerify("已验证");
+     }
+     if(user.getUsername()!=null){
+         userTxDetail.setUsernameVerify("已验证");
+     }
+     if(user.getMobilephone()!=null){
+         userTxDetail.setMobilePhoneVerify("已验证");
+     }
+     userTxDetail.setGoodDegree(goodDegree);
+     return userTxDetail;
+    }
+    public Orders updateOrderStatus(String orderId,Long status){
+        Orders o = orderRepo.findOne(orderId);
+        o.setOrderStatus(status);
+        o = orderRepo.save(o);
+        return o;
+    }
+
+    private HttpHeaders getHttpHeader(){
+        HttpHeaders headers = new HttpHeaders();
+        MediaType type = MediaType.parseMediaType("application/json; charset=UTF-8");
+        headers.setContentType(type);
+        headers.add("Accept", MediaType.APPLICATION_JSON.toString());
+        return  headers;
     }
 }
