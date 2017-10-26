@@ -17,11 +17,15 @@ import {Route, BrowserRouter, Switch, Redirect} from 'react-router-dom';
 import Header from  './components/common/header';
 import Footer from  './components/common/footer';
 import Singin from  './components/auth/signin';
+import Signinemail from  './components/auth/signin_email';
+
 import Singup from  './components/auth/signup';
+import Signout from  './components/auth/signout';
 import Usercenter from './components/usercenter';
 import Buybtc from './components/buybtc';
 import Sellbtc from './components/sellbtc';
 import Selldetail from './components/selldetail';
+import Buydetail from './components/buydetail';
 import Myadvert from './components/myadvert';
 import Home from './components/home';
 import OrderInProgress from './components/orderinprogress';
@@ -54,8 +58,10 @@ ReactDOM.render(
                 <Header/>
                 <Switch>
                     <Route path="/signin" component={Singin}/>
+                    <Route path="/signinemail" component={Signinemail}/>
+
                     <Route path="/signup" component={Singup}/>
-                    {/*<Route path="/signout" component={Signout} />*/}
+                    <Route path="/signout" component={Signout} />
                     <Route path="/usercenter" component={Usercenter}/>
                     <Route path="/orderinprogress" component={OrderInProgress}/>
                     <Route path="/ordercompleted" component={OrderCompleted}/>
@@ -67,11 +73,12 @@ ReactDOM.render(
                     <Route path="/releaseadvert" component={Releaseadvert}/>
                     <Route path="/buybtc" component={Buybtc}/>
                     <Route path="/sellbtc" component={Sellbtc}/>
-                    <Route path="/selldetail" component={Selldetail}/>
+                    <Route path="/selldetail:id" component={Selldetail}/>
+                    <Route path="/buydetail:id" component={Buydetail}/>
                     <Route path="/myadvert" component={Myadvert}/>
                     <Route path="/" component={Home}/>
                 </Switch>
-                {/*<Footer/>*/}
+                <Footer/>
             </main>
         </div>
     </BrowserRouter>

@@ -22,16 +22,18 @@ export function signinAction({mobilephone, password}) {
             .then(response => {
                 console.log(response)
 
-                if(response.data.data.status == 1) {
+                if(response.data.status == 1) {
+
+                    console.log("23333")
+
                     localStorage.setItem('token', response.data.data.token);
-                    localStorage.setItem('username', loginname);
+                    localStorage.setItem('userId', response.data.data.id);
+                    localStorage.setItem('username',response.data.data.loginname);
                     dispatch({type: AUTH_USER});
                     browserHistory.push('/');
-                    // hashHistory.push('/')
                 } else {
                     dispatch(authError(response.data.message));
                 }
-
             })
             .catch( (err) => dispatch(authError(err.message)) );
     }
@@ -56,10 +58,10 @@ export function signoutUser() {
  * 注册
  */
 
-export function signupUser({ loginname, mobilephone, email,password,choosenum }, callback) {
-    console.log(`注册传送的数据: ${loginname}, ${mobilephone},${email}, ${password},${choosenum}`);
+export function signupUser({ loginname, mobilephone, email,password }, callback) {
+    console.log(`注册传送的数据: ${loginname}, ${mobilephone},${email}, ${password}`);
     return function(dispatch) {
-        axios.post(`${ROOT_URLC}/register`, { loginname, mobilephone, email,password ,choosenum})
+        axios.post(`${ROOT_URLC}/register`, { loginname, mobilephone, email,password })
             .then(response => {
                 console.log(response)
                 if(response.data.status == 1) {

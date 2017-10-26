@@ -45,7 +45,7 @@ let TabsControl = React.createClass({
         let that = this;
         return (
             <div className="mainbar">
-               <div className="col-lg-4 col-xs-3">
+               <div className="col-lg-3 col-xs-3">
                    <ul className="sildbar ">
                        {React.Children.map(this.props.children, (element, index) => {
                            return (<li className={`liheight ${that.getTitleItemCssClasses(index)}`} onClick={() => {this.setState({currentIndex: index})}}>
@@ -53,7 +53,7 @@ let TabsControl = React.createClass({
                        })}
                    </ul>
                </div>
-                <div className="col-lg-8  col-xs-9">
+                <div className="col-lg-9  col-xs-9">
                     {React.Children.map(this.props.children, (element, index) => {
                         return (<div className={that.getContentItemCssClasses(index)}>{element}</div>)
                     })}

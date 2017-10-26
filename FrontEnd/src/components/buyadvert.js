@@ -89,7 +89,7 @@ let Adverting = React.createClass({
 
     render(){
         const TableLinks = [
-            {num:"1111111",type:"线下交易",country:"中国",price:"37000 CNY",bili:"1%",time:"2017-9-20",status:"已完成" },
+            {num:"111111",type:"线下交易",country:"中国",price:"37000 CNY",bili:"1%",time:"2017-9-20",status:"已完成" },
         ]
         return (<div>
             <table className=" tableborder">
@@ -105,10 +105,10 @@ let Adverting = React.createClass({
                 </tr>
                 {TableLinks.map(this.handleRow)}
                 <tr className="contentborder bottomcontent">
-                    <td> 没有更多内容了</td>
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td>没有更多内容了</td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -139,7 +139,7 @@ let Adverted = React.createClass({
 
     render(){
         const TableLinks = [
-            {num:"2222222",type:"线下交易",country:"中国",price:"37000 CNY",bili:"1%",time:"2017-9-20",status:"已完成" },
+            {num:"222222",type:"线下交易",country:"中国",price:"37000 CNY",bili:"1%",time:"2017-9-20",status:"已完成" },
         ]
         return (<div>
             <table className="tableborder">
@@ -155,10 +155,10 @@ let Adverted = React.createClass({
                 </tr>
                 {TableLinks.map(this.handleRow)}
                 <tr className="contentborder bottomcontent">
-                    <td> 没有更多内容了</td>
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td>没有更多内容了</td>
                     <td></td>
                     <td></td>
                     <td></td>

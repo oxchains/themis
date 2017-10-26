@@ -31,7 +31,7 @@ public class NoticeController {
      * 随机查询两条购买公告、两条出售公告
      * @return
      */
-    @GetMapping(value = "/queryPart")
+    @GetMapping(value = "/query/part")
     public RestResp queryPartNotice(){
         return noticeService.queryPartNotice();
     }
@@ -40,7 +40,7 @@ public class NoticeController {
      * 查询所有公告
      * @return
      */
-    @GetMapping(value = "/queryAll")
+    @GetMapping(value = "/query/all")
     public RestResp queryAllNotice(){
         return noticeService.queryAllNotice();
     }
@@ -49,13 +49,13 @@ public class NoticeController {
      * 查询所有非交易状态公告
      * @return
      */
-    @GetMapping(value = "/queryUnDone")
+    @GetMapping(value = "/query/unDone")
     public RestResp queryAllUnDone(){
         return noticeService.querAllUnDone();
     }
 
     /**
-     * 搜索公告
+     * 搜索公告(未分页)
      * @param notice
      * @return
      */
@@ -76,8 +76,82 @@ public class NoticeController {
      * @param noticeType    公告类型
      * @return
      */
-    @GetMapping(value = "/queryMe")
+    @GetMapping(value = "/query/me")
     public RestResp queryMeNotice(@RequestParam Long userId, @RequestParam Long noticeType){
         return noticeService.querMeNotice(userId, noticeType);
+    }
+
+    /**
+     * 根据交易状态查询自己的公告
+     * @param userId
+     * @param noticeType
+     * @param txStatus
+     * @return
+     */
+    @GetMapping(value = "/query/me2")
+    public RestResp queryMeAllNotice(@RequestParam Long userId, @RequestParam Long noticeType, @RequestParam Integer txStatus){
+        return noticeService.queryMeAllNotice(userId, noticeType, txStatus);
+    }
+
+    /**
+     * 实时获取(火币网)BTC价格
+     * @return
+     */
+    @GetMapping(value = "/query/BTCPrice")
+    public RestResp queryBTCPrice(){
+        return noticeService.queryBTCPrice();
+    }
+
+    /**
+     * 实时获取(火币网)BTC行情信息
+     * @return
+     */
+    @GetMapping(value = "/query/BTCMarket")
+    public RestResp queryBTCMarket(){
+        return noticeService.queryBTCMarket();
+    }
+
+    /**
+     * 分页搜索所有公告
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @GetMapping(value = "/search/pageAll")
+    public RestResp searchPageAll(@RequestParam Integer pageNum, @RequestParam Integer pageSize){
+        return noticeService.searchPageAll(pageNum, pageSize);
+    }
+
+    /**
+     * 分页搜索公告 @RequestParam 如果不传会报空指针
+     */
+    /*@GetMapping(value = "search/page")
+    public RestResp searchPage(@RequestParam Long location,
+                               @RequestParam Long currency,
+                               @RequestParam Long payType,
+                               @RequestParam Long noticeType,
+                               @RequestParam Integer pageNum,
+                               @RequestParam Integer pageSize){
+        return noticeService.searchPage(location, currency, payType, noticeType, pageNum, pageSize);
+    }*/
+
+    /**
+     * 分页搜索公告
+     * @param notice
+     * @return
+     */
+    @PostMapping(value = "search/page")
+    public RestResp searchPage(@RequestBody Notice notice){
+        if (notice.getSearchType() == 0){
+            return noticeService.searchPage(notice);
+        }else {
+            return noticeService.searchPage(notice);
+        }
+    }
+
+    // 点击购买/出售公告显示的默认第一页数据
+    @GetMapping(value = "/search/default")
+    public RestResp DefaultSearch(@RequestParam Long noticeType){
+            return noticeService.defaultSearch(noticeType);
     }
 }

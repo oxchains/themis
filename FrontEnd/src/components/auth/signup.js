@@ -37,11 +37,11 @@ class Signup extends Component {
         });
     };
     handleFormSubmit({ loginname, mobilephone, email,password }) {
-        this.setState({ choosenum:this.state.index });
-       const choosenum = this.state.choosenum
-        console.log("choosenum" + this.state.choosenum)
+       //  this.setState({ choosenum:this.state.index });
+       // const choosenum = this.state.choosenum
+       //  console.log("choosenum" + this.state.choosenum)
         if(loginname && password && mobilephone)
-            this.props.signupUser({ loginname, mobilephone, email,password ,choosenum}, err => {
+            this.props.signupUser({ loginname, mobilephone, email,password }, err => {
                 this.setState({ isModalOpen: true , error: err , actionResult: err||'注册成功!' , spin:false });
             });
     }
@@ -139,7 +139,10 @@ class Signup extends Component {
                                     <input type="checkbox"  defaultChecked className="checkbox-width"  onChange={this.handleChange.bind(this)}/><span> 我已阅读themis用户手册及相关法律</span>
                                 </div>
                                 <div className="form-style">
-                                    <button type="submit" className="   form-register"><i className={`fa fa-spinner fa-spin ${this.state.spin?'':'hidden'}`}></i> 注册</button>
+                                    <button type="submit" className="btn   form-register"><i className={`fa fa-spinner fa-spin ${this.state.spin?'':'hidden'}`}></i> 注册</button>
+                                </div>
+                                <div className="form-group">
+                                    <a className="forgetpwd" href="/signin">已有账户 ? 点击登录</a>
                                 </div>
                             </div>
                         </form>
@@ -159,7 +162,7 @@ class Signup extends Component {
                     </ModalBody>
                     <ModalFooter>
                         <button className='btn btn-default' onClick={this.hideModal}>
-                            关闭
+                            <a href="/signin" >关闭</a>
                         </button>
                     </ModalFooter>
                 </Modal>
