@@ -5,10 +5,11 @@
  * Created by oxchain on 2017/10/20.
  */
 import React, { Component } from 'react';
-
+import { Select } from 'antd';
+import 'antd/dist/antd.css';
 import { Field } from 'redux-form';
 import { connect } from 'react-redux';
-import { fetctBuyBTC ,fetctBuySeach} from '../actions/releaseadvert'
+import { fetctBuyBTC ,fetcAdvertSeach} from '../actions/releaseadvert'
 import PageComponent from './pageComponent';
 class Buybtc extends Component {
     constructor(props) {
@@ -19,37 +20,72 @@ class Buybtc extends Component {
             totalNum:'',//总记录数
             totalData:{},
             current: 1, //当前页码
-            pageSize:5, //每页显示的条数5条
+            pageSize:8, //每页显示的条数5条
             goValue:'',
             totalPage:'',//总页数
         }
         this.handleRow = this.handleRow.bind(this)
+        this.handleSeach = this.handleSeach.bind(this)
+        this.handleChange = this.handleChange.bind(this)
+        this.handleChangeCounty = this.handleChangeCounty.bind(this)
+        this.handleChangeMoney = this.handleChangeMoney.bind(this)
+        this.componentWillMount = this.componentWillMount.bind(this)
+
     }
 
     componentWillMount(){
+        const userId= localStorage.getItem('userId');
         this.props.fetctBuyBTC({}, ()=>{});
-    }
-    handleSeach(){
-        this.props.fetctBuySeach({}, ()=>{});
+
+
+        // this.setState({totalData:this.props.all})
+        // this.setState({totalNum:this.props.all.rowCount})
+        // let totalPage =Math.ceil( this.state.totalNum / this.state.pageSize);
+        // this.setState({totalPage:totalPage})
+        // this.pageClick(1);
     }
 
-    handleFormSubmit(){
-        // this.props.signinAction({  },()=>{});
+
+
+
+    handleChange(value){
+        console.log(`selected1 ${value}`);
+        localStorage.setItem("seachuser",value)
     }
-    handleRow( item,index){
+    handleChangeCounty(value){
+        console.log(`selected2 ${value}`);
+    }
+    handleChangeMoney(value){
+        console.log(`selected3 ${value}`);
+    }
+    handleChangeWay(value){
+        console.log(`selected4 ${value}`);
+    }
+
+    handleSeach(){
+        const seachuser = localStorage.getItem("seachuser")
+        this.props.fetcAdvertSeach({}, ()=>{});
+    }
+
+
+
+    handleRow( ){
+        const arraydata = this.props.all.pageList || []
+        return arraydata.map((item, index) => {
         return(
             <tr key={index} className="contentborder">
-                <td className="tabletitle">{item.name}</td>
-                <td className="tabletitle">交易 {item.num} | 好评度 {item.bili} | 信任 {item.trust}</td>
-                <td className="tabletitle"> {item.payway} </td>
-                <td className="tabletitle"> {item.money} CNY</td>
-                <td className="tabletitle">{item.jiage}</td>
+                <td className="tabletitle">{item.loginname}</td>
+                <td className="tabletitle">交易 {item.txStatus} | 好评度 {item.id} | 信任 {item.trustNum}</td>
+                <td className="tabletitle"> {item.payType} </td>
+                <td className="tabletitle"> {item.minTxLimit} - {item.maxTxLimit} CNY</td>
+                <td className="tabletitle">{item.price}</td>
                 <td className="tabletitle ">
-                    <button className="tablebuy" ><a href="/buydetail">购买</a></button>
+                    <button className="tablebuy" ><a href={`/buydetail:${item.id}`}>购买</a></button>
                 </td>
             </tr>
 
         )
+    })
     }
 //点击翻页
     pageClick(pageNum){
@@ -97,44 +133,34 @@ class Buybtc extends Component {
             _this.pageClick(value);
         }
     }
-
-
-
-
     render() {
-        const TableLinks = [
-            {name:"liuruichao",num:"1",bili:"100%",trust:"1",payway:"支付宝",money:"1000-1000",jiage:"323232.88 CNY" },
-            {name:"liuruichao",num:"1",bili:"100%",trust:"1",payway:"支付宝",money:"1000-1000",jiage:"323232.88 CNY" },
-            {name:"liuruichao",num:"1",bili:"100%",trust:"1",payway:"支付宝",money:"1000-1000",jiage:"323232.88 CNY" },
-            {name:"liuruichao",num:"1",bili:"100%",trust:"1",payway:"支付宝",money:"1000-1000",jiage:"323232.88 CNY" },
-        ]
-
+        const Option = Select.Option;
         return (
             <div className="mainbuy">
-             <div className="">
-                 <select className="titleslect">
-                     <option value="0">搜用户&nbsp; ></option>
-                     <option value="1">搜广告 ></option>
-                 </select>
-                 <select className="titleslect">
-                     <option value="1">中国 </option>
-                     <option value="2">日本 </option>
-                     <option value="1">美国 </option>
-                     <option value="2">韩国 </option>
-                 </select>
-                 <select className="titleslect">
-                     <option value="1">人民币 </option>
-                     <option value="2">美元 </option>
-                     <option value="1">韩元 </option>
-                     <option value="2">日元 </option>
-                 </select>
-                 <select className="titleslect">
-                     <option value="1">支付方式 </option>
-                     <option value="2">微信支付 </option>
-                     <option value="1">Apple pay </option>
-                     <option value="2">银联 </option>
-                 </select>
-                 <button type="submit" className="  form-seach" onClick={this.handleSeach}>搜索</button>
+             <div className="slece-style">
+                 <Select defaultValue="搜用户" style={{ width: 120 }}  onChange={this.handleChange}>
+                     <Option value="0">搜用户&nbsp; ></Option>
+                     <Option value="1">搜广告 ></Option>
+                 </Select>
+                 <Select defaultValue="中国" style={{ width: 120 }}  onChange={this.handleChangeCounty}>
+                     <Option value="1">中国 </Option>
+                     <Option value="2">日本 </Option>
+                     <Option value="3">美国 </Option>
+                     <Option value="4">韩国 </Option>
+                 </Select>
+                 <Select defaultValue="美元" style={{ width: 120 }}  onChange={this.handleChangeMoney}>
+                     <Option value="1">人民币 </Option>
+                     <Option value="2">美元 </Option>
+                     <Option value="3">韩元 </Option>
+                     <Option value="4">日元 </Option>
+                 </Select>
+                 <Select defaultValue="微信支付" style={{ width: 120 }}  onChange={this.handleChangeWay}>
+                     <Option value="1">支付方式 </Option>
+                     <Option value="2">微信支付 </Option>
+                     <Option value="3">Apple pay </Option>
+                     <Option value="4">银联 </Option>
+                 </Select>
+                 <button type="submit" className="form-seach" onClick={this.handleSeach}>搜索</button>
              </div>
                     <table className="tableborder">
                         <tbody>
@@ -146,7 +172,7 @@ class Buybtc extends Component {
                             <th className="tabletitle">价格</th>
                         </tr>
 
-                      {TableLinks.map(this.handleRow)}
+                      {this.handleRow()}
                       </tbody>
 
                     </table>
@@ -169,9 +195,11 @@ class Buybtc extends Component {
 
 
 function mapStateToProps(state) {
+    console.log(state)
     return {
+        all:state.advert.all,
         success: state.auth.authenticated,
         errorMessage: state.auth.error
     };
 }
-export default connect(mapStateToProps,{fetctBuyBTC,fetctBuySeach})(Buybtc);
+export default connect(mapStateToProps,{fetctBuyBTC,fetcAdvertSeach})(Buybtc);

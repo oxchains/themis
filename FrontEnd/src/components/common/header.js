@@ -11,40 +11,34 @@ class Header extends Component{
         this.state = {}
         this.renderUserInfo = this.renderUserInfo.bind(this)
     }
-
     renderUserInfo() {
-        const biz= JSON.parse(localStorage.getItem('biz'));
         if(this.props.authenticated) {
-            //const user = JSON.parse(localStorage.getItem('user'));
             const username= localStorage.getItem('username');
-            const avatar = `https://gravatar.com/avatar/oxchain.org/user/${username}?s=100&d=retro`;
-            const biz= JSON.parse(localStorage.getItem('biz'));
             return (
                 <div className="navbar-custom-menu">
                     <ul className="nav navbar-nav">
+                        <li className="order-style"><a href="/orderinprogress">订单</a></li>
+                        <li className="order-style"><a href="/orderinprogress">钱包</a></li>
                         <li className="dropdown user user-menu">
+                            <a href="#" className="dropdown-toggle" data-toggle="dropdown">
+                                <span className="hidden-xs">{username}</span>
+                            </a>
                             <ul className="dropdown-menu">
-                                <li className="user-header">
-                                    <p>liuruichao</p>
-                                </li>
-                                <li className="user-body">
-                                    <div className="row">
+                                <li className="info-self ">
+                                    <div className="info-style">
+                                        <a  href="/usercenter" >用户中心</a>
+                                        </div>
+                                    <div className="info-style">
+                                        <a href="/myadvert" >我的广告</a>
                                     </div>
-                                </li>
-                                <li className="user-footer">
-                                    <div className="pull-left">
-                                        <a className={`btn btn-default btn-flat`} href="#" >设置</a>
-                                    </div>
-                                    <div className="pull-right">
-                                        <a href="/signout" className="btn btn-default btn-flat">退出登录</a>
+                                    <div className="info-style">
+                                        <a href="/signout" >退出登录</a>
                                     </div>
                                 </li>
                             </ul>
                         </li>
                     </ul>
                 </div>);
-        } else {
-            return <div></div>
         }
     }
     render(){
@@ -52,23 +46,20 @@ class Header extends Component{
         return (
             <div className="headerwidth">
                 <nav  className="header">
-                    <div className="navdivimg">
-                        <img src="./public/img/nl_logo.png" className="navimg" alt=""/>
-                        {/*<img src="./public/img/themis.png" className="navthemis" alt=""/>*/}
-                    </div>
-
-                    <ul className="headerul" >
-                        <li><a href="/" >首页</a></li>
-                        <li ><a href="/buybtc"  >购买比特币</a></li>
-                        <li ><a href="/sellbtc" >出售比特币</a></li>
-                        <li ><a href="/releaseadvert" >发布广告</a></li>
-                        {/*<li ><a href="/myadvert" >我的广告</a></li>*/}
-                        {/*<li ><a href="/usercenter" >用户中心</a></li>*/}
-                        <li className="registerlia"><a href="/signup" >注册</a></li>
-                        <li  className="loginlia"><a href="/signin"  >登录</a></li>
-                    </ul>
-                    {/*{this.renderUserInfo()}*/}
-
+                   <div className="header-position">
+                       <div className="navdivimg">
+                           <img src="./public/img/nl_logo.png" className="navimg" alt=""/>
+                       </div>
+                       <ul className="headerul" >
+                           <li><a href="/" >首页</a></li>
+                           <li ><a href="/buybtc"  >购买比特币</a></li>
+                           <li ><a href="/sellbtc" >出售比特币</a></li>
+                           <li ><a href="/releaseadvert" >发布广告</a></li>
+                           <li className={`registerlia ${this.props.authenticated?"hidden":""}`} ><a href="/signup" >注册</a></li>
+                           <li className={`loginlia ${this.props.authenticated?"hidden":""}`}><a href="/signin"  >登录</a></li>
+                       </ul>
+                   </div>
+                    {this.renderUserInfo()}
                 </nav>
             </div>
     )
@@ -77,7 +68,8 @@ class Header extends Component{
 }
 function mapStateToProps(state) {
     return {
-        authenticated: state.auth.authenticated
+        errorMessage:state.auth.error,
+        authenticated: state.auth.authenticated,
     };
 }
 

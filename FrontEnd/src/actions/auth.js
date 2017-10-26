@@ -22,9 +22,13 @@ export function signinAction({mobilephone, password}) {
             .then(response => {
                 console.log(response)
 
-                if(response.data.data.status == 1) {
+                if(response.data.status == 1) {
+
+                    console.log("23333")
+
                     localStorage.setItem('token', response.data.data.token);
-                    localStorage.setItem('username', loginname);
+                    localStorage.setItem('userId', response.data.data.id);
+                    localStorage.setItem('username',response.data.data.loginname);
                     dispatch({type: AUTH_USER});
                     browserHistory.push('/');
                 } else {
