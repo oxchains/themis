@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "notice")
 public class Notice {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

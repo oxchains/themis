@@ -1,11 +1,9 @@
 package com.oxchains.themis.order.entity;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
 /**
- * Created by xuqi on 2017/10/25.
+ * Created by huohuo on 2017/10/25.
  */
 @Entity
 @Table(name = "order_arbitrate")

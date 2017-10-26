@@ -1,23 +1,24 @@
 package com.oxchains.themis.order.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.oxchains.themis.common.model.AddressKeys;
 import com.oxchains.themis.common.util.DateUtil;
-import com.oxchains.themis.order.entity.Notice;
-import com.oxchains.themis.order.entity.Orders;
-import com.oxchains.themis.order.repo.NoticeRepo;
-import com.oxchains.themis.order.repo.OrderArbitrateRepo;
-import com.oxchains.themis.order.repo.OrderRepo;
-import com.oxchains.themis.order.repo.UserRepo;
+import com.oxchains.themis.common.util.JsonUtil;
+import com.oxchains.themis.order.common.ShamirUtil;
+import com.oxchains.themis.order.entity.*;
+import com.oxchains.themis.order.repo.*;
 import org.apache.commons.collections.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-
 import java.util.ArrayList;
 import java.util.List;
 /**
- * Created by xuqi on 2017/10/23.
+ * Created by huohuo on 2017/10/23.
  */
 @Service
 public class OrderService {
@@ -27,6 +28,8 @@ public class OrderService {
     private NoticeRepo noticeRepo;
     private UserRepo userRepo;
     private OrderArbitrateRepo orderArbitrateRepo;
+    @Autowired
+    private OrderAddresskeyRepo orderAddresskeyRepo;
 
     public OrderService(@Autowired OrderRepo orderRepo,@Autowired NoticeRepo noticeRepo,@Autowired UserRepo userRepo,@Autowired OrderArbitrateRepo orderArbitrateRepo,@Autowired RestTemplate restTemplate) {
         this.orderRepo = orderRepo;
@@ -35,39 +38,89 @@ public class OrderService {
         this.orderArbitrateRepo = orderArbitrateRepo;
         this.restTemplate = restTemplate;
     }
-   /* public void souts(){
-        String s = restTemplate.
-    };*/
     /*
-    * 查询所有订单
+    * 工具类方法 用来在用户系统获取一对随机的公私匙
+    * */
+   public AddressKeys getAddressKeys(){
+       AddressKeys ak = null;
+       try {
+           String   r = restTemplate.getForObject("http://themis-user/account/keys",String.class);
+           JSONObject result= JSON.parseObject(r);
+           int status= (int) result.get("status");
+           if(status==1){
+               Object o=result.get("data");
+               ak = (AddressKeys) JsonUtil.fromJson(JsonUtil.toJson(o),AddressKeys.class);
+           }
+       } catch (RestClientException e) {
+           LOG.debug("get address key faild : ",e.getMessage());
+       }
+       return  ak;
+    };
+    /*
+    * 查询所有订单  用来测试
     * */
     public List<Orders> findOrders(){
         return IteratorUtils.toList(orderRepo.findAll().iterator());
     }
     /*
-    * 下订单
+    * 对发布的公告 下一个订单 生成订单信息
     * */
     public Orders addOrders(Orders orders){
         Orders orders1 =null;
         try {
             orders.setCreateTime(DateUtil.getPresentDate());
             orders.setId(DateUtil.getOrderId());
-            Notice notice = noticeRepo.findOne(orders.getNoticeId());
+            //Notice notice = noticeRepo.findOne(orders.getNoticeId());
             orders.setOrderStatus(1L);
             orders.setArbitrate(0);
             orders1 =orderRepo.save(orders);
 
-            String[] userIds = orders.getUserIds().split(",");
-            //根据三个仲裁者的公私匙  生成一对公私匙
-            // 把公匙 给用户中心 生成协商地址
+            //生成买家的公私匙 存到 订单买家卖家仲裁者表里
+            AddressKeys addressKeys = this.getAddressKeys();
+            OrderAddresskeys orderAddresskeys = new OrderAddresskeys();
+            orderAddresskeys.setOrderId(orders1.getId());
+            orderAddresskeys.setBuyerPubAuth(addressKeys.getPublicKey());
+            orderAddresskeys.setBuyerPriAuth(addressKeys.getPrivateKey());
 
+            //生成仲裁者家的公私匙 存到 订单买家卖家仲裁者表里
+            AddressKeys addressKeys1 = this.getAddressKeys();
+            orderAddresskeys.setUserPubAuth(addressKeys1.getPublicKey());
+            orderAddresskeys.setUserPriAuth(addressKeys1.getPrivateKey());
+            orderAddresskeyRepo.save(orderAddresskeys);
+
+            String[] strArr = ShamirUtil.splitAuth(addressKeys1.getPrivateKey());
+            List<User> userList = userRepo.findUserByRoleId(3L);
+            for(int i = 0;i<strArr.length;i++){
+                OrderArbitrate orderArbitrate = new OrderArbitrate();
+                orderArbitrate.setUserId(userList.get(i).getId());
+                orderArbitrate.setOrderId(orders1.getId());
+                orderArbitrate.setStatus(0);
+                orderArbitrate.setUserAuth(strArr[i]);
+                orderArbitrateRepo.save(orderArbitrate);
+            }
         }catch (Exception e){
             LOG.debug("add orders faild :",e.getMessage());
         }
+        this.setOrderStatusName(orders1);
         return orders1;
     }
-    public Orders findOrdersDetails(String id){
-        Orders o = orderRepo.findOne(id);
+    /*
+    * 根据订单编号查询订单的详细信息
+    * */
+    public Orders findOrdersDetails(Pojo pojo){
+        Orders o = orderRepo.findOne(pojo.getId());
+        this.setOrderStatusName(o);
+        if(pojo.getUserId()==null){
+         return o;
+        }
+        if(o.getBuyerId()==pojo.getUserId()){
+            o.setOrderType("购买");
+            o.setFriendUsername(userRepo.findOne(o.getSellerId()).getLoginname());
+        }
+        else{
+            o.setOrderType("出售");
+            o.setFriendUsername(userRepo.findOne(o.getSellerId()).getLoginname());
+        }
         return o;
     }
 
@@ -87,6 +140,7 @@ public class OrderService {
                     o.setOrderType("出售");
                     o.setFriendUsername(userRepo.findOne(o.getBuyerId()).getLoginname());
                 }
+                this.setOrderStatusName(o);
             }
         } catch (Exception e) {
             LOG.debug("query complete order faild :",e.getMessage());
@@ -103,11 +157,14 @@ public class OrderService {
             for (Orders o:list) {
                 if(o.getBuyerId()==id){
                     o.setOrderType("购买");
+                    o.setFriendUsername(userRepo.findOne(o.getSellerId()).getLoginname());
 
                 }
                 else{
                     o.setOrderType("出售");
+                    o.setFriendUsername(userRepo.findOne(o.getBuyerId()).getLoginname());
                 }
+                this.setOrderStatusName(o);
             }
         } catch (Exception e) {
             LOG.debug("query noComplete order faild :",e.getMessage());
@@ -142,6 +199,7 @@ public class OrderService {
                 orders.setOrderStatus(7L);
             }
             orders1 = orderRepo.save(orders);
+            this.setOrderStatusName(orders1);
         } catch (Exception e) {
             LOG.debug("cancel orders faild :",e.getMessage());
         }
@@ -161,6 +219,7 @@ public class OrderService {
                     //掉接口把卖家的BTB转移到协商地址
                 }
             }
+            this.setOrderStatusName(o);
         } catch (Exception e) {
             LOG.debug("confirm order faild :",e.getMessage());
         }
@@ -191,6 +250,7 @@ public class OrderService {
                 for (Orders o:
                         list1) {
                     o.setOrderType("购买");
+                 this.setOrderStatusName(o);
                 }
                 list.addAll(list1);
             }
@@ -199,7 +259,9 @@ public class OrderService {
         }
         return list;
     }
-
+    /*
+    * 买家付完款 取消订单时 确认收到退款
+    * */
     public Orders confirmReceiveRefund(String id){
         try {
             Orders orders = orderRepo.findOne(id);
@@ -207,6 +269,7 @@ public class OrderService {
                 //掉一个接口让BTC从协商地址回到卖家
                 orders.setOrderStatus(6L);
                 orders = orderRepo.save(orders);
+                this.setOrderStatusName(orders);
                 return orders;
             }
         } catch (Exception e) {
@@ -214,15 +277,24 @@ public class OrderService {
         }
         return null;
     }
+    /*
+    * 对当前订单发起仲裁
+    * */
     public Orders arbitrateOrder(String id){
         Orders orders1 = null;
         try {
             Orders orders = orderRepo.findOne(id);
             if(orders.getOrderStatus()==3||orders.getOrderStatus()==7){
                 orders.setArbitrate(1);
+                List<OrderArbitrate> orderArbitrateList = orderArbitrateRepo.findOrderArbitrateByOrderId(orders.getId());
+                for (OrderArbitrate o:orderArbitrateList) {
+                    o.setStatus(1);
+                    orderArbitrateRepo.save(o);
+                }
                 orders1 = orderRepo.save(orders);
+                this.setOrderStatusName(orders1);
+                return  orders1;
             }
-            return  orders1;
         } catch (Exception e) {
             LOG.debug("apply for arbitrate order faild :",e.getMessage());
         }
@@ -232,6 +304,85 @@ public class OrderService {
    * 根据仲裁者id查找哪些订单可以被自己仲裁的订单列表
    * */
     public List<Orders> findArbitrareOrderById(Long id){
-        return null;
+        List<OrderArbitrate> orderArbitrateList = orderArbitrateRepo.findOrderArbitrateByUserIdAndAndStatus(id,1);
+        List<Orders> ordersList = new ArrayList<>();
+        for (OrderArbitrate o: orderArbitrateList) {
+            Pojo pojo = new Pojo();
+            pojo.setId(o.getOrderId());
+            Orders orders = this.findOrdersDetails(pojo);
+            orders.setBuyerUsername(userRepo.findOne(orders.getBuyerId()).getLoginname());
+            orders.setSellerUsername(userRepo.findOne(orders.getSellerId()).getLoginname());
+            this.setOrderStatusName(orders);
+            ordersList.add(orders);
+        }
+        return ordersList;
+    }
+    //获取卖家的公私匙 存到 订单买家卖家仲裁者表里
+    public OrderAddresskeys saveAddresskey(OrderAddresskeys orderAddresskeys){
+        OrderAddresskeys orderAddresskeys1 = null;
+        try {
+            orderAddresskeys1 = orderAddresskeyRepo.findOrderAddresskeysByOrderId(orderAddresskeys.getOrderId());
+            orderAddresskeys1.setSellerPubAuth(orderAddresskeys.getSellerPubAuth());
+            orderAddresskeys1.setSellerPriAuth(orderAddresskeys.getSellerPriAuth());
+            orderAddresskeys1 = orderAddresskeyRepo.save(orderAddresskeys1);
+        } catch (Exception e) {
+            LOG.debug("save address key faild :",e.getMessage());
+        }
+        return  orderAddresskeys1;
+
+    }
+    /*
+   * 仲裁者仲裁将密匙碎片给胜利者
+   * */
+    public OrderArbitrate arbitrateOrderToUser(Pojo pojo){
+        OrderArbitrate orderArbitrate = null;
+        try {
+            orderArbitrate = orderArbitrateRepo.findOrderArbitrateByUserIdAndOrderId(pojo.getUserId(),pojo.getId());
+            Orders orders = orderRepo.findOne(pojo.getId());
+            if(orders.getBuyerId()==pojo.getSuccessId()){
+                orderArbitrate.setBuyerAuth(orderArbitrate.getUserAuth());
+            }
+            if(orders.getSellerId()==pojo.getSuccessId()){
+                orderArbitrate.setSellerAuth(orderArbitrate.getUserAuth());
+            }
+            orderArbitrate.setStatus(2);
+            OrderArbitrate orderArbitrate1 = orderArbitrateRepo.save(orderArbitrate);
+        } catch (Exception e) {
+            LOG.debug("arbitrate orders to user faild ",e.getMessage());
+        }
+        return orderArbitrate;
+    }
+    /*
+    * 这是一个工具类方法  为了给要饭回到前台的orders 附上订单状态值
+    * */
+    public void setOrderStatusName(Orders o){
+        try {
+            if(o.getOrderStatus()==1){
+                o.setOrderStatusName("待确认");
+            }
+            if(o.getOrderStatus()==2){
+                o.setOrderStatusName("待付款");
+            }
+            if(o.getOrderStatus()==3){
+                o.setOrderStatusName("待收货");
+            }
+            if(o.getOrderStatus()==4){
+                o.setOrderStatusName("待评价");
+            }
+            if(o.getOrderStatus()==5){
+                o.setOrderStatusName("完成");
+            }
+            if(o.getOrderStatus()==6){
+                o.setOrderStatusName("已取消");
+            }
+            if(o.getOrderStatus()==7){
+                o.setOrderStatusName("退款中");
+            }
+            if(o.getOrderStatus()==8){
+                o.setOrderStatusName("仲裁中");
+            }
+        } catch (Exception e) {
+            LOG.debug("set order status value faild",e.getMessage());
+        }
     }
 }

@@ -36,7 +36,18 @@ public class User {
     @Column(length = 35)
     private String firstAddress;
 
+    private Long roleId;
+
+
     private Integer loginStatus;
+
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
+    }
 
     public Long getId() {
         return id;

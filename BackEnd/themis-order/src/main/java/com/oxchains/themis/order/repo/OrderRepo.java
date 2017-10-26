@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Created by xuqi on 2017/10/23.
+ * Created by huohuo on 2017/10/23.
  */
 @Repository
 public interface OrderRepo extends CrudRepository<Orders,String>{
