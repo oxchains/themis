@@ -60,17 +60,6 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
         cause.printStackTrace();
         ctx.close();
     }
-    private String findUserIdByUri(String uri) {// 通过Uid获取用户Id--uri中包含userId
-        String userId = "";
-        try {
-            userId = uri.substring(uri.indexOf("userId") + 7);
-            if (userId != null && userId.trim() != null && userId.trim().length() > 0) {
-                userId = userId.trim();
-            }
-        } catch (Exception e) {
-        }
-        return userId;
-    }
 
 
 }

@@ -17,6 +17,8 @@ BackEnd/*.ipr
 
 BackEnd/themis-user/target
 BackEnd/themis-user/*.iml
+BackEnd/themis-chat/target
+BackEnd/themis-chat/*.iml
 
 BackEnd/themis-common/target
 BackEnd/themis-common/*.iml

@@ -10,18 +10,12 @@ class Signin extends Component {
     constructor(props) {
         super(props);
         this.state = {}
-        this.handleFormSubmit = this.handleFormSubmit.bind(this)
-
+        // this.handlePhoneSubmit = this.handlePhoneSubmit.bind(this)
+        // this.handleEmailSubmit = this.handleEmailSubmit.bind(this)
     }
 
-    handleFormSubmit(e) {
-        e.preventDefault()
-        const num= this.refs.num.value ;
-        const mobilephone= this.refs.loginname.value ;
-        const password = this.refs.password.value ;
-        if(mobilephone && password)
-            this.props.signinAction({ mobilephone, password },()=>{});
-    }
+
+
 
     renderAlert() {
         if (this.props.errorMessage) {
@@ -90,11 +84,23 @@ let Tab = React.createClass({
     }
 });
 
-let Phonelogin = React.createClass({
+
+class Phonelogin extends Component {
+// let Phonelogin = React.createClass({
+    handlePhoneSubmit() {
+        console.log("222")
+
+        // const num= this.refs.num.value ;
+        const mobilephone= this.refs.loginname.value ;
+        const password = this.refs.password.value ;
+        if(mobilephone && password) {
+            signinAction({mobilephone, password});
+        }
+    }
     render(){
         return (<div>
             <div className="form-style">
-                <form className="form-signin" action="" onSubmit={this.handleFormSubmit}>
+                <div className="form-signin"  >
                     {/*<input className="input form-group" type="text" placeholder="中国 + 86" ref="num"/> <br/>*/}
                     <select name="" id="" className="input form-group"> +86
                         <option value="1">中国 + 86</option>
@@ -105,33 +111,47 @@ let Phonelogin = React.createClass({
                     <input className="input form-group" type="text" placeholder="请输入手机号" ref="loginname"/> <br/>
                     <input className="input form-group" type="password" placeholder="请输入密码" ref="password"/><br/>
                     <div className="form-group">
-                        <button type="submit" className="btn form-login">登录</button>
+                        <button  className="btn form-login" onClick={this.handlePhoneSubmit.bind(this)}>登录</button>
                     </div>
                     <div className="form-group">
                         <a className="forgetpwd" href="">忘记密码 ?</a>
                     </div>
-                </form>
+                </div>
             </div>
         </div>);
     }
-});
+};
 
-let Emiallogin = React.createClass({
+class Emiallogin extends Component {
+// let Emiallogin = React.createClass({
+    handleEmailSubmit()
+    {
+        console.log("333")
+
+        // const num= this.refs.num.value ;
+        const email= this.refs.email.value ;
+        const password = this.refs.password.value ;
+        if(email && password)
+            this.props.signinAction({ email, password },()=>{});
+    }
     render(){
         return (<div>
             <div className="form-style">
-                <form className="form-signin" action="" onSubmit={this.handleFormSubmit}>
+                <div className="form-signin" >
                     <input className="input form-group" type="text" placeholder="请输入邮箱" ref="email"/> <br/>
                     <input className="input form-group" type="password" placeholder="请输入密码" ref="password"/><br/>
                     <div className="form-group">
-                        <button type="submit" className="btn form-login">登录</button>
+                        <button className="btn form-login" onClick={this.handleEmailSubmit.bind(this)}>登录</button>
+                    </div>
+                    <div className="form-group">
+                        <a className="forgetpwd" href="">忘记密码 ?</a>
                     </div>
 
-                </form>
+                </div>
             </div>
         </div>);
     }
-});
+};
 
 
 
