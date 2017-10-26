@@ -9,7 +9,7 @@ import { Select } from 'antd';
 import 'antd/dist/antd.css';
 import { Field } from 'redux-form';
 import { connect } from 'react-redux';
-import { fetctBuyBTC ,fetcAdvertSeach} from '../actions/releaseadvert'
+import { fetctBuyBTC ,fetcAdvertSeach,fetctArray} from '../actions/releaseadvert'
 import PageComponent from './pageComponent';
 class Buybtc extends Component {
     constructor(props) {
@@ -23,20 +23,20 @@ class Buybtc extends Component {
             pageSize:8, //每页显示的条数5条
             goValue:'',
             totalPage:'',//总页数
+            country: -1,
+            currency:''
         }
         this.handleRow = this.handleRow.bind(this)
+        this.renderRowscountry = this.renderRowscountry.bind(this)
+        this.renderRowscurrency = this.renderRowscurrency.bind(this)
         this.handleSeach = this.handleSeach.bind(this)
-        this.handleChange = this.handleChange.bind(this)
-        this.handleChangeCounty = this.handleChangeCounty.bind(this)
-        this.handleChangeMoney = this.handleChangeMoney.bind(this)
-        this.componentWillMount = this.componentWillMount.bind(this)
-
     }
 
     componentWillMount(){
         const userId= localStorage.getItem('userId');
         this.props.fetctBuyBTC({}, ()=>{});
 
+        this.props.fetctArray({}, ()=>{});
 
         // this.setState({totalData:this.props.all})
         // this.setState({totalNum:this.props.all.rowCount})
@@ -46,24 +46,9 @@ class Buybtc extends Component {
     }
 
 
-
-
-    handleChange(value){
-        console.log(`selected1 ${value}`);
-        localStorage.setItem("seachuser",value)
-    }
-    handleChangeCounty(value){
-        console.log(`selected2 ${value}`);
-    }
-    handleChangeMoney(value){
-        console.log(`selected3 ${value}`);
-    }
-    handleChangeWay(value){
-        console.log(`selected4 ${value}`);
-    }
-
     handleSeach(){
         const seachuser = localStorage.getItem("seachuser")
+        console.log(this.state);
         this.props.fetcAdvertSeach({}, ()=>{});
     }
 
@@ -133,7 +118,34 @@ class Buybtc extends Component {
             _this.pageClick(value);
         }
     }
+    renderRowscountry() {
+        const locationList = this.props.array.locationList || [];
+        return locationList.map(({id, name}, index) => {
+            return (
+                <Option key={id} label={name} value={id}>{name}</Option>
+            );
+        });
+    }
+    renderRowscurrency() {
+        const currencyList = this.props.array.currencyList || [];
+        return currencyList.map(({id, currency_name}, index) => {
+            return (
+                <Option key={id} label={currency_name} value={id}>{currency_name}</Option>
+            );
+        });
+    }
+
+
     render() {
+        const currencyList = this.props.array.currencyList || [];
+        const locationList = this.props.array.locationList || [];
+        const paymentList = this.props.array.paymentList || [];
+
+
+        console.log(currencyList)
+        console.log(locationList)
+        console.log(paymentList)
+
         const Option = Select.Option;
         return (
             <div className="mainbuy">
@@ -142,17 +154,15 @@ class Buybtc extends Component {
                      <Option value="0">搜用户&nbsp; ></Option>
                      <Option value="1">搜广告 ></Option>
                  </Select>
-                 <Select defaultValue="中国" style={{ width: 120 }}  onChange={this.handleChangeCounty}>
-                     <Option value="1">中国 </Option>
-                     <Option value="2">日本 </Option>
-                     <Option value="3">美国 </Option>
-                     <Option value="4">韩国 </Option>
+                 <Select style={{ width: 120 }} onChange={(value) => this.state.country = value}>
+                     {this.renderRowscountry()}
                  </Select>
-                 <Select defaultValue="美元" style={{ width: 120 }}  onChange={this.handleChangeMoney}>
-                     <Option value="1">人民币 </Option>
-                     <Option value="2">美元 </Option>
-                     <Option value="3">韩元 </Option>
-                     <Option value="4">日元 </Option>
+                 <Select style={{ width: 120 }}  onChange={(value) => this.state.currency = value}>
+                     {/*<Option value="1">人民币 </Option>*/}
+                     {/*<Option value="2">美元 </Option>*/}
+                     {/*<Option value="3">韩元 </Option>*/}
+                     {/*<Option value="4">日元 </Option>*/}
+                     {this.renderRowscurrency()}
                  </Select>
                  <Select defaultValue="微信支付" style={{ width: 120 }}  onChange={this.handleChangeWay}>
                      <Option value="1">支付方式 </Option>
@@ -172,7 +182,7 @@ class Buybtc extends Component {
                             <th className="tabletitle">价格</th>
                         </tr>
 
-                      {this.handleRow()}
+                        {this.handleRow()}
                       </tbody>
 
                     </table>
@@ -195,11 +205,11 @@ class Buybtc extends Component {
 
 
 function mapStateToProps(state) {
-    console.log(state)
     return {
+        array:state.advert.array,
         all:state.advert.all,
         success: state.auth.authenticated,
         errorMessage: state.auth.error
     };
 }
-export default connect(mapStateToProps,{fetctBuyBTC,fetcAdvertSeach})(Buybtc);
+export default connect(mapStateToProps,{fetctBuyBTC,fetcAdvertSeach,fetctArray})(Buybtc);

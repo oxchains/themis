@@ -12,6 +12,7 @@ import {
     FETCH_SELL_SECAT,
     FETCH_BUY_SECAT,
     FETCH_BUY_BTC_DETAIL,
+    FETCH_ARRAY,
     getAuthorizedHeader
 } from './types';
 
@@ -100,6 +101,20 @@ export function fetctSellSeach({  }, callback) {
                 dispatch({type: FETCH_SELL_SECAT, payload: response})
             })
             .catch(err => callback(err.message));
+    }
+}
+
+
+// 选择框数据
+
+export function fetctArray( callback) {
+    return function(dispatch) {
+        axios.get(`${ROOT_URLL}/notice/query/statusKV`, { headers: getAuthorizedHeader() })
+            .then(response => {
+                console.log(response)
+                dispatch({type: FETCH_ARRAY, payload: response})
+            })
+            .catch(err => console.error(err.message));
     }
 }
 
