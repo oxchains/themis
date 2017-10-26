@@ -26,7 +26,6 @@ class OrderProgress extends Component {
             shownext:false,
             x:''
         };
-
         this.nextPage = this.nextPage.bind(this);
         this.partnerMessage=this.partnerMessage.bind(this);
         this.renderDangerAlert = this.renderDangerAlert.bind(this);
@@ -153,6 +152,7 @@ class OrderProgress extends Component {
     }
     render(){
         console.log(this.props.partner)
+
         let close = () => this.setState({ show:false,shownext:false});
         let next = () => this.setState({show:false,shownext:true})
         if(this.props.orders_details===null){
@@ -163,6 +163,7 @@ class OrderProgress extends Component {
         const amount=orders_details && orders_details.amount;
         const money=orders_details && orders_details.money;
         const partner=this.props.partner;
+        console.log(orderType)
         return (
             <div className="order-main g-pt-50 g-pb-50">
                 <div className="order-header container text-center">

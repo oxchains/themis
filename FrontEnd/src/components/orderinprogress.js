@@ -12,18 +12,21 @@ class OrderInProgress extends Component {
         this.renderrow = this.renderrow.bind(this);
     }
     componentWillMount() {
+        const userId= localStorage.getItem('userId');
         const formData={
-            userId:1
+            userId:userId
         }
         this.props.fetchNoCompletedOrders({formData});
     }
     renderrow(){
+        const userId= localStorage.getItem('userId');
         return this.props.not_completed_orders.map((item,index) =>{
-            const data = {id:item.id,userId:1,partnerId:item.orderType == "购买"?item.sellerId:item.buyerId};
+            const data = {id:item.id,userId:userId,partnerId:item.orderType == "购买"?item.sellerId:item.buyerId};
             const path = {
                 pathname:'/orderprogress',
                 state:data,
             }
+            console.log(item)
             return(
                 <tr key={index}>
                     <td>{item.friendUsername}</td>
@@ -33,7 +36,7 @@ class OrderInProgress extends Component {
                     <td>{item.amount}</td>
                     <td>{item.createTime}</td>
                     <td>{item.orderStatusName}</td>
-                    <td><Link className="btn btn-primary" to={path}>详情</Link></td>
+                    <td><Link className="btn btn-primary" to={path} onClick={localStorage.setItem("friendUsername",item.friendUsername)}>详情</Link></td>
                     <td><Link className="btn btn-primary" to="/arbitrationbuyer">THEMIS仲裁</Link></td>
                 </tr>
                 )
@@ -41,6 +44,7 @@ class OrderInProgress extends Component {
 
     }
     render() {
+
         let {not_completed_orders} = this.props;
         if(this.props.not_completed_orders===null){
             return <div className="container">
