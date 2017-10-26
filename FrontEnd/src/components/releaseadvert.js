@@ -58,7 +58,7 @@ class Releaseadvert extends Component {
             const currency = '1';
             const payType = "3"
             // console.log(noticeType)
-          releaseAdvert({userId ,noticeType  ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType  ,noticeContent},()=>{});
+         this.props.releaseAdvert({userId ,noticeType  ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType  ,noticeContent},()=>{});
 
     }
     render() {
@@ -78,10 +78,15 @@ class Releaseadvert extends Component {
                     <h4 className="h4title">交易类型</h4>
                     <h5 className="h3title">*选择广告类型</h5>
                     <span className="tipspan"> &nbsp;&nbsp;您想要创建什么样的交易广告？如果您希望出售比特币，请确保您在THEMIS的钱包中有比特币。</span>
-                    <TabsControl >
-                        <Tab name="在线购买比特币"></Tab>
-                        <Tab name="在线出售比特币"></Tab>
-                    </TabsControl>
+                    {/*<TabsControl >*/}
+                        {/*<Tab name="在线购买比特币"></Tab>*/}
+                        {/*<Tab name="在线出售比特币"></Tab>*/}
+                    {/*</TabsControl>*/}
+
+                    <ul className=" buytype">
+                        <li className="tab-title-item">在线购买比特币</li>
+                        <li className="tab-title-item">在线出售比特币</li>
+                    </ul>
                     <div className="clear display"></div>
                     <h5 className="h3title clear">*所在地</h5>
                     <span  className="tipspan"> 请选择你要发布广告的国家。</span>
@@ -169,7 +174,7 @@ function mapStateToProps(state) {
     console.log(state)
     return {
         authenticated: state.auth.authenticated,
-        all:state.advert.authenticated
+        all:state.advert.all
     };
 }
 export default connect(mapStateToProps,{releaseAdvert})(Releaseadvert);

@@ -3,10 +3,12 @@
  */
 
 import {
-    ROOT_URLL,
     FETCH_ADVERT,
     FETCH_BUY_BTC,
     FETCH_SELL_BTC,
+    FETCH_BUY_SECAT,
+    FETCH_SELL_SECAT,
+    FETCH_BUY_BTC_DETAIL,
 
 } from '../actions/types';
 
@@ -19,6 +21,12 @@ export default function(state = INITIAL_STATE, action) {
         case FETCH_BUY_BTC:
             return { ...state, all:action.payload.data.data};
         case FETCH_SELL_BTC:
+            return { ...state, all:action.payload.data.data};
+        case FETCH_BUY_SECAT:
+            return { ...state, all:action.payload.data.data};
+        case FETCH_SELL_SECAT:
+            return { ...state, all:action.payload.data.data};
+        case FETCH_BUY_BTC_DETAIL:
             return { ...state, all:action.payload.data.data};
     }
 

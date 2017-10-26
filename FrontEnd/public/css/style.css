@@ -21,6 +21,7 @@ div {
     /*position: fixed;*/
     background-color: #ffff;
     /*top:0px;*/
+    box-shadow: 0 0 10px #bbbbbb;
 
 }
 
@@ -74,10 +75,7 @@ div {
         margin: 0 auto;
         padding-top: 8px;
         font-size: 14px;
-    }
-    .headerul
-    {
-        width: 85%;
+        height: 60px;
     }
 }
 @media screen and (max-width: 796px)
@@ -103,10 +101,7 @@ div {
         padding-top: 8px;
         font-size: 14px;
     }
-    .headerul
-    {
-        width: 55%;
-    }
+
 }
 @media screen and (max-width: 400px)
 {
@@ -125,10 +120,7 @@ div {
         list-style: none;
         padding: 0;
     }
-    .headerul
-    {
-        width: 45%;
-    }
+
 
 }
 @media screen and (max-width: 300px)
@@ -148,10 +140,12 @@ div {
         list-style: none;
         padding: 0;
     }
-    .headerul
-    {
-        width: 35%;
-    }
+
+}
+.header-position
+{
+    width: 50%;
+    margin: 0 auto;
 }
 
 .form-control
@@ -267,7 +261,7 @@ div {
 {
     background-color: #444444;
 }
-.tab-title-item.active{
+.tab-title-item:active{
     background-color: #444444;
     color: #fff;
     cursor: pointer;
@@ -313,6 +307,10 @@ div {
     margin-bottom: 40px;
    cursor: pointer;
 }
+.loginli>a
+{
+    color: #bbbbbb;
+}
 .loginli:nth-child(1)
 {
     border-right: 1px solid #bfbfbf;
@@ -342,6 +340,12 @@ div {
 .orderType ul li .orderTypeBar{
     display: inline-block;
     border-bottom:1px solid gainsboro;
+    /*color: black;*/
+}
+.signinWay ul li .signinTypeBar{
+    display: inline-block;
+    /*border-bottom:1px solid gainsboro;*/
+    color: black;
 }
 .order-flow{
     border:1px solid dimgrey;
@@ -571,10 +575,10 @@ div {
     width: 14%;
     background-color: #444444;
     color: white;
-    margin-top: 20px;
     border:1px solid #444444;
     height: 40px;
     border-radius: 3px;
+    font-size: 17px;
 }
 .tableborder
 {
@@ -618,6 +622,10 @@ div {
     border-radius: 3px;
 }
 .tablebuy>a
+{
+    color: white;
+}
+.tablebuy>a:active,.tablebuy>a:hover
 {
     color: white;
 }
@@ -760,6 +768,7 @@ div {
     height: 40px;
     display: inline-block;
     margin-right: 100px;
+    margin-top: 10px;
 }
 .navthemis
 {
@@ -772,9 +781,6 @@ div {
 {
     list-style: none;
     display: inline-block;
-    position: relative;
-    /*top:20px;*/
-    /*width: 75%;*/
     padding: 0;
 }
 .headerul>li
@@ -782,6 +788,7 @@ div {
     margin-right: 50px;
     float: left;
 }
+
 .headerul>li>a
 {
     color: black;
@@ -941,6 +948,10 @@ table { border-spacing: 0;  border-collapse: collapse; }
     margin: 30px auto;
     text-align: center;
 }
+.model-title>h4
+{
+    font-size: 17px;
+}
 .model-title>h5
 {
     margin-top: 20px;
@@ -948,6 +959,7 @@ table { border-spacing: 0;  border-collapse: collapse; }
 .model-title>h5>a
 {
     color: #2ad0e9;
+    font-size: 16px;
 
 }
 .modle-list
@@ -1004,7 +1016,7 @@ table { border-spacing: 0;  border-collapse: collapse; }
 .home-button
 {
     width: 75%;
-    margin: 10px auto;
+    margin: 20px auto;
     height: 35px;
     border-radius: 10px;
     /*background-color: #27D7E9;*/
@@ -1012,9 +1024,10 @@ table { border-spacing: 0;  border-collapse: collapse; }
     border:1px solid #16F6EA;
     box-shadow: 0 0 5px #16F6EA;
 }
-.home-button>a
+.home-button>a,.home-button>a:hover,.home-button>a:active
 {
     color: #fff;
+    font-size: 14px;
 }
 .home-bottom{
     width: 100%;
@@ -1049,6 +1062,79 @@ table { border-spacing: 0;  border-collapse: collapse; }
 {
     margin: 40px 0;
 }
+.navbar-custom-menu,.main-header .navbar-right{
+    float:right;
+    position: relative;
+    top:-45px;
+}
+.bandermain
+{
+    position: relative;
+    /*top:-30px;*/
+}
 
+.dropdown-menu
+{
+    min-width: 5rem!important;
+}
+.info-self
+{
+    text-align: center;
+    background-color: #2ad0e9;
+    border:1px solid  #2ad0e9 ;
+}
+.info-style>a
+{
+    color: white;
+    line-height:40px;
+    font-size: 13px;
+}
+.info-style>a:hover
+{
+    border-bottom: 1px solid white;
+}
+.dropdown-toggle:after
+{
+    content: "  ";
+}
 
+.nav .open>a, .nav .open>a:focus, .nav .open>a:hover,.nav .open>a:active
+{
+    color: white;
+    background-color: #2ad0e9;
+}
+.dropdown-toggle,.dropdown-toggle:hover
+{
+    color: black;
+    border:none;
 
+}
+.dropdown-toggle:hover
+{
+    color:#ffffff;
+    background-color: #2ad0e9;
+}
+.order-style>a
+{
+    margin-right: 20px;
+    color: black;
+}
+.order-style>a:hover
+{
+    background-color: #fff!important;
+}
+.ant-select-selection__rendered
+{
+    margin-left:16px !important;
+    line-height: 32px!important;
+}
+.ant-select-selection--single
+{
+    height: 35px!important;
+    /*margin-left: 40px;*/
+}
+.slece-style
+{
+    display: flex;
+    justify-content: space-around;
+}
