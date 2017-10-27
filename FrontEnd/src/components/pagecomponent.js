@@ -49,20 +49,18 @@ class PageComponent extends  Component{
                     <a className={this.props.current == 1? 'prev disable' : 'prev'} onClick={this.props.goPrev.bind(this)}> 上一页</a>
                     <span>
                         {
-                            pageNum.map(function(curPageNum){
+                            pageNum.map(function(curPageNum ,index){
                                 return(
-                                    <a onClick = {_this.props.pageClick.bind(_this,curPageNum.num)} className={curPageNum.cur ? 'num current' : 'num'}>{curPageNum.num}</a>
+                                    <a key={index} onClick = {_this.props.pageClick.bind(_this,curPageNum.num)} >{curPageNum.num}</a>
                                 )
                             })
                         }
                     </span>
                     <a className={this.props.current == this.props.total? 'next disable' : 'next'} onClick={this.props.goNext.bind(this)}>下一页</a>
                     <div className="rightDiv">
-                        总共<span className="num-total">{_this.props.total}</span>条，
+                        总共<span className="num-total"> {_this.props.total} </span>条，
                         共
-                        <span className="num-total">{_this.props.totalPage}</span>
-                        页，到第
-                        <input type="text" value={_this.props.goValue} onChange={this.props.switchChange.bind(this)} />
+                        <span className="num-total"> {_this.props.totalPage} </span>
                         页
                     </div>
                 </div>

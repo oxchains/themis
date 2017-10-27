@@ -803,7 +803,7 @@ div {
 {
     display: flex;
     justify-content: center;
-    /*margin-top: 20px;*/
+    margin-top: 20px;
 }
 html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
 /*table样式*/
@@ -818,7 +818,7 @@ table { border-spacing: 0;  border-collapse: collapse; }
     padding: 8px; line-height: 1.42857143;  vertical-align: top; border-top: 1px solid #ddd;text-align: center }
 .rightDiv{float: left;    float: left; padding-left: 16px; margin-top: 1px;}
 .paginationDiv {display: block; margin-top: 50px; color: #535353; line-height: 29px; text-align: center;margin-left: 52px;}
-.paginationDiv a {float: left;color: black; width: 80px; height: 30px; padding: 0 7px; vertical-align: middle; text-decoration: none; cursor: pointer;}
+.paginationDiv a {float: left;color: black;  height: 30px; padding: 0 7px; vertical-align: middle; text-decoration: none; cursor: pointer;}
 /*.paginationDiv .next,.paginationDiv .prev {background-color: #f3f4f8; border: 1px solid #e5e5e5;}*/
 /*.paginationDiv .next:hover,.paginationDiv .prev:hover {background-color: #ddd; border: 1px solid #ddd;}*/
 
@@ -1137,4 +1137,8 @@ table { border-spacing: 0;  border-collapse: collapse; }
 {
     display: flex;
     justify-content: space-around;
+}
+.ant-select
+{
+    display: block!important;
 }

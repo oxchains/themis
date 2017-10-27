@@ -4,11 +4,10 @@
 
 import React, { Component } from 'react';
 
-import { Field } from 'redux-form';
 import { connect } from 'react-redux';
 import Header from  './common/header';
-
-class Baseinfo extends Component {
+import { fetctHome } from '../actions/releaseadvert'
+class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {}
@@ -16,35 +15,45 @@ class Baseinfo extends Component {
         this.renderArray = this.renderArray.bind(this)
     }
 
+    componentWillMount(){
+     this.props.fetctHome({},()=>{})
+    }
+
+
     renderRows(item,index){
+        const arraydata = this.props.all || []    //列表数组的数据
+
+        console.log(arraydata)
+        return arraydata.map((item, index) => {
         return(
                 <div  key={index} className="list-border">
                     <div className="title-bgc">
                         <img src={item.src} alt=""/>
-                        <p>{item.title}</p>
+                        <p>{item.loginname}</p>
                     </div>
                     <div className="col-lg-4">
-                        <p>{item.jiaoyinum}</p>
+                        <p>{item.txNum}</p>
                         <p>交易次数</p>
                     </div>
                     <div className="col-lg-4">
-                        <p>{item.trusted}</p>
+                        <p>{item.trustNum}</p>
                         <p>信任人数</p>
                     </div>
                     <div className="col-lg-4">
-                        <p>{item.bili}</p>
+                        <p>{item.trustPercent} %</p>
                         <p>信誉度</p>
                     </div>
                     <hr className="clear"/>
                     <div className=" home-content">
                         <p>交易价格:{item.price}CNY</p>
-                        <p>交易限额:{item.limprice} CNY</p>
-                        <p>付款方式:{item.payway}</p>
+                        <p>交易限额:{item.minTxLimit} - {item.maxTxLimit} CNY</p>
+                        <p>付款方式:{item.payType}</p>
                     </div>
-                    <button className="home-button" ><a href="/buybtc">购买比特币</a></button>
+                    <button className="home-button" ><a href="/buybtc">{item.noticeType == 1?"购买比特币" : "出售比特币"}</a></button>
                 </div>
 
         )
+    })
     }
     renderArray(item,index){
         return(
@@ -61,19 +70,11 @@ class Baseinfo extends Component {
 
     render() {
 
-        const RowLinks = [
-            { src:"./public/img/touxiang.png",title:"风一样的女子",jiaoyinum:"6",trusted:"3",bili:"100%",price:"37517.67",limprice:"1000-7878",payway:"现金付款",btn:"购买比特币"},
-            { src:"./public/img/touxiang.png",title:"风一样的女子",jiaoyinum:"6",trusted:"3",bili:"100%",price:"37517.67",limprice:"1000-7878",payway:"现金付款",btn:"购买比特币"},
-            { src:"./public/img/touxiang.png",title:"风一样的女子",jiaoyinum:"6",trusted:"3",bili:"100%",price:"37517.67",limprice:"1000-7878",payway:"现金付款",btn:"购买比特币"},
-            { src:"./public/img/touxiang.png",title:"风一样的女子",jiaoyinum:"6",trusted:"3",bili:"100%",price:"37517.67",limprice:"1000-7878",payway:"现金付款",btn:"购买比特币"}
-        ]
         const ArrayLinks = [
             { src:"./public/img/买卖-.png",title:"快速买卖",content:"themis是一个不涉及第三方的P2P交易平台，交易过程方便快捷"},
             { src:"./public/img/安全.png",title:"安全交易",content:"冷存储、SSL、多重加密等银行级别安全技术，十年金融安全经验安全团队"},
             { src:"./public/img/快速.png",title:"及时掌控",content:"行情及时掌握,交易随时随地"},
         ]
-
-
         return (
             <div className="clear">
                 <div className="headermain">
@@ -90,7 +91,7 @@ class Baseinfo extends Component {
                         <h5><a href="/buybtc">查看更多的广告</a></h5>
                     </div>
                     <div className="modle-list">
-                        {RowLinks.map(this.renderRows)}
+                        {this.renderRows()}
                     </div>
                 </div>
                 <div className="home-bottom">
@@ -107,8 +108,7 @@ class Baseinfo extends Component {
 
 function mapStateToProps(state) {
     return {
-        success: state.auth.authenticated,
-        errorMessage: state.auth.error
+       all:state.advert.all
     };
 }
-export default connect(mapStateToProps,{})(Baseinfo);
+export default connect(mapStateToProps,{fetctHome})(Home);
