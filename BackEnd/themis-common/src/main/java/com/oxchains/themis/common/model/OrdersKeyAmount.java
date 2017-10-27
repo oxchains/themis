@@ -8,6 +8,9 @@ public class OrdersKeyAmount {
     private String pubKeys;
     private Double amount;
 
+    public OrdersKeyAmount() {
+    }
+
     public OrdersKeyAmount(String orderId, String pubKeys, Double amount) {
         this.orderId = orderId;
         this.pubKeys = pubKeys;

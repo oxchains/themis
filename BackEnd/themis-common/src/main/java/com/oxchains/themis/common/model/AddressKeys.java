@@ -10,9 +10,7 @@ import java.io.Serializable;
  */
 public class AddressKeys implements Serializable{
     private String address;
-
     private String publicKey;
-
     private String privateKey;
 
     public AddressKeys(){}
