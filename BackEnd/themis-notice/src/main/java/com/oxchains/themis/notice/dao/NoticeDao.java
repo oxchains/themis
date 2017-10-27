@@ -46,4 +46,7 @@ public interface NoticeDao extends CrudRepository<Notice,Long>, PagingAndSorting
     Page<Notice> findByCurrencyAndPayTypeAndNoticeType(Long currency, Long payType, Long noticeType, Pageable pageable);
     Page<Notice> findByLocationAndCurrencyAndPayTypeAndNoticeType(Long location, Long currency, Long payType, Long noticeType, Pageable pageable);
 
+    // 首页查询部分数据的接口
+
+    Notice findByNoticeTypeAndUserId(Long noticeType, Long userId);
 }
