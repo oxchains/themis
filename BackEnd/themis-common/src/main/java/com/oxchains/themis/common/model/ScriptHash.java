@@ -43,4 +43,13 @@ public class ScriptHash {
         this.redeemScript = redeemScript;
         this.URI = URI;
     }
+
+    @Override
+    public String toString() {
+        return "ScriptHash{" +
+                "address='" + address + '\'' +
+                ", redeemScript='" + redeemScript + '\'' +
+                ", URI='" + URI + '\'' +
+                '}';
+    }
 }

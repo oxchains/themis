@@ -1,6 +1,4 @@
-package com.oxchains.themis.order.common;
-
-import java.math.BigDecimal;
+package com.oxchains.themis.common.model;
 
 /**
  * Created by huohuo on 2017/10/26.
@@ -9,6 +7,9 @@ public class OrdersKeyAmount {
     private String orderId;
     private String pubKeys;
     private Double amount;
+
+    public OrdersKeyAmount() {
+    }
 
     public OrdersKeyAmount(String orderId, String pubKeys, Double amount) {
         this.orderId = orderId;
