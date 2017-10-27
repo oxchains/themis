@@ -88,23 +88,48 @@ public class BitcoinService {
 
     public RestResp addTxid(String orderId,String txId){
         try{
-            Transaction transaction = transactionDao.findByOrderId(orderId);
-            if(null!= transaction){
-                transaction.setUtxoTxid(txId);
-                transactionDao.save(transaction);
+            BitcoindRpcClient.RawTransaction rawTransaction = client.getRawTransaction(txId);
+            if("scripthash".equals(rawTransaction.vOut().get(0).scriptPubKey().type())){
+                Transaction transaction = transactionDao.findByOrderId(orderId);
+                if(null != transaction){
+                    transaction.setUtxoTxid(txId);
+                    transactionDao.save(transaction);
+                    return RestResp.success(transaction);
+                }else {
+                    return RestResp.fail("订单不成立");
+                }
+
+            }else {
+               return RestResp.fail("交易不成立,请重新发送比特币到合约地址");
             }
-            return RestResp.success(transaction);
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            return RestResp.fail("交易不成立,请重新发送比特币到合约地址",e.getMessage());
+        }
+    }
+
+    public RestResp getTransactionStatus(String orderId){
+        try{
+            Transaction order = transactionDao.findByOrderId(orderId);
+            String txId = order.getUtxoTxid();
+            BitcoindRpcClient.RawTransaction rawTransaction = client.getRawTransaction(txId);
+            if(null != rawTransaction){
+                try {
+                    int confirmations = rawTransaction.confirmations();
+                    double value = rawTransaction.vOut().get(0).value();
+                    return RestResp.success("交易已有 "+confirmations+" 个确认");
+                }catch (Exception e){
+                    return RestResp.success("交易还未确认");
+                }
+            }else {
+                return RestResp.fail("订单交易不存在");
+            }
+
         }catch (Exception e){
             logger.error(e.getMessage());
             return RestResp.fail(e.getMessage());
         }
-    }
 
-    public RestResp getTransactionStatus(String txId){
-        BitcoindRpcClient.RawTransaction rawTransaction = client.getRawTransaction(txId);
-        int confirmations = rawTransaction.confirmations();
-        double value = rawTransaction.vOut().get(0).value();
-        return null;
     }
 
     public RestResp payToUser(String orderId,String txId,String recvAddress,List<String> signPrvKeys,Double amount){

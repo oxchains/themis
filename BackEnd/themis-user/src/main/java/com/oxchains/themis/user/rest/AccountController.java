@@ -123,6 +123,11 @@ public class AccountController {
         return bitcoinService.addTxid(orderId,txId);
     }
 
+    @GetMapping(value = "/{orderId}")
+    public RestResp getStatus(@PathVariable String orderId){
+        return bitcoinService.getTransactionStatus(orderId);
+    }
+
     @PostMapping(value = "/p2ur")
     public RestResp payToUser(String orderId,String txId,String recvAddress,String prvKeys,Double amount){
         return bitcoinService.payToUser(orderId,txId,recvAddress,Arrays.asList(prvKeys.split(",")),amount);

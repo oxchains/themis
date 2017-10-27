@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * @Desc:
  */
 
-@EnableEurekaClient
+//@EnableEurekaClient
 @SpringBootApplication
 @EnableScheduling
 public class Application {
