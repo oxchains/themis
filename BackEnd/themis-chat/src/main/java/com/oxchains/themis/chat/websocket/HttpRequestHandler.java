@@ -26,6 +26,7 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
         if (requestUri.length()>5 && requestUri.contains(wsUri)){
             String message = requestUri.substring(requestUri.lastIndexOf("?")+1);
             String token = message.substring(0,message.lastIndexOf("_"));
+            System.out.println(token);
             String id = ChatUtil.parse(token).getId()+"";
             String receiverId = message.substring(message.lastIndexOf("_")+1);
             if(ChatUtil.userChannels.get(id) == null){

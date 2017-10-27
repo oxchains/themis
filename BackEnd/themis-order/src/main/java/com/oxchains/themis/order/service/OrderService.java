@@ -74,7 +74,7 @@ public class OrderService {
     public Orders addOrders(Orders orders){
         Orders orders1 =null;
         try {
-            //生成一条订单信息
+            //生成一条订单信息 订单状态为1 是否仲裁为0
             orders.setCreateTime(DateUtil.getPresentDate());
             orders.setId(DateUtil.getOrderId());
             //Notice notice = noticeRepo.findOne(orders.getNoticeId());
@@ -94,6 +94,7 @@ public class OrderService {
             orderAddresskeys.setUserPubAuth(addressKeys1.getPublicKey());
             orderAddresskeys.setUserPriAuth(addressKeys1.getPrivateKey());
             orderAddresskeyRepo.save(orderAddresskeys);
+
             //将仲裁者用户的私匙 分为三个密匙碎片分别分给三个人 存储在 订单仲裁表里面 每个订单对应三条信息
             String[] strArr = ShamirUtil.splitAuth(addressKeys1.getPrivateKey());
             List<User> userList = userRepo.findUserByRoleId(3L);
@@ -191,7 +192,9 @@ public class OrderService {
                 orders.setOrderStatus(6L);
             }
             if(orders.getOrderStatus()==2){
-                //当订单状态为2 买家还未付款 时调用接口让 卖家的BTB 从协议地址回到卖家账户
+                //买家的私匙给卖家
+                OrderAddresskeys orderAddresskeys = orderAddresskeyRepo.findOrderAddresskeysByOrderId(id);
+                orderAddresskeys.setSellerBuyerPriAuth(orderAddresskeys.getBuyerPriAuth());
                 orders.setOrderStatus(6L);
             }
             if(orders.getOrderStatus()==3){
@@ -221,16 +224,15 @@ public class OrderService {
         try {
             o = orderRepo.findOne(pojo.getId());
             Notice notice = o.getNotice();
-            if(notice.getUserId()==pojo.getUserId()){
-                if(o.getOrderStatus()==1){
-                    //查询BTC有没有到协商地址如果到了地址
-                    if(true){
-                        o.setOrderStatus(2L);
-                        o = orderRepo.save(o);
-                        this.setOrderStatusName(o);
-                        return o;
-                    }
-                }
+            if(notice.getUserId()==pojo.getUserId() && o.getOrderStatus()==1 && o.getTxId() != null){
+
+                        //查询BTC有没有到协商地址如果到了地址
+                        if(true){
+                            o.setOrderStatus(2L);
+                            o = orderRepo.save(o);
+                            this.setOrderStatusName(o);
+                            return o;
+                        }
             }
         } catch (Exception e) {
             LOG.debug("confirm order faild :",e.getMessage());
@@ -272,13 +274,15 @@ public class OrderService {
         return list;
     }
     /*
-    * 买家付完款 取消订单时 确认收到退款
+    * 买家付完款 取消订单时 确认收到退款 后把买家的密匙给卖家 将密匙状态该改为1
     * */
-    public Orders confirmReceiveRefund(String id){
+    public Orders confirmReceiveRefund(Pojo pojo){
         try {
-            Orders orders = orderRepo.findOne(id);
-            if(orders.getOrderStatus()==7L){
-                //掉一个接口让BTC从协商地址回到卖家
+            Orders orders = orderRepo.findOne(pojo.getId());
+            if(orders.getBuyerId()==pojo.getUserId() && orders.getOrderStatus()==7L){
+                OrderAddresskeys orderAddresskeys = orderAddresskeyRepo.findOrderAddresskeysByOrderId(orders.getId());
+                orderAddresskeyRepo.save(orderAddresskeys);
+
                 orders.setOrderStatus(6L);
                 orders = orderRepo.save(orders);
                 this.setOrderStatusName(orders);
@@ -334,23 +338,27 @@ public class OrderService {
         OrderAddresskeys orderAddresskeys1 = null;
         Orders orders = null;
         try {
+            //将卖家的公私匙上传到公私匙表里
             orderAddresskeys1 = orderAddresskeyRepo.findOrderAddresskeysByOrderId(orderAddresskeys.getOrderId());
             orderAddresskeys1.setSellerPubAuth(orderAddresskeys.getSellerPubAuth());
             orderAddresskeys1.setSellerPriAuth(orderAddresskeys.getSellerPriAuth());
             orderAddresskeys1 = orderAddresskeyRepo.save(orderAddresskeys1);
+
             orders = orderRepo.findOne(orderAddresskeys1.getOrderId());
             //调用用户中心接口生成协商地址
-            String[] s = {orderAddresskeys1.getBuyerPubAuth(),orderAddresskeys1.getSellerPubAuth(),orderAddresskeys1.getUserPubAuth()};
-            OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orderAddresskeys1.getOrderId(),s,orders.getAmount());
+            String s = orderAddresskeys1.getBuyerPubAuth()+","+orderAddresskeys1.getSellerPubAuth()+","+orderAddresskeys1.getUserPubAuth();
+            OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orderAddresskeys1.getOrderId(),s,orders.getAmount().doubleValue());
             HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), this.getHttpHeader());
             JSONObject jsonObject = restTemplate.postForObject("http://themis-user/account/p2sh",formEntity,JSONObject.class);
             Integer status =  (Integer) jsonObject.get("status");
+            System.out.println(status);
             if(status==1){
                 OrderTransaction orderTransaction = (OrderTransaction) JsonUtil.fromJson(jsonObject.get("data").toString(), OrderTransaction.class);
                 orders.setP2shAddress(orderTransaction.getP2shAddress());
+                System.out.println(orderTransaction.getP2shAddress());
             }
         } catch (Exception e) {
-            LOG.debug("save address key faild :",e.getMessage());
+            LOG.info("save address key faild :",e.getMessage());
         }
         return  orders;
 
@@ -449,4 +457,34 @@ public class OrderService {
         headers.add("Accept", MediaType.APPLICATION_JSON.toString());
         return  headers;
     }
+    /*
+    * 卖家上传交易凭据 txid
+    * */
+    public Orders uploadTxId(Orders orders){
+        Orders orders1 = orderRepo.findOne(orders.getId());
+        orders1.setTxId(orders.getTxId());
+        return orderRepo.save(orders1);
+    }
+    /*
+    * 买家确认付款
+    * */
+    public Orders confirmSendMoney(Pojo pojo){
+        try {
+            Orders orders = orderRepo.findOne(pojo.getId());
+            if(orders.getOrderStatus()==2){
+                orders.setOrderStatus(3L);
+                return orderRepo.save(orders);
+            }
+            if(orders.getOrderStatus()==3){
+                return orders;
+            }
+        } catch (Exception e) {
+            LOG.debug("confirm send money faild : ",e.getMessage());
+        }
+        return null;
+    }
+    public boolean judgeSellerPubPriAuth(Pojo pojo){
+        OrderAddresskeys orderAddresskeys = orderAddresskeyRepo.findOrderAddresskeysByOrderId(pojo.getId());
+        return true;
+    };
 }

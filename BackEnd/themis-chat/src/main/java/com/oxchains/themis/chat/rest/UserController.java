@@ -6,7 +6,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.oxchains.themis.chat.auth.UserToken;
 import com.oxchains.themis.chat.service.UserService;
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 

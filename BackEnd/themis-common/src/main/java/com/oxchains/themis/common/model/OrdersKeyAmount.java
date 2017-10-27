@@ -1,6 +1,4 @@
-package com.oxchains.themis.order.common;
-
-import java.math.BigDecimal;
+package com.oxchains.themis.common.model;
 
 /**
  * Created by huohuo on 2017/10/26.

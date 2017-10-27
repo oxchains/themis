@@ -10,48 +10,22 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.util.concurrent.GlobalEventExecutor;
-<<<<<<< Updated upstream:BackEnd/themis-chat/src/main/java/com/oxchains/themis/chat/websocket/TextWebSocketFrameHandler.java
-<<<<<<< HEAD:BackEnd/themis-chat/src/main/java/oxchains/chat/websocket/TextWebSocketFrameHandler.java
-=======
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
->>>>>>> Stashed changes:BackEnd/themis-chat/src/main/java/oxchains/chat/websocket/TextWebSocketFrameHandler.java
-import oxchains.chat.common.ChannelHandler;
-import oxchains.chat.common.JsonUtil;
-import oxchains.chat.common.JwtService;
-import oxchains.chat.entity.ChatContent;
-<<<<<<< Updated upstream:BackEnd/themis-chat/src/main/java/com/oxchains/themis/chat/websocket/TextWebSocketFrameHandler.java
-=======
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.oxchains.themis.chat.common.ChannelHandler;
 import com.oxchains.themis.chat.common.ChatUtil;
-
->>>>>>> b54ef991ebf23b343ec4f70ab27edc8e081f0b78:BackEnd/themis-chat/src/main/java/com/oxchains/themis/chat/websocket/TextWebSocketFrameHandler.java
-=======
-import oxchains.chat.service.KafkaService;
-
->>>>>>> Stashed changes:BackEnd/themis-chat/src/main/java/oxchains/chat/websocket/TextWebSocketFrameHandler.java
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 @Component
 public class TextWebSocketFrameHandler extends
 		SimpleChannelInboundHandler<TextWebSocketFrame> {
-<<<<<<< Updated upstream:BackEnd/themis-chat/src/main/java/com/oxchains/themis/chat/websocket/TextWebSocketFrameHandler.java
 	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
-
-	private KafkaService kafkaService;
-	public TextWebSocketFrameHandler(KafkaService kafkaService){
-		this.kafkaService = kafkaService;
-	}
-
-=======
 	private KafkaService kafkaService;
 	public TextWebSocketFrameHandler(KafkaService kafkaService){
     this.kafkaService = kafkaService;
 	}
->>>>>>> Stashed changes:BackEnd/themis-chat/src/main/java/oxchains/chat/websocket/TextWebSocketFrameHandler.java
 	public static ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx,
@@ -76,11 +50,7 @@ public class TextWebSocketFrameHandler extends
 			String message = JsonUtil.toJson(chatContent).toString();
 			kafkaService.send(message);
 			ctx.channel().writeAndFlush(new TextWebSocketFrame(message));
-<<<<<<< Updated upstream:BackEnd/themis-chat/src/main/java/com/oxchains/themis/chat/websocket/TextWebSocketFrameHandler.java
 			channelHandlerMap = ChatUtil.userChannels.get(chatContent.getReceiverId()+"");
-=======
-			channelHandlerMap = JwtService.userChannels.get(chatContent.getReceiverId()+"");
->>>>>>> Stashed changes:BackEnd/themis-chat/src/main/java/oxchains/chat/websocket/TextWebSocketFrameHandler.java
 			if( channelHandlerMap!= null && channelHandlerMap.get(keyIDs)!=null){
 				channelHandlerMap.get(keyIDs).getChannel().writeAndFlush(new TextWebSocketFrame(message));
 			}

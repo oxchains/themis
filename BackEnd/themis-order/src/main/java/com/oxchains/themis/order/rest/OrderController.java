@@ -19,6 +19,57 @@ public class OrderController {
         this.orderService = orderService;
     }
     /*
+   * 一 ：添加订单
+   * */
+    @RequestMapping("/order/addOrder")
+    public RestResp addOrder(@RequestBody  Orders orders){
+        Orders orders1 = orderService.addOrders(orders);
+        return orders1 !=null?RestResp.success(orders1):RestResp.fail();
+    }
+    /*
+    * 二 ：卖家上传公私钥
+    * */
+    @RequestMapping("/order/saveAddresskey")
+    public RestResp saveAddresskey(@RequestBody OrderAddresskeys orderAddresskeys){
+        System.out.println(orderAddresskeys);
+        Orders orders = orderService.saveAddresskey(orderAddresskeys);
+        return orderAddresskeys==null?RestResp.fail():RestResp.success(orders);
+    }
+    /*
+    * 三 ：卖家上传交易凭据
+    * */
+    @RequestMapping("/order/uploadTxId")
+    public RestResp uploadTxId(@RequestBody Orders orders){
+        Orders orders1 = orderService.uploadTxId(orders);
+        return orders1!=null?RestResp.success():RestResp.fail();
+    }
+    /*
+    * 四 ：发布公告的人确认订单
+    * */
+    @RequestMapping("/order/confirmOrders")
+    public RestResp confirmOrders(@RequestBody Pojo pojo){
+        Orders o = orderService.confirmOrders(pojo);
+        return o!=null?RestResp.success(o):RestResp.fail();
+    }
+
+    /*
+    * 五 ：买家确认付款
+    * */
+    @RequestMapping("/order/confirmSendMoney")
+    public RestResp confirmSendMoney(@RequestBody Pojo pojo){
+        Orders orders = orderService.confirmSendMoney(pojo);
+        return orders!=null?RestResp.success():RestResp.fail();
+    }
+    /*
+    * 六 ：取消订单
+    * */
+    @RequestMapping("/order/cancelOrders")
+    public RestResp cancelOrders(@RequestBody Pojo pojo){
+        Orders orders = orderService.cancelOrders(pojo.getId(),pojo.getUserId());
+        return orders!=null?RestResp.success(orders):RestResp.fail();
+    }
+
+    /*
     * 获取所有的订单
     * */
     @RequestMapping("/order/findOrder")
@@ -34,22 +85,7 @@ public class OrderController {
         Orders o = orderService.findOrdersDetails(pojo);
      return o!=null?RestResp.success(o): RestResp.fail();
     }
-    /*
-    * 添加订单
-    * */
-    @RequestMapping("/order/addOrder")
-    public RestResp addOrder(@RequestBody  Orders orders){
-        Orders orders1 = orderService.addOrders(orders);
-        return orders1 !=null?RestResp.success(orders1):RestResp.fail();
-    }
-    /*
-    * 卖家上传公私钥
-    * */
-    @RequestMapping("/order/saveAddresskey")
-    public RestResp saveAddresskey(@RequestBody OrderAddresskeys orderAddresskeys){
-        Orders orders = orderService.saveAddresskey(orderAddresskeys);
-        return orderAddresskeys==null?RestResp.fail():RestResp.success(orders);
-    }
+
     /*
  * 根据id查询自己已完成的的订单
  * */
@@ -66,24 +102,10 @@ public class OrderController {
         List<Orders>  list= orderService.findNoCompletedOrdersById(pojo.getUserId());
         return list!=null?RestResp.success(list):RestResp.fail();
     }
+
+
     /*
-    * 取消订单
-    * */
-    @RequestMapping("/order/cancelOrders")
-    public RestResp cancelOrders(@RequestBody Pojo pojo){
-       Orders orders = orderService.cancelOrders(pojo.getId(),pojo.getUserId());
-       return orders!=null?RestResp.success(orders):RestResp.fail();
-    }
-    /*
-    * 发布公告的人确认订单
-    * */
-    @RequestMapping("/order/confirmOrders")
-    public RestResp confirmOrders(@RequestBody Pojo pojo){
-        Orders o = orderService.confirmOrders(pojo);
-        return o!=null?RestResp.success(o):RestResp.fail();
-    }
-    /*
-    * 查询自己发布的订单锁生成的需要自己确认的订单
+    * 查询自己发布的公告所生成的需要自己确认的订单
     * */
     @RequestMapping("/order/findNotConfirmOrders")
     public RestResp findNotConfirmOrders(@RequestBody Pojo pojo){
@@ -95,7 +117,7 @@ public class OrderController {
     * */
     @RequestMapping("/order/confirmReceiveRefund")
     public RestResp confirmReceiveRefund(@RequestBody Pojo pojo){
-     Orders orders = orderService.confirmReceiveRefund(pojo.getId());
+     Orders orders = orderService.confirmReceiveRefund(pojo);
      return orders!=null?RestResp.success(orders):RestResp.fail();
     }
     /*
@@ -151,6 +173,14 @@ public class OrderController {
         UserTxDetail userTxDetailAndNotice = orderService.findUserTxDetailAndNotice(pojo);
         return userTxDetailAndNotice==null?RestResp.fail():RestResp.success(userTxDetailAndNotice);
     }
+    /*
+    * 判断卖家有没有上传公私匙
+    * */
+    public RestResp judgeSellerPubPriAuth(@RequestBody Pojo pojo){
+        Boolean b = orderService.judgeSellerPubPriAuth(pojo);
+        return b?RestResp.success():RestResp.fail();
+    }
+
 }
 
 

@@ -67,10 +67,6 @@
             <artifactId>netty-all</artifactId>
             <version>4.0.32.Final</version>
         </dependency>
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
         <!-- https://mvnrepository.com/artifact/commons-collections/commons-collections -->
         <dependency>
             <groupId>commons-collections</groupId>

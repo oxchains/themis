@@ -19,6 +19,8 @@ BackEnd/themis-user/target
 BackEnd/themis-user/*.iml
 BackEnd/themis-chat/target
 BackEnd/themis-chat/*.iml
+BackEnd/themis-arbitrate/target
+BackEnd/themis-arbitrate/*.iml
 
 BackEnd/themis-common/target
 BackEnd/themis-common/*.iml

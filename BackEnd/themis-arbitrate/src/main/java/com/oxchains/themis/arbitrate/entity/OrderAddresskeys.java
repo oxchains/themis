@@ -1,4 +1,4 @@
-package com.oxchains.themis.order.entity;
+package com.oxchains.themis.arbitrate.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -11,32 +11,14 @@ import javax.persistence.Table;
 @Table(name = "order_address_key")
 public class OrderAddresskeys {
     @Id
-    private Long id;        //公私匙表唯一id
-    private String orderId;  //相关联的订单id
-    private String buyerPubAuth; //买家公匙
-    private String buyerPriAuth;//买家私匙
-    private String buyerSellerPriAuth; //买家拥有的买家的私匙
-    private String sellerPubAuth; //卖家公匙
-    private String sellerPriAuth; //卖家私匙
-    private String sellerBuyerPriAuth; //卖家拥有的买家的私匙
-    private String userPubAuth; //仲裁者公匙
-    private String userPriAuth; //装菜社私匙
-
-    public String getBuyerSellerPriAuth() {
-        return buyerSellerPriAuth;
-    }
-
-    public void setBuyerSellerPriAuth(String buyerSellerPriAuth) {
-        this.buyerSellerPriAuth = buyerSellerPriAuth;
-    }
-
-    public String getSellerBuyerPriAuth() {
-        return sellerBuyerPriAuth;
-    }
-
-    public void setSellerBuyerPriAuth(String sellerBuyerPriAuth) {
-        this.sellerBuyerPriAuth = sellerBuyerPriAuth;
-    }
+    private Long id;
+    private String orderId;
+    private String buyerPubAuth;
+    private String buyerPriAuth;
+    private String sellerPubAuth;
+    private String sellerPriAuth;
+    private String userPubAuth;
+    private String userPriAuth;
 
     public Long getId() {
         return id;
@@ -109,10 +91,8 @@ public class OrderAddresskeys {
                 ", orderId='" + orderId + '\'' +
                 ", buyerPubAuth='" + buyerPubAuth + '\'' +
                 ", buyerPriAuth='" + buyerPriAuth + '\'' +
-                ", buyerSellerPriAuth='" + buyerSellerPriAuth + '\'' +
                 ", sellerPubAuth='" + sellerPubAuth + '\'' +
                 ", sellerPriAuth='" + sellerPriAuth + '\'' +
-                ", sellerBuyerPriAuth='" + sellerBuyerPriAuth + '\'' +
                 ", userPubAuth='" + userPubAuth + '\'' +
                 ", userPriAuth='" + userPriAuth + '\'' +
                 '}';

@@ -1,8 +1,8 @@
-package com.oxchains.themis.order.entity;
-import org.apache.poi.ss.formula.functions.T;
+package com.oxchains.themis.arbitrate.entity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+
 /**
  * Created by huohuo on 2017/10/23.
  */
@@ -22,41 +22,23 @@ public class Orders {
     private Long sellerId;    //卖家id
     private Long orderStatus; // 订单状态    1  待确认 2 代付款  3 待收货 4  待评价 5 完成 6  已取消 7等待卖家退款 8 仲裁中
    // private Long noticeId;
-    private String txId;  //卖家上传交易凭据 后台用来查到账情况
+   //公告id
     @Transient
-    private String p2shAddress;  //协商地址
-    @Transient
-    private String orderStatusName; //订单状态名称
+    private String orderStatusName;
     @ManyToOne
-    private Notice notice;  //相关联的公告信息
+    private Notice notice;
     @ManyToOne
-    private Payment payment; //相关联的 支付方式信息
+    private Payment payment;
 
     private int arbitrate;   //是否在仲裁中 默认 0： 不在仲裁中 1： 在仲裁中 2:仲裁结束
     @Transient
     private String orderType;  //  交易类型     购买  或 出售
     @Transient
-    private String friendUsername; //交易伙伴名称
+    private String friendUsername;
     @Transient
-    private String buyerUsername; //买家名称
+    private String buyerUsername;
     @Transient
-    private String sellerUsername; //卖家名称
-
-    public String getTxId() {
-        return txId;
-    }
-
-    public void setTxId(String txId) {
-        this.txId = txId;
-    }
-
-    public String getP2shAddress() {
-        return p2shAddress;
-    }
-
-    public void setP2shAddress(String p2shAddress) {
-        this.p2shAddress = p2shAddress;
-    }
+    private String sellerUsername;
 
     public String getOrderStatusName() {
         return orderStatusName;
@@ -200,31 +182,5 @@ public class Orders {
 
     public void setOrderType(String orderType) {
         this.orderType = orderType;
-    }
-
-    @Override
-    public String toString() {
-        return "Orders{" +
-                "id='" + id + '\'' +
-                ", money=" + money +
-                ", createTime='" + createTime + '\'' +
-                ", finishTime='" + finishTime + '\'' +
-                ", amount=" + amount +
-                ", vcurrencyId=" + vcurrencyId +
-                ", currencyId=" + currencyId +
-                ", buyerId=" + buyerId +
-                ", sellerId=" + sellerId +
-                ", orderStatus=" + orderStatus +
-                ", txId='" + txId + '\'' +
-                ", p2shAddress='" + p2shAddress + '\'' +
-                ", orderStatusName='" + orderStatusName + '\'' +
-                ", notice=" + notice +
-                ", payment=" + payment +
-                ", arbitrate=" + arbitrate +
-                ", orderType='" + orderType + '\'' +
-                ", friendUsername='" + friendUsername + '\'' +
-                ", buyerUsername='" + buyerUsername + '\'' +
-                ", sellerUsername='" + sellerUsername + '\'' +
-                '}';
     }
 }
