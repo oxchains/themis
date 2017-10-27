@@ -1,13 +1,25 @@
 package com.oxchains.themis.order.common;
 
+import java.io.Serializable;
+
 /**
  * Created by huohuo on 2017/10/25.
  */
-public class Pojo {
+public class Pojo implements Serializable {
     private Long userId;
     private String id;
     private Long successId;
     private Long noticeId;
+    private String txId;
+
+    public String getTxId() {
+        return txId;
+    }
+
+    public void setTxId(String txId) {
+        this.txId = txId;
+    }
+
     public Long getNoticeId() {
         return noticeId;
     }
@@ -47,6 +59,7 @@ public class Pojo {
                 ", id='" + id + '\'' +
                 ", successId=" + successId +
                 ", noticeId=" + noticeId +
+                ", txId='" + txId + '\'' +
                 '}';
     }
 }

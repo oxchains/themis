@@ -1,5 +1,4 @@
 package com.oxchains.themis.order.rest;
-
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.order.common.Pojo;
 import com.oxchains.themis.order.entity.*;
@@ -7,7 +6,6 @@ import com.oxchains.themis.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import java.util.List;
 /**
  * Created by huohuo on 2017/10/23.
@@ -31,16 +29,15 @@ public class OrderController {
     * */
     @RequestMapping("/order/saveAddresskey")
     public RestResp saveAddresskey(@RequestBody  OrderAddresskeys orderAddresskeys){
-        System.out.println(orderAddresskeys);
         Orders orders = orderService.saveAddresskey(orderAddresskeys);
-        return orderAddresskeys==null?RestResp.fail():RestResp.success(orders);
+        return orders==null?RestResp.fail():RestResp.success(orders);
     }
     /*
     * 三 ：卖家上传交易凭据
     * */
     @RequestMapping("/order/uploadTxId")
-    public RestResp uploadTxId(@RequestBody Orders orders){
-        Orders orders1 = orderService.uploadTxId(orders);
+    public RestResp uploadTxId(@RequestBody Pojo pojo){
+        Orders orders1 = orderService.uploadTxId(pojo);
         return orders1!=null?RestResp.success():RestResp.fail();
     }
     /*
@@ -77,12 +74,36 @@ public class OrderController {
         return orders!=null?RestResp.success(orders):RestResp.fail();
     }
     /*
-    * 获取所有的订单
+    * 八 ：申请仲裁订单
     * */
-    @RequestMapping("/order/findOrder")
-    public RestResp findOrders(){
-        List<Orders> list = orderService.findOrders();
+    @RequestMapping("/order/arbitrateOrder")
+    public RestResp arbitrateOrder(@RequestBody Pojo pojo){
+        Orders orders = orderService.arbitrateOrder(pojo.getId());
+        return orders!=null?RestResp.success(orders):RestResp.fail();
+    }
+    /*
+    * 九 仲裁者查看自己可以仲裁的订单
+    * */
+    @RequestMapping("/order/findArbitrareOrderById")
+    public RestResp findArbitrareOrderById(@RequestBody Pojo pojo){
+        List<Orders> list = orderService.findArbitrareOrderById(pojo.getUserId());
         return RestResp.success(list);
+    }
+    /*
+    * 十 仲裁者对订单进行仲裁 仲裁者仲裁将密匙碎片给胜利者
+    * */
+    @RequestMapping("/order/arbitrateOrderToUser")
+    public RestResp arbitrateOrderToUser(@RequestBody Pojo pojo){
+        OrderArbitrate orderArbitrate = orderService.arbitrateOrderToUser(pojo);
+        return orderArbitrate!=null?RestResp.success():RestResp.fail();
+    }
+    /*
+    * 十一 ： 用户获取订单的 协商地址 自己的 公匙 私匙 卖家的公匙私匙 仲裁者的公匙私匙  交易的量
+    * */
+    @RequestMapping("/order/findOrderAddressKeys")
+    public RestResp findOrderAddressKeys(@RequestBody Pojo pojo){
+        OrderAddresskeys orderAddresskeys  = orderService.findOrderAddressKeys(pojo);
+        return orderAddresskeys!=null?RestResp.success(orderAddresskeys):RestResp.fail();
     }
     /*
     * 根据订单id获取订单详情
@@ -92,7 +113,6 @@ public class OrderController {
         Orders o = orderService.findOrdersDetails(pojo);
      return o!=null?RestResp.success(o): RestResp.fail();
     }
-
     /*
  * 根据id查询自己已完成的的订单
  * */
@@ -120,40 +140,13 @@ public class OrderController {
         return RestResp.success(list);
     }
 
-    /*
-    * 申请仲裁订单
-    * */
-    @RequestMapping("/order/arbitrateOrder")
-    public RestResp arbitrateOrder(@RequestBody Pojo pojo){
-        Orders orders = orderService.arbitrateOrder(pojo.getId());
-        return orders!=null?RestResp.success(orders):RestResp.fail();
-    }
- /*
-    * 根据仲裁者id查找哪些订单可以被自己仲裁的订单列表
-    * */
-    @RequestMapping("/order/findArbitrareOrderById")
-    public RestResp findArbitrareOrderById(@RequestBody Pojo pojo){
-        List<Orders> list = orderService.findArbitrareOrderById(pojo.getUserId());
-        return RestResp.success(list);
-    }
 
-
-    /*
-    * 仲裁者仲裁将密匙碎片给胜利者
-    * */
-    @RequestMapping("/order/arbitrateOrderToUser")
-    public RestResp arbitrateOrderToUser(@RequestBody Pojo pojo){
-       OrderArbitrate orderArbitrate = orderService.arbitrateOrderToUser(pojo);
-       return orderArbitrate!=null?RestResp.success():RestResp.fail();
-    }
     /*
     * 获取卖家历史交易资料有 好评率 交易次数 第一次购买时间 用户创建时间 交易量 电子邮箱验证否 电话号码验证否 实名认证否 信任量
     * */
     @RequestMapping("/order/findUserTxDetail")
     public RestResp findUserTxDetail(@RequestBody Pojo pojo){
-        System.out.println(pojo);
         UserTxDetail userTxDetail = orderService.findUserTxDetail(pojo);
-        System.out.println(userTxDetail);
         return userTxDetail!=null?RestResp.success(userTxDetail):RestResp.fail();
     }
     /*
@@ -169,18 +162,17 @@ public class OrderController {
     * */
     @RequestMapping("/order/findUserTxDetailAndNotice")
     public RestResp findUserTxDetailAndNotice(@RequestBody Pojo pojo){
-        System.out.println(pojo);
         UserTxDetail userTxDetailAndNotice = orderService.findUserTxDetailAndNotice(pojo);
         return userTxDetailAndNotice==null?RestResp.fail():RestResp.success(userTxDetailAndNotice);
     }
     /*
     * 判断卖家有没有上传公私匙
     * */
+    @RequestMapping("/order/judgeSellerPubPriAuth")
     public RestResp judgeSellerPubPriAuth(@RequestBody Pojo pojo){
         Orders b = orderService.judgeSellerPubPriAuth(pojo);
-        return b!=null?RestResp.success():RestResp.fail();
+        return b!=null?RestResp.success(b):RestResp.fail();
     }
-
 }
 
 
