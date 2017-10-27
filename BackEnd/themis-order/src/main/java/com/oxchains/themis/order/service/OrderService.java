@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 /**
  * Created by huohuo on 2017/10/23.
@@ -35,7 +36,9 @@ public class OrderService {
     @Autowired
     private OrderAddresskeyRepo orderAddresskeyRepo;
     @Autowired
-    UserTxDetailRepo userTxDetailRepo;
+    private UserTxDetailRepo userTxDetailRepo;
+    @Autowired
+    private OrderTransactionRepo transactionRepo;
 
     public OrderService(@Autowired OrderRepo orderRepo,@Autowired NoticeRepo noticeRepo,@Autowired UserRepo userRepo,@Autowired OrderArbitrateRepo orderArbitrateRepo,@Autowired RestTemplate restTemplate) {
         this.orderRepo = orderRepo;
@@ -200,13 +203,15 @@ public class OrderService {
             if(orders.getOrderStatus()==3){
                 if(userId==orders.getBuyerId()){
                     //买家取消订单 证明收到退款 调用接口让BTC回到卖家地址 状态改为6
+                    OrderAddresskeys orderAddresskeys = orderAddresskeyRepo.findOrderAddresskeysByOrderId(orders.getId());
+                    orderAddresskeys.setSellerBuyerPriAuth(orderAddresskeys.getBuyerPriAuth());
+                    orderAddresskeyRepo.save(orderAddresskeys);
                     orders.setOrderStatus(6L);
                 }
                 if(userId==orders.getSellerId()){
                     //卖家取消订单 状态改为7 等待买家收到退款
                     orders.setOrderStatus(7L);
                 }
-                orders.setOrderStatus(7L);
             }
             orders1 = orderRepo.save(orders);
             this.setOrderStatusName(orders1);
@@ -274,15 +279,15 @@ public class OrderService {
         return list;
     }
     /*
-    * 买家付完款 取消订单时 确认收到退款 后把买家的密匙给卖家 将密匙状态该改为1
+    * 买家确认收到退款   将买家的私匙给卖家 订单状态改为6
     * */
     public Orders confirmReceiveRefund(Pojo pojo){
         try {
             Orders orders = orderRepo.findOne(pojo.getId());
             if(orders.getBuyerId()==pojo.getUserId() && orders.getOrderStatus()==7L){
                 OrderAddresskeys orderAddresskeys = orderAddresskeyRepo.findOrderAddresskeysByOrderId(orders.getId());
+                orderAddresskeys.setSellerBuyerPriAuth(orderAddresskeys.getBuyerPriAuth());
                 orderAddresskeyRepo.save(orderAddresskeys);
-
                 orders.setOrderStatus(6L);
                 orders = orderRepo.save(orders);
                 this.setOrderStatusName(orders);
@@ -351,11 +356,9 @@ public class OrderService {
             HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), this.getHttpHeader());
             JSONObject jsonObject = restTemplate.postForObject("http://themis-user/account/p2sh",formEntity,JSONObject.class);
             Integer status =  (Integer) jsonObject.get("status");
-            System.out.println(status);
             if(status==1){
-                OrderTransaction orderTransaction = (OrderTransaction) JsonUtil.fromJson(jsonObject.get("data").toString(), OrderTransaction.class);
-                orders.setP2shAddress(orderTransaction.getP2shAddress());
-                System.out.println(orderTransaction.getP2shAddress());
+                LinkedHashMap data = (LinkedHashMap) jsonObject.get("data");
+                orders.setP2shAddress((String) data.get("address"));
                 return orders;
             }
         } catch (Exception e) {
@@ -484,8 +487,21 @@ public class OrderService {
         }
         return null;
     }
-    public boolean judgeSellerPubPriAuth(Pojo pojo){
-        OrderAddresskeys orderAddresskeys = orderAddresskeyRepo.findOrderAddresskeysByOrderId(pojo.getId());
-        return true;
+    /*
+    *判断卖家有没有上传公私钥并且生成协商地址
+    * */
+    public Orders judgeSellerPubPriAuth(Pojo pojo){
+        try {
+            OrderAddresskeys orderAddresskeys = orderAddresskeyRepo.findOrderAddresskeysByOrderId(pojo.getId());
+            if(orderAddresskeys.getSellerPubAuth()==null || orderAddresskeys.getSellerPriAuth()==null){
+                Orders orders = orderRepo.findOne(pojo.getId());
+                OrderTransaction transaction = transactionRepo.findByOrderId(pojo.getId());
+                orders.setP2shAddress(transaction.getP2shAddress());
+                return orders;
+            }
+        } catch (Exception e) {
+            LOG.debug("judge seller public private auth faild :",e.getMessage());
+        }
+        return null;
     };
 }
