@@ -129,7 +129,7 @@ public class AccountController {
     }
 
     @PostMapping(value = "/p2ur")
-    public RestResp payToUser(String orderId,String txId,String recvAddress,String prvKeys,Double amount){
-        return bitcoinService.payToUser(orderId,txId,recvAddress,Arrays.asList(prvKeys.split(",")),amount);
+    public RestResp payToUser(String orderId,String recvAddress,String prvKeys,Double amount){
+        return bitcoinService.payToUser(orderId,recvAddress,Arrays.asList(prvKeys.split(",")),amount);
     }
 }

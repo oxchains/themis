@@ -132,7 +132,7 @@ public class BitcoinService {
 
     }
 
-    public RestResp payToUser(String orderId,String txId,String recvAddress,List<String> signPrvKeys,Double amount){
+    public RestResp payToUser(String orderId,String recvAddress,List<String> signPrvKeys,Double amount){
         try {
             Transaction order = transactionDao.findByOrderId(orderId);
             //String P2SH_ADDRESS = order.getP2shAddress();
