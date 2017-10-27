@@ -356,11 +356,12 @@ public class OrderService {
                 OrderTransaction orderTransaction = (OrderTransaction) JsonUtil.fromJson(jsonObject.get("data").toString(), OrderTransaction.class);
                 orders.setP2shAddress(orderTransaction.getP2shAddress());
                 System.out.println(orderTransaction.getP2shAddress());
+                return orders;
             }
         } catch (Exception e) {
             LOG.info("save address key faild :",e.getMessage());
         }
-        return  orders;
+        return  null;
 
     }
     /*

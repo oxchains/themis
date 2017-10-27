@@ -1,12 +1,14 @@
 package com.oxchains.themis.common.model;
 
+import java.io.Serializable;
+
 /**
  * @Author ccl
  * @Time 2017-10-20 18:21
  * @Name AddressKeys
  * @Desc:
  */
-public class AddressKeys {
+public class AddressKeys implements Serializable{
     private String address;
 
     private String publicKey;

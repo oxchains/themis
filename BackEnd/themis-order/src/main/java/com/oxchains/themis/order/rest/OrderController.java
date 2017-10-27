@@ -30,7 +30,7 @@ public class OrderController {
     * 二 ：卖家上传公私钥
     * */
     @RequestMapping("/order/saveAddresskey")
-    public RestResp saveAddresskey(@RequestBody OrderAddresskeys orderAddresskeys){
+    public RestResp saveAddresskey(OrderAddresskeys orderAddresskeys){
         System.out.println(orderAddresskeys);
         Orders orders = orderService.saveAddresskey(orderAddresskeys);
         return orderAddresskeys==null?RestResp.fail():RestResp.success(orders);
