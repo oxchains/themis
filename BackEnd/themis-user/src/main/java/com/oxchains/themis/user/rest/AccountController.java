@@ -1,5 +1,6 @@
 package com.oxchains.themis.user.rest;
 
+import com.oxchains.themis.common.model.OrdersKeyAmount;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.user.service.AccountService;
 import com.oxchains.themis.user.service.BitcoinService;
@@ -113,8 +114,8 @@ public class AccountController {
     }
 
     @PostMapping(value = "/p2sh")
-    public RestResp getScriptHash(String orderId,String pubKeys,double amount){
-        return bitcoinService.getScriptHash(orderId,Arrays.asList(pubKeys.split(",")),amount);
+    public RestResp getScriptHash(@RequestBody OrdersKeyAmount param){//String orderId,String pubKeys,Double amount
+        return bitcoinService.getScriptHash(param.getOrderId(),Arrays.asList(param.getPubKeys().split(",")),param.getAmount());
     }
 
     @PostMapping(value = "/{orderId}")
@@ -123,7 +124,7 @@ public class AccountController {
     }
 
     @PostMapping(value = "/p2ur")
-    public RestResp payToUser(String orderId,String txId,String recvAddress,String prvKeys,double amount){
+    public RestResp payToUser(String orderId,String txId,String recvAddress,String prvKeys,Double amount){
         return bitcoinService.payToUser(orderId,txId,recvAddress,Arrays.asList(prvKeys.split(",")),amount);
     }
 }
