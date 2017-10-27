@@ -21,11 +21,7 @@ export function signinAction({mobilephone, password}) {
         axios.post(`${ROOT_URLC}/login`, { mobilephone, password})
             .then(response => {
                 console.log(response)
-
                 if(response.data.status == 1) {
-
-                    console.log("23333")
-
                     localStorage.setItem('token', response.data.data.token);
                     localStorage.setItem('userId', response.data.data.id);
                     localStorage.setItem('username',response.data.data.loginname);
