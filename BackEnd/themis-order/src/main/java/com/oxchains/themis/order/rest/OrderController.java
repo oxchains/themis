@@ -30,7 +30,7 @@ public class OrderController {
     * 二 ：卖家上传公私钥
     * */
     @RequestMapping("/order/saveAddresskey")
-    public RestResp saveAddresskey(OrderAddresskeys orderAddresskeys){
+    public RestResp saveAddresskey(@RequestBody  OrderAddresskeys orderAddresskeys){
         System.out.println(orderAddresskeys);
         Orders orders = orderService.saveAddresskey(orderAddresskeys);
         return orderAddresskeys==null?RestResp.fail():RestResp.success(orders);
@@ -68,7 +68,14 @@ public class OrderController {
         Orders orders = orderService.cancelOrders(pojo.getId(),pojo.getUserId());
         return orders!=null?RestResp.success(orders):RestResp.fail();
     }
-
+    /*
+   * 七 ：买家确认收到退款
+   * */
+    @RequestMapping("/order/confirmReceiveRefund")
+    public RestResp confirmReceiveRefund(@RequestBody Pojo pojo){
+        Orders orders = orderService.confirmReceiveRefund(pojo);
+        return orders!=null?RestResp.success(orders):RestResp.fail();
+    }
     /*
     * 获取所有的订单
     * */
@@ -112,14 +119,7 @@ public class OrderController {
         List<Orders> list = orderService.findNotConfirmOrders(pojo.getUserId());
         return RestResp.success(list);
     }
-    /*
-    * 买家确认收到退款
-    * */
-    @RequestMapping("/order/confirmReceiveRefund")
-    public RestResp confirmReceiveRefund(@RequestBody Pojo pojo){
-     Orders orders = orderService.confirmReceiveRefund(pojo);
-     return orders!=null?RestResp.success(orders):RestResp.fail();
-    }
+
     /*
     * 申请仲裁订单
     * */
@@ -177,8 +177,8 @@ public class OrderController {
     * 判断卖家有没有上传公私匙
     * */
     public RestResp judgeSellerPubPriAuth(@RequestBody Pojo pojo){
-        Boolean b = orderService.judgeSellerPubPriAuth(pojo);
-        return b?RestResp.success():RestResp.fail();
+        Orders b = orderService.judgeSellerPubPriAuth(pojo);
+        return b!=null?RestResp.success():RestResp.fail();
     }
 
 }
