@@ -22,7 +22,6 @@
         <module>themis-common</module>
         <module>themis-order</module>
         <module>themis-arbitrate</module>
-
     </modules>
 
     <properties>

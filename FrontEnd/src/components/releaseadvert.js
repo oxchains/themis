@@ -3,63 +3,96 @@
  */
 
 import React, { Component } from 'react';
-
+import { Select } from 'antd';
 import { Field } from 'redux-form';
 import { connect } from 'react-redux';
-import { releaseAdvert } from '../actions/releaseadvert'
+import { releaseAdvert,fetctArray } from '../actions/releaseadvert'
+import {
+    Modal,
+    ModalHeader,
+    ModalTitle,
+    ModalClose,
+    ModalBody,
+    ModalFooter
+} from 'react-modal-bootstrap';
 
 class Releaseadvert extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isModalOpen: false,
+            error: null,
+            actionResult: '',
             currentIndex:0,
-        option: "0"
+           status:''
         }
+        this.handleRows = this.handleRows.bind(this)
+        this.renderRowscountry = this.renderRowscountry.bind(this)
+        this.renderRowscurrency = this.renderRowscurrency.bind(this)
+        this.renderRowspayway = this.renderRowspayway.bind(this)
     }
-    handleChangecounty(e){
-        console.log(e.target.value)
-        this.setState({option: e.target.value});
+    hideModal = () => {
+        this.setState({
+            isModalOpen: false
+        });
+    };
+    componentWillMount(){
+        this.props.fetctArray({}, ()=>{});
     }
-    /**
-     * 发布公告需要传递的参数：
-     * userId           关联user表的id
-     * noticeType       公告类型(购买/出售)
-     * location         地区
-     * currency         货币类型
-     * premium          溢价
-     * price            价格
-     * minPrice         最低价
-     * minTxLimit       最小交易额度
-     * maxTxLimit       最大交易额度
-     * payType          支付方式
-     * noticeContent    公告内容
-     * @param notice
-     * @return
-     */
-
+    handleRows(){
+        this.setState({
+            status:'1'
+        })
+        console.log(this.state.status)
+    }
     handleFormSubmit(e){
             e.preventDefault()
-            // const loginname= localStorage.getItem('username');
             const userId= "3"
-            // const premium = this.refs.premium.value;
-            // const price = this.refs.price.value;
-            // const minPrice = this.refs.minPrice.value;
-            // const minTxLimit = this.refs.minTxLimit.value;
-            // const maxTxLimit = this.refs.maxTxLimit.value;
-            // const noticeContent = this.refs.noticeContent.value;
-        const premium = "0"
-        const price = "35000"
-        const minPrice = "0"
-        const minTxLimit = "40000"
-        const maxTxLimit = "35000"
-        const noticeContent = "不写支付宝绑定的真名，叫声爷爷就和你交易"
+            const premium = this.refs.premium.value;
+            const price = this.refs.price.value;
+            const minPrice = this.refs.minPrice.value;
+            const minTxLimit = this.refs.minTxLimit.value;
+            const maxTxLimit = this.refs.maxTxLimit.value;
+            const noticeContent = this.refs.noticeContent.value;
             const noticeType = "1";
-            const location = '1';
-            const currency = '1';
-            const payType = "3"
-            // console.log(noticeType)
-         this.props.releaseAdvert({userId ,noticeType  ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType  ,noticeContent},()=>{});
+            const location = this.state.country
+            const currency = this.state.currency
+            const payType = this.state.payway
+console.log(userId ,noticeType ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType,noticeContent)
+         this.props.releaseAdvert({userId ,noticeType ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType  ,noticeContent},err=>{
+             this.setState({ isModalOpen: true , error: err , actionResult: err||'发布成功!' });
+         });
 
+    }
+    renderRowscountry() {
+        const locationList = this.props.array.locationList || [];
+        return locationList.map(({id, name}) => {
+            var ID = id.toString();
+            const Option = Select.Option;
+            return (
+                <Option key={id} label={name} value={ID}>{name}</Option>
+            );
+        });
+    }
+    renderRowscurrency() {
+        const currencyList = this.props.array.currencyList || [];
+        return currencyList.map(({id, currency_name}) => {
+            const Option = Select.Option;
+            var ID = id.toString();
+            return (
+                <Option key={id} label={currency_name} value={ID}>{currency_name}</Option>
+            );
+        });
+    }
+    renderRowspayway(){
+        const paymentList = this.props.array.paymentList || [];
+        return paymentList.map(({id, payment_name}) => {
+            const Option = Select.Option;
+            var ID = id.toString();
+            return (
+                <Option key={id} label={payment_name} value={ID}>{payment_name}</Option>
+            );
+        });
     }
     render() {
         return (
@@ -78,35 +111,23 @@ class Releaseadvert extends Component {
                     <h4 className="h4title">交易类型</h4>
                     <h5 className="h3title">*选择广告类型</h5>
                     <span className="tipspan"> &nbsp;&nbsp;您想要创建什么样的交易广告？如果您希望出售比特币，请确保您在THEMIS的钱包中有比特币。</span>
-                    {/*<TabsControl >*/}
-                        {/*<Tab name="在线购买比特币"></Tab>*/}
-                        {/*<Tab name="在线出售比特币"></Tab>*/}
-                    {/*</TabsControl>*/}
-
                     <ul className=" buytype">
-                        <li className="tab-title-item">在线购买比特币</li>
-                        <li className="tab-title-item">在线出售比特币</li>
+                        <li className="tab-title-item" onClick={this.handleRows}>在线购买比特币</li>
+                        <li className="tab-title-item" onClick={this.handleRows}>在线出售比特币</li>
                     </ul>
                     <div className="clear display"></div>
                     <h5 className="h3title clear">*所在地</h5>
                     <span  className="tipspan"> 请选择你要发布广告的国家。</span>
-                    <select name="" id="" className="display slectoption" value={this.state.option}  onChange={this.handleChangecounty}>
-                        <option value="0">选择国家</option>
-                        <option value="1">中国</option>
-                        <option value="2">美国</option>
-                        <option value="3">英国</option>
-                        <option value="4">韩国</option>
-                    </select>
+                    <Select defaultValue="选择国家" style={{ width: 240 }}  onChange={(value) => this.state.country = value}>
+                        {this.renderRowscountry()}
+                    </Select>
+
                     <h4 className="h4title">更多信息</h4>
                     <h5 className="h3title clear">*货币:</h5>
                     <span  className="tipspan"> 您希望交易付款的货币类型。</span>
-                    <select name="" id="" className="display slectoption">
-                        <option value="0">选择货币</option>
-                        <option value="1">人民币</option>
-                        <option value="2">日元</option>
-                        <option value="3">美元</option>
-                        <option value="4">韩元</option>
-                    </select>
+                    <Select defaultValue="选择货币" style={{ width: 240 }}  onChange={(value) => this.state.currency = value}>
+                        {this.renderRowscurrency()}
+                    </Select>
                     <h5 className="h3title clear">*溢价: </h5>
                     <span  className="tipspan">基于市场价的溢出比例，市场价是根据部分大型交易所实时价格得出的，确保您的报价趋于一个相对合理的范围，比如当前价格为7000，溢价比例为10%，那么价格为7700。</span>
                     <input type="text" placeholder="%" className="display slectoption" ref="premium" />
@@ -124,57 +145,40 @@ class Releaseadvert extends Component {
                     <input type="text" placeholder="请输入最大限额 CNY" className="display slectoption" ref="maxTxLimit" />
                     <h5 className="h3title clear">*收款方式:</h5>
                     <span  className="tipspan"> 您希望交易付款的货币类型。</span>
-                    <select name="" id="" className="display slectoption">
-                        <option value="0">支付方式</option>
-                        <option value="1">微信支付</option>
-                        <option value="2">支付宝</option>
-                        <option value="3">银联</option>
-                        <option value="4">Apple pay</option>
-                    </select>
+                    <Select defaultValue="支付方式" style={{ width: 240 }} onChange={(value) => this.state.payway = value}>
+                        {this.renderRowspayway()}
+                    </Select>
                     <h5 className="h3title clear">*广告内容:</h5>
                     <textarea name="" id="" cols="150" rows="6" className="display text-content" ref="noticeContent" placeholder="请说明有关您交易的相关条款或备注您的支付方式，如微信号，支付宝号等，以便对方可以快速和您交易。(下单前后都可见)" ></textarea>
                     <button type="submit" className="  form-apply">申请发布</button>
                 </form>
 
+                <Modal isOpen={this.state.isModalOpen} onRequestHide={this.hideModal}>
+                    <ModalHeader>
+                        <ModalClose onClick={this.hideModal}/>
+                        <ModalTitle>提示:</ModalTitle>
+                    </ModalHeader>
+                    <ModalBody>
+                        <p className={this.state.error?'text-red':'text-green'}>
+                            {this.state.actionResult}
+                        </p>
+                    </ModalBody>
+                    <ModalFooter>
+                        <button className='btn btn-default' onClick={this.hideModal}>
+                            <a href="/myadvert" >关闭</a>
+                        </button>
+                    </ModalFooter>
+                </Modal>
+
             </div>
         );
     }
 }
-
-let TabsControl = React.createClass({
-    getInitialState: function(){
-        return {currentIndex: 0}
-    },
-    getTitleItemCssClasses(index){
-        return index === this.state.currentIndex ? "tab-title-item active" : "tab-title-item";
-    },
-    render(){
-        let that = this;
-        return (
-            <div className="">
-                    <ul className=" buytype">
-                        {React.Children.map(this.props.children, (element, index) => {
-                            return (<li className={` ${that.getTitleItemCssClasses(index)}`} onClick={() => {this.setState({currentIndex: index})}}>
-                                {element.props.name}</li>)
-                        })}
-                    </ul>
-            </div>
-        )
-    }
-});
-let Tab = React.createClass({
-    render(){
-        return (<div>{this.props.children}</div>);
-    }
-});
-
-
-
 function mapStateToProps(state) {
-    console.log(state)
     return {
         authenticated: state.auth.authenticated,
-        all:state.advert.all
+        all:state.advert.all,
+        array:state.advert.array,
     };
 }
-export default connect(mapStateToProps,{releaseAdvert})(Releaseadvert);
+export default connect(mapStateToProps,{releaseAdvert,fetctArray})(Releaseadvert);

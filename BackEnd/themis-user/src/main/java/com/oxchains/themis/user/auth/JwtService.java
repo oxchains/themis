@@ -67,7 +67,7 @@ public class JwtService {
         return new DefaultJwtBuilder().
                 setId(UUID.randomUUID().toString()).
                 setSubject(user.getLoginname()).
-                setExpiration(Date.from(ZonedDateTime.now().plusWeeks(1).toInstant())).
+                setExpiration(Date.from(ZonedDateTime.now().plusWeeks(1).toInstant())).claim("id",user.getId()).claim("email",user.getEmail()).
                 signWith(SignatureAlgorithm.ES256,privateKey).
                 compact();
     }

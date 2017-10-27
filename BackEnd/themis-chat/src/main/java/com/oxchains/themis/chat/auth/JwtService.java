@@ -21,10 +21,7 @@ import java.util.UUID;
 public class  JwtService {
     private Logger LOG = LoggerFactory.getLogger(getClass());
      private String keystore = "this is key store";
-     private String keypass = "this is keypass";
       static final String SECRET = "ThisIsASecret";
-     private String keyalias = "this is keyalias";
-     private String cert = "this is cert";
     private final UserRepo userRepo;
     public JwtService(UserRepo userRepo) {
         this.userRepo = userRepo;

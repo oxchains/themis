@@ -1,5 +1,6 @@
 package com.oxchains.themis.user.rest;
 
+import com.oxchains.themis.common.model.OrdersKeyAmount;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.user.service.AccountService;
 import com.oxchains.themis.user.service.BitcoinService;
@@ -112,7 +113,23 @@ public class AccountController {
         return bitcoinService.confirmTransaction(toAddress,amount,Arrays.asList(prvKeys.split(",")),1);
     }
 
-    public RestResp getScriptHash(String orderId,String keyPair,double amount){
-        return null;
+    @PostMapping(value = "/p2sh")
+    public RestResp getScriptHash(@RequestBody OrdersKeyAmount param){//String orderId,String pubKeys,Double amount
+        return bitcoinService.getScriptHash(param.getOrderId(),Arrays.asList(param.getPubKeys().split(",")),param.getAmount());
+    }
+
+    @PostMapping(value = "/{orderId}")
+    public RestResp addTxid(@PathVariable String orderId,String txId){
+        return bitcoinService.addTxid(orderId,txId);
+    }
+
+    @GetMapping(value = "/{orderId}")
+    public RestResp getStatus(@PathVariable String orderId){
+        return bitcoinService.getTransactionStatus(orderId);
+    }
+
+    @PostMapping(value = "/p2ur")
+    public RestResp payToUser(String orderId,String recvAddress,String prvKeys,Double amount){
+        return bitcoinService.payToUser(orderId,recvAddress,Arrays.asList(prvKeys.split(",")),amount);
     }
 }

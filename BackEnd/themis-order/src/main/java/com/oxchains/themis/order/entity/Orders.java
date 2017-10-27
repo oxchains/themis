@@ -2,13 +2,14 @@ package com.oxchains.themis.order.entity;
 import org.apache.poi.ss.formula.functions.T;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 /**
  * Created by huohuo on 2017/10/23.
  */
 @Entity
 @Table(name = "tbl_biz_orders")
-public class Orders {
+public class Orders implements Serializable{
     @Id
     private String id;         //订单编号
     private BigDecimal money;  //订单金额
@@ -22,23 +23,61 @@ public class Orders {
     private Long sellerId;    //卖家id
     private Long orderStatus; // 订单状态    1  待确认 2 代付款  3 待收货 4  待评价 5 完成 6  已取消 7等待卖家退款 8 仲裁中
    // private Long noticeId;
-   //公告id
-    @Transient
-    private String orderStatusName;
-    @ManyToOne
-    private Notice notice;
-    @ManyToOne
-    private Payment payment;
+    private String txId;  //卖家上传交易凭据 后台用来查到账情况
 
+    @Transient
+    private String p2shAddress;  //协商地址
+    @Transient
+    private String orderStatusName; //订单状态名称
+    @ManyToOne
+    private Notice notice;  //相关联的公告信息
+    @ManyToOne
+    private Payment payment; //相关联的 支付方式信息
     private int arbitrate;   //是否在仲裁中 默认 0： 不在仲裁中 1： 在仲裁中 2:仲裁结束
     @Transient
     private String orderType;  //  交易类型     购买  或 出售
     @Transient
-    private String friendUsername;
+    private String friendUsername; //交易伙伴名称
     @Transient
-    private String buyerUsername;
+    private String buyerUsername; //买家名称
     @Transient
-    private String sellerUsername;
+    private String sellerUsername; //卖家名称
+    @ManyToOne
+    private OrderAddresskeys orderAddresskeys;
+
+    @Transient
+    private String uri;
+
+    public OrderAddresskeys getOrderAddresskeys() {
+        return orderAddresskeys;
+    }
+
+    public void setOrderAddresskeys(OrderAddresskeys orderAddresskeys) {
+        this.orderAddresskeys = orderAddresskeys;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+    public String getTxId() {
+        return txId;
+    }
+
+    public void setTxId(String txId) {
+        this.txId = txId;
+    }
+
+    public String getP2shAddress() {
+        return p2shAddress;
+    }
+
+    public void setP2shAddress(String p2shAddress) {
+        this.p2shAddress = p2shAddress;
+    }
 
     public String getOrderStatusName() {
         return orderStatusName;
@@ -182,5 +221,31 @@ public class Orders {
 
     public void setOrderType(String orderType) {
         this.orderType = orderType;
+    }
+
+    @Override
+    public String toString() {
+        return "Orders{" +
+                "id='" + id + '\'' +
+                ", money=" + money +
+                ", createTime='" + createTime + '\'' +
+                ", finishTime='" + finishTime + '\'' +
+                ", amount=" + amount +
+                ", vcurrencyId=" + vcurrencyId +
+                ", currencyId=" + currencyId +
+                ", buyerId=" + buyerId +
+                ", sellerId=" + sellerId +
+                ", orderStatus=" + orderStatus +
+                ", txId='" + txId + '\'' +
+                ", p2shAddress='" + p2shAddress + '\'' +
+                ", orderStatusName='" + orderStatusName + '\'' +
+                ", notice=" + notice +
+                ", payment=" + payment +
+                ", arbitrate=" + arbitrate +
+                ", orderType='" + orderType + '\'' +
+                ", friendUsername='" + friendUsername + '\'' +
+                ", buyerUsername='" + buyerUsername + '\'' +
+                ", sellerUsername='" + sellerUsername + '\'' +
+                '}';
     }
 }

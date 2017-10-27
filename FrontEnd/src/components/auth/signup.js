@@ -37,9 +37,6 @@ class Signup extends Component {
         });
     };
     handleFormSubmit({ loginname, mobilephone, email,password }) {
-       //  this.setState({ choosenum:this.state.index });
-       // const choosenum = this.state.choosenum
-       //  console.log("choosenum" + this.state.choosenum)
         if(loginname && password && mobilephone)
             this.props.signupUser({ loginname, mobilephone, email,password }, err => {
                 this.setState({ isModalOpen: true , error: err , actionResult: err||'注册成功!' , spin:false });

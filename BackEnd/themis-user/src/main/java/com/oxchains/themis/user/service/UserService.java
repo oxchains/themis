@@ -4,7 +4,9 @@ import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.util.ConstantUtils;
 import com.oxchains.themis.common.util.EncryptUtils;
 import com.oxchains.themis.user.auth.JwtService;
+import com.oxchains.themis.user.dao.RoleDao;
 import com.oxchains.themis.user.dao.UserDao;
+import com.oxchains.themis.user.domain.Role;
 import com.oxchains.themis.user.domain.User;
 import com.oxchains.themis.user.domain.UserToken;
 import org.slf4j.Logger;
@@ -35,6 +37,9 @@ public class UserService extends BaseService{
 
     @Resource
     JwtService jwtService;
+
+    @Resource
+    private RoleDao roleDao;
 
 //    @Resource
 //    AccountService accountService;
@@ -72,8 +77,10 @@ public class UserService extends BaseService{
                 return RestResp.fail("用户已经登录");
             }*/
             String token="Bearer "+jwtService.generate(user);
+            Role role=roleDao.findById(u.getRoleId());
             logger.info("token = "+token);
             User userInfo=new User(u);
+            userInfo.setRole(role);
             userInfo.setPassword(null);
             userInfo.setToken(token);
             //u.setLoginStatus(1);
