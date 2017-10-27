@@ -10,6 +10,8 @@ public class ScriptHash {
     private String address;
     private String redeemScript;
 
+    private String URI;
+
     public String getAddress() {
         return address;
     }
@@ -26,10 +28,19 @@ public class ScriptHash {
         this.redeemScript = redeemScript;
     }
 
+    public String getURI() {
+        return URI;
+    }
+
+    public void setURI(String URI) {
+        this.URI = URI;
+    }
+
     public ScriptHash(){}
 
-    public ScriptHash(String address, String redeemScript) {
+    public ScriptHash(String address, String redeemScript, String URI) {
         this.address = address;
         this.redeemScript = redeemScript;
+        this.URI = URI;
     }
 }
