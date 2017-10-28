@@ -73,13 +73,14 @@ public class Notice {
     @Column(name = "trustpercent")
     private Integer trustPercent;
 
+    @Transient
+    @Column(name = "goodpercent")
+    private Integer goodPercent;
+
     private String loginname;
 
     @Transient
     private Integer pageNum;
-
-    @Transient
-    private Integer pageSize;
 
     public Notice(){}
 }
