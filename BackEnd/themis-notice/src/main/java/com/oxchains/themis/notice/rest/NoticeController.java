@@ -113,6 +113,7 @@ public class NoticeController {
     @PostMapping(value = "search/page/buy")
     public RestResp searchPage_buy(@RequestBody Notice notice){
         if (null == notice.getSearchType()) notice.setSearchType(1);
+        System.out.println("pageNum = " + notice.getPageNum());
         if (notice.getSearchType() == 1){// 1 默认是搜公告
             return noticeService.searchPage_buy(notice);
         }else {

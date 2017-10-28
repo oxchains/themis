@@ -24,6 +24,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.awt.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
@@ -64,6 +65,7 @@ public class NoticeService {
      */
     public RestResp broadcastNotice(Notice notice){
         try {
+            String createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
             List<Notice> noticeListUnDone = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(notice.getUserId(), notice.getNoticeType(), 0);
             List<Notice> noticeListDoing = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(notice.getUserId(), notice.getNoticeType(), 1);
             List<Notice> noticeListDone = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(notice.getUserId(), notice.getNoticeType(), 2);
@@ -85,8 +87,8 @@ public class NoticeService {
                 }
             }
 
-
             if (!noticeListDone.isEmpty() && noticeListDoing.isEmpty()){
+                notice.setCreateTime(createTime);
                 Notice n = noticeDao.save(notice);
                 return RestResp.success("操作成功", n);
             }else {
@@ -95,6 +97,7 @@ public class NoticeService {
                 } else if (!noticeListUnDone.isEmpty()) {
                     return RestResp.fail("已经有一条此类型公告");
                 } else {
+                    notice.setCreateTime(createTime);
                     Notice n = noticeDao.save(notice);
                     return RestResp.success("操作成功", n);
                 }
