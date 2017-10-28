@@ -4,7 +4,6 @@
 
 import React, { Component } from 'react';
 import { Select } from 'antd';
-import { Field } from 'redux-form';
 import { connect } from 'react-redux';
 import { releaseAdvert,fetctArray } from '../actions/releaseadvert'
 import {
@@ -24,12 +23,15 @@ class Releaseadvert extends Component {
             error: null,
             actionResult: '',
             currentIndex:0,
-           status:''
+            status:'1'
         }
-        this.handleRows = this.handleRows.bind(this)
+        this.handleRowsbuy = this.handleRowsbuy.bind(this)
+        this.handleRowssell = this.handleRowssell.bind(this)
         this.renderRowscountry = this.renderRowscountry.bind(this)
         this.renderRowscurrency = this.renderRowscurrency.bind(this)
         this.renderRowspayway = this.renderRowspayway.bind(this)
+        this.handleFormSubmit = this.handleFormSubmit.bind(this)
+
     }
     hideModal = () => {
         this.setState({
@@ -39,28 +41,38 @@ class Releaseadvert extends Component {
     componentWillMount(){
         this.props.fetctArray({}, ()=>{});
     }
-    handleRows(){
+
+    handleRowsbuy(){
         this.setState({
             status:'1'
         })
         console.log(this.state.status)
     }
+    handleRowssell(){
+        this.setState({
+            status:'2'
+        })
+        console.log(this.state.status)
+    }
+
     handleFormSubmit(e){
             e.preventDefault()
-            const userId= "3"
+            const userId= localStorage.getItem("userId")
+            const loginname = localStorage.getItem("loginname")
+
             const premium = this.refs.premium.value;
             const price = this.refs.price.value;
             const minPrice = this.refs.minPrice.value;
             const minTxLimit = this.refs.minTxLimit.value;
             const maxTxLimit = this.refs.maxTxLimit.value;
             const noticeContent = this.refs.noticeContent.value;
-            const noticeType = "1";
+            const noticeType = this.state.status;
             const location = this.state.country
             const currency = this.state.currency
             const payType = this.state.payway
-console.log(userId ,noticeType ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType,noticeContent)
-         this.props.releaseAdvert({userId ,noticeType ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType  ,noticeContent},err=>{
-             this.setState({ isModalOpen: true , error: err , actionResult: err||'发布成功!' });
+    console.log("发布公共要传送的数据" + userId ,loginname,noticeType ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType,noticeContent)
+         this.props.releaseAdvert({userId,loginname ,noticeType ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType  ,noticeContent},err=>{
+             this.setState({ isModalOpen: true , error: err , actionResult: err||'发布成功!'});
          });
 
     }
@@ -94,6 +106,7 @@ console.log(userId ,noticeType ,location ,currency,premium,price,minPrice, minTx
             );
         });
     }
+
     render() {
         return (
             <div className="maincontent">
@@ -112,8 +125,8 @@ console.log(userId ,noticeType ,location ,currency,premium,price,minPrice, minTx
                     <h5 className="h3title">*选择广告类型</h5>
                     <span className="tipspan"> &nbsp;&nbsp;您想要创建什么样的交易广告？如果您希望出售比特币，请确保您在THEMIS的钱包中有比特币。</span>
                     <ul className=" buytype">
-                        <li className="tab-title-item" onClick={this.handleRows}>在线购买比特币</li>
-                        <li className="tab-title-item" onClick={this.handleRows}>在线出售比特币</li>
+                        <li className={` ${this.state.status == 1 ? "tab-title-item active" :" tab-title-item"} `}   onClick={this.handleRowsbuy}>在线购买比特币</li>
+                        <li className={`${this.state.status == 2 ? "tab-title-item active" :" tab-title-item "}`} onClick={this.handleRowssell}>在线出售比特币</li>
                     </ul>
                     <div className="clear display"></div>
                     <h5 className="h3title clear">*所在地</h5>
@@ -131,18 +144,25 @@ console.log(userId ,noticeType ,location ,currency,premium,price,minPrice, minTx
                     <h5 className="h3title clear">*溢价: </h5>
                     <span  className="tipspan">基于市场价的溢出比例，市场价是根据部分大型交易所实时价格得出的，确保您的报价趋于一个相对合理的范围，比如当前价格为7000，溢价比例为10%，那么价格为7700。</span>
                     <input type="text" placeholder="%" className="display slectoption" ref="premium" />
+
                     <h5 className="h3title clear">*价格: </h5>
                     <span  className="tipspan">基于溢价比例得出的报价，10分钟更新一次。</span>
                     <input type="text" placeholder="CNY" className="display slectoption" ref="price" />
-                    <h5 className="h3title clear">*最低价:</h5>
+
+                    <h5 className="h3title clear">*最低价: (选填)</h5>
                     <span  className="tipspan">最低可成交的价格，可帮助您在价格剧烈波动时保持稳定的盈利，比如最低价为12000，市场价处于12000以下时，您的广告将依旧以12000的价格展示出来。</span>
+
                     <input type="text" placeholder="CNY" className="display slectoption" ref="minPrice" />
+
                     <h5 className="h3title clear">*最小限额: </h5>
                     <span  className="tipspan">一次交易的最低交易限制。</span>
+
                     <input type="text" placeholder="请输入最小限额 CNY" className="display slectoption" ref="minTxLimit" />
+
                     <h5 className="h3title clear">*最大限额: </h5>
                     <span  className="tipspan">一次交易中的最大交易限制，您的钱包余额也会影响最大量的设置。</span>
                     <input type="text" placeholder="请输入最大限额 CNY" className="display slectoption" ref="maxTxLimit" />
+
                     <h5 className="h3title clear">*收款方式:</h5>
                     <span  className="tipspan"> 您希望交易付款的货币类型。</span>
                     <Select defaultValue="支付方式" style={{ width: 240 }} onChange={(value) => this.state.payway = value}>
@@ -165,7 +185,7 @@ console.log(userId ,noticeType ,location ,currency,premium,price,minPrice, minTx
                     </ModalBody>
                     <ModalFooter>
                         <button className='btn btn-default' onClick={this.hideModal}>
-                            <a href="/myadvert" >关闭</a>
+                            <a className="close-modal" href="/myadvert" >关闭</a>
                         </button>
                     </ModalFooter>
                 </Modal>
@@ -174,11 +194,16 @@ console.log(userId ,noticeType ,location ,currency,premium,price,minPrice, minTx
         );
     }
 }
+
+
 function mapStateToProps(state) {
+    console.log(state);
     return {
         authenticated: state.auth.authenticated,
+        errorMessage: state.auth.error,
         all:state.advert.all,
         array:state.advert.array,
     };
 }
+
 export default connect(mapStateToProps,{releaseAdvert,fetctArray})(Releaseadvert);

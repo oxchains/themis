@@ -7,7 +7,7 @@ import { Select } from 'antd';
 import { Pagination } from 'antd';
 import 'antd/dist/antd.css';
 import { connect } from 'react-redux';
-import { fetctBuyBTC ,fetcAdvertSeach,fetctArray} from '../actions/releaseadvert'
+import { fetcAdvertSeach,fetctArray} from '../actions/releaseadvert'
 
 class Buybtc extends Component {
     constructor(props) {
@@ -24,29 +24,32 @@ class Buybtc extends Component {
         this.renderRowscountry = this.renderRowscountry.bind(this)
         this.renderRowscurrency = this.renderRowscurrency.bind(this)
         this.renderRowspayway = this.renderRowspayway.bind(this)
-
         this.handleSeach = this.handleSeach.bind(this)
         this.onPagination = this.onPagination.bind(this)
     }
-
     componentWillMount(){
-        const page = this.state.current
-        this.props.fetctBuyBTC({page}, ()=>{ });
-        this.props.fetctArray({}, ()=>{});
+        const pageNum = this.state.current
+        // const searchType = this.state.searchtype
+        this.props.fetcAdvertSeach({pageNum}, ()=>{ });
+
+        this.props.fetctArray({}, ()=>{}); //选择框里的数据
     }
 
-    onPagination(page) {
-        console.log(page) //当前页数
-        this.props.fetctBuyBTC({page}, ()=>{});
 
+    onPagination(pageNum) {
+        // console.log( "当前页数"+ pageNum) //当前页数
+
+        this.props.fetcAdvertSeach({pageNum}, ()=>{});
     }
+
+
     handleSeach(){
-        const currentPage = this.props.all.currentPage
+        const pageNum =  this.state.current
         const searchType = this.state.searchtype
         const location = this.state.country
         const currency = this.state.currency
         const payType = this.state.payway
-        this.props.fetcAdvertSeach({searchType,location,currency,payType,currentPage}, ()=>{});
+        this.props.fetcAdvertSeach({searchType,location,currency,payType,pageNum}, ()=>{});
     }
     handleRow( ){
         const arraydata = this.props.all.pageList || []    //列表数组的数据
@@ -54,15 +57,14 @@ class Buybtc extends Component {
             return(
                 <tr key={index} className="contentborder">
                     <td className="tabletitle">{item.loginname}</td>
-                    <td className="tabletitle">交易 {item.txStatus} | 好评度 {item.id} | 信任 {item.trustNum}</td>
-                    <td className="tabletitle"> {item.payType} </td>
+                    <td className="tabletitle">交易 {item.txNum} | 好评度 {item.goodPercent} | 信任 {item.trustNum}</td>
+                    <td className="tabletitle"> {item.payType == 1 ?"现金":item.payType == 2 ?"转账":item.payType == 3 ?"支付宝":item.payType == 4 ? "微信":item.payType == 5 ? "Apple Pay":""} </td>
                     <td className="tabletitle"> {item.minTxLimit} - {item.maxTxLimit} CNY</td>
                     <td className="tabletitle">{item.price}</td>
                     <td className="tabletitle ">
                         <button className="tablebuy" ><a href={`/buydetail:${item.id}`}>购买</a></button>
                     </td>
                 </tr>
-
             )
         })
     }
@@ -149,13 +151,10 @@ class Buybtc extends Component {
         );
     }
 }
-
-
-
 function mapStateToProps(state) {
     return {
         array:state.advert.array,   //select选择框
         all:state.advert.all,       //页面加载时返回的数据
     };
 }
-export default connect(mapStateToProps,{fetctBuyBTC,fetcAdvertSeach,fetctArray})(Buybtc);
+export default connect(mapStateToProps,{fetcAdvertSeach,fetctArray})(Buybtc);
