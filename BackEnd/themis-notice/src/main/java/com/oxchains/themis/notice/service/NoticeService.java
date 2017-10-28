@@ -5,23 +5,33 @@ import com.oxchains.themis.common.util.ArithmeticUtils;
 import com.oxchains.themis.notice.dao.*;
 import com.oxchains.themis.notice.domain.*;
 import com.oxchains.themis.notice.domain.Currency;
+import com.oxchains.themis.notice.rest.dto.HomeDTO;
 import com.oxchains.themis.notice.rest.dto.PageDTO;
 import com.oxchains.themis.notice.rest.dto.StatusDTO;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.hql.internal.ast.tree.RestrictableStatement;
+import org.hibernate.jpa.HibernateEntityManager;
 import org.omg.CORBA.INTERNAL;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * Created by Luo_xuri on 2017/10/20.
  */
 @Service
+@Transactional
 public class NoticeService {
 
     @Resource private NoticeDao noticeDao;
@@ -33,6 +43,7 @@ public class NoticeService {
     @Resource private CurrencyDao currencyDao;
     @Resource private NoticeTypeDao noticeTypeDao;
     @Resource private PaymentDao paymentDao;
+    @Resource private SearchTypeDao searchTypeDao;
     @Resource private UserTxDetailDao userTxDetailDao;
 
     /**
@@ -97,6 +108,14 @@ public class NoticeService {
 
     }
 
+   /* public RestResp queryRandomNotice(){
+        try {
+        }catch (Exception e){
+            e.printStackTrace();
+            return RestResp.fail("操作失败");
+        }
+    }*/
+
     public RestResp queryPartNotice(){
         try {
             List<Notice> partList = new ArrayList<>();
@@ -128,7 +147,7 @@ public class NoticeService {
             if (buyNoticeList.size() > 2 && sellNoticeList.size() > 2){
                 int buySize = new Random().nextInt(buyNoticeList.size() - 2);
                 int sellSize = new Random().nextInt(sellNoticeList.size() - 2);
-                // ====== start 从对应表中获取数据 ======
+                // ====== start 从对应表中获取数据 报错，未解决 ======
                 /*List<Notice> subBuyList = buyNoticeList.subList(buySize, buySize + 2);
                 for (int i = 0; i < subBuyList.size(); i++){
                     UserTxDetail userTxDetailInfo = userTxDetailDao.findOne(subBuyList.get(i).getUserId());
@@ -140,9 +159,14 @@ public class NoticeService {
                     subBuyList.get(i).setTxNum(txNum);
                     subBuyList.get(i).setTrustNum(believNum);
                     subBuyList.get(i).setTrustPercent((believNum/txNum)*100);
+                }
+                List<Notice> subSellList = sellNoticeList.subList(sellSize, sellSize + 2);
+                for (int i = 0; i < subSellList.size(); i++){
+                    UserTxDetail userTxDetailInfo = userTxDetailDao.findOne(subSellList.get(i).getUserId());
+                    subSellList.get(i).setTxNum(userTxDetailInfo.getTxNum());
+                    subSellList.get(i).setTrustNum(userTxDetailInfo.getBelieveNum());
+                    subSellList.get(i).setTrustPercent((userTxDetailInfo.getBelieveNum()/userTxDetailInfo.getTxNum())*100);
                 }*/
-                // List<Notice> subSellList = sellNoticeList.subList(sellSize, sellSize + 2);
-
                 // 将下面addAll中的换成subBuyList
                 // ====== end ======
                 partList.addAll(buyNoticeList.subList(buySize, buySize + 2));
@@ -335,13 +359,22 @@ public class NoticeService {
         return new PageRequest(pageNum - 1, pageSize, sort);
     }
 
-    public RestResp searchPage(Notice notice){
+    // 搜索购买公告
+    public RestResp searchPage_buy(Notice notice){
         try {
             Long location = notice.getLocation();
             Long currency = notice.getCurrency();
             Long payType = notice.getPayType();
-            Long noticeType = notice.getNoticeType();
+            Long noticeType = 2L;
             Integer pageNum = notice.getPageNum();
+
+            System.out.println("2----"+location);
+            System.out.println("3----"+currency);
+            System.out.println("4----"+payType);
+            System.out.println("5----"+pageNum);
+
+            if (null == pageNum) pageNum = 1;
+
             // Integer pageSize = notice.getPageSize();
             // Sort sort = new Sort(Sort.Direction.DESC, "id");
             Pageable pageable = buildPageRequest(pageNum, 8, null);
@@ -367,10 +400,15 @@ public class NoticeService {
             }
             List<Notice> resultList = new ArrayList<>();
             Iterator<Notice> it = page.iterator();
+            // 循环it 获取userid，然后拿userTXDetail表数据，未操作
+            /*List<Notice> noticeList = (List<Notice>) page.iterator();
+            for (int i=0; i<noticeList.size(); i++){
+                resultList.add(noticeList.get(i));
+            }*/
+
             while (it.hasNext()){
                 resultList.add(it.next());
             }
-
             PageDTO<Notice> pageDTO = new PageDTO<>();
             pageDTO.setCurrentPage(pageNum);
             pageDTO.setPageSize(8);
@@ -384,9 +422,101 @@ public class NoticeService {
         }
     }
 
-    public RestResp defaultSearch(Long noticeType){
+    // 搜索出售公告
+    public RestResp searchPage_sell(Notice notice){
         try {
-            Pageable pageable = buildPageRequest(1, 8, null);
+            Long location = notice.getLocation();
+            Long currency = notice.getCurrency();
+            Long payType = notice.getPayType();
+            Long noticeType = 1L;
+            Integer pageNum = notice.getPageNum();
+            if (null == pageNum) pageNum = 1;
+            // Integer pageSize = notice.getPageSize();
+            // Sort sort = new Sort(Sort.Direction.DESC, "id");
+            Pageable pageable = buildPageRequest(pageNum, 8, null);
+            Page<Notice> page = null;
+            if (null != location && null != currency && null != payType) {
+                page = noticeDao.findByLocationAndCurrencyAndPayTypeAndNoticeType(location, currency, payType, noticeType, pageable);
+            }else if (null != location && null != currency && null == payType) {
+                page = noticeDao.findByLocationAndCurrencyAndNoticeType(location, currency, noticeType, pageable);
+            } else if (null != location && null == currency && null != payType) {
+                page = noticeDao.findByLocationAndPayTypeAndNoticeType(location, payType, noticeType, pageable);
+            } else if (null == location && null != currency && null != payType) {
+                page = noticeDao.findByCurrencyAndPayTypeAndNoticeType(currency, payType, noticeType, pageable);
+            } else if (null != location && null == currency && null == payType) {
+                page = noticeDao.findByLocationAndNoticeType(location, noticeType, pageable);
+            } else if (null == location && null == currency && null != payType) {
+                page = noticeDao.findByPayTypeAndNoticeType(payType, noticeType, pageable);
+            } else if (null == location && null != currency && null != payType) {
+                page = noticeDao.findByCurrencyAndNoticeType(currency, noticeType, pageable);
+            } else if (null == location && null == currency && null == payType) {
+                page = noticeDao.findByNoticeType(noticeType, pageable);
+            }else {
+                return RestResp.fail("操作失败");
+            }
+            List<Notice> resultList = new ArrayList<>();
+            Iterator<Notice> it = page.iterator();
+
+            while (it.hasNext()){
+                resultList.add(it.next());
+            }
+            PageDTO<Notice> pageDTO = new PageDTO<>();
+            pageDTO.setCurrentPage(pageNum);
+            pageDTO.setPageSize(8);
+            pageDTO.setRowCount(page.getTotalElements());
+            pageDTO.setTotalPage(page.getTotalPages());
+            pageDTO.setPageList(resultList);
+            return RestResp.success("操作成功", pageDTO);
+        }catch (Exception e){
+            e.printStackTrace();
+            return RestResp.fail("操作失败", e.getMessage());
+        }
+    }
+
+    public RestResp defaultSearch_buy(Long noticeType, Integer pageNum){
+        try {
+            Pageable pageable = buildPageRequest(pageNum, 8, null);
+            Page<Notice> page = noticeDao.findByNoticeType(noticeType, pageable);
+
+            // ====== start 获取交易次数，信任人数，信誉度 ======
+            List<Notice> buyNoticeList = noticeDao.findByNoticeType(1L);
+            List<Notice> sellNoticeList = noticeDao.findByNoticeType(2L);
+            int randomTxNum = new Random().nextInt(1000); // 随机交易次数
+            int randomTtustNum = new Random().nextInt(randomTxNum); // 随机信任人数(不超过交易次数)
+            int randomTrustPercent = new Random().nextInt(10) + 90; // 随机信任度(90-100)
+            for (int i=0; i<buyNoticeList.size();i++){
+                buyNoticeList.get(i).setTxNum(randomTxNum);
+                buyNoticeList.get(i).setTrustNum(randomTtustNum);
+                buyNoticeList.get(i).setTrustPercent(randomTrustPercent);
+            }
+            for (int i = 0; i < sellNoticeList.size(); i++){
+                sellNoticeList.get(i).setTxNum(randomTxNum);
+                sellNoticeList.get(i).setTrustNum(randomTtustNum);
+                sellNoticeList.get(i).setTrustPercent(randomTrustPercent);
+            }
+            // ====== end ======
+
+            List<Notice> resultList = new ArrayList<>();
+            Iterator<Notice> it = page.iterator();
+            while (it.hasNext()){
+                resultList.add(it.next());
+            }
+            PageDTO<Notice> pageDTO = new PageDTO<>();
+            pageDTO.setCurrentPage(1);
+            pageDTO.setPageSize(8);
+            pageDTO.setRowCount(page.getTotalElements());
+            pageDTO.setTotalPage(page.getTotalPages());
+            pageDTO.setPageList(resultList);
+            return RestResp.success("操作成功", pageDTO);
+        }catch (Exception e){
+            e.printStackTrace();
+            return RestResp.fail("操作失败", e.getMessage());
+        }
+    }
+
+    public RestResp defaultSearch_sell(Long noticeType, Integer pageNum){
+        try {
+            Pageable pageable = buildPageRequest(pageNum, 8, null);
             Page<Notice> page = noticeDao.findByNoticeType(noticeType, pageable);
 
             // ====== start 获取交易次数，信任人数，信誉度 ======
@@ -430,12 +560,14 @@ public class NoticeService {
             Iterable<Country> location = countryDao.findAll();
             Iterable<Currency> currency = currencyDao.findAll();
             Iterable<Payment> payment = paymentDao.findAll();
+            Iterable<SearchType> searchType = searchTypeDao.findAll();
             Iterable<BTCTicker> btcTiker = btcTickerDao.findBTCTickerBySymbol("btccny");
-            if (location.iterator().hasNext() && currency.iterator().hasNext() && payment.iterator().hasNext()){
+            if (location.iterator().hasNext() && currency.iterator().hasNext() && payment.iterator().hasNext() && searchType.iterator().hasNext()){
                 StatusDTO statusDTO = new StatusDTO<>();
                 statusDTO.setLocationList(location);
                 statusDTO.setCurrencyList(currency);
                 statusDTO.setPaymentList(payment);
+                statusDTO.setSearchTypeList(searchType);
                 statusDTO.setBTCMarketList(btcTiker);
                 return RestResp.success("操作成功", statusDTO);
             } else {

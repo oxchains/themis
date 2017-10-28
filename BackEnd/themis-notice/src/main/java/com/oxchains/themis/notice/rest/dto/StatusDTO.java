@@ -15,7 +15,7 @@ public class StatusDTO <T> {
 
     private Iterable<T> LocationList;
     private Iterable<T> CurrencyList;
-    //private Iterable<T> NoticeTypeList;
+    private Iterable<T> SearchTypeList;
     private Iterable<T> PaymentList;
 
     private Iterable<T> BTCMarketList;
