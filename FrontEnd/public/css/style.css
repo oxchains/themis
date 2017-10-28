@@ -404,8 +404,11 @@ div {
     background-color: #fff !important;
     border-color: lightgrey;
 }
+#qrcode img{
+    margin:auto;
+}
 
-/*order-chat*/
+/*orderprocess-chat*/
 .tab_title_wrap div{
     cursor: pointer;
     padding: 10px 0;

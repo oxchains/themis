@@ -59,7 +59,6 @@ ReactDOM.render(
                 <Switch>
                     <Route path="/signin" component={Singin}/>
                     <Route path="/signinemail" component={Signinemail}/>
-
                     <Route path="/signup" component={Singup}/>
                     <Route path="/signout" component={Signout} />
                     <Route path="/usercenter" component={Usercenter}/>

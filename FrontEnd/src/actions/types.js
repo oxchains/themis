@@ -22,9 +22,19 @@ export const FETCH_BUY_SECAT = 'fetch_buy_seach'                   //购买比�
 export const FETCH_BUY_BTC_DETAIL = 'fetch_buy_btc_detail'           //购买比特币广告详情
 
 export const FETCH_COMPLETED_ORDERS = 'fetch_completed_orders';         //获取已完成订单
-export const FETCH_NOT_COMPLETED_ORDERS = 'fetch_not_completed_orders';   //获取未完成订单
+export const FETCH_NOT_COMPLETED_ORDERS = 'fetch_not_completed_orders'; //获取未完成订单
 export const FETCH_ORDERS_DETAILS = 'fetch_orders_details';            //获取订单详情
 export const FETCH_TRADE_PARTNER_MESSAGE='fetch_trade_partner_message'  //获取交易伙伴的详细信息
+export const FETCH_KEYS = 'fetch_keys'                                  //获取卖家公钥私钥
+export const ADD_PAYMENT_INFO = 'add_payment_info'                      //卖家提交付款公钥私钥
+export const ADD_TRANSACTION_ID = 'add_transaction_id'                  //卖家提交交易id
+export const CONFIRM_ORDER = 'confirm_order'                            //卖家确认订单
+export const CONFIRM_SEND_MONEY = 'confirm_send_money'                  //买家付款
+export const RELEASE_BTC = "release_btc"                                //卖家释放比特币
+export const CONFIRM_GOODS = 'confirm_goods'                            //买家确认收货
+export const CANCEL_ORDERS = 'cancel_orders'                            //取消订单
+export const SAVE_COMMENT = 'save_comment'                               //提交评价
+
 
 export function getAuthorizedHeader() {
     return { authorization: localStorage.getItem('token') }

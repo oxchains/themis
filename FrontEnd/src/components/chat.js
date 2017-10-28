@@ -7,7 +7,10 @@ import { connect } from 'react-redux';
 import $ from 'jquery';
 
 class Chat extends Component{
+
     componentDidMount(){
+        const token=localStorage.getItem("token"); //token
+        // ws = new WebSocket("ws://192.168.1.121:9999/ws?"+token+"_"+receiverId); //链接websocket
         //发送消息
         function sendMessage(senderName,chatContent){
             $(".chat-message").append('<li class="send-message rightd"><div class="sender rightd_h"><span>'+senderName+'</span></div><div class="content speech right">'+chatContent+'</div></li>');
