@@ -3,11 +3,13 @@
  */
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import { Route, Redirect } from 'react-router-dom'
 import {Field, reduxForm} from 'redux-form';
 import {Alert,Modal,Button,Form,FormGroup,Col,ControlLabel,FormControl,Image} from 'react-bootstrap';
 import Chat from './chat';
 import TabsControl from "./react_tab";
-import {fetchOrdersDetails,fetchTradePartnerMessage} from '../actions/order'
+import {fetchOrdersDetails,fetchTradePartnerMessage,addPaymentInfo,addTransactionId,fetchKey,confirmOrder,confirmSendMoney,releaseBtc,confirmGoods,saveComment,cancelOrders} from '../actions/order';
+import $ from 'jquery';
 
 var that;
 
@@ -16,54 +18,135 @@ class OrderProgress extends Component {
         super(props);
         that = this;
         this.state = {
-            index: 0,
-            i:0,
             orderStatus:1,
-            isFormSubmit: false,
             alertVisible: false,
-            chatVisible: true,
             show: false,
             shownext:false,
-            x:''
+            tip:'',
+            orderId:1,
+            p2shAddress:'',
+            amount:0,
+            txId:'',
+            confirm:true,
+            releaseBtc:false,
+            partnerName:'',
+            comment:1
         };
-        this.nextPage = this.nextPage.bind(this);
+      
         this.partnerMessage=this.partnerMessage.bind(this);
         this.renderDangerAlert = this.renderDangerAlert.bind(this);
         this.orderMessageDetails=this.orderMessageDetails.bind(this);
     }
     componentWillMount() {
+        const partnerName=localStorage.getItem("friendUsername")
         const message = this.props.location.state;
+        console.log(message)
         const data={id:message.id,userId:message.userId}
+        this.setState({partnerName:partnerName});
+
         this.props.fetchOrdersDetails({data},(msg)=>{
+
+            console.log(msg.orderStatus)
             this.setState({orderStatus:msg.orderStatus});
+            this.setState({orderId:msg.id});
             switch(this.state.orderStatus){
                 case 1:
-                    this.setState({x:"买家已拍下，等待卖家确认"});
+                    this.setState({tip:"买家已拍下，等待卖家确认"});
                     break;
                 case 2:
-                    this.setState({x:"卖家已确认，等待买家付款，30分钟内，如逾期订单将自动取消"});
+                    this.setState({tip:"卖家已确认，等待买家付款，30分钟内，如逾期订单将自动取消"});
                     break;
                 case 3:
-                    this.setState({x:"买家已经标记为付款，等待卖家确认并释放比特币"});
+                    this.setState({tip:"买家已经标记为付款，等待卖家确认并释放比特币"});
                     break;
                 case 4:
-                    this.setState({x:"卖家已释放比特币，交易即将完成，双方进行评价"});
+                    this.setState({tip:"卖家已释放比特币，交易即将完成，双方进行评价"});
                     break;
                 case 5:
-                    this.setState({x:"交易完成"});
+                    this.setState({tip:"交易完成"});
                     break;
-                case 5:
-                    this.setState({x:"交易已取消"});
+                case 6:
+                    this.setState({tip:"交易已取消"});
                     break;
+                case 7:
+                    this.setState({tip:"等待买家收到退款"});
+                    break;                               
             }
         });
-
         const partner={userId:message.partnerId}
-        console.log(partner)
-        this.props.fetchTradePartnerMessage({partner})
+        this.props.fetchTradePartnerMessage({partner});
+        const orderId={
+            id:this.state.orderId
+        }
     }
-    nextPage() {
-        this.setState({orderStatus:this.state.orderStatus+1});
+    showOrderStatus1() {
+        return (
+            <div>
+                <div className="col-sm-2 col-md-offset-1">
+                    <div>
+                        <div className="row-header">
+                            <div className="row-title">
+                                <h4 className={`order-flow ${this.state.orderStatus >= 1 ? 'order-active' : ''}`}>
+                                    <span>{this.state.orderStatus <= 1 ? '买家已拍下' : '买家已拍下'}</span></h4>
+                                <img className="g-ml-25" src="/public/img/arrow-r.png"
+                                     style={{width: '17px', height: '29px'}}></img>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="col-sm-2">
+                    <div className="row-header">
+                        <div className="row-title">
+                            <h4 className={`order-flow ${this.state.orderStatus >= 1 ? 'order-active' : ''}`}>
+                                <span>{this.state.orderStatus <= 1 ? '等待卖家确认' : '卖家已确认'}</span></h4>
+                            <img className="g-ml-25" src="/public/img/arrow-r.png"
+                                 style={{width: '17px', height: '29px'}}></img>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="col-sm-2">
+                    <div className="row-header">
+                        <div className="row-title">
+                            <h4 className={`order-flow ${this.state.orderStatus >= 2 ? 'order-active' : ''}`}>
+                                <span>{this.state.orderStatus <= 2 ? '等待买家付款' : '买家已付款'}</span></h4>
+                            <img className="g-ml-25" src="/public/img/arrow-r.png"
+                                 style={{width: '17px', height: '29px'}}></img>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="col-sm-2">
+                    <div className="row-header">
+                        <div className="row-title">
+                            <h4 className={`order-flow ${this.state.orderStatus >= 3 ? 'order-active' : ''}`}>
+                                <span>{this.state.orderStatus <= 3 ? '等待买家收货' : '买家已收货'}</span></h4>
+                            <img className="g-ml-25" src="/public/img/arrow-r.png"
+                                 style={{width: '17px', height: '29px'}}></img>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-sm-2">
+                    <div className="row-header">
+                        <div className="row-title">
+                            <h4 className={`order-flow ${this.state.orderStatus >= 4 ? 'order-active' : ''}`}>
+                                <span>{this.state.orderStatus <= 4 ? '等待双方评价' : '已评价'}</span></h4>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        )
+    }
+    showOrderStatus2(){
+        return(
+              <div className="h2 g-pt-20 g-pb-20">
+                  <div className={`${this.state.orderStatus == 6 ? 'show' : 'hidden'}`}>订单已取消</div>
+                  <div className={`${this.state.orderStatus == 7 ? 'show' : 'hidden'}`}>订单仲裁中</div>
+              </div>
+            )
     }
     partnerMessage(partner){
         if(partner==null){
@@ -138,7 +221,7 @@ class OrderProgress extends Component {
                     <button type="button" className="btn btn-primary btn-flat" onClick={this.showAlert}>
                        取消
                     </button>
-                    <button type="button" className="btn btn-primary btn-flat" onClick={this.nextPage}>
+                    <button type="button" className="btn btn-primary btn-flat" onClick={this.handleSendMoney.bind(this)} >
                         确定
                     </button>
                 </div>
@@ -150,72 +233,176 @@ class OrderProgress extends Component {
             alertVisible: !this.state.alertVisible,
         })
     }
-    render(){
-        console.log(this.props.partner)
+    addPaymentInfo(){
+        const orderId={
+            id:this.state.orderId
+        }
+        this.props.fetchKey({orderId},(msg)=>{
+            console.log(msg.status)
+             if(msg.status == 1){
+                 $(function(){
+                      var qrcode = new QRCode('qrcode', {
+                          text: msg.data.uri,
+                          width: 150,
+                          height: 150,
+                          colorDark : '#000000',
+                          colorLight : '#ffffff',
+                          correctLevel : QRCode.CorrectLevel.H
+                      })
 
-        let close = () => this.setState({ show:false,shownext:false});
-        let next = () => this.setState({show:false,shownext:true})
+                 });                                           
+                 this.setState({p2shAddress:msg.data.p2shAddress,amount:msg.data.amount,shownext: true})
+             }
+             else {
+                 this.setState({show: true})
+             }
+        })
+
+    }
+    next(){
+        const sellerPubAuth=this.refs.sellerPubAuth.value;
+        const sellerPriAuth=this.refs.sellerPriAuth.value;
+        const orderId=this.state.orderId;
+        if(sellerPubAuth && sellerPriAuth){
+             const paymentInfo={
+                 sellerPubAuth:sellerPubAuth,
+                 sellerPriAuth:sellerPriAuth,
+                 orderId:orderId
+             }
+             console.log(paymentInfo)
+             this.props.addPaymentInfo({paymentInfo},(msg)=>{
+                 console.log(msg)
+                 this.setState({p2shAddress:msg.p2shAddress,amount:msg.amount})
+                 $(function(){                                       
+                      var qrcode = new QRCode('qrcode', {            
+                          text: msg.uri,
+                          width: 150,                                
+                          height: 150,                               
+                          colorDark : '#000000',                     
+                          colorLight : '#ffffff',                    
+                          correctLevel : QRCode.CorrectLevel.H       
+                      })                                             
+                                                                     
+                 });                                                 
+             })
+             this.setState({show:false,shownext:true})                          
+        }
+    }
+    handleTransactionId(){
+        const txId=this.refs.txId.value;
+        const txIdInfo={
+             txId:txId,
+             id:this.state.orderId
+        }
+        if(txId){
+             this.props.addTransactionId({txIdInfo})
+             this.setState({show:false,shownext:false,confirm:false})
+        }
+
+    }
+    handleConfirmOrder(){
+        const userId=localStorage.getItem('userId')
+        const orderId={
+            userId:userId,
+            id:this.state.orderId
+        }
+        console.log(orderId);
+        this.props.confirmOrder({orderId},(msg)=>{
+            console.log(msg)
+             if(msg.status == 1){
+                  this.setState({ orderStatus:this.state.orderStatus+1})
+             }
+             else{
+
+             }
+       });
+    }
+    handleSendMoney(){
+        const orderId={
+            id:this.state.orderId
+        }
+        this.props.confirmSendMoney({orderId},(msg)=>{
+            console.log(msg)
+              if(msg.status == 1){
+                  this.setState({ orderStatus:this.state.orderStatus+1})
+              }
+        })
+    }
+    handlereleaseBtc(){
+        const userId=localStorage.getItem('userId')
+        const releaseData={
+            id:this.state.orderId,
+            userId:userId
+        }
+        this.props.releaseBtc({releaseData}, (msg) => {
+            if(msg.status == 1){
+                this.setState({ releaseBtc:true})
+            }
+        })
+
+    }
+    handleConfirmGoods(){
+        const userId=localStorage.getItem('userId')
+        const confirmGoodsData={
+            id:this.state.orderId,
+            userId:userId
+        }
+        this.props.confirmGoods({confirmGoodsData},(msg)=>{
+              if(msg.status==1){
+                   this.setState({ orderStatus:this.state.orderStatus+1})
+              }
+        })
+    }
+    handleRadioValue(e){
+        this.setState({comment:e.target.value})
+        console.log(this.state.comment)
+    }
+    handleComment(){
+         const userId=localStorage.getItem('userId')
+         const commentData={
+             id:this.state.orderId,
+             status:this.state.comment,
+             content:this.refs.comment.value,
+             userId:userId
+         }
+         console.log(commentData)
+
+         this.props.saveComment({commentData},(msg)=>{
+             if(msg.status==1){
+               this.setState({ orderStatus:this.state.orderStatus+1})
+             }
+         })
+    }
+    handleCancleOrders(){
+        const userId=localStorage.getItem('userId')   
+        const cancelData={
+            id:this.state.orderId,                    
+            userId:userId                             
+        }
+        this.props.cancelOrders({cancelData},(msg)=>{
+             if(msg.status==1){
+                 this.setState({ orderStatus:6})
+             }
+        })
+    }
+    render(){
+          console.log('status: ' + this.state.orderStatus)
+        let close = () => {
+            this.setState({show:false,shownext:false})
+        };
         if(this.props.orders_details===null){
-            return <div></div>
+            return <div>loading....</div>
         }
         const orders_details = this.props.orders_details;
         const orderType = orders_details && orders_details.orderType;
         const amount=orders_details && orders_details.amount;
         const money=orders_details && orders_details.money;
         const partner=this.props.partner;
-        console.log(orderType)
         return (
             <div className="order-main g-pt-50 g-pb-50">
                 <div className="order-header container text-center">
                     <div className="row">
-                        <div className="col-sm-2 col-md-offset-1">
-                            <div>
-                                <div className="row-header">
-                                    <div className="row-title">
-                                        <h4 className={`order-flow ${this.state.orderStatus >=1 ? 'order-active' : ''}`}><span>{this.state.orderStatus <=1 ? '买家已拍下' : '买家已拍下'}</span></h4>
-                                        <img className="g-ml-25" src="/public/img/arrow-r.png"
-                                             style={{width: '17px', height: '29px'}}></img>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="col-sm-2">
-                            <div className="row-header">
-                                <div className="row-title">
-                                    <h4 className={`order-flow ${this.state.orderStatus >=1? 'order-active' : ''}`}> <span>{this.state.orderStatus <=1 ? '等待卖家确认' : '卖家已确认'}</span></h4>
-                                    <img className="g-ml-25" src="/public/img/arrow-r.png"
-                                         style={{width: '17px', height: '29px'}}></img>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="col-sm-2">
-                            <div className="row-header">
-                                <div className="row-title">
-                                    <h4 className={`order-flow ${this.state.orderStatus >=2 ? 'order-active' : ''}`}><span>{this.state.orderStatus <=2 ? '等待买家付款' : '买家已付款'}</span></h4>
-                                    <img className="g-ml-25" src="/public/img/arrow-r.png"
-                                         style={{width: '17px', height: '29px'}}></img>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="col-sm-2">
-                            <div className="row-header">
-                                <div className="row-title">
-                                    <h4 className={`order-flow ${this.state.orderStatus >= 3 ? 'order-active' : ''}`}><span>{this.state.orderStatus <=3 ? '等待买家收货' : '买家已收货'}</span></h4>
-                                    <img className="g-ml-25" src="/public/img/arrow-r.png"
-                                         style={{width: '17px', height: '29px'}}></img>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-sm-2">
-                            <div className="row-header">
-                                <div className="row-title">
-                                    <h4 className={`order-flow ${this.state.orderStatus >=4 ? 'order-active' : ''}`}><span>{this.state.orderStatus <=4 ? '等待双方评价' : '已评价'}</span></h4>
-                                </div>
-                            </div>
-                        </div>
+                        {this.state.orderStatus > 5 ? this.showOrderStatus2() :this.showOrderStatus1() }
                     </div>
                 </div>
                 <div className="text-left order-message container g-pt-30 g-pb-40" >
@@ -223,7 +410,7 @@ class OrderProgress extends Component {
                         <div className="col-sm-12 order-status">
                             <span className="g-pr-20">已拍下</span>
                             <span className="g-pr-20">|</span>
-                            <span>{this.state.x}</span>
+                            <span>{this.state.tip}</span>
                         </div>
                         <div className="col-sm-12 order-details g-mt-20 clearfix">
                             <ul>
@@ -255,9 +442,12 @@ class OrderProgress extends Component {
                                             {this.orderMessageDetails(orders_details)}
                                             <div className="order-tip">{orderType == "购买" ? "买家已经拍下订单，请等待卖家确定具体的交易金额和数量":"买家已拍下订单，请卖家确定具体的交易金额和数量，确认好之后，输入你的比特币钱包付款地址，比特币将进入themis托管地址中，等待买家付款，卖家确认收款后，点击释放比特币"}</div>
                                             <div>
-
-                                                {orderType == "购买" ? "": <div><button onClick={() => this.setState({ show: true })}>填写付款信息</button><button type="button" className="btn btn-primary btn-flat" onClick={this.nextPage}>确认</button></div>}
-                                                <button type="button" className="btn btn-primary btn-flat" disabled>
+                                                {orderType == "购买" ? "":
+                                                    <span>
+                                                        <button className="btn btn-primary btn-flat g-mb-10" onClick={this.addPaymentInfo.bind(this)}>填写付款信息</button><br/>
+                                                        <button type="button" className="btn btn-primary btn-flat g-mr-10" disabled={this.state.confirm} onClick={this.handleConfirmOrder.bind(this)}>确认</button>
+                                                    </span>}
+                                                <button type="button" className="btn btn-primary btn-flat" onClick={this.handleCancleOrders.bind(this)}>
                                                     取消订单
                                                 </button>
                                             </div>
@@ -273,7 +463,17 @@ class OrderProgress extends Component {
                                             {this.orderMessageDetails(orders_details)}
                                             <div className="order-tip">{orderType == "购买" ? "买家已经确认具体金额和交易数量，等待买家付款，30分钟内没有确认支付将自动关闭。":"买家已标记为付款，请卖家确认好是否收到正确的款项，如正确，请及时释放themis托管中的比特币。"}</div>
                                             <div>
-                                                {orderType == "购买" ? <div><button type="button" className="btn btn-primary btn-flat" onClick={this.showAlert.bind(this)}>标记为已经付款</button><button type="button" className="btn btn-primary btn-flat" disabled>取消订单</button></div>:<div><button type="button" className="btn btn-primary btn-flat" onClick={this.nextPage}>释放比特币</button><button type="button" className="btn btn-primary btn-flat" disabled>取消订单</button></div>}
+                                                {orderType == "购买" ?
+                                                    <div>
+                                                        <button type="button" className="btn btn-primary btn-flat" onClick={this.showAlert.bind(this)}>标记为已经付款</button>
+                                                        <button type="button" className="btn btn-primary btn-flat" >取消订单</button>
+                                                    </div>
+                                                    :
+                                                    <div>
+                                                        <button type="button" className="btn btn-primary btn-flat" disabled>等待买家付款</button>
+                                                        <button type="button" className="btn btn-primary btn-flat">取消订单</button>
+                                                    </div>
+                                                }
 
                                                 {
                                                     this.state.alertVisible ? this.renderDangerAlert() : <div></div>
@@ -286,15 +486,24 @@ class OrderProgress extends Component {
 
                                 {/*  第三页  */}
                                 <div className={`order-page2 ${this.state.orderStatus == 3 ? "show" : "hidden"}`}>
-
                                     <div className="row order-operation">
                                         <div className="col-sm-12">
                                             {this.orderMessageDetails(orders_details)}
                                             <div className="order-tip">{orderType=="购买"?"卖家已经" :""}</div>
                                             <div>
-                                                {orderType == "购买" ? <button type="button" className="btn btn-primary btn-flat" onClick={this.nextPage}>
-                                                    已收到比特币
-                                                </button> :''}
+                                                {orderType == "购买" ?
+                                                    <div>
+
+                                                         <button type="button" className="btn btn-primary btn-flat" onClick={this.handleConfirmGoods.bind(this)} >已收到比特币</button>
+                                                        <button type="button" className="btn btn-primary btn-flat" >取消订单</button>
+                                                    </div>
+                                                    :
+                                                    <div>
+                                                        {this.state.releaseBtc ? <button type="button" className="btn btn-primary btn-flat" disabled>已经释放比特币，等待买家确认收货</button>:<button type="button" className="btn btn-primary btn-flat" onClick={this.handlereleaseBtc.bind(this)} >释放比特币</button>}
+                                                        <button type="button" className="btn btn-primary btn-flat" >取消订单</button>
+                                                    </div>
+
+                                                }
                                                 <br/>
                                                 <a href="/arbitrationbuyer">交易有疑问？点此联系THEMIS仲裁</a>
                                             </div>
@@ -308,20 +517,24 @@ class OrderProgress extends Component {
                                         <div className="col-sm-12">
                                             {this.orderMessageDetails(orders_details)}
                                             <div className="comment">
-                                                <h5>对卖家饿32额额用户进行评价</h5>
-                                                <label htmlFor="good" className="radio-inline">
-                                                    <input type="radio" name="comment" id="good" value="option1" defaultChecked/>好评
-                                                </label>
-                                                <label htmlFor="medium" className="radio-inline">
-                                                    <input type="radio" name="comment" id="medium" value="option2" />中评
-                                                </label>
-                                                <label htmlFor="bad" className="radio-inline">
-                                                    <input type="radio" name="comment" id="bad" value="option3"/>差评
-                                                </label>
+                                                <h5>对用户{this.state.partnerName}进行评价</h5>
+                                                <div>
+                                                    <label htmlFor="good" className="radio-inline">
+                                                        <input type="radio" name="comment" id="good" value="1" defaultChecked onClick={this.handleRadioValue.bind(this)}/>好评
+                                                    </label>
+                                                    <label htmlFor="medium" className="radio-inline">
+                                                        <input type="radio" name="comment" id="medium" value="2" onClick={this.handleRadioValue.bind(this)} />中评
+                                                    </label>
+                                                    <label htmlFor="bad" className="radio-inline">
+                                                        <input type="radio" name="comment" id="bad" value="3" onClick={this.handleRadioValue.bind(this)}/>差评
+                                                    </label>                                                                                   
+                                                </div>
+
+                                                <textarea className="form-control" name="" id="" ref="comment" cols="30" rows="10"></textarea>
                                             </div>
-                                            <a className="btn btn-primary btn-block btn-flat" href="/ordercompleted">
+                                            <button className="btn btn-primary btn-block btn-flat"  onClick={this.handleComment.bind(this)}>
                                                 提交评论
-                                            </a>
+                                            </button>
                                             <br/>
                                             <a href="/arbitrationbuyer">交易有疑问？点此联系THEMIS仲裁</a>
                                         </div>
@@ -329,7 +542,7 @@ class OrderProgress extends Component {
                                 </div>
                                 {/*  第四页  */}
                             {/*  第四页  */}
-                            <div className={`order-page4 ${this.state.orderStatus == 5 ? "show" : "hidden"}`}>
+                            <div className={`order-page4 ${this.state.orderStatus >= 5 ? "show" : "hidden"}`}>
                                 <div className="row order-operation">
                                     <div className="col-sm-12">
                                         {this.orderMessageDetails(orders_details)}
@@ -351,7 +564,7 @@ class OrderProgress extends Component {
                                     托管公钥
                                 </Col>
                                 <Col sm={10}>
-                                    <FormControl type="email" placeholder="请输入公钥地址" />
+                                    <input className="form-control" type="text" placeholder="请输入公钥地址"  ref="sellerPubAuth"/>
                                 </Col>
                             </FormGroup>
 
@@ -360,13 +573,13 @@ class OrderProgress extends Component {
                                     托管私钥
                                 </Col>
                                 <Col sm={10}>
-                                    <FormControl type="text" placeholder="请输入私钥地址" />
+                                    <input className="form-control" type="text" placeholder="请输入私钥地址" ref="sellerPriAuth"/>
                                 </Col>
                             </FormGroup>
                         </Form>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button onClick={next}>下一步</Button>
+                        <Button onClick={this.next.bind(this)}>下一步</Button>
                         <Button onClick={close}>取消</Button>
                     </Modal.Footer>
                 </Modal>
@@ -377,29 +590,27 @@ class OrderProgress extends Component {
                     <Modal.Body>
                         <Form horizontal>
                             <FormGroup controlId="formHorizontalEmail">
-                                <div> <Image src="/assets/thumbnail.png" responsive /></div>
+                                <div id="qrcode"></div>
                                 <div className="text-center"> 扫码支付</div>
                             </FormGroup>
-                            <FormGroup controlId="formHorizontalEmail">
-                                <Col componentClass={ControlLabel} sm={2}>
-                                    托管公钥
-                                </Col>
-                                <Col sm={10}>
-                                   <span>dgfuoehwofinejlnbfkjibewkobgkejw</span>
-                                </Col>
-                            </FormGroup>
                             <FormGroup controlId="formHorizontalPassword">
+                                    <div className="col-sm-2">付款金额 </div>
+                                    <div className="col-sm-10">{this.state.amount}</div>
+                                 <div className="col-sm-2">付款地址 </div>
+                                 <div className="col-sm-10">{this.state.p2shAddress}</div>
+
                                 <Col componentClass={ControlLabel} sm={2}>
-                                    托管私钥
+                                    交易ID
                                 </Col>
                                 <Col sm={10}>
-                                    <span>dgfuoehwofinejlnbfkjibewkobgkejw</span>
+                                    <input className="form-control" type="text" placeholder="请输入交易id" ref="txId"/>
+                         
                                 </Col>
                             </FormGroup>
                         </Form>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button onClick={close}>确定</Button>
+                        <Button onClick={this.handleTransactionId.bind(this)}>确定</Button>
                         <Button onClick={close}>取消</Button>
                     </Modal.Footer>
                 </Modal>
@@ -409,11 +620,12 @@ class OrderProgress extends Component {
 }
 
 function mapStateToProps(state) {
-    return {
+    return {                                         
         orders_details: state.order.orders_details,
-        partner:state.order.partner_message
+        partner:state.order.partner_message,
+        payment_info:state.order.payment_info
     }
 }
-export default connect(mapStateToProps, {fetchOrdersDetails,fetchTradePartnerMessage})(OrderProgress);
+export default connect(mapStateToProps, {fetchOrdersDetails,fetchTradePartnerMessage,addPaymentInfo,addTransactionId,fetchKey,confirmOrder,confirmSendMoney,releaseBtc,confirmGoods,saveComment,cancelOrders})(OrderProgress);
 
 

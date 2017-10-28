@@ -2,13 +2,14 @@ package com.oxchains.themis.order.entity;
 import org.apache.poi.ss.formula.functions.T;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 /**
  * Created by huohuo on 2017/10/23.
  */
 @Entity
 @Table(name = "tbl_biz_orders")
-public class Orders {
+public class Orders implements Serializable{
     @Id
     private String id;         //订单编号
     private BigDecimal money;  //订单金额
@@ -23,6 +24,7 @@ public class Orders {
     private Long orderStatus; // 订单状态    1  待确认 2 代付款  3 待收货 4  待评价 5 完成 6  已取消 7等待卖家退款 8 仲裁中
    // private Long noticeId;
     private String txId;  //卖家上传交易凭据 后台用来查到账情况
+
     @Transient
     private String p2shAddress;  //协商地址
     @Transient
@@ -31,7 +33,6 @@ public class Orders {
     private Notice notice;  //相关联的公告信息
     @ManyToOne
     private Payment payment; //相关联的 支付方式信息
-
     private int arbitrate;   //是否在仲裁中 默认 0： 不在仲裁中 1： 在仲裁中 2:仲裁结束
     @Transient
     private String orderType;  //  交易类型     购买  或 出售
@@ -41,7 +42,27 @@ public class Orders {
     private String buyerUsername; //买家名称
     @Transient
     private String sellerUsername; //卖家名称
+    @ManyToOne
+    private OrderAddresskeys orderAddresskeys;
 
+    @Transient
+    private String uri;
+
+    public OrderAddresskeys getOrderAddresskeys() {
+        return orderAddresskeys;
+    }
+
+    public void setOrderAddresskeys(OrderAddresskeys orderAddresskeys) {
+        this.orderAddresskeys = orderAddresskeys;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
     public String getTxId() {
         return txId;
     }

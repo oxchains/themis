@@ -408,8 +408,11 @@ div {
     background-color: #fff !important;
     border-color: lightgrey;
 }
+#qrcode img{
+    margin:auto;
+}
 
-/*order-chat*/
+/*orderprocess-chat*/
 .tab_title_wrap div{
     cursor: pointer;
     padding: 10px 0;
@@ -1139,10 +1142,12 @@ table { border-spacing: 0;  border-collapse: collapse; }
     display: flex;
     justify-content: space-around;
 }
+
 .ant-select
 {
     display: block!important;
 }
+
 .ant-pagination-item-active
 {
     background-color: #444444!important;

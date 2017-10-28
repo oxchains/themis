@@ -2,6 +2,7 @@ package com.oxchains.themis.user.rest;
 
 import com.oxchains.themis.common.model.OrdersKeyAmount;
 import com.oxchains.themis.common.model.RestResp;
+import com.oxchains.themis.common.util.JsonUtil;
 import com.oxchains.themis.user.service.AccountService;
 import com.oxchains.themis.user.service.BitcoinService;
 import org.springframework.web.bind.annotation.*;
@@ -114,22 +115,22 @@ public class AccountController {
     }
 
     @PostMapping(value = "/p2sh")
-    public RestResp getScriptHash(@RequestBody OrdersKeyAmount param){//String orderId,String pubKeys,Double amount
-        return bitcoinService.getScriptHash(param.getOrderId(),Arrays.asList(param.getPubKeys().split(",")),param.getAmount());
+    public String getScriptHash(@RequestBody OrdersKeyAmount param){//String orderId,String pubKeys,Double amount
+        return JsonUtil.toJson(bitcoinService.getScriptHash(param.getOrderId(),Arrays.asList(param.getPubKeys().split(",")),param.getAmount()));
     }
 
     @PostMapping(value = "/{orderId}")
-    public RestResp addTxid(@PathVariable String orderId,String txId){
-        return bitcoinService.addTxid(orderId,txId);
+    public String addTxid(@PathVariable String orderId,String txId){
+        return JsonUtil.toJson(bitcoinService.addTxid(orderId,txId));
     }
 
     @GetMapping(value = "/{orderId}")
-    public RestResp getStatus(@PathVariable String orderId){
-        return bitcoinService.getTransactionStatus(orderId);
+    public String getStatus(@PathVariable String orderId){
+        return JsonUtil.toJson(bitcoinService.getTransactionStatus(orderId));
     }
 
     @PostMapping(value = "/p2ur")
-    public RestResp payToUser(String orderId,String recvAddress,String prvKeys,Double amount){
-        return bitcoinService.payToUser(orderId,recvAddress,Arrays.asList(prvKeys.split(",")),amount);
+    public String payToUser(String orderId,String recvAddress,String prvKeys,Double amount){
+        return JsonUtil.toJson(bitcoinService.payToUser(orderId,recvAddress,Arrays.asList(prvKeys.split(",")),amount));
     }
 }

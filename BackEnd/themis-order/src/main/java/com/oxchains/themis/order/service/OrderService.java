@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 /**
@@ -61,7 +62,8 @@ public class OrderService {
                ak = (AddressKeys) JsonUtil.fromJson(JsonUtil.toJson(o),AddressKeys.class);
            }
        } catch (RestClientException e) {
-           LOG.debug("get address key faild : ",e.getMessage());
+           LOG.info("get address key faild : ",e.getMessage());
+           e.printStackTrace();
        }
        return  ak;
     };
@@ -110,7 +112,8 @@ public class OrderService {
                 orderArbitrateRepo.save(orderArbitrate);
             }
         }catch (Exception e){
-            LOG.debug("add orders faild :",e.getMessage());
+            LOG.info("add orders faild :",e.getMessage());
+            e.printStackTrace();
         }
         this.setOrderStatusName(orders1);
         return orders1;
@@ -154,7 +157,8 @@ public class OrderService {
                 this.setOrderStatusName(o);
             }
         } catch (Exception e) {
-            LOG.debug("query complete order faild :",e.getMessage());
+            LOG.info("query complete order faild :",e.getMessage());
+            e.printStackTrace();
         }
         return list;
     }
@@ -178,7 +182,8 @@ public class OrderService {
                 this.setOrderStatusName(o);
             }
         } catch (Exception e) {
-            LOG.debug("query noComplete order faild :",e.getMessage());
+            LOG.info("query noComplete order faild :",e.getMessage());
+            e.printStackTrace();
         }
         return list;
     }
@@ -216,7 +221,8 @@ public class OrderService {
             orders1 = orderRepo.save(orders);
             this.setOrderStatusName(orders1);
         } catch (Exception e) {
-            LOG.debug("cancel orders faild :",e.getMessage());
+            LOG.info("cancel orders faild :",e.getMessage());
+            e.printStackTrace();
         }
         return orders1;
     }
@@ -230,7 +236,6 @@ public class OrderService {
             o = orderRepo.findOne(pojo.getId());
             Notice notice = o.getNotice();
             if(notice.getUserId()==pojo.getUserId() && o.getOrderStatus()==1 && o.getTxId() != null){
-
                         //查询BTC有没有到协商地址如果到了地址
                         if(true){
                             o.setOrderStatus(2L);
@@ -240,7 +245,8 @@ public class OrderService {
                         }
             }
         } catch (Exception e) {
-            LOG.debug("confirm order faild :",e.getMessage());
+            LOG.info("confirm order faild :",e.getMessage());
+            e.printStackTrace();
         }
         return null;
     }
@@ -274,7 +280,8 @@ public class OrderService {
                 list.addAll(list1);
             }
         } catch (Exception e) {
-            LOG.debug("query no confirm orders faild :",e.getMessage());
+            LOG.info("query no confirm orders faild :",e.getMessage());
+            e.printStackTrace();
         }
         return list;
     }
@@ -294,7 +301,8 @@ public class OrderService {
                 return orders;
             }
         } catch (Exception e) {
-            LOG.debug("confirm receive refund faild :",e.getMessage());
+            LOG.info("confirm receive refund faild :",e.getMessage());
+            e.printStackTrace();
         }
         return null;
     }
@@ -305,8 +313,11 @@ public class OrderService {
         Orders orders1 = null;
         try {
             Orders orders = orderRepo.findOne(id);
+            //判断订单状态为3或7时可以仲裁
             if(orders.getOrderStatus()==3||orders.getOrderStatus()==7){
+                //仲裁状态（arbitrate）改为1 仲裁中
                 orders.setArbitrate(1);
+                //订单仲裁表中的 对应订单的三条仲裁状态改为1 表示 仲裁者仲裁中
                 List<OrderArbitrate> orderArbitrateList = orderArbitrateRepo.findOrderArbitrateByOrderId(orders.getId());
                 for (OrderArbitrate o:orderArbitrateList) {
                     o.setStatus(1);
@@ -317,7 +328,8 @@ public class OrderService {
                 return  orders1;
             }
         } catch (Exception e) {
-            LOG.debug("apply for arbitrate order faild :",e.getMessage());
+            LOG.info("apply for arbitrate order faild :",e.getMessage());
+            e.printStackTrace();
         }
         return null;
     }
@@ -325,8 +337,11 @@ public class OrderService {
    * 根据仲裁者id查找哪些订单可以被自己仲裁的订单列表
    * */
     public List<Orders> findArbitrareOrderById(Long id){
+        /*
+        * */
         List<OrderArbitrate> orderArbitrateList = orderArbitrateRepo.findOrderArbitrateByUserIdAndAndStatus(id,1);
         List<Orders> ordersList = new ArrayList<>();
+
         for (OrderArbitrate o: orderArbitrateList) {
             Pojo pojo = new Pojo();
             pojo.setId(o.getOrderId());
@@ -359,10 +374,12 @@ public class OrderService {
             if(status==1){
                 LinkedHashMap data = (LinkedHashMap) jsonObject.get("data");
                 orders.setP2shAddress((String) data.get("address"));
+                orders.setUri((String)data.get("uri"));
                 return orders;
             }
         } catch (Exception e) {
             LOG.info("save address key faild :",e.getMessage());
+            e.printStackTrace();
         }
         return  null;
 
@@ -374,17 +391,20 @@ public class OrderService {
         OrderArbitrate orderArbitrate = null;
         try {
             orderArbitrate = orderArbitrateRepo.findOrderArbitrateByUserIdAndOrderId(pojo.getUserId(),pojo.getId());
-            Orders orders = orderRepo.findOne(pojo.getId());
-            if(orders.getBuyerId()==pojo.getSuccessId()){
-                orderArbitrate.setBuyerAuth(orderArbitrate.getUserAuth());
+            if(orderArbitrate.getStatus()==1){
+                Orders orders = orderRepo.findOne(pojo.getId());
+                if(orders.getBuyerId()==pojo.getSuccessId()){
+                    orderArbitrate.setBuyerAuth(orderArbitrate.getUserAuth());
+                }
+                if(orders.getSellerId()==pojo.getSuccessId()){
+                    orderArbitrate.setSellerAuth(orderArbitrate.getUserAuth());
+                }
+                orderArbitrate.setStatus(2);
+                OrderArbitrate orderArbitrate1 = orderArbitrateRepo.save(orderArbitrate);
             }
-            if(orders.getSellerId()==pojo.getSuccessId()){
-                orderArbitrate.setSellerAuth(orderArbitrate.getUserAuth());
-            }
-            orderArbitrate.setStatus(2);
-            OrderArbitrate orderArbitrate1 = orderArbitrateRepo.save(orderArbitrate);
         } catch (Exception e) {
-            LOG.debug("arbitrate orders to user faild ",e.getMessage());
+            LOG.info("arbitrate orders to user faild ",e.getMessage());
+            e.printStackTrace();
         }
         return orderArbitrate;
     }
@@ -415,7 +435,8 @@ public class OrderService {
                 o.setOrderStatusName("退款中");
             }
         } catch (Exception e) {
-            LOG.debug("set order status value faild",e.getMessage());
+            e.printStackTrace();
+            LOG.info("set order status value faild",e.getMessage());
         }
     }
 
@@ -451,6 +472,17 @@ public class OrderService {
         Orders o = orderRepo.findOne(orderId);
         o.setOrderStatus(status);
         o = orderRepo.save(o);
+        if(status==1){
+
+            OrderTransaction orderTransaction = transactionRepo.findByOrderId(orderId);
+            if(orderTransaction!=null){
+                transactionRepo.delete(orderTransaction);
+                OrderAddresskeys orderAddresskeys = orderAddresskeyRepo.findOrderAddresskeysByOrderId(orderId);
+                orderAddresskeys.setSellerPriAuth(null);
+                orderAddresskeys.setSellerPubAuth(null);
+                orderAddresskeyRepo.save(orderAddresskeys);
+            }
+        }
         return o;
     }
 
@@ -464,9 +496,15 @@ public class OrderService {
     /*
     * 卖家上传交易凭据 txid
     * */
-    public Orders uploadTxId(Orders orders){
-        Orders orders1 = orderRepo.findOne(orders.getId());
-        orders1.setTxId(orders.getTxId());
+    public Orders uploadTxId(Pojo pojo){
+        Orders orders1 = null;
+        try {
+            orders1 = orderRepo.findOne(pojo.getId());
+            orders1.setTxId(pojo.getTxId());
+        } catch (Exception e) {
+            LOG.info("faild upload tx id :",e.getMessage());
+            e.printStackTrace();
+        }
         return orderRepo.save(orders1);
     }
     /*
@@ -483,7 +521,8 @@ public class OrderService {
                 return orders;
             }
         } catch (Exception e) {
-            LOG.debug("confirm send money faild : ",e.getMessage());
+            LOG.info("confirm send money faild : ",e.getMessage());
+            e.printStackTrace();
         }
         return null;
     }
@@ -493,15 +532,69 @@ public class OrderService {
     public Orders judgeSellerPubPriAuth(Pojo pojo){
         try {
             OrderAddresskeys orderAddresskeys = orderAddresskeyRepo.findOrderAddresskeysByOrderId(pojo.getId());
-            if(orderAddresskeys.getSellerPubAuth()==null || orderAddresskeys.getSellerPriAuth()==null){
+            if(orderAddresskeys.getSellerPubAuth()!=null && orderAddresskeys.getSellerPriAuth()!=null){
                 Orders orders = orderRepo.findOne(pojo.getId());
                 OrderTransaction transaction = transactionRepo.findByOrderId(pojo.getId());
                 orders.setP2shAddress(transaction.getP2shAddress());
+                String URI = "bitcoin:"+transaction.getP2shAddress()+"?amount="+orders.getAmount();
+                orders.setUri(URI);
                 return orders;
             }
         } catch (Exception e) {
-            LOG.debug("judge seller public private auth faild :",e.getMessage());
+            LOG.info("judge seller public private auth faild :",e.getMessage());
+            e.printStackTrace();
         }
         return null;
     };
+    public OrderAddresskeys findOrderAddressKeys(Pojo pojo){
+        OrderAddresskeys orderAddresskeys = new OrderAddresskeys();
+        OrderAddresskeys orderAddresskeys1 = orderAddresskeyRepo.findOrderAddresskeysByOrderId(pojo.getId());
+        Orders orders = orderRepo.findOne(pojo.getId());
+        orderAddresskeys.setOrderId(pojo.getId());
+        //如果订单没有经过仲裁 获取卖家买家两个人的私匙
+        if(orders.getArbitrate()==0){
+            if(orders.getBuyerId() == pojo.getUserId()){
+                orderAddresskeys.setBuyerPriAuth(orderAddresskeys1.getBuyerPriAuth());
+                orderAddresskeys.setSellerPriAuth(orderAddresskeys1.getBuyerSellerPriAuth());
+            }
+            else{
+                orderAddresskeys.setSellerPriAuth(orderAddresskeys1.getSellerPriAuth());
+                orderAddresskeys.setBuyerPriAuth(orderAddresskeys1.getSellerBuyerPriAuth());
+            }
+            //经过仲裁 获取自己的私匙和仲裁者的私匙
+        }else{
+            List<OrderArbitrate> orderArbitrateList = orderArbitrateRepo.findOrderArbitrateByOrderId(pojo.getId());
+            //买家
+            if(orders.getBuyerId() == pojo.getUserId()){
+                String[] s = new String[2];
+                List<String> stringList = new ArrayList<>();
+                for (OrderArbitrate o:orderArbitrateList) {
+                    if(o.getBuyerAuth()!=null){
+                        stringList.add(o.getBuyerAuth());
+                    }
+                }
+                if(stringList.size()>=2){
+                   String secure =  ShamirUtil.getAuth((String[]) stringList.toArray());
+                   orderAddresskeys.setUserPriAuth(secure);
+                }
+                orderAddresskeys.setBuyerPriAuth(orderAddresskeys1.getBuyerPriAuth());
+            }
+            else{
+                //卖家
+                String[] s = new String[2];
+                List<String> stringList = new ArrayList<>();
+                for (OrderArbitrate o:orderArbitrateList) {
+                    if(o.getSellerAuth()!=null){
+                        stringList.add(o.getSellerAuth());
+                    }
+                }
+                if(stringList.size()>=2){
+                    String secure =  ShamirUtil.getAuth((String[]) stringList.toArray());
+                    orderAddresskeys.setUserPriAuth(secure);
+                }
+                orderAddresskeys.setSellerPriAuth(orderAddresskeys1.getSellerPriAuth());
+            }
+        }
+        return orderAddresskeys;
+    }
 }
