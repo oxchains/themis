@@ -61,7 +61,7 @@ class Buydetail extends Component {
             amount : this.state.messnum
         }
         this.props.fetctBuynow({formdata},err=>{
-            this.setState({ isModalOpen: true , error: err , actionResult: err||'购买成功!'})
+            this.setState({ isModalOpen: true , error: err , actionResult: err||'下单成功!'})
         });
     }
     render() {
