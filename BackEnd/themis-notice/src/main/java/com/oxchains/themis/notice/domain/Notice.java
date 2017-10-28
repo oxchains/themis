@@ -25,6 +25,8 @@ public class Notice {
     @Column(name = "userid")
     private Long userId;       // user表的id
 
+    private String loginname;   // user表的loginname
+
     @Column(name = "noticetype")
     private Long noticeType;      // 购买BTC/出售BTC
 
@@ -52,7 +54,7 @@ public class Notice {
     private String noticeContent;   // 公告内容
 
     @Column(name = "validpaytime")
-    private Long validPayTime = 1800000L;      // 付款期限，默认30分钟的毫秒值1800000
+    private Long validPayTime = 1800000L;      // 付款期限，默认30分钟的毫秒值1800000，字段废弃
 
     @Transient
     private Integer searchType;
@@ -60,26 +62,24 @@ public class Notice {
     @Column(name = "txstatus")
     private Integer txStatus = 0;           // 交易状态，默认0:非交易,1:交易进行,2:交易完成
 
+    @Column(name = "createtime")
+    private String createTime;
+
     // 以下是暂时展示的数据，实际使用时在从对应的表中获取
     @Transient
-    @Column(name = "txnum")
     private Integer txNum;
 
     @Transient
-    @Column(name = "trustnum")
     private Integer trustNum;
 
     @Transient
-    @Column(name = "trustpercent")
     private Integer trustPercent;
 
-    private String loginname;
+    @Transient
+    private Integer goodPercent;
 
     @Transient
     private Integer pageNum;
-
-    @Transient
-    private Integer pageSize;
 
     public Notice(){}
 }

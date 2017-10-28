@@ -1,5 +1,6 @@
 package com.oxchains.themis.notice.rest;
 
+import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.notice.domain.Notice;
 import com.oxchains.themis.notice.service.NoticeService;
@@ -28,7 +29,16 @@ public class NoticeController {
     }
 
     /**
-     * 随机查询两条购买公告、两条出售公告
+     * 首页随机获取公告，返回真实数据
+     * @return
+     */
+    @GetMapping(value = "/query/random")
+    public RestResp queryRandomNotice(){
+        return noticeService.queryRandomNotice();
+    }
+
+    /**
+     * 随机查询两条购买公告、两条出售公告，用户交易详情是随机数
      * @return
      */
     @GetMapping(value = "/query/part")
@@ -55,22 +65,6 @@ public class NoticeController {
     }
 
     /**
-     * 搜索公告(未分页)
-     * @param notice
-     * @return
-     */
-    @PostMapping(value = "/search")
-    public RestResp searchNotice(@RequestBody Notice notice){
-        if (notice.getSearchType() == 0){
-            // 0 默认是搜公告
-            return noticeService.searchNotice(notice);
-        }else {
-            // 不是0 就是搜用户，暂时都是搜公告
-            return noticeService.searchNotice(notice);
-        }
-    }
-
-    /**
      * 查询自己的公告
      * @param userId     登录id
      * @param noticeType    公告类型
@@ -83,9 +77,9 @@ public class NoticeController {
 
     /**
      * 根据交易状态查询自己的公告
-     * @param userId
-     * @param noticeType
-     * @param txStatus
+     * @param userId    登录id
+     * @param noticeType    公告类型
+     * @param txStatus  交易状态
      * @return
      */
     @GetMapping(value = "/query/me2")
@@ -112,46 +106,55 @@ public class NoticeController {
     }
 
     /**
-     * 分页搜索所有公告
-     * @param pageNum
-     * @param pageSize
-     * @return
-     */
-    @GetMapping(value = "/search/pageAll")
-    public RestResp searchPageAll(@RequestParam Integer pageNum, @RequestParam Integer pageSize){
-        return noticeService.searchPageAll(pageNum, pageSize);
-    }
-
-    /**
-     * 分页搜索公告 @RequestParam 如果不传会报空指针
-     */
-    /*@GetMapping(value = "search/page")
-    public RestResp searchPage(@RequestParam Long location,
-                               @RequestParam Long currency,
-                               @RequestParam Long payType,
-                               @RequestParam Long noticeType,
-                               @RequestParam Integer pageNum,
-                               @RequestParam Integer pageSize){
-        return noticeService.searchPage(location, currency, payType, noticeType, pageNum, pageSize);
-    }*/
-
-    /**
-     * 分页搜索公告
+     * 分页搜索公告-购买
      * @param notice
      * @return
      */
-    @PostMapping(value = "search/page")
-    public RestResp searchPage(@RequestBody Notice notice){
-        if (notice.getSearchType() == 0){
-            return noticeService.searchPage(notice);
+    @PostMapping(value = "search/page/buy")
+    public RestResp searchPage_buy(@RequestBody Notice notice){
+        if (null == notice.getSearchType()) notice.setSearchType(1);
+        System.out.println("pageNum = " + notice.getPageNum());
+        if (notice.getSearchType() == 1){// 1 默认是搜公告
+            return noticeService.searchPage_buy(notice);
         }else {
-            return noticeService.searchPage(notice);
+            return noticeService.searchPage_buy(notice);
         }
     }
 
-    // 点击购买/出售公告显示的默认第一页数据
-    @GetMapping(value = "/search/default")
-    public RestResp DefaultSearch(@RequestParam Long noticeType){
-            return noticeService.defaultSearch(noticeType);
+    /**
+     * 分页搜索公告-出售
+     * @param notice
+     * @return
+     */
+    @PostMapping(value = "search/page/sell")
+    public RestResp searchPage_sell(@RequestBody Notice notice){
+        if (null == notice.getSearchType()) notice.setSearchType(1);
+        if (notice.getSearchType() == 1){// 1 默认是搜公告
+            return noticeService.searchPage_sell(notice);
+        }else {
+            return noticeService.searchPage_sell(notice);
+        }
     }
+
+    // 作废
+    @GetMapping(value = "/search/default/buy")
+    public RestResp DefaultSearch_buy(@RequestParam Long noticeType, @RequestParam Integer pageNum){
+        return noticeService.defaultSearch_buy(noticeType, pageNum);
+    }
+
+    // 作废
+    @GetMapping(value = "/search/default/sell")
+    public RestResp DefaultSearch_sell(@RequestParam Long noticeType, @RequestParam Integer pageNum){
+        return noticeService.defaultSearch_sell(noticeType, pageNum);
+    }
+
+    /**
+     * 状态列表
+     * @return
+     */
+    @GetMapping(value = "/query/statusKV")
+    public RestResp queryStatusKV(){
+        return noticeService.queryStatusKV();
+    }
+
 }

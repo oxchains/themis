@@ -7,24 +7,16 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-<<<<<<< Updated upstream:BackEnd/themis-chat/src/main/java/com/oxchains/themis/chat/websocket/WebSocketServer.java
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.oxchains.themis.chat.common.KeepAliveChannelThread;
-=======
 import org.springframework.stereotype.Component;
-import oxchains.chat.common.CustomThreadFactory;
-import oxchains.chat.common.KeepAliveChannelThread;
-import oxchains.chat.service.KafkaService;
->>>>>>> Stashed changes:BackEnd/themis-chat/src/main/java/oxchains/chat/websocket/WebSocketServer.java
-
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.Executors.newScheduledThreadPool;
 @Component
 public class WebSocketServer implements Runnable{
-<<<<<<< Updated upstream:BackEnd/themis-chat/src/main/java/com/oxchains/themis/chat/websocket/WebSocketServer.java
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
     private KafkaService kafkaService;
     private Integer port;
@@ -32,16 +24,10 @@ public class WebSocketServer implements Runnable{
         this.kafkaService = kafkaService;
         this.port = port;
     }
-
-=======
-    private KafkaService kafkaService;
-
     public WebSocketServer(KafkaService kafkaService){
         this.kafkaService = kafkaService;
     }
 
-    private  Integer port = 9999;
->>>>>>> Stashed changes:BackEnd/themis-chat/src/main/java/oxchains/chat/websocket/WebSocketServer.java
     public WebSocketServer() {}
     protected ScheduledExecutorService keepAliveScheduler = null;
     /*

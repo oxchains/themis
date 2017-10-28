@@ -3,12 +3,9 @@ package com.oxchains.themis.chat.kafka;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
-<<<<<<< HEAD:BackEnd/themis-chat/src/main/java/oxchains/chat/kafka/KafkaConsumerConfig.java
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-=======
 import org.springframework.beans.factory.annotation.Value;
->>>>>>> b54ef991ebf23b343ec4f70ab27edc8e081f0b78:BackEnd/themis-chat/src/main/java/com/oxchains/themis/chat/kafka/KafkaConsumerConfig.java
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -27,14 +24,11 @@ import java.util.Map;
 @Configuration
 @EnableKafka
 public class KafkaConsumerConfig {
-<<<<<<< HEAD:BackEnd/themis-chat/src/main/java/oxchains/chat/kafka/KafkaConsumerConfig.java
     protected static final Logger logger = LoggerFactory.getLogger(KafkaConsumerConfig.class);
-=======
     @Value("${kafka.service.config}")
     private String kafkaSeerviceConfig;
     @Value("${kafka.chat.group}")
     private String kafkaGroup;
->>>>>>> b54ef991ebf23b343ec4f70ab27edc8e081f0b78:BackEnd/themis-chat/src/main/java/com/oxchains/themis/chat/kafka/KafkaConsumerConfig.java
     @Bean
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, String>> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();

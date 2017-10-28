@@ -110,19 +110,40 @@ public class User {
     }
 
     //@JsonIgnore
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<String> authorities = new HashSet<>();
+//    @ElementCollection(fetch = FetchType.EAGER)
+//    private Set<String> authorities = new HashSet<>();
+//
+//    public Set<String> getAuthorities() {
+//        return authorities;
+//    }
+//
+//    public void setAuthorities(Set<String> authorities) {
+//        this.authorities = authorities;
+//    }
 
-    public Set<String> getAuthorities() {
-        return authorities;
+    private Long roleId;
+
+    public Long getRoleId() {
+        return roleId;
     }
 
-    public void setAuthorities(Set<String> authorities) {
-        this.authorities = authorities;
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
     }
 
     @Transient
     private String token;
+
+    @Transient
+    private Role role;
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
     public String getToken() {
         return token;
@@ -133,7 +154,9 @@ public class User {
     }
 
     public User(User user){
-        setAuthorities(user.getAuthorities());
+        //setAuthorities(user.getAuthorities());
+        setRole(user.getRole());
+        setRoleId(user.getRoleId());
         setEmail(user.getEmail());
         setLoginname(user.getLoginname());
         setUsername(user.getUsername());

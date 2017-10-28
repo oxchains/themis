@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 
 import { Field } from 'redux-form';
 import { connect } from 'react-redux';
-import { fetctBuyBtcDetail} from '../actions/releaseadvert'
+import { fetctSellBtcDetail} from '../actions/releaseadvert'
 class Selldetail extends Component {
     constructor(props) {
         super(props);
@@ -31,7 +31,7 @@ class Selldetail extends Component {
 
     componentWillMount(){
         const noticeId = "1"
-        this.props.fetctBuyBtcDetail({noticeId});
+        this.props.fetctSellBtcDetail({noticeId});
     }
 
     render() {
@@ -121,4 +121,4 @@ function mapStateToProps(state) {
         errorMessage: state.auth.error
     };
 }
-export default connect(mapStateToProps,{fetctBuyBtcDetail})(Selldetail);
+export default connect(mapStateToProps,{fetctSellBtcDetail})(Selldetail);
