@@ -1,10 +1,10 @@
 package com.oxchains.themis.user.domain;
 
 /**
- * @Author oxchains
+ * @Author ccl
  * @Time 2017-10-30 16:41
  * @Name UserInfo
  * @Desc:
  */
-public class UserInfo {
+public class UserInfo extends User{
 }
