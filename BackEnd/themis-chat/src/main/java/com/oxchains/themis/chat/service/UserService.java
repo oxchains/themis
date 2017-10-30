@@ -43,7 +43,7 @@ public class UserService {
             userToken = new UserToken(users, jwtService.generate(users));
             userTokenRepo.save(userToken);
         }catch (Exception e){
-             LOG.debug("faild generate token:",e.getMessage());
+             LOG.error("faild generate token : {}",e.getMessage(),e);
         }
 
         return userToken;
