@@ -18,7 +18,7 @@ class OrderProgress extends Component {
         super(props);
         that = this;
         this.state = {
-            orderStatus:1,
+            orderStatus:0,
             alertVisible: false,
             show: false,
             shownext:false,
@@ -45,8 +45,7 @@ class OrderProgress extends Component {
         this.setState({partnerName:partnerName});
 
         this.props.fetchOrdersDetails({data},(msg)=>{
-
-            console.log(msg.orderStatus)
+            console.log(msg)
             this.setState({orderStatus:msg.orderStatus});
             this.setState({orderId:msg.id});
             switch(this.state.orderStatus){
@@ -257,7 +256,6 @@ class OrderProgress extends Component {
                  this.setState({show: true})
              }
         })
-
     }
     next(){
         const sellerPubAuth=this.refs.sellerPubAuth.value;
@@ -313,7 +311,7 @@ class OrderProgress extends Component {
                   this.setState({ orderStatus:this.state.orderStatus+1})
              }
              else{
-
+                 alert("比特币进入themis托管地址需要一定时间，请耐心等待。。。")
              }
        });
     }
@@ -386,7 +384,7 @@ class OrderProgress extends Component {
         })
     }
     render(){
-          console.log('status: ' + this.state.orderStatus)
+         console.log('status: ' + this.state.orderStatus)
         let close = () => {
             this.setState({show:false,shownext:false})
         };
