@@ -18,7 +18,7 @@ import {
 export function signinAction({mobilephone, password}) {
     console.log(`点击登录按钮传过来的数据是 ${mobilephone},${password}`)
     return function(dispatch) {
-        axios.post(`${ROOT_URLC}/login`, { mobilephone, password})
+        axios.post(`${ROOT_URLC}/user/login`, { mobilephone, password})
             .then(response => {
                 console.log(response)
                 if(response.data.status == 1) {
@@ -57,7 +57,7 @@ export function signoutUser() {
 export function signupUser({ loginname, mobilephone, email,password }, callback) {
     console.log(`注册传送的数据: ${loginname}, ${mobilephone},${email}, ${password}`);
     return function(dispatch) {
-        axios.post(`${ROOT_URLC}/register`, { loginname, mobilephone, email,password })
+        axios.post(`${ROOT_URLC}/user/register`, { loginname, mobilephone, email,password })
             .then(response => {
                 console.log(response)
                 if(response.data.status == 1) {

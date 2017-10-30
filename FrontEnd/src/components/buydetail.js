@@ -104,10 +104,10 @@ class Buydetail extends Component {
                     <div className="col-lg-9 col-xs-9 col-md-9">
                         <div>
                             <ul className="priceul">
-                                <li>报价 : &#x3000;&#x3000;&#x3000;&#x3000;&#x3000;{data.price}CNY/BTC</li>
+                                <li>报价 : &#x3000;&#x3000;&#x3000;&#x3000;&#x3000;{data.price} CNY/BTC</li>
                                 <li>交易额度 : &#x3000;&#x3000;&#x3000;{data.minTxLimit}-{data.maxTxLimit} CNY</li>
-                                <li>付款方式 : &#x3000;&#x3000;&#x3000;{data.payType}</li>
-                                <li>付款期限 : &#x3000;&#x3000;&#x3000;{time}分钟</li>
+                                <li>付款方式 : &#x3000;&#x3000;&#x3000;{data.payType == 1 ?"现金":data.payType == 2 ?"转账":data.payType == 3 ?"支付宝":data.payType == 4 ? "微信":data.payType == 5 ? "Apple Pay":""}</li>
+                                <li>付款期限 : &#x3000;&#x3000;&#x3000;{time} 分钟</li>
                             </ul>
                             <h4 className="sellwhat">你想购买多少？</h4>
                             <input type="text" className="inputmoney sellmoney" onChange={this.handelChange} name="money" value={messmoney} placeholder="请输入你想购买的金额"/>
