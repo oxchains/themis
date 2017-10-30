@@ -30,7 +30,7 @@ public class HttpUtils {
             connection.connect();
             Map<String, List<String>> map = connection.getHeaderFields();
             for (String key : map.keySet()) {
-                LOG.info("{} ---> {}", key, map.get(key));
+                LOG.debug("{} ---> {}", key, map.get(key));
             }
             in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line;
