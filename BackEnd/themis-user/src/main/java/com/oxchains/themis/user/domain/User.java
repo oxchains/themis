@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,6 +45,8 @@ public class User {
     private String firstAddress;
 
     private Integer loginStatus;
+
+    private Date createTime;
 
     public Long getId() {
         return id;
@@ -153,6 +156,14 @@ public class User {
         this.token = token;
     }
 
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
     public User(User user){
         //setAuthorities(user.getAuthorities());
         setRole(user.getRole());
@@ -164,5 +175,6 @@ public class User {
         setId(user.getId());
         setMobilephone(user.getMobilephone());
         setLoginStatus(user.getLoginStatus());
+        setCreateTime(user.getCreateTime());
     }
 }
