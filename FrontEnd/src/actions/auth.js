@@ -24,7 +24,7 @@ export function signinAction({mobilephone, password}) {
                 if(response.data.status == 1) {
                     localStorage.setItem('token', response.data.data.token);
                     localStorage.setItem('userId', response.data.data.id);
-                    localStorage.setItem('username',response.data.data.loginname);
+                    localStorage.setItem('loginname',response.data.data.loginname);
                     dispatch({type: AUTH_USER});
                     browserHistory.push('/');
                 } else {

@@ -37,7 +37,6 @@ import RefereeList from './components/refereelist';
 import StubList from './components/stublist';
 import Releaseadvert from './components/releaseadvert';
 
-
 const createStoreWithMiddleware = compose(
     applyMiddleware(reduxThunk),
     window.devToolsExtension ? window.devToolsExtension() : f => f
