@@ -6,9 +6,11 @@ import com.oxchains.themis.common.util.EncryptUtils;
 import com.oxchains.themis.user.auth.JwtService;
 import com.oxchains.themis.user.dao.RoleDao;
 import com.oxchains.themis.user.dao.UserDao;
+import com.oxchains.themis.user.dao.UserTxDetailDao;
 import com.oxchains.themis.user.domain.Role;
 import com.oxchains.themis.user.domain.User;
 import com.oxchains.themis.user.domain.UserToken;
+import com.oxchains.themis.user.domain.UserTxDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,9 @@ public class UserService extends BaseService{
     @Resource
     private RoleDao roleDao;
 
+    @Resource
+    private UserTxDetailDao userTxDetailDao;
+
 //    @Resource
 //    AccountService accountService;
 
@@ -54,6 +59,11 @@ public class UserService extends BaseService{
         if (user == null){
             return RestResp.fail("操作失败");
         }
+
+        UserTxDetail userTxDetail=new UserTxDetail();
+        userTxDetail.setUserId(user.getId());
+
+        userTxDetailDao.save(userTxDetail);
         //注册比特币账户
         //String address = accountService.enrollAccount(user.getLoginname());
 
@@ -78,11 +88,15 @@ public class UserService extends BaseService{
             }*/
             String token="Bearer "+jwtService.generate(user);
             Role role=roleDao.findById(u.getRoleId());
+            UserTxDetail userTxDetail=userTxDetailDao.findByUserId(u.getId());
+
             logger.info("token = "+token);
             User userInfo=new User(u);
             userInfo.setRole(role);
             userInfo.setPassword(null);
             userInfo.setToken(token);
+
+            userInfo.setUserTxDetail(userTxDetail);
             //u.setLoginStatus(1);
             //userDao.save(u);
 

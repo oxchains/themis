@@ -140,6 +140,9 @@ public class User {
     @Transient
     private Role role;
 
+    @Transient
+    private UserTxDetail userTxDetail;
+
     public Role getRole() {
         return role;
     }
@@ -164,6 +167,14 @@ public class User {
         this.createTime = createTime;
     }
 
+    public UserTxDetail getUserTxDetail() {
+        return userTxDetail;
+    }
+
+    public void setUserTxDetail(UserTxDetail userTxDetail) {
+        this.userTxDetail = userTxDetail;
+    }
+
     public User(User user){
         //setAuthorities(user.getAuthorities());
         setRole(user.getRole());
@@ -176,5 +187,7 @@ public class User {
         setMobilephone(user.getMobilephone());
         setLoginStatus(user.getLoginStatus());
         setCreateTime(user.getCreateTime());
+
+        setUserTxDetail(user.getUserTxDetail());
     }
 }
