@@ -28,15 +28,18 @@ public class UserTxDetail {
     @Transient
     private String mobilePhoneVerify;//电话是否验证
     @Transient
-    private String username;
+    private String loginname;
     @Transient
     private String goodDegree;//好评度
-    public String getUsername() {
-        return username;
+
+    public String getLoginname() {
+        return loginname;
     }
-    public void setUsername(String username) {
-        this.username = username;
+
+    public void setLoginname(String loginname) {
+        this.loginname = loginname;
     }
+
     public String getGoodDegree() {
         return goodDegree;
     }

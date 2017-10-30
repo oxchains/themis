@@ -13,7 +13,7 @@ class Header extends Component{
     }
     renderUserInfo() {
         if(this.props.authenticated) {
-            const username= localStorage.getItem('username');
+            const loginname= localStorage.getItem('loginname');
             return (
                 <div className="navbar-custom-menu">
                     <ul className="nav navbar-nav">
@@ -21,7 +21,7 @@ class Header extends Component{
                         <li className="order-style"><a href="/orderinprogress">钱包</a></li>
                         <li className="dropdown user user-menu">
                             <a href="#" className="dropdown-toggle" data-toggle="dropdown">
-                                <span className="hidden-xs">{username}</span>
+                                <span className="hidden-xs">{loginname}</span>
                             </a>
                             <ul className="dropdown-menu">
                                 <li className="info-self ">

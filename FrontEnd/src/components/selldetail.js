@@ -6,37 +6,85 @@ import React, { Component } from 'react';
 
 import { Field } from 'redux-form';
 import { connect } from 'react-redux';
-import { fetctSellBtcDetail} from '../actions/releaseadvert'
+import { fetctSellBtcDetail,fetctSellnow} from '../actions/releaseadvert'
+import {
+    Modal,
+    ModalHeader,
+    ModalTitle,
+    ModalClose,
+    ModalBody,
+    ModalFooter
+} from 'react-modal-bootstrap';
+
 class Selldetail extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            message:'',
-            messagenum:'',
-            price:''
+            isModalOpen: false,
+            error: null,
+            actionResult: '',
+            messmoney:'',
+            messnum:'',
         }
-        this.handelChangemoney = this.handelChangemoney.bind(this)
-        this.handelChangenum = this.handelChangenum.bind(this)
-    }
-    handelChangemoney(e){
-    this.setState({
-        message:(e.target.value) / this.state.price
-    })
-    }
-    handelChangenum(e){
-        this.setState({
-            messagenum:(e.target.value) * this.state.price
-        })
-    }
+        this.handelChange = this.handelChange.bind(this)
+        this.handleSubmit = this.handleSubmit.bind(this)
 
+    }
+    handelChange(e){
+        const data = this.props.all.notice || [];
+        let type = e.target.name;
+        if (type == "money") {
+            this.setState({
+                messmoney: e.target.value,
+                messnum: (e.target.value) / data.price
+            })
+        } else if (type == "btc") {
+            this.setState({
+                messmoney: (e.target.value) * data.price,
+                messnum: e.target.value
+            })
+        }
+    }
+    hideModal = () => {
+        this.setState({
+            isModalOpen: false
+        });
+    };
     componentWillMount(){
-        const noticeId = "1"
+        const noticeId = this.props.match.params.id.slice(1)
+        console.log( this.props.match.params.id.slice(1))
         this.props.fetctSellBtcDetail({noticeId});
     }
 
+    handleSubmit(){
+        const formdata = {
+            userId: localStorage.getItem("userId"),
+            noticeId : this.props.match.params.id.slice(1),
+            money : this.state.messmoney,
+            amount : this.state.messnum
+        }
+        this.props.fetctSellnow({formdata},err=>{
+            this.setState({ isModalOpen: true , error: err , actionResult: err||'下单成功!'})
+        });
+    }
+
+    renderAlert() {
+        const { from } = this.props.location.state || { from: { pathname: '/' } };
+        if (this.props.data) {
+            return (
+                <Redirect to={from}/>
+            );
+        }else if(this.props.data){
+            return (
+                <div className="alert alert-danger alert-dismissable">
+                    {this.props.errorMessage}
+                </div>
+            );
+        }
+    }
     render() {
-        var messmoney = this.state.message;
-        var messnum = this.state.messagenum;
+        const messmoney = this.state.messmoney;
+        const messnum = this.state.messnum;
 
         const data = this.props.all.notice || [];
         const datanum = this.props.all
@@ -50,7 +98,7 @@ class Selldetail extends Component {
                             <img src="./public/img/touxiang.jpg" style={{width:100+'px'}} alt=""/>
                         </div>
                         <div className="col-lg-9 col-xs-9 col-md-9 title-img">
-                            <h4 style={{marginBottom:10+'px',paddingLeft:15+'px'}}>HALLAY</h4>
+                            <h4 style={{marginBottom:10+'px',paddingLeft:15+'px'}}>{datanum.loginname}</h4>
                             <ul className="detailul">
                                 <li>
                                     <p>{datanum.txNum}</p>
@@ -78,14 +126,14 @@ class Selldetail extends Component {
                             <ul className="priceul">
                                 <li>报价 : &#x3000;&#x3000;&#x3000;&#x3000;&#x3000;{data.price}CNY/BTC</li>
                                 <li>交易额度 : &#x3000;&#x3000;&#x3000;{data.minTxLimit}-{data.maxTxLimit} CNY</li>
-                                <li>付款方式 : &#x3000;&#x3000;&#x3000;{data.payType}</li>
+                                <li>付款方式 : &#x3000;&#x3000;&#x3000;{data.payType == 1 ?"现金":data.payType == 2 ?"转账":data.payType == 3 ?"支付宝":data.payType == 4 ? "微信":data.payType == 5 ? "Apple Pay":""}</li>
                                 <li>付款期限 : &#x3000;&#x3000;&#x3000;{time}分钟</li>
                             </ul>
-                            <h4 className="sellwhat">你想购买多少？</h4>
-                            <input type="text" className="inputmoney sellmoney" onChange={this.handelChange} value={messmoney} placeholder="请输入你想出售的金额"/>
+                            <h4 className="sellwhat">你想出售多少？</h4>
+                            <input type="text" className="inputmoney sellmoney" onChange={this.handelChange} name="money" value={messmoney} placeholder="请输入你想出售的金额"/>
                             <i className="fa fa-exchange" aria-hidden="true"></i>
-                            <input type="text" className="inputmoney sellmoney" onChange={this.handelChange} value={messnum} placeholder="请输入你想出售的数量"/>
-                            <button className="form-sell">立刻购买</button>
+                            <input type="text" className="inputmoney sellmoney" onChange={this.handelChange} name="btc" value={messnum} placeholder="请输入你想出售的数量"/>
+                            <button className="form-sell" onClick={this.handleSubmit}>立刻出售</button>
                         </div>
                     </div>
 
@@ -107,6 +155,24 @@ class Selldetail extends Component {
                     <p>5.请注意欺诈风险，交易前请检查该用户收到的评价信息和相关信用信息，并对新近创建的账户多加留意。</p>
                     <p>6.托管服务保护网上交易的买卖双方。在双方发生争议的情况下，我们将评估所提供的所有信息，并将托管的比特币放行给其合法所有者。</p>
                 </div>
+
+                <Modal isOpen={this.state.isModalOpen} onRequestHide={this.hideModal}>
+                    <ModalHeader>
+                        <ModalClose onClick={this.hideModal}/>
+                        <ModalTitle>提示:</ModalTitle>
+                    </ModalHeader>
+                    <ModalBody>
+                        <p className={this.state.error?'text-red':'text-green'}>
+                            {this.state.actionResult}
+                        </p>
+                    </ModalBody>
+                    <ModalFooter>
+                        <button className='btn btn-default' onClick={this.hideModal}>
+                            {/*<a href="/myadvert" >关闭</a>*/}
+                            <a className="close-modal" href="/orderprogress" >关闭</a>
+                        </button>
+                    </ModalFooter>
+                </Modal>
             </div>
         );
     }
@@ -115,10 +181,10 @@ class Selldetail extends Component {
 
 
 function mapStateToProps(state) {
+    console.log(state)
     return {
-        all:state.advert.all,
-        success: state.auth.authenticated,
-        errorMessage: state.auth.error
+        data:state.advert.data,     //点击出售返回的data
+        all:state.advert.all        //广告详情页面加载时的数据
     };
 }
-export default connect(mapStateToProps,{fetctSellBtcDetail})(Selldetail);
+export default connect(mapStateToProps,{fetctSellBtcDetail,fetctSellnow})(Selldetail);

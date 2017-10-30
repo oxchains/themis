@@ -44,7 +44,6 @@ public class Orders implements Serializable{
     private String sellerUsername; //卖家名称
     @ManyToOne
     private OrderAddresskeys orderAddresskeys;
-
     @Transient
     private String uri;
 

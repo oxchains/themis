@@ -9,7 +9,6 @@ package com.oxchains.themis.common.model;
 public class ScriptHash {
     private String address;
     private String redeemScript;
-
     private String URI;
 
     public String getAddress() {

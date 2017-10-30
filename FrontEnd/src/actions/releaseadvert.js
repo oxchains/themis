@@ -6,6 +6,7 @@ import { browserHistory ,hashHistory} from 'react-router';
 import {
     ROOT_URLL,
     ROOT_URLZ,
+    ROOT_URLC,
     FETCH_ADVERT,
     FETCH_BUY_BTC,
     FETCH_SELL_BTC,
@@ -15,6 +16,11 @@ import {
     FETCH_SELL_BTC_DETAIL,
     FETCH_ARRAY,
     FETCH_HOME,
+    FETCH_BUY_NOW,
+    FETCH_SELL_NOW,
+    FETCH_MY_ADVERT,
+    FETCH_OFF_MYBTC,
+    FETCH_BASE_INFO,
     getAuthorizedHeader
 } from './types';
 
@@ -22,7 +28,7 @@ import {
 
 export function fetctHome(callback) {
     return function(dispatch) {
-        axios.get(`${ROOT_URLL}/notice/query/part`, { headers: getAuthorizedHeader() })
+        axios.get(`${ROOT_URLL}/notice/query/random`, { headers: getAuthorizedHeader() })
             .then(response => {
                 console.log("首页")
                 console.log(response)
@@ -37,33 +43,38 @@ export function fetctHome(callback) {
 
 // 发布公告
 
-export function releaseAdvert({ userId ,noticeType  ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType  ,noticeContent }, callback) {
-    console.log(`发布广告传送的数据: ${userId}, ${noticeType},${location}, ${currency},${premium},${price},${minPrice},${minTxLimit},${maxTxLimit},${payType},${noticeContent}`);
+export function releaseAdvert({ userId ,loginname,noticeType  ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType  ,noticeContent }, callback) {
+    console.log(`发布广告传送的数据: ${userId},${loginname}, ${noticeType},${location}, ${currency},${premium},${price},${minPrice},${minTxLimit},${maxTxLimit},${payType},${noticeContent}`);
     return function(dispatch) {
-        axios.post(`${ROOT_URLL}/notice/broadcast`, { userId ,noticeType  ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType  ,noticeContent},{ headers: getAuthorizedHeader() })
+        axios.post(`${ROOT_URLL}/notice/broadcast`, { userId ,loginname,noticeType  ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType  ,noticeContent},{ headers: getAuthorizedHeader() })
+            .then(response => {
+                if(response.data.status == 1) {
+                    callback();
+                } else {
+                    callback(response.data.message);
+                }
+                // dispatch({type: FETCH_ADVERT, payload: response})
+            })
+            .catch(err => callback(err));
+    }
+}
+// 购买比特币搜索
+// 搜索广告
+
+export function fetcAdvertSeach({searchType,location,currency,payType,pageNum }, callback) {
+    console.log(`点击购买搜索传送的数据:${searchType},${location},${currency} ,${payType},${pageNum}`);
+    return function(dispatch) {
+        axios.post(`${ROOT_URLL}/notice/search/page/buy`, {searchType,location,currency,payType,pageNum },{ headers: getAuthorizedHeader() })
             .then(response => {
                 console.log(response)
-                dispatch({type: FETCH_ADVERT, payload: response})
+                dispatch({type: FETCH_BUY_SECAT, payload: response})
             })
             .catch(err => callback(err.message));
     }
 }
 
-// 购买比特币
 
-export function fetctBuyBTC({page},callback) {
-    console.log(`购买比特币传送的数据: ${page}`);
-    return function(dispatch) {
-        axios.get(`${ROOT_URLL}/notice/search/default/buy?noticeType=1&pageNum=${page}`, { headers: getAuthorizedHeader() })
-            .then(response => {
-                console.log(response)
-                dispatch({type: FETCH_BUY_BTC, payload: response})
-            })
-            .catch(err => {
-                console.error(err)
-            });
-    }
-}
+
 // 购买比特币广告详情
 
 export function fetctBuyBtcDetail({noticeId},callback) {
@@ -80,32 +91,56 @@ export function fetctBuyBtcDetail({noticeId},callback) {
     }
 }
 
-// 购买比特币搜索
-// 搜索广告
+// 购买比特币详情下单
 
-export function fetcAdvertSeach({searchType,location,currency,payType,currentPage }, callback) {
-    console.log(`点击购买搜索传送的数据:${searchType},${location},${currency} ,${payType},${currentPage}`);
+export function fetctBuynow({formdata},callback) {
+    console.log("购买下单传送的数据")
+    console.log(formdata);
     return function(dispatch) {
-        axios.post(`${ROOT_URLL}/notice/search/page/buy`, {searchType,location,currency,payType,currentPage },{ headers: getAuthorizedHeader() })
-            .then(response => {
+        // axios.get(`${ROOT_URLZ}/order/addOrder`,{formdata}, { headers: getAuthorizedHeader() })
+        axios({
+            method: 'post',
+            url: `${ROOT_URLZ}/order/addOrder `,
+            data: formdata,
+            headers: getAuthorizedHeader()
+        }).then(response => {
                 console.log(response)
-                dispatch({type: FETCH_BUY_BTC, payload: response})
+                // dispatch({type: FETCH_BUY_NOW, payload: response})
+                if(response.data.status == 1) {
+                    callback();
+                } else {
+                    callback(response.data.message);
+                }
             })
-            .catch(err => callback(err.message));
+            .catch(err => {
+                console.error(err)
+            });
     }
 }
 
-// 出售比特币
-
-export function fetctSellBTC({page}, callback) {
-    console.log(`出售比特币传送的数据:`);
+// 出售比特币详情下单
+export function fetctSellnow({formdata},callback) {
+    console.log("出售下单传送的数据")
+    console.log(formdata);
     return function(dispatch) {
-        axios.get(`${ROOT_URLL}/notice/search/default/sell?noticeType=2&pageNum=${page}`,{ headers: getAuthorizedHeader() })
-            .then(response => {
+        // axios.post(`${ROOT_URLZ}/order/addOrder`,{formdata}, { headers: getAuthorizedHeader() })
+        axios({
+            method: 'post',
+            url: `${ROOT_URLZ}/order/addOrder `,
+            data: formdata,
+            headers: getAuthorizedHeader()
+        }).then(response => {
                 console.log(response)
-                dispatch({type: FETCH_SELL_BTC, payload: response})
+                // dispatch({type: FETCH_SELL_NOW, payload: response})
+                if(response.data.status == 1) {
+                    callback();
+                } else {
+                    callback(response.data.message);
+                }
             })
-            .catch(err => callback(err.message));
+            .catch(err => {
+                console.error(err)
+            });
     }
 }
 
@@ -127,23 +162,20 @@ export function fetctSellBtcDetail({noticeId},callback) {
 
 // 出售比特币搜索
 
-export function fetctSellSeach({searchType,location,currency,payType,currentPage }, callback) {
-    console.log(`点击出售搜索传送的数据:${searchType},${location},${currency} ,${payType},${currentPage}`);
+export function fetctSellSeach({searchType,location,currency,payType,pageNum }, callback) {
+    console.log(`点击出售搜索传送的数据:${searchType},${location},${currency} ,${payType},${pageNum}`);
     return function(dispatch) {
-        axios.post(`${ROOT_URLL}/notice/search/page/sell`, {searchType,location,currency,payType,currentPage },{ headers: getAuthorizedHeader() })
+        axios.post(`${ROOT_URLL}/notice/search/page/sell`, {searchType,location,currency,payType,pageNum },{ headers: getAuthorizedHeader() })
             .then(response => {
                 console.log(response)
-                dispatch({type: FETCH_SELL_BTC, payload: response})
+                dispatch({type: FETCH_SELL_SECAT, payload: response})
             })
             .catch(err => callback(err.message));
     }
 }
-
-
 // 选择框数据
 
 export function fetctArray( callback) {
-
     return function(dispatch) {
         axios.get(`${ROOT_URLL}/notice/query/statusKV`, { headers: getAuthorizedHeader() })
             .then(response => {
@@ -155,3 +187,53 @@ export function fetctArray( callback) {
     }
 }
 
+// 我的广告
+
+export function fetctMyAdvert({userId,noticeType,txStatus}, callback) {
+    return function(dispatch) {
+        axios.get(`${ROOT_URLL}/notice/query/me2?userId=${userId}&noticeType=${noticeType}&txStatus=${txStatus}`, { headers: getAuthorizedHeader() })
+            .then(response => {
+                // console.log(`选择框返回的数据: `);
+                // console.log(response)
+                dispatch({type: FETCH_MY_ADVERT, payload: response})
+            })
+            .catch(err => console.error(err.message));
+    }
+}
+
+// 下架我的广告
+
+export function fetctOffMyAd({id},callback) {
+    console.log(`下架我的广告:${id} `);
+    return function(dispatch) {
+        axios.get(`${ROOT_URLL}/notice/stop?id=${id}`,{ headers: getAuthorizedHeader() })
+            .then(response => {
+                console.log(response)
+                // dispatch({type: FETCH_OFF_MYBTC, payload: response})
+                if(response.data.status == 1) {
+                    callback();
+                } else {
+                    callback(response.data.message);
+                }
+            })
+            .catch(err => {
+                console.error(err)
+            });
+    }
+}
+
+//用户基本信息
+
+export function fetctBaseInfo({userId},callback) {
+    console.log(`用户基本信息:${userId} `);
+    return function(dispatch) {
+        axios.get(`${ROOT_URLC}/user/update`,{userId},{ headers: getAuthorizedHeader() })
+            .then(response => {
+                console.log(response)
+                dispatch({type: FETCH_BASE_INFO, payload: response})
+            })
+            .catch(err => {
+                console.error(err)
+            });
+    }
+}

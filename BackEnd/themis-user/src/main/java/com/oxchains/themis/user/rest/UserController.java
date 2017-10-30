@@ -7,10 +7,7 @@ import com.oxchains.themis.common.util.VerifyCodeUtils;
 import com.oxchains.themis.user.domain.User;
 import com.oxchains.themis.user.service.UserService;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -21,6 +18,7 @@ import javax.annotation.Resource;
  * @Desc:
  */
 @RestController
+@RequestMapping(value = "/user")
 public class UserController {
     @Resource
     UserService userService;
@@ -38,7 +36,7 @@ public class UserController {
 
 
     @PostMapping(value = "/update")
-    public RestResp update(User user){
+    public RestResp update(@RequestBody User user){
         return userService.updateUser(user);
     }
     @GetMapping(value = "/user")

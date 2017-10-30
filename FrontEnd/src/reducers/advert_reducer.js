@@ -12,7 +12,11 @@ import {
     FETCH_SELL_BTC_DETAIL,
     FETCH_ARRAY,
     FETCH_HOME,
-
+    FETCH_SELL_NOW,
+    FETCH_BUY_NOW,
+    FETCH_MY_ADVERT,
+    FETCH_OFF_MYBTC,
+    FETCH_BASE_INFO
 } from '../actions/types';
 
 const INITIAL_STATE = { all: [] ,array: [] ,data:[],refuse:null};
@@ -21,14 +25,14 @@ export default function(state = INITIAL_STATE, action) {
     switch(action.type) {
         case FETCH_ADVERT:
             return { ...state, all:action.payload.data.data};
-        case FETCH_BUY_BTC:
+        case FETCH_BUY_NOW:
+            return { ...state, data:action.payload.data.data};
+        case FETCH_SELL_NOW:
+            return { ...state, data:action.payload.data.data};
+        case FETCH_BUY_SECAT:
             return { ...state, all:action.payload.data.data};
-        case FETCH_SELL_BTC:
+        case FETCH_SELL_SECAT:
             return { ...state, all:action.payload.data.data};
-        // case FETCH_BUY_SECAT:
-        //     return { ...state, data:action.payload.data.data};
-        // case FETCH_SELL_SECAT:
-        //     return { ...state, all:action.payload.data.data};
         case FETCH_BUY_BTC_DETAIL:
             return { ...state, all:action.payload.data.data};
         case FETCH_SELL_BTC_DETAIL:
@@ -37,9 +41,14 @@ export default function(state = INITIAL_STATE, action) {
             return { ...state, array:action.payload.data.data};
         case FETCH_HOME:
             return { ...state, all:action.payload.data.data};
+        case FETCH_MY_ADVERT:
+            return { ...state, all:action.payload.data.data};
+        case FETCH_OFF_MYBTC:
+            return { ...state, data:action.payload.data.data};
+        case FETCH_BASE_INFO:
+            return { ...state, all:action.payload.data.data};
+
     }
-
-
     return state;
 }
 
