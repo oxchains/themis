@@ -15,8 +15,9 @@ import java.util.List;
 public interface OrderRepo extends CrudRepository<Orders,String>{
     @Query(value = " select  s from Orders as s where  (s.buyerId = :id or s.sellerId = :ids ) and s.orderStatus = :status ")
     List<Orders> findOrdersByBuyerIdOrSellerIdAndOrderStatus(@Param("id") Long id,@Param("ids") Long ids,@Param("status") Long status);
-    @Query(value = " select  s from Orders as s where  (s.buyerId = :id or s.sellerId = :ids ) and s.orderStatus not in (:status,:staus2)  ")
-    List<Orders> findOrdersByBuyerIdOrSellerIdAndOrderStatusIsNot(@Param("id") Long id,@Param("ids") Long ids,@Param("status") Long status,@Param("staus2") Long status2);
+    @Query(value = " select  s from Orders as s where  (s.buyerId = :id or s.sellerId = :ids ) and s.orderStatus <> :status  ")
+    List<Orders> findOrdersByBuyerIdOrSellerIdAndOrderStatusIsNot(@Param("id") Long id,@Param("ids") Long ids,@Param("status") Long status);
     List<Orders> findOrdersByNoticeIdAndOrderStatus(Long id,Long status);
+    List<Orders> findOrdersByOrderStatus(Long status);
 
 }

@@ -11,12 +11,12 @@ import javax.persistence.Table;
 @Table(name = "tbl_biz_payment")
 public class Payment {
     @Id
-    private Integer id;
+    private Long id;
     private String payment_name;
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
     public String getPayment_name() {
