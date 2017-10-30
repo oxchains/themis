@@ -39,7 +39,7 @@ public class ChainAppConfiguration extends WebSecurityConfigurerAdapter {
           .csrf()
           .disable()
           .authorizeRequests()
-          .antMatchers("/user/login")
+          .antMatchers("/user/*")
           .permitAll()
           .antMatchers("/**/*")
           .authenticated()

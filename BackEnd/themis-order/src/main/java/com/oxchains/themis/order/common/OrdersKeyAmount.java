@@ -16,6 +16,9 @@ public class OrdersKeyAmount {
         this.amount = amount;
     }
 
+    public OrdersKeyAmount() {
+    }
+
     @Override
     public String toString() {
         return "OrdersKeyAmount{" +

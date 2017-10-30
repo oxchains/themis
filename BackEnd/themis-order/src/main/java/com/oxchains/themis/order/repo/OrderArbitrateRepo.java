@@ -14,6 +14,5 @@ public interface OrderArbitrateRepo extends CrudRepository<OrderArbitrate,Long>{
     List<OrderArbitrate> findOrderArbitrateByUserIdAndAndStatus(Long userId,Integer status);
     OrderArbitrate findOrderArbitrateByUserIdAndOrderId(Long id,String orderId);
     List<OrderArbitrate> findOrderArbitrateByOrderId(String orderId);
-    /*Integer countAllByOrderIdAndBuyerAuthExists(String id);
-    Integer countAllByOrderIdAndSellerAuthExists(String id);*/
+
 }

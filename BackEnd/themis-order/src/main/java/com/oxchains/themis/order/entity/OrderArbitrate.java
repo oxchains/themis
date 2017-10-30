@@ -1,7 +1,6 @@
 package com.oxchains.themis.order.entity;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 /**
  * Created by huohuo on 2017/10/25.
  */
@@ -9,6 +8,7 @@ import javax.persistence.Table;
 @Table(name = "order_arbitrate")
 public class OrderArbitrate {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String orderId;
     private Long userId;

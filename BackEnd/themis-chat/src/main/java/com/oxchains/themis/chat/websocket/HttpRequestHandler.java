@@ -1,5 +1,4 @@
 package com.oxchains.themis.chat.websocket;
-
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -9,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.oxchains.themis.chat.common.ChannelHandler;
 import com.oxchains.themis.chat.common.ChatUtil;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
