@@ -3,6 +3,7 @@ package com.oxchains.themis.notice.dao;
 import com.oxchains.themis.notice.domain.Notice;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
@@ -17,8 +18,8 @@ public interface NoticeDao extends CrudRepository<Notice,Long>, PagingAndSorting
 
     // 发布公告需要提前判断的接口
 
-    List<Notice> findByUserIdAndNoticeType(Long loginName, Long noticeType);
-    List<Notice> findByUserIdAndNoticeTypeAndTxStatus(Long loginName, Long noticeType, Integer txStatus);
+    List<Notice> findByUserIdAndNoticeType(Long userId, Long noticeType);
+    List<Notice> findByUserIdAndNoticeTypeAndTxStatus(Long userId, Long noticeType, Integer txStatus);
 
     // 搜索广告用到的接口(未分页)
 
