@@ -26,7 +26,6 @@ class OrderInProgress extends Component {
                 pathname:'/orderprogress',
                 state:data,
             }
-            console.log(item)
             return(
                 <tr key={index}>
                     <td>{item.friendUsername}</td>

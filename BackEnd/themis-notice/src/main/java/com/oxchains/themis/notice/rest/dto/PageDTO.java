@@ -1,6 +1,7 @@
 package com.oxchains.themis.notice.rest.dto;
 
 import com.oxchains.themis.notice.domain.Notice;
+import com.oxchains.themis.notice.domain.UserTxDetail;
 import lombok.Data;
 
 import java.util.List;

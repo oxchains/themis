@@ -12,11 +12,10 @@ class OrderCompleted extends Component {
         this.renderrow = this.renderrow.bind(this);
     }
     componentWillMount() {
-
-        const userId={userId:"1"}
+        const userIdInfo= localStorage.getItem('userId');
+        const userId={userId:userIdInfo}
         this.props.fetchCompletedOrders({userId},()=>{});
     }
-
     renderrow(){
         return this.props.completed_orders.map((item,index)=>{
             const data = {id:item.id,userId:1,partnerId:item.orderType == "购买"?item.sellerId:item.buyerId};

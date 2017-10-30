@@ -37,7 +37,6 @@ import RefereeList from './components/refereelist';
 import StubList from './components/stublist';
 import Releaseadvert from './components/releaseadvert';
 
-
 const createStoreWithMiddleware = compose(
     applyMiddleware(reduxThunk),
     window.devToolsExtension ? window.devToolsExtension() : f => f
@@ -59,7 +58,6 @@ ReactDOM.render(
                 <Switch>
                     <Route path="/signin" component={Singin}/>
                     <Route path="/signinemail" component={Signinemail}/>
-
                     <Route path="/signup" component={Singup}/>
                     <Route path="/signout" component={Signout} />
                     <Route path="/usercenter" component={Usercenter}/>

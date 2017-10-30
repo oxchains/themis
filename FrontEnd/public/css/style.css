@@ -18,7 +18,7 @@ div {
 {
     width: 100%;
     height: 70px;
-    /*position: fixed;*/
+
     background-color: #ffff;
     /*top:0px;*/
     box-shadow: 0 0 10px #bbbbbb;
@@ -144,7 +144,7 @@ div {
 }
 .header-position
 {
-    width: 50%;
+    width: 66%;
     margin: 0 auto;
 }
 
@@ -257,11 +257,15 @@ div {
     border-radius: 3px;
     cursor: pointer;
 }
+.liheight>a,.liheight>a:hover,.liheight:active
+{
+    color: white;
+}
 .liheight:active
 {
     background-color: #444444;
 }
-.tab-title-item:active{
+.tab-title-item.active{
     background-color: #444444;
     color: #fff;
     cursor: pointer;
@@ -404,8 +408,11 @@ div {
     background-color: #fff !important;
     border-color: lightgrey;
 }
+#qrcode img{
+    margin:auto;
+}
 
-/*order-chat*/
+/*orderprocess-chat*/
 .tab_title_wrap div{
     cursor: pointer;
     padding: 10px 0;
@@ -645,18 +652,16 @@ div {
     margin-bottom: 30px;
     cursor: pointer;
 }
+.title-border>a,.title-border>a:hover,.title-border>a:active
+{
+    color: #444444;
+}
 .titleadvert
 {
     margin-top: 0px;
     display: flex;
     justify-content: center;
     align-content: center;
-}
-.buyadvert
-{
-    width: 100%;
-    margin: 0 auto;
-    cursor: pointer;
 }
 .detail-title
 {
@@ -819,16 +824,6 @@ table { border-spacing: 0;  border-collapse: collapse; }
 .rightDiv{float: left;    float: left; padding-left: 16px; margin-top: 1px;}
 .paginationDiv {display: block; margin-top: 50px; color: #535353; line-height: 29px; text-align: center;margin-left: 52px;}
 .paginationDiv a {float: left;color: black;  height: 30px; padding: 0 7px; vertical-align: middle; text-decoration: none; cursor: pointer;}
-/*.paginationDiv .next,.paginationDiv .prev {background-color: #f3f4f8; border: 1px solid #e5e5e5;}*/
-/*.paginationDiv .next:hover,.paginationDiv .prev:hover {background-color: #ddd; border: 1px solid #ddd;}*/
-
-/*.paginationDiv .next:before,.paginationDiv .prev:before {content: '<'; font-size: 14px }*/
-
-/*.paginationDiv .disable.next,.paginationDiv .prev.disable {background-color: #f3f4f8; border-color: #e5e5e5; cursor: no-drop;}*/
-/*.paginationDiv .disable.next:before,.paginationDiv .prev.disable:before {color: #a0a0a0;border-color: #337ab7 }*/
-
-/*.paginationDiv .next:before {content: '>'}*/
-
 .paginationDiv .num {margin-left: -1px; padding: 0 7px; border: 1px solid #e5e5e5; color: #707070 }
 .paginationDiv .num.current{background-color: #337ab7; border-color: #337ab7; color: #fff }
 .paginationDiv .num:hover {background-color: #ddd; border-color: #ddd; color: #1a1a1a }
@@ -904,13 +899,15 @@ table { border-spacing: 0;  border-collapse: collapse; }
 .headermain
 {
     width: 100%;
-    height:600px;
+    height:550px;
     background-image: url('../img/banner1.png');
     background-size:100% 100%;
     background-repeat: no-repeat;
     display: flex;
     justify-content: center;
     /*align-content: center;*/
+    position: relative;
+    top:-45px;
 }
 .bannertitle
 {
@@ -924,15 +921,18 @@ table { border-spacing: 0;  border-collapse: collapse; }
     font-family: "Futura";
     font-weight: 100;
     margin-bottom: 20px;
+    font-size: 19px;
 }
 .bannertitle>h4,.bannertitle>h5
 {
     color: white;
-    font-weight: 300;
+    font-weight: 400;
+    font-size: 20px;
 }
 .bannertitle>hr
 {
     width: 40px;
+    margin: 10px auto;
     border:2px solid #2ad0e9;
     margin-top: 10px;
 }
@@ -941,6 +941,8 @@ table { border-spacing: 0;  border-collapse: collapse; }
     width: 100%;
     height: 480px;
     background-color: #fff;
+    position: relative;
+    top:-45px;
 }
 .model-title
 {
@@ -1033,6 +1035,8 @@ table { border-spacing: 0;  border-collapse: collapse; }
     width: 100%;
     height: 400px;
     background-color: #f5f5f5;
+    position: relative;
+    top:-45px;
 }
 .list-width
 {
@@ -1138,7 +1142,24 @@ table { border-spacing: 0;  border-collapse: collapse; }
     display: flex;
     justify-content: space-around;
 }
+
 .ant-select
 {
     display: block!important;
+}
+
+.ant-pagination-item-active
+{
+    background-color: #444444!important;
+    border:1px solid #444444!important;
+    color: white!important;
+}
+.ant-pagination-item:focus, .ant-pagination-item:hover
+{
+    border:1px solid #d9d9d9!important;
+    color: black!important;
+}
+.close-modal,.close-modal:hover,.close-modal:active
+{
+    color: black;
 }
