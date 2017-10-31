@@ -1,9 +1,6 @@
 package com.oxchains.themis.repo.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 /**
  * @author ccl
@@ -15,6 +12,7 @@ import javax.persistence.Transient;
 @Table(name = "user_tx_detail")
 public class UserTxDetail {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Long userId;
     private Integer txNum;     //交易次数
@@ -23,6 +21,16 @@ public class UserTxDetail {
     private String firstBuyTime;  //第一次购买时间
     private Integer believeNum;    // 信任次数
 
+    public UserTxDetail(){}
+
+    public UserTxDetail(boolean init){
+        if(init){
+            this.txNum = 0;
+            this.goodDesc = 0;
+            this.badDesc = 0;
+            this.believeNum = 0;
+        }
+    }
     /**
      * 交总量
      */

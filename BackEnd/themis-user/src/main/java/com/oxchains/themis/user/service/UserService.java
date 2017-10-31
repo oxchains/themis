@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,12 +61,18 @@ public class UserService extends BaseService {
         if (optional.isPresent()) {
             return RestResp.fail("操作失败");
         }
+        if(null == user.getCreateTime()){
+            user.setCreateTime(new Date());
+        }
+        if(null == user.getRoleId()){
+            user.setRoleId(4L);
+        }
         user = userDao.save(user);
         if (user == null) {
             return RestResp.fail("操作失败");
         }
 
-        UserTxDetail userTxDetail = new UserTxDetail();
+        UserTxDetail userTxDetail = new UserTxDetail(true);
         userTxDetail.setUserId(user.getId());
 
         userTxDetailDao.save(userTxDetail);
