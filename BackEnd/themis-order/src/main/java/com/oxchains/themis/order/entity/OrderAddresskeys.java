@@ -1,8 +1,6 @@
 package com.oxchains.themis.order.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by huohuo on 2017/10/25.
@@ -11,6 +9,7 @@ import javax.persistence.Table;
 @Table(name = "order_address_key")
 public class OrderAddresskeys {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;        //公私匙表唯一id
     private String orderId;  //相关联的订单id
     private String buyerPubAuth; //买家公匙

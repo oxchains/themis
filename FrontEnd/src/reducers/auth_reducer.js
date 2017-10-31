@@ -18,9 +18,7 @@ export default function(state = {}, action) {
         case AUTH_ERROR:
             return { ...state, error: action.payload, authenticated: false };
         case FETCH_VERIFY_CODE:
-            console.log("返回验证码")
             return { ...state, all: action.payload.data.data };
-
     }
 
     return state;

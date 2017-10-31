@@ -1,15 +1,14 @@
 package com.oxchains.themis.common.model;
 
 /**
- * @Author ccl
- * @Time 2017-10-25 18:44
- * @Name ScriptHash
- * @Desc:
+ * @author ccl
+ * @time 2017-10-25 18:44
+ * @name ScriptHash
+ * @desc:
  */
 public class ScriptHash {
     private String address;
     private String redeemScript;
-
     private String URI;
 
     public String getAddress() {

@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 /**
- * @Author ccl
- * @Time 2017-10-13 10:32
- * @Name TokenController
- * @Desc:
+ * @author ccl
+ * @time 2017-10-13 10:32
+ * @name TokenController
+ * @desc:
  */
 @RestController
 @RequestMapping(value = "/token")

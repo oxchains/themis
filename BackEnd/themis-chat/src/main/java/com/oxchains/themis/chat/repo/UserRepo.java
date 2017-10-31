@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
  * Created by xuqi on 2017/10/12.
  */
 @Repository
-public interface UserRepo extends CrudRepository<User,Integer> {
+public interface UserRepo extends CrudRepository<User,Long> {
     User findUserByUsernameAndPassword(String username, String password);
     User findUserByUsernameAndEmail(String username, String email);
 

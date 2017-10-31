@@ -26,8 +26,8 @@ public class ChatService {
     public List<ChatContent> getChatHistroy(ChatContent chatContent){
         try{
 
-            String username  = userRepo.findOne(chatContent.getSenderId()).getUsername();
-            String dusername  = userRepo.findOne(chatContent.getReceiverId()).getUsername();
+            String username  = userRepo.findOne(chatContent.getSenderId().longValue()).getUsername();
+            String dusername  = userRepo.findOne(chatContent.getReceiverId().longValue()).getUsername();
             String keyIDs = ChatUtil.getIDS(chatContent.getSenderId().toString(),chatContent.getReceiverId().toString());
             List<ChatContent> list = mongoRepo.findChatContentByChatId(keyIDs);
             for (ChatContent content:list) {
@@ -36,12 +36,11 @@ public class ChatService {
                     content.setSenderName(username);
                 }
                 else{content.setSenderName(dusername);}
-
             }
             return mongoRepo.findChatContentByChatId(keyIDs);
         }
         catch (Exception e){
-            LOG.debug("faild get chat history :",e.getMessage());
+            LOG.error("faild get chat history : {}",e.getMessage(),e);
         }
         return null;
     }

@@ -11,10 +11,10 @@ import javax.annotation.Resource;
 import java.util.Arrays;
 
 /**
- * @Author ccl
- * @Time 2017-10-16 17:44
- * @Name AccountController
- * @Desc:
+ * @author ccl
+ * @time 2017-10-16 17:44
+ * @name AccountController
+ * @desc:
  */
 @RestController
 @RequestMapping(value = "/account")
@@ -130,7 +130,7 @@ public class AccountController {
     }
 
     @PostMapping(value = "/p2ur")
-    public String payToUser(String orderId,String recvAddress,String prvKeys,Double amount){
-        return JsonUtil.toJson(bitcoinService.payToUser(orderId,recvAddress,Arrays.asList(prvKeys.split(",")),amount));
+    public String payToUser(@RequestBody OrdersKeyAmount param){
+        return JsonUtil.toJson(bitcoinService.payToUser(param.getOrderId(),param.getRecvAddress(),Arrays.asList(param.getPrvKeys().split(",")),param.getAmount()));
     }
 }

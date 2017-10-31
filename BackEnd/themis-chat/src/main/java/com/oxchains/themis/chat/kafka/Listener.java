@@ -29,10 +29,12 @@ public class Listener {
             if (kafkaMessage.isPresent()) {
                 Object message = kafkaMessage.get();
                 ChatContent chatContent = (ChatContent) JsonUtil.fromJson((String)message, ChatContent.class);
+                System.out.println(chatContent+"-------------------");
                 mongoRepo.save(chatContent);
             }
         }catch (Exception e){
-         LOG.debug("faild to save chatContent to mongo",e.getMessage());
+         LOG.error("faild to save chatContent to mongo : {}",e.getMessage(),e);
+         e.printStackTrace();
         }
 
     }

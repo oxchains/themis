@@ -28,6 +28,8 @@ class Selldetail extends Component {
         }
         this.handelChange = this.handelChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.handlePayway = this.handlePayway.bind(this)
+
 
     }
     handelChange(e){
@@ -63,10 +65,21 @@ class Selldetail extends Component {
             money : this.state.messmoney,
             amount : this.state.messnum
         }
+<<<<<<< HEAD
         this.props.fetctSellnow({formdata},err=>{
             console.log(err)
             this.setState({ isModalOpen: true , error: err , actionResult: err||'下单成功!'})
         });
+=======
+        if(this.props.authenticated){
+            this.props.fetctSellnow({formdata},err=>{
+                this.setState({ isModalOpen: true , error: err , actionResult: err||'下单成功!'})
+            });
+        }else {
+            alert("请先登录哦～")
+        }
+
+>>>>>>> 75bad73fe591d3901c5e194e074b241ea2f5e2d8
     }
 
     renderAlert() {
@@ -82,6 +95,9 @@ class Selldetail extends Component {
                 </div>
             );
         }
+    }
+    handlePayway(item){
+        console.log(item)
     }
     render() {
         const userId=localStorage.getItem("userId");
@@ -132,7 +148,8 @@ class Selldetail extends Component {
                             <ul className="priceul">
                                 <li>报价 : &#x3000;&#x3000;&#x3000;&#x3000;&#x3000;{data.price}CNY/BTC</li>
                                 <li>交易额度 : &#x3000;&#x3000;&#x3000;{data.minTxLimit}-{data.maxTxLimit} CNY</li>
-                                <li>付款方式 : &#x3000;&#x3000;&#x3000;{data.payType}</li>
+                                {/*<li>{(item) => this.handlePayway(item)}</li>*/}
+                                <li>付款方式 : &#x3000;&#x3000;&#x3000;{data.payType == 1 ?"现金":data.payType == 2 ?"转账":data.payType == 3 ?"支付宝":data.payType == 4 ? "微信":data.payType == 5 ? "Apple Pay":""}</li>
                                 <li>付款期限 : &#x3000;&#x3000;&#x3000;{time}分钟</li>
                             </ul>
                             <h4 className="sellwhat">你想出售多少？</h4>

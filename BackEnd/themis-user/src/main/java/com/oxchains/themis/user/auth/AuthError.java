@@ -35,15 +35,15 @@ public class AuthError implements AuthenticationEntryPoint, AccessDeniedHandler 
         String message = "authentication error: ";
         if (exception.getCause() != null) {
             message += exception
-              .getCause()
-              .getMessage();
+                    .getCause()
+                    .getMessage();
         } else {
             message += exception.getMessage();
         }
         byte[] body = new ObjectMapper().writeValueAsBytes(fail(message));
         response
-          .getOutputStream()
-          .write(body);
+                .getOutputStream()
+                .write(body);
 
     }
 

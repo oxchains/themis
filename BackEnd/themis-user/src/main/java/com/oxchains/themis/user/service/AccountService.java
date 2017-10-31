@@ -20,10 +20,10 @@ import java.net.URL;
 import java.util.*;
 
 /**
- * @Author oxchains
- * @Time 2017-10-16 15:25
- * @Name AccountService
- * @Desc:
+ * @author oxchains
+ * @time 2017-10-16 15:25
+ * @name AccountService
+ * @desc:
  */
 @Service
 public class AccountService {
@@ -232,8 +232,8 @@ public class AccountService {
         P2SH_REDEEM_SCRIPT = multiSig.redeemScript();
     }
 
-    public void getRawTransactin(String utxo_txid) {
-        preRawTransaction = client.getRawTransaction(utxo_txid);
+    public void getRawTransactin(String utxoTxid) {
+        preRawTransaction = client.getRawTransaction(utxoTxid);
         UTXO_VOUT = 0;
         UTXO_OUTPUT_SCRIPT = preRawTransaction.vOut().get(0).scriptPubKey().hex();
     }

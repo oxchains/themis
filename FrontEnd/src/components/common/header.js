@@ -47,7 +47,7 @@ class Header extends Component{
         const username= localStorage.getItem('username');
         return (
             <div className="headerwidth">
-                <nav  className="header">
+                <nav  className="header ">
                    <div className="header-position">
                        <div className="navdivimg">
                            <img src="./public/img/nl_logo.png" className="navimg" alt=""/>

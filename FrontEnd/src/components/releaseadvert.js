@@ -59,7 +59,6 @@ class Releaseadvert extends Component {
             e.preventDefault()
             const userId= localStorage.getItem("userId")
             const loginname = localStorage.getItem("loginname")
-
             const premium = this.refs.premium.value;
             const price = this.refs.price.value;
             const minPrice = this.refs.minPrice.value;
@@ -70,10 +69,15 @@ class Releaseadvert extends Component {
             const location = this.state.country
             const currency = this.state.currency
             const payType = this.state.payway
-    console.log("发布公共要传送的数据" + userId ,loginname,noticeType ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType,noticeContent)
-         this.props.releaseAdvert({userId,loginname ,noticeType ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType  ,noticeContent},err=>{
-             this.setState({ isModalOpen: true , error: err , actionResult: err||'发布成功!'});
-         });
+        if(this.props.authenticated){
+            this.props.releaseAdvert({userId,loginname ,noticeType ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType  ,noticeContent},err=>{
+                this.setState({ isModalOpen: true , error: err , actionResult: err||'发布成功!'});
+            });
+        }
+        else{
+            alert("请先登录哦")
+        }
+
 
     }
     renderRowscountry() {
@@ -123,7 +127,7 @@ class Releaseadvert extends Component {
                 <form action="" method="post" onSubmit={this.handleFormSubmit}>
                     <h4 className="h4title">交易类型</h4>
                     <h5 className="h3title">*选择广告类型</h5>
-                    <span className="tipspan"> &nbsp;&nbsp;您想要创建什么样的交易广告？如果您希望出售比特币，请确保您在THEMIS的钱包中有比特币。</span>
+                    <span className="tipspan"> &nbsp;&nbsp;您想要创建什么样的交易广告？如果您希望出售比特币,请确保您在THEMIS的钱包中有比特币。</span>
                     <ul className=" buytype">
                         <li className={` ${this.state.status == 1 ? "tab-title-item active" :" tab-title-item"} `}   onClick={this.handleRowsbuy}>在线购买比特币</li>
                         <li className={`${this.state.status == 2 ? "tab-title-item active" :" tab-title-item "}`} onClick={this.handleRowssell}>在线出售比特币</li>
@@ -142,15 +146,15 @@ class Releaseadvert extends Component {
                         {this.renderRowscurrency()}
                     </Select>
                     <h5 className="h3title clear">*溢价: </h5>
-                    <span  className="tipspan">基于市场价的溢出比例，市场价是根据部分大型交易所实时价格得出的，确保您的报价趋于一个相对合理的范围，比如当前价格为7000，溢价比例为10%，那么价格为7700。</span>
+                    <span  className="tipspan">基于市场价的溢出比例,市场价是根据部分大型交易所实时价格得出的,确保您的报价趋于一个相对合理的范围,比如当前价格为7000,溢价比例为10%,那么价格为7700。</span>
                     <input type="text" placeholder="%" className="display slectoption" ref="premium" />
 
                     <h5 className="h3title clear">*价格: </h5>
-                    <span  className="tipspan">基于溢价比例得出的报价，10分钟更新一次。</span>
+                    <span  className="tipspan">基于溢价比例得出的报价,10分钟更新一次。</span>
                     <input type="text" placeholder="CNY" className="display slectoption" ref="price" />
 
                     <h5 className="h3title clear">*最低价: (选填)</h5>
-                    <span  className="tipspan">最低可成交的价格，可帮助您在价格剧烈波动时保持稳定的盈利，比如最低价为12000，市场价处于12000以下时，您的广告将依旧以12000的价格展示出来。</span>
+                    <span  className="tipspan">最低可成交的价格,可帮助您在价格剧烈波动时保持稳定的盈利,比如最低价为12000,市场价处于12000以下时,您的广告将依旧以12000的价格展示出来。</span>
 
                     <input type="text" placeholder="CNY" className="display slectoption" ref="minPrice" />
 
@@ -160,7 +164,7 @@ class Releaseadvert extends Component {
                     <input type="text" placeholder="请输入最小限额 CNY" className="display slectoption" ref="minTxLimit" />
 
                     <h5 className="h3title clear">*最大限额: </h5>
-                    <span  className="tipspan">一次交易中的最大交易限制，您的钱包余额也会影响最大量的设置。</span>
+                    <span  className="tipspan">一次交易中的最大交易限制,您的钱包余额也会影响最大量的设置。</span>
                     <input type="text" placeholder="请输入最大限额 CNY" className="display slectoption" ref="maxTxLimit" />
 
                     <h5 className="h3title clear">*收款方式:</h5>

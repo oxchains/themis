@@ -3,6 +3,7 @@ import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.order.common.Pojo;
 import com.oxchains.themis.order.entity.*;
 import com.oxchains.themis.order.service.OrderService;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,8 +21,8 @@ public class OrderController {
    * 一 ：添加订单
    * */
     @RequestMapping("/order/addOrder")
-    public RestResp addOrder(@RequestBody  Orders orders){
-        Orders orders1 = orderService.addOrders(orders);
+    public RestResp addOrder(@RequestBody Pojo pojo){
+        Orders orders1 = orderService.addOrders(pojo);
         return orders1 !=null?RestResp.success(orders1):RestResp.fail();
     }
     /*
@@ -58,7 +59,23 @@ public class OrderController {
         return orders!=null?RestResp.success():RestResp.fail();
     }
     /*
-    * 六 ：取消订单
+    * 六 ：卖家释放BTC
+    * */
+    @RequestMapping("/order/releaseBTC")
+    public RestResp releaseBTC(@RequestBody Pojo pojo){
+        OrderAddresskeys orderAddresskeys = orderService.releaseBTC(pojo);
+        return orderAddresskeys!=null?RestResp.success():RestResp.fail();
+    }
+    /*
+    * 七 ：买家确认收货
+    * */
+    @RequestMapping("/order/confirmReciveBTC")
+    public RestResp confirmReciveBTC(@RequestBody Pojo pojo){
+        Orders orders = orderService.confirmReciveBTC(pojo);
+        return orders!=null?RestResp.success():RestResp.fail();
+    }
+    /*
+    * 八 ：取消订单
     * */
     @RequestMapping("/order/cancelOrders")
     public RestResp cancelOrders(@RequestBody Pojo pojo){
@@ -66,7 +83,7 @@ public class OrderController {
         return orders!=null?RestResp.success(orders):RestResp.fail();
     }
     /*
-   * 七 ：买家确认收到退款
+   * 九 ：买家确认收到退款
    * */
     @RequestMapping("/order/confirmReceiveRefund")
     public RestResp confirmReceiveRefund(@RequestBody Pojo pojo){
@@ -74,7 +91,7 @@ public class OrderController {
         return orders!=null?RestResp.success(orders):RestResp.fail();
     }
     /*
-    * 八 ：申请仲裁订单
+    * 十 ：申请仲裁订单
     * */
     @RequestMapping("/order/arbitrateOrder")
     public RestResp arbitrateOrder(@RequestBody Pojo pojo){
@@ -82,7 +99,7 @@ public class OrderController {
         return orders!=null?RestResp.success(orders):RestResp.fail();
     }
     /*
-    * 九 仲裁者查看自己可以仲裁的订单
+    * 十一 仲裁者查看自己可以仲裁的订单
     * */
     @RequestMapping("/order/findArbitrareOrderById")
     public RestResp findArbitrareOrderById(@RequestBody Pojo pojo){
@@ -90,7 +107,7 @@ public class OrderController {
         return RestResp.success(list);
     }
     /*
-    * 十 仲裁者对订单进行仲裁 仲裁者仲裁将密匙碎片给胜利者
+    * 十二 仲裁者对订单进行仲裁 仲裁者仲裁将密匙碎片给胜利者
     * */
     @RequestMapping("/order/arbitrateOrderToUser")
     public RestResp arbitrateOrderToUser(@RequestBody Pojo pojo){
@@ -98,13 +115,22 @@ public class OrderController {
         return orderArbitrate!=null?RestResp.success():RestResp.fail();
     }
     /*
-    * 十一 ： 用户获取订单的 协商地址 自己的 公匙 私匙 卖家的公匙私匙 仲裁者的公匙私匙  交易的量
+    * 十三 ： 用户获取订单的 协商地址 自己的 公匙 私匙 卖家的公匙私匙 仲裁者的公匙私匙  交易的量
     * */
     @RequestMapping("/order/findOrderAddressKeys")
     public RestResp findOrderAddressKeys(@RequestBody Pojo pojo){
         OrderAddresskeys orderAddresskeys  = orderService.findOrderAddressKeys(pojo);
         return orderAddresskeys!=null?RestResp.success(orderAddresskeys):RestResp.fail();
     }
+    /*
+    * 十四 ：提交评论
+    * */
+    @RequestMapping("/order/saveComment")
+    public RestResp saveComment(@RequestBody Pojo pojo){
+        OrderComment orderComments = orderService.saveComment(pojo);
+        return orderComments!=null?RestResp.success():RestResp.fail();
+    }
+
     /*
     * 根据订单id获取订单详情
     * */
@@ -172,6 +198,14 @@ public class OrderController {
     public RestResp judgeSellerPubPriAuth(@RequestBody Pojo pojo){
         Orders b = orderService.judgeSellerPubPriAuth(pojo);
         return b!=null?RestResp.success(b):RestResp.fail();
+    }
+    /*
+    * 判断卖家有没有释放BTC   success 已经释放   fail  未释放
+    * */
+    @RequestMapping("/order/sellerReleaseBTCIsOrNot")
+    public RestResp sellerReleaseBTCIsOrNot(@RequestBody Pojo pojo){
+        boolean b = orderService.sellerReleaseBTCIsOrNot(pojo);
+        return b?RestResp.success():RestResp.fail();
     }
 }
 

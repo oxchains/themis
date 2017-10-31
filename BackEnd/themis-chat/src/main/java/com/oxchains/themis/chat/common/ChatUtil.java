@@ -19,7 +19,9 @@ public class ChatUtil {
               .setSigningKey(SECRET)
               .parseClaimsJws(token);
             Claims claims = jws.getBody();
-            User user = new User(claims.get("id",Integer.class),claims.getSubject());
+            User user = new User();
+            user.setId(claims.get("id",Integer.class).longValue());
+            user.setUsername(claims.getSubject());
             return user;
         } catch (Exception e) {
             e.printStackTrace();
