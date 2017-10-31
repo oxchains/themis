@@ -65,7 +65,7 @@ public class Notice {
     @Column(name = "createtime")
     private String createTime;
 
-    // 以下是暂时展示的数据，实际使用时在从对应的表中获取
+    // 以下是暂时展示的数据，实际数据在从对应的表中获取
     @Transient
     private Integer txNum;
 

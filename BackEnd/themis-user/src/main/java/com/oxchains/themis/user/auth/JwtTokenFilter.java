@@ -1,5 +1,6 @@
 package com.oxchains.themis.user.auth;
 
+import com.oxchains.themis.common.auth.AuthorizationConst;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -28,14 +29,14 @@ public class JwtTokenFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest servletRequest = (HttpServletRequest) request;
-        String authorization = servletRequest.getHeader("Authorization");
-        System.out.println("auth-token="+authorization);
-        if (authorization != null && authorization.startsWith("Bearer ")) {
+        String authorization = servletRequest.getHeader(AuthorizationConst.AUTHORIZATION_HEADER);
+        System.out.println("auth-token=" + authorization);
+        if (authorization != null && authorization.startsWith(AuthorizationConst.AUTHORIZATION_START)) {
             jwtService
-              .parse(authorization.replaceAll("Bearer ", ""))
-              .ifPresent(jwtAuthentication -> SecurityContextHolder
-                .getContext()
-                .setAuthentication(jwtAuthentication));
+                    .parse(authorization.replaceAll(AuthorizationConst.AUTHORIZATION_START, ""))
+                    .ifPresent(jwtAuthentication -> SecurityContextHolder
+                            .getContext()
+                            .setAuthentication(jwtAuthentication));
         }
         chain.doFilter(request, response);
     }

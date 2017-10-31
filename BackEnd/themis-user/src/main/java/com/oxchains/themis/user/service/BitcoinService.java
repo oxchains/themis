@@ -2,6 +2,7 @@ package com.oxchains.themis.user.service;
 
 import com.oxchains.bitcoin.rpcclient.BitcoinJSONRPCClient;
 import com.oxchains.bitcoin.rpcclient.BitcoindRpcClient;
+import com.oxchains.themis.common.bitcoin.BitcoinConst.VoutHashType;
 import com.oxchains.themis.common.model.AddressKeys;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.model.ScriptHash;
@@ -20,10 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Author ccl
- * @Time 2017-10-24 15:38
- * @Name BitcoinService
- * @Desc:
+ * @author ccl
+ * @time 2017-10-24 15:38
+ * @name BitcoinService
+ * @desc:
  */
 @Service
 public class BitcoinService {
@@ -89,7 +90,8 @@ public class BitcoinService {
     public RestResp addTxid(String orderId,String txId){
         try{
             BitcoindRpcClient.RawTransaction rawTransaction = client.getRawTransaction(txId);
-            if("scripthash".equals(rawTransaction.vOut().get(0).scriptPubKey().type())){
+
+            if(VoutHashType.SCRIPT_HASH.getName().equals(rawTransaction.vOut().get(0).scriptPubKey().type())){
                 Transaction transaction = transactionDao.findByOrderId(orderId);
                 if(null != transaction){
                     transaction.setUtxoTxid(txId);
@@ -135,9 +137,9 @@ public class BitcoinService {
     public RestResp payToUser(String orderId,String recvAddress,List<String> signPrvKeys,Double amount){
         try {
             Transaction order = transactionDao.findByOrderId(orderId);
-            //String P2SH_ADDRESS = order.getP2shAddress();
+
             String P2SH_REDEEM_SCRIPT = order.getP2shRedeemScript();
-            //String SIGNED_TX = order.getSignTx();
+
             BitcoindRpcClient.RawTransaction rawTransaction = client.getRawTransaction(order.getUtxoTxid());
             logger.info("rawTransaction:\n"+rawTransaction.toString());
 
@@ -147,7 +149,7 @@ public class BitcoinService {
             for(BitcoindRpcClient.RawTransaction.Out out : outs){
                 BitcoindRpcClient.RawTransaction.Out.ScriptPubKey scriptPubKey = out.scriptPubKey();
                 String type = scriptPubKey.type();
-                if("scripthash".equals(type)){
+                if(VoutHashType.SCRIPT_HASH.getName().equals(type)){
                     //BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), P2SH_REDEEM_SCRIPT, BigDecimal.valueOf(amount));
                     BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT);
                     txInputs.add(txInput);

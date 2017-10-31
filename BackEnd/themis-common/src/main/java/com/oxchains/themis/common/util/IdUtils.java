@@ -3,10 +3,10 @@ package com.oxchains.themis.common.util;
 import java.util.UUID;
 
 /**
- * @Author ccl
- * @Time 2017-10-25 17:40
- * @Name IdUtils
- * @Desc:
+ * @author ccl
+ * @time 2017-10-25 17:40
+ * @name IdUtils
+ * @desc:
  */
 public class IdUtils {
     private IdUtils(){}

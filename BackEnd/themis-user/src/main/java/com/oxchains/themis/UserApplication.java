@@ -6,17 +6,17 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * @Author ccl
- * @Time 2017-10-12 11:24
- * @Name Application
- * @Desc:
+ * @author ccl
+ * @time 2017-10-12 11:24
+ * @name UserApplication
+ * @desc:
  */
 
-//@EnableEurekaClient
+@EnableEurekaClient
 @SpringBootApplication
 @EnableScheduling
-public class Application {
+public class UserApplication {
     public static void main(String[] args) {
-        SpringApplication.run(Application.class,args);
+        SpringApplication.run(UserApplication.class,args);
     }
 }

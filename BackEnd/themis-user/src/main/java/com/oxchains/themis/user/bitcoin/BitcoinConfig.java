@@ -1,10 +1,10 @@
 package com.oxchains.themis.user.bitcoin;
 
 /**
- * @Author ccl
- * @Time 2017-10-13 17:43
- * @Name BitcoinConfig
- * @Desc:
+ * @author ccl
+ * @time 2017-10-13 17:43
+ * @name BitcoinConfig
+ * @desc:
  */
 public class BitcoinConfig {
 

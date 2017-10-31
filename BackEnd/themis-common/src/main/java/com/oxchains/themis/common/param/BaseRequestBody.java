@@ -1,10 +1,10 @@
 package com.oxchains.themis.common.param;
 
 /**
- * @Author ccl
- * @Time 2017-10-20 14:08
- * @Name BaseRequestBody
- * @Desc:
+ * @author ccl
+ * @time 2017-10-20 14:08
+ * @name BaseRequestBody
+ * @desc:
  */
 public class BaseRequestBody {
     private String username;

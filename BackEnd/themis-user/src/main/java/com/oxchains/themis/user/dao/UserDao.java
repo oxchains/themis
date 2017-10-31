@@ -8,10 +8,10 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 /**
- * @Author ccl
- * @Time 2017-10-12 17:20
- * @Name UserDao
- * @Desc:
+ * @author ccl
+ * @time 2017-10-12 17:20
+ * @name UserDao
+ * @desc:
  */
 @Repository
 public interface UserDao extends CrudRepository<User,Integer> {

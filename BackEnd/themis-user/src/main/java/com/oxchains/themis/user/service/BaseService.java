@@ -5,10 +5,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
- * @Author ccl
- * @Time 2017-10-12 17:31
- * @Name BaseService
- * @Desc:
+ * @author ccl
+ * @time 2017-10-12 17:31
+ * @name BaseService
+ * @desc:
  */
 public abstract class BaseService {
     protected final Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();

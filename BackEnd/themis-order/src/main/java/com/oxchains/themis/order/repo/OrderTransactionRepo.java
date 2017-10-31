@@ -5,10 +5,10 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * @Author ccl
- * @Time 2017-10-17 11:27
- * @Name TransactionDao
- * @Desc:
+ * @author ccl
+ * @time 2017-10-17 11:27
+ * @nameTransactionDao
+ * @desc:
  */
 @Repository
 public interface OrderTransactionRepo extends CrudRepository<OrderTransaction,Integer> {
