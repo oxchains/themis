@@ -19,17 +19,6 @@ public class OrdersKeyAmount {
         this.txId = txId;
     }
 
-
-    private String txId;
-
-    public String getTxId() {
-        return txId;
-    }
-
-    public void setTxId(String txId) {
-        this.txId = txId;
-    }
-
     public OrdersKeyAmount(String orderId, String prvKeys, Double amount, String recvAddress) {
         this.orderId = orderId;
         this.prvKeys = prvKeys;
