@@ -21,6 +21,7 @@ import {
     FETCH_MY_ADVERT,
     FETCH_OFF_MYBTC,
     FETCH_BASE_INFO,
+    FETCH_TRUSTED,
     getAuthorizedHeader
 } from './types';
 
@@ -224,13 +225,34 @@ export function fetctOffMyAd({id},callback) {
 
 //用户基本信息
 
-export function fetctBaseInfo({userId},callback) {
-    console.log(`用户基本信息:${userId} `);
+export function fetctBaseInfo({description,image},callback) {
+    console.log(`用户基本信息:${description},${image} `);
     return function(dispatch) {
-        axios.get(`${ROOT_URLC}/user/update`,{userId},{ headers: getAuthorizedHeader() })
+        axios.post(`${ROOT_URLC}/user/update`,{description,image},{ headers: getAuthorizedHeader() })
             .then(response => {
                 console.log(response)
-                dispatch({type: FETCH_BASE_INFO, payload: response})
+                // dispatch({type: FETCH_BASE_INFO, payload: response})
+                if(response.data.status == 1) {
+                    callback();
+                } else {
+                    callback(response.data.message);
+                }
+            })
+            .catch(err => {
+                console.error(err)
+            });
+    }
+}
+//用户中心受信任的
+
+export function fetctTrusted({description,image},callback) {
+    console.log(`受信任的:${description},${image} `);
+    return function(dispatch) {
+        axios.post(`${ROOT_URLC}/user/update`,{description,image},{ headers: getAuthorizedHeader() })
+            .then(response => {
+                console.log(response)
+                dispatch({type: FETCH_TRUSTED, payload: response})
+
             })
             .catch(err => {
                 console.error(err)

@@ -899,15 +899,15 @@ table { border-spacing: 0;  border-collapse: collapse; }
 .headermain
 {
     width: 100%;
-    height:550px;
+    height:600px;
     background-image: url('../img/banner1.png');
     background-size:100% 100%;
     background-repeat: no-repeat;
     display: flex;
     justify-content: center;
     /*align-content: center;*/
-    position: relative;
-    top:-45px;
+    /*position: relative;*/
+    /*top:-45px;*/
 }
 .bannertitle
 {
@@ -934,15 +934,14 @@ table { border-spacing: 0;  border-collapse: collapse; }
     width: 40px;
     margin: 10px auto;
     border:2px solid #2ad0e9;
-    margin-top: 10px;
 }
 .homemodle
 {
     width: 100%;
     height: 480px;
     background-color: #fff;
-    position: relative;
-    top:-45px;
+    /*position: relative;*/
+    /*top:-45px;*/
 }
 .model-title
 {
@@ -1035,8 +1034,8 @@ table { border-spacing: 0;  border-collapse: collapse; }
     width: 100%;
     height: 400px;
     background-color: #f5f5f5;
-    position: relative;
-    top:-45px;
+    /*position: relative;*/
+    /*top:-45px;*/
 }
 .list-width
 {
@@ -1068,8 +1067,11 @@ table { border-spacing: 0;  border-collapse: collapse; }
 }
 .navbar-custom-menu,.main-header .navbar-right{
     float:right;
-    position: relative;
-    top:-45px;
+    /*position: relative;*/
+    /*top:-45px;*/
+}
+.over-flow{
+    overflow: auto; zoom: 1;
 }
 .bandermain
 {
@@ -1162,4 +1164,33 @@ table { border-spacing: 0;  border-collapse: collapse; }
 .close-modal,.close-modal:hover,.close-modal:active
 {
     color: black;
+}
+.ant-upload-text {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #666;
+}
+.avatar-uploader,
+.avatar-uploader-trigger,
+.avatar {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 0px;
+}
+.avatar-uploader-trigger
+{
+    position: relative;
+    top:40px;
+}
+.avatar-uploader {
+    display: block;
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.avatar-uploader-trigger {
+    display: table-cell;
+    vertical-align: middle;
+    font-size: 28px;
+    color: #999;
 }

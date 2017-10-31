@@ -112,6 +112,11 @@ class Signup extends Component {
     render() {
         const { handleSubmit} = this.props;
 
+        if(this.props.all)
+        {
+            return alert("验证码是")
+        }
+
         var text = this.state.liked ? '发送验证码' : this.state.count + ' s 后重新发' ;
         return (
             <div>
@@ -187,10 +192,8 @@ class Signup extends Component {
 // };
 
 function mapStateToProps(state) {
-    // console.log(state)
     return {
-        success: state.auth.authenticated,
-        errorMessage: state.auth.error
+        all:state.auth.all
     };
 }
 
