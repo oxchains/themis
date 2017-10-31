@@ -23,8 +23,6 @@ public class Orders implements Serializable{
     private Long sellerId;    //卖家id
     private Long orderStatus; // 订单状态    1  待确认 2 代付款  3 待收货 4  待评价 5 完成 6  已取消 7等待卖家退款 8 仲裁中
    // private Long noticeId;
-    private String txId;  //卖家上传交易凭据 后台用来查到账情况
-
     @Transient
     private String p2shAddress;  //协商地址
     @Transient
@@ -42,18 +40,8 @@ public class Orders implements Serializable{
     private String buyerUsername; //买家名称
     @Transient
     private String sellerUsername; //卖家名称
-    @ManyToOne
-    private OrderAddresskeys orderAddresskeys;
     @Transient
     private String uri;
-
-    public OrderAddresskeys getOrderAddresskeys() {
-        return orderAddresskeys;
-    }
-
-    public void setOrderAddresskeys(OrderAddresskeys orderAddresskeys) {
-        this.orderAddresskeys = orderAddresskeys;
-    }
 
     public String getUri() {
         return uri;
@@ -61,13 +49,6 @@ public class Orders implements Serializable{
 
     public void setUri(String uri) {
         this.uri = uri;
-    }
-    public String getTxId() {
-        return txId;
-    }
-
-    public void setTxId(String txId) {
-        this.txId = txId;
     }
 
     public String getP2shAddress() {
@@ -235,7 +216,6 @@ public class Orders implements Serializable{
                 ", buyerId=" + buyerId +
                 ", sellerId=" + sellerId +
                 ", orderStatus=" + orderStatus +
-                ", txId='" + txId + '\'' +
                 ", p2shAddress='" + p2shAddress + '\'' +
                 ", orderStatusName='" + orderStatusName + '\'' +
                 ", notice=" + notice +

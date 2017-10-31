@@ -1,13 +1,32 @@
 package com.oxchains.themis.order.rest;
+import com.google.common.net.HttpHeaders;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.order.common.Pojo;
+import com.oxchains.themis.order.common.RegisterRequest;
 import com.oxchains.themis.order.entity.*;
 import com.oxchains.themis.order.service.OrderService;
+import org.bouncycastle.ocsp.Req;
 import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartRequest;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+
 /**
  * Created by huohuo on 2017/10/23.
  */
@@ -38,8 +57,8 @@ public class OrderController {
     * */
     @RequestMapping("/order/uploadTxId")
     public RestResp uploadTxId(@RequestBody Pojo pojo){
-        Orders orders1 = orderService.uploadTxId(pojo);
-        return orders1!=null?RestResp.success():RestResp.fail();
+        boolean b = orderService.uploadTxId(pojo);
+        return b?RestResp.success():RestResp.fail();
     }
     /*
     * 四 ：发布公告的人确认订单
@@ -179,7 +198,7 @@ public class OrderController {
     * 张晓晶 调试状态用
     * */
     @RequestMapping("/order/{orderid}/{status}")
-    public RestResp updateOrderStatus(@PathVariable("orderid") String orderId,@PathVariable("status") Long  status){
+    public RestResp updateOrderStatus(@PathVariable("orderid") String orderId,@PathVariable("status") Long status){
         Orders o = orderService.updateOrderStatus(orderId,status);
      return o==null?RestResp.fail():RestResp.success(o);
     }
@@ -207,6 +226,52 @@ public class OrderController {
         boolean b = orderService.sellerReleaseBTCIsOrNot(pojo);
         return b?RestResp.success():RestResp.fail();
     }
+    @RequestMapping("/order/getEvidence")
+    public RestResp getEvidence(@RequestBody Pojo pojo){
+        return orderService.getEvidence(pojo);
+    }
+    /*
+    *下载图片
+    * */
+    @RequestMapping("/order/{fileName}/downloadfile")
+    public void downloadfile(@PathVariable String fileName, HttpServletRequest request, HttpServletResponse response){
+        try {
+            File applicationFile = new File("D://tmp/images/" + fileName);
+            if(applicationFile.exists()){
+                Path filePath = applicationFile.toPath();
+                response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + applicationFile.getName());
+                response.setContentType(HttpURLConnection.guessContentTypeFromName(applicationFile.getName()));
+                response.setContentLengthLong(applicationFile.length());
+                Files.copy(filePath, response.getOutputStream());
+            }
+            else{
+                fileNotFound(response);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private void fileNotFound(HttpServletResponse response) {
+        try {
+            response.setStatus(SC_NOT_FOUND);
+            response.getWriter().write("file not found");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    //上传交易凭据 包括 文本 和 图片 附件
+    @RequestMapping("/order/uploadEvidence")
+    public RestResp uploadEvidence(@ModelAttribute @Valid RegisterRequest registerRequest) throws IOException {
+        MultipartFile multipartFile = registerRequest.getMultipartFile();
+        String filename = multipartFile.getOriginalFilename();
+        String suffix = filename.substring(filename.lastIndexOf("."));
+        UUID uuid = UUID.randomUUID();
+        String newFileName = uuid.toString() + suffix;
+        multipartFile.transferTo(new File("D://tmp/images/"+newFileName));
+        registerRequest.setFileName(newFileName);
+        return orderService.uploadEvidence(registerRequest);
+    }
+
 }
 
 

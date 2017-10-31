@@ -16,6 +16,24 @@ public class Pojo implements Serializable {
     private Integer status;
     private String amount;
     private BigDecimal money;
+    private String fileName;
+    private String thumbUrl;
+
+    public String getThumbUrl() {
+        return thumbUrl;
+    }
+
+    public void setThumbUrl(String thumbUrl) {
+        this.thumbUrl = thumbUrl;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
     public BigDecimal getMoney() {
         return money;

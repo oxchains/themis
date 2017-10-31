@@ -9,6 +9,15 @@ public class OrdersKeyAmount {
     private Double amount;
     private String recvAddress;
     private String prvKeys;
+    private String txId;
+
+    public String getTxId() {
+        return txId;
+    }
+
+    public void setTxId(String txId) {
+        this.txId = txId;
+    }
 
     public OrdersKeyAmount(String orderId, String prvKeys, Double amount, String recvAddress) {
         this.orderId = orderId;

@@ -38,6 +38,15 @@ public class User {
 
     private Long roleId;
 
+    private String createTime;
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
 
     private Integer loginStatus;
 

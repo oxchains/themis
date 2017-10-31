@@ -9,6 +9,7 @@ public class OrdersKeyAmount {
     private String orderId;
     private String pubKeys;
     private Double amount;
+    private String txId;
 
     public OrdersKeyAmount(String orderId, String pubKeys, Double amount) {
         this.orderId = orderId;
@@ -17,6 +18,14 @@ public class OrdersKeyAmount {
     }
 
     public OrdersKeyAmount() {
+    }
+
+    public String getTxId() {
+        return txId;
+    }
+
+    public void setTxId(String txId) {
+        this.txId = txId;
     }
 
     @Override

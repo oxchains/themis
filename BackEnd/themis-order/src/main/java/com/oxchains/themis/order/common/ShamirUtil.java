@@ -12,9 +12,9 @@ import java.util.List;
 public class ShamirUtil {
     private static final Integer K = 2;
     private static final Integer N = 3;
-    private static final String description = "this is 4096";
-    private static final SecretShare.PublicInfo p = new SecretShare.PublicInfo(N,K,SecretShare.getPrimeUsedFor4096bigSecretPayload(),description);
-    private static final SecretShare SPLIT = new SecretShare(p);
+    private static final String DESCRIPTION = "this is 4096";
+    private static final SecretShare.PublicInfo PUBLIC_INFO = new SecretShare.PublicInfo(N,K,SecretShare.getPrimeUsedFor4096bigSecretPayload(),DESCRIPTION);
+    private static final SecretShare SPLIT = new SecretShare(PUBLIC_INFO);
     public static String[] splitAuth(String suth){
         BigInteger secret = BigIntUtilities.Human.createBigInteger(suth);
         SecretShare.SplitSecretOutput split = SPLIT.split(secret);
@@ -32,7 +32,7 @@ public class ShamirUtil {
             String str = arr[i];
             String st = str.substring(str.lastIndexOf("_")+1);
             String s = str.substring(0,str.lastIndexOf("_"));
-            lists.add(new SecretShare.ShareInfo(Integer.parseInt(st) ,new BigInteger(s), new SecretShare.PublicInfo(N, K, SecretShare.getPrimeUsedFor4096bigSecretPayload(), description)));
+            lists.add(new SecretShare.ShareInfo(Integer.parseInt(st) ,new BigInteger(s), new SecretShare.PublicInfo(N, K, SecretShare.getPrimeUsedFor4096bigSecretPayload(), DESCRIPTION)));
         }
         SecretShare.CombineOutput combine = SPLIT.combine(lists);
         BigInteger secret1 = combine.getSecret();
