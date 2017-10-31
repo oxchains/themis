@@ -21,7 +21,6 @@ public class UserTxDetail {
     private Integer goodDesc;   //好评次数
     private Integer badDesc;    //差评次数
     private String firstBuyTime;  //第一次购买时间
-    private String createTime;     //用户创建时间
     private Integer believeNum;    // 信任次数
 
     /**
@@ -79,14 +78,6 @@ public class UserTxDetail {
 
     public void setFirstBuyTime(String firstBuyTime) {
         this.firstBuyTime = firstBuyTime;
-    }
-
-    public String getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
     }
 
     public Integer getBelieveNum() {
