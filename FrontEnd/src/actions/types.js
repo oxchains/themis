@@ -40,18 +40,15 @@ export const RELEASE_BTC = "release_btc"                                //卖家
 export const CONFIRM_GOODS = 'confirm_goods'                            //买家确认收货
 export const CANCEL_ORDERS = 'cancel_orders'                            //取消订单
 export const SAVE_COMMENT = 'save_comment'                               //提交评价
-<<<<<<< HEAD
+
 export const FETCH_ARBITRATE_LIST = 'fetch_arbitrate_list'               //获取仲裁人消息列表
 export const UPLOAD_EVIDENCE = 'upload_evidence'                         //提交仲裁凭证
 export const FETCH_EVIDENCE = 'fetch_evidence'                           //获取仲裁凭证
 export const ARBITRATE_RESULT = 'arbitrate_result'                       //仲裁结果
-=======
 export const FETCH_OFF_MYBTC = 'fetch_off_mybtc'                         //下架我的广告
 export const FETCH_BASE_INFO = 'fetch_base_info'                         //用户中心基本信息
 export const FETCH_TRUSTED = 'fetch_trusted'                             //用户中心受信任的
 
-
->>>>>>> 75bad73fe591d3901c5e194e074b241ea2f5e2d8
 
 
 export function getAuthorizedHeader() {

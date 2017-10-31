@@ -23,11 +23,9 @@ export function signinAction({mobilephone, password}) {
                 console.log(response)
                 if(response.data.status == 1) {
                     localStorage.setItem('token', response.data.data.token);
-<<<<<<< HEAD
-                    localStorage.setItem('userId', response.data.data.id);
-                    localStorage.setItem('loginname',response.data.data.loginname);
+
                     localStorage.setItem('role',response.data.data.role.id);
-=======
+
                     localStorage.setItem('userId', response.data.data.id); //用户ID
                     localStorage.setItem('loginname',response.data.data.loginname); //用户登录名
                     localStorage.setItem('mobilephone',response.data.data.mobilephone);//手机号
@@ -38,7 +36,6 @@ export function signinAction({mobilephone, password}) {
                     localStorage.setItem('believeNum',response.data.data.userTxDetail.believeNum) //信任人数
                     localStorage.setItem('sellAmount',response.data.data.userTxDetail.sellAmount) //出售的累计交易数量
                     localStorage.setItem('buyAmount',response.data.data.userTxDetail.buyAmount) //购买的累计交易数量
->>>>>>> 75bad73fe591d3901c5e194e074b241ea2f5e2d8
 
                     dispatch({type: AUTH_USER});
                     // browserHistory.push('/');

@@ -65,12 +65,6 @@ class Selldetail extends Component {
             money : this.state.messmoney,
             amount : this.state.messnum
         }
-<<<<<<< HEAD
-        this.props.fetctSellnow({formdata},err=>{
-            console.log(err)
-            this.setState({ isModalOpen: true , error: err , actionResult: err||'下单成功!'})
-        });
-=======
         if(this.props.authenticated){
             this.props.fetctSellnow({formdata},err=>{
                 this.setState({ isModalOpen: true , error: err , actionResult: err||'下单成功!'})
@@ -78,8 +72,6 @@ class Selldetail extends Component {
         }else {
             alert("请先登录哦～")
         }
-
->>>>>>> 75bad73fe591d3901c5e194e074b241ea2f5e2d8
     }
 
     renderAlert() {
