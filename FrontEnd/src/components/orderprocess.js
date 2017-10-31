@@ -343,6 +343,7 @@ class OrderProgress extends Component {
             userId:userId
         }
         this.props.releaseBtc({releaseData}, (msg) => {
+            console.log(msg)
             if(msg.status == 1){
                 this.setState({orderStatus:this.state.orderStatus+1})
             }

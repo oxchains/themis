@@ -60,13 +60,13 @@ class Buydetail extends Component {
             money : this.state.messmoney,
             amount : this.state.messnum
         }
-        if(this.props.authenticated){
+        // if(this.props.authenticated){
             this.props.fetctBuynow({formdata},err=>{
                 this.setState({ isModalOpen: true , error: err , actionResult: err||'下单成功!'})
             });
-        }else {
-            alert("请先登录哦～")
-        }
+        // }else {
+        //     alert("请先登录哦～")
+        // }
 
     }
     render() {
@@ -74,7 +74,7 @@ class Buydetail extends Component {
         const messmoney = this.state.messmoney;
         const messnum = this.state.messnum;
         const data = this.props.all.notice || [];
-        const datanum = this.props.all
+        const datanum = this.props.all || []
         const time = data.validPayTime/1000/60
         const dataDetail = {id:this.props.data.id,userId:userId,partnerId:this.props.data.sellerId == userId ?this.props.data.buyerId:this.props.data.sellerId};
         const path = {

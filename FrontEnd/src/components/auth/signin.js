@@ -35,7 +35,6 @@ class Signin extends Component {
         }
     }
     render(){
-    console.log(this.props.loggedIn)
         return (
             <div>
 
