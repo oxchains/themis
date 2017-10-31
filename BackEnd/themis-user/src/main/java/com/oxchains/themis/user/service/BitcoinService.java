@@ -137,9 +137,9 @@ public class BitcoinService {
     public RestResp payToUser(String orderId,String recvAddress,List<String> signPrvKeys,Double amount){
         try {
             Transaction order = transactionDao.findByOrderId(orderId);
-            //String P2SH_ADDRESS = order.getP2shAddress();
+
             String P2SH_REDEEM_SCRIPT = order.getP2shRedeemScript();
-            //String SIGNED_TX = order.getSignTx();
+
             BitcoindRpcClient.RawTransaction rawTransaction = client.getRawTransaction(order.getUtxoTxid());
             logger.info("rawTransaction:\n"+rawTransaction.toString());
 
