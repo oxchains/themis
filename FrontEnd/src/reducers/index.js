@@ -6,13 +6,15 @@ import { reducer as formReducer } from 'redux-form'
 import authReducer from './auth_reducer';
 import orderReducer from './order_reducer'
 import releaseAdvert from './advert_reducer';
+import arbitrateReducer from './arbitrate_reducer'
 
 
 const rootReducer = combineReducers({
     form: formReducer,
     auth: authReducer,
     order:orderReducer,
-    advert:releaseAdvert
+    advert:releaseAdvert,
+    arbitrate:arbitrateReducer
 });
 
 export default rootReducer;

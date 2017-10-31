@@ -12,11 +12,13 @@ class Header extends Component{
         this.renderUserInfo = this.renderUserInfo.bind(this)
     }
     renderUserInfo() {
+        const role=localStorage.getItem('role')
         if(this.props.authenticated) {
             const loginname= localStorage.getItem('loginname');
             return (
                 <div className="navbar-custom-menu">
                     <ul className="nav navbar-nav">
+                        {role == 3 ?  <li className="order-style" style={{width:"120px"}}><a href="/refereelist">仲裁人列表</a></li> : "" }
                         <li className="order-style"><a href="/orderinprogress">订单</a></li>
                         <li className="order-style"><a href="/orderinprogress">钱包</a></li>
                         <li className="dropdown user user-menu">

@@ -33,7 +33,7 @@ class OrderCompleted extends Component {
                     <td>{item.createTime}</td>
                     <td>{item.orderStatusName}</td>
                     <td><Link className="btn btn-primary" to={path}>详情</Link></td>
-                    <td><Link className="btn btn-primary" to="/arbitrationbuyer">THEMIS仲裁</Link></td>
+                    {/*<td><Link className="btn btn-primary" to="/arbitrationbuyer">THEMIS仲裁</Link></td>*/}
                 </tr>
             )
         })
@@ -68,16 +68,16 @@ class OrderCompleted extends Component {
                                 <th>创建时间</th>
                                 <th>交易状态</th>
                                 <th>操作</th>
-                                <th></th>
+                                {/*<th></th>*/}
                             </tr>
                             </thead>
                             <tbody>
-                            {this.renderrow()}
+                            {this.props.completed_orders == null ? <tr><td colSpan={8}>暂无数据</td></tr> : this.renderrow()}
+                            {/*{this.renderrow()}*/}
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <div className="text-center">没有更多内容了</div>
             </div>
         )
     }

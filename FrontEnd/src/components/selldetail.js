@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-
+import {Link} from 'react-router-dom';
 import { Field } from 'redux-form';
 import { connect } from 'react-redux';
 import { fetctSellBtcDetail,fetctSellnow} from '../actions/releaseadvert'
@@ -72,7 +72,6 @@ class Selldetail extends Component {
         }else {
             alert("请先登录哦～")
         }
-
     }
 
     renderAlert() {
@@ -93,13 +92,18 @@ class Selldetail extends Component {
         console.log(item)
     }
     render() {
+        const userId=localStorage.getItem("userId");
         const messmoney = this.state.messmoney;
         const messnum = this.state.messnum;
-
+        console.log(this.props.data);
         const data = this.props.all.notice || [];
-        const datanum = this.props.all
-        const time = data.validPayTime/1000/60
-
+        const datanum = this.props.all;
+        const time = data.validPayTime/1000/60;
+        const dataDetail = {id:this.props.data.id,userId:userId,partnerId:this.props.data.sellerId == userId ?this.props.data.buyerId:this.props.data.sellerId};
+        const path = {
+            pathname:'/orderprogress',
+            state:dataDetail,
+        }
         return (
             <div className="maincontent">
                 <div className="detail-title">
@@ -180,7 +184,8 @@ class Selldetail extends Component {
                     <ModalFooter>
                         <button className='btn btn-default' onClick={this.hideModal}>
                             {/*<a href="/myadvert" >关闭</a>*/}
-                            <a className="close-modal" href="/orderprogress" >关闭</a>
+                            <Link className="close-modal" to={path}>关闭</Link>
+                            {/*<a className="close-modal" href="/orderprogress" >关闭</a>*/}
                         </button>
                     </ModalFooter>
                 </Modal>

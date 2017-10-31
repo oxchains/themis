@@ -5,14 +5,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import $ from 'jquery';
+import {fetchTradePartnerMessage} from '../actions/order'
 
 class Chat extends Component{
 
     componentDidMount(){
+        const receiverId=localStorage.getItem('receiverId')
+        const partnerId={
+            userId:receiverId
+        }
+        console.log(partnerId)
+        // this.props.fetchTradePartnerMessage({partnerId})
+        // console.log(this.props.partner)
         const token=localStorage.getItem("token"); //token
         // ws = new WebSocket("ws://192.168.1.121:9999/ws?"+token+"_"+receiverId); //链接websocket
         //发送消息
         function sendMessage(senderName,chatContent){
+
             $(".chat-message").append('<li class="send-message rightd"><div class="sender rightd_h"><span>'+senderName+'</span></div><div class="content speech right">'+chatContent+'</div></li>');
         }
         $(".send").on("click", function (){
@@ -53,5 +62,11 @@ class Chat extends Component{
         );
     }
 }
+function mapStateToProps(state) {
+    return {
+        partner:state.order.partner_message
+    }
+}
 
-export default Chat;
+export default connect(mapStateToProps, {fetchTradePartnerMessage})(Chat);
+
