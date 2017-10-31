@@ -49,6 +49,7 @@ export function releaseAdvert({ userId ,loginname,noticeType  ,location ,currenc
     return function(dispatch) {
         axios.post(`${ROOT_URLL}/notice/broadcast`, { userId ,loginname,noticeType  ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType  ,noticeContent},{ headers: getAuthorizedHeader() })
             .then(response => {
+                console.log(response)
                 if(response.data.status == 1) {
                     callback();
                 } else {

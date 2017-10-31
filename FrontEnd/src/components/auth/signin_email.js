@@ -15,9 +15,6 @@ class Emiallogin extends Component {
 // let Emiallogin = React.createClass({
     handleEmailSubmit()
     {
-        console.log("333")
-
-        // const num= this.refs.num.value ;
         const email= this.refs.email.value ;
         const password = this.refs.password.value ;
         if(email && password)

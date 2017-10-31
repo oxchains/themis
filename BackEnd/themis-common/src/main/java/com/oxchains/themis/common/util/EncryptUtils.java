@@ -54,17 +54,5 @@ public class EncryptUtils {
     }
     private EncryptUtils(){}
 
-    public static void main(String[] args) {
-        String str="123456";
-        String res=null;
-        res=EncryptUtils.encodeBase64(str);
-        System.out.println(res);
-        res=EncryptUtils.encodeMD5(str);
-        System.out.println(res);
-        res=EncryptUtils.encodeSHA1(str);
-        System.out.println(res);
-        res=EncryptUtils.encodeSHA256(str);
-        System.out.println(res);
 
-    }
 }

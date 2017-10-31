@@ -11,8 +11,9 @@ import javafx.beans.DefaultProperty;
 import lombok.Data;
 
 /**
- * Created by Luo_xuri on 2017/10/20.
- */
+ * @author luoxuri
+ * @create 2017-10-24 19:06
+ **/
 @Entity
 @Data
 @Table(name = "notice")

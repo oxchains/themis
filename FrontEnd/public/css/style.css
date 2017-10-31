@@ -146,6 +146,7 @@ div {
 {
     width: 66%;
     margin: 0 auto;
+    display: inline-block;
 }
 
 .form-control

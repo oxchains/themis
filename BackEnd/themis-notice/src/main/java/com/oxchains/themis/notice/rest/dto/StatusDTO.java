@@ -13,10 +13,10 @@ import java.util.List;
 @Data
 public class StatusDTO <T> {
 
-    private Iterable<T> LocationList;
-    private Iterable<T> CurrencyList;
-    private Iterable<T> SearchTypeList;
-    private Iterable<T> PaymentList;
+    private Iterable<T> locationList;
+    private Iterable<T> currencyList;
+    private Iterable<T> searchTypeList;
+    private Iterable<T> paymentList;
 
-    private Iterable<T> BTCMarketList;
+    private Iterable<T> bTCMarketList;
 }

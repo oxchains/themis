@@ -11,8 +11,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Created by Luo_xuri on 2017/10/20.
- */
+ * @author luoxuri
+ * @create 2017-10-25 10:21
+ **/
 @Repository
 public interface NoticeDao extends CrudRepository<Notice,Long>, PagingAndSortingRepository<Notice, Long> {
 
@@ -38,16 +39,18 @@ public interface NoticeDao extends CrudRepository<Notice,Long>, PagingAndSorting
 
     // 分页搜索公告
 
-    Page<Notice> findByNoticeType(Long noticeType, Pageable pageable);
-    Page<Notice> findByLocationAndNoticeType(Long location, Long noticeType, Pageable pageable);
-    Page<Notice> findByCurrencyAndNoticeType(Long currency, Long noticeType, Pageable pageable);
-    Page<Notice> findByPayTypeAndNoticeType(Long payType, Long noticeType, Pageable pageable);
-    Page<Notice> findByLocationAndCurrencyAndNoticeType(Long location, Long currency, Long noticeType, Pageable pageable);
-    Page<Notice> findByLocationAndPayTypeAndNoticeType(Long location, Long payType, Long noticeType, Pageable pageable);
-    Page<Notice> findByCurrencyAndPayTypeAndNoticeType(Long currency, Long payType, Long noticeType, Pageable pageable);
-    Page<Notice> findByLocationAndCurrencyAndPayTypeAndNoticeType(Long location, Long currency, Long payType, Long noticeType, Pageable pageable);
+    Page<Notice> findByNoticeTypeAndTxStatus(Long noticeType, Integer txStatus, Pageable pageable);
+    Page<Notice> findByLocationAndNoticeTypeAndTxStatus(Long location, Long noticeType, Integer txStatus, Pageable pageable);
+    Page<Notice> findByCurrencyAndNoticeTypeAndTxStatus(Long currency, Long noticeType, Integer txStatus, Pageable pageable);
+    Page<Notice> findByPayTypeAndNoticeTypeAndTxStatus(Long payType, Long noticeType, Integer txStatus, Pageable pageable);
+    Page<Notice> findByLocationAndCurrencyAndNoticeTypeAndTxStatus(Long location, Long currency, Long noticeType, Integer txStatus, Pageable pageable);
+    Page<Notice> findByLocationAndPayTypeAndNoticeTypeAndTxStatus(Long location, Long payType, Long noticeType, Integer txStatus, Pageable pageable);
+    Page<Notice> findByCurrencyAndPayTypeAndNoticeTypeAndTxStatus(Long currency, Long payType, Long noticeType, Integer txStatus, Pageable pageable);
+    Page<Notice> findByLocationAndCurrencyAndPayTypeAndNoticeTypeAndTxStatus(Long location, Long currency, Long payType, Long noticeType, Integer txStatus, Pageable pageable);
 
     // 首页查询部分数据的接口
 
-    Notice findByNoticeTypeAndUserId(Long noticeType, Long userId);
+    List<Notice> findByNoticeTypeAndTxStatus(Long noticeType, Integer txStatus);
+
+
 }

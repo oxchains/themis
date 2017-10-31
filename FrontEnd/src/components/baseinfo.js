@@ -85,7 +85,7 @@ class Baseinfo extends Component {
                         </Upload>
                     </div>
                     <div className="display-info">
-                        <h5 style={{marginBottom:20+'px'}}>{loginname}</h5>
+                        <h5 style={{marginBottom:20+'px',marginTop:10+'px'}}>{loginname}</h5>
                     </div>
                 </div>
                 <div className="validateinfo">

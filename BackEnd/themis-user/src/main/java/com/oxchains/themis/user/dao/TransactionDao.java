@@ -12,6 +12,17 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface TransactionDao extends CrudRepository<Transaction,Integer> {
+    /**
+     * find by recv address
+     * @param recvAddress
+     * @return
+     */
     Transaction findByRecvAddress(String recvAddress);
+
+    /**
+     * find by orderId
+     * @param orderId
+     * @return
+     */
     Transaction findByOrderId(String orderId);
 }

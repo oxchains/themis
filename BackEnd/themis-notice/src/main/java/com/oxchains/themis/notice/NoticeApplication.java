@@ -4,13 +4,16 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
- * Created by Luo_xuri on 2017/10/20.
- */
+ * @author luoxuri
+ * @create 2017-10-20 19:06
+ **/
 @SpringBootApplication
 @EnableScheduling
 @EnableAutoConfiguration
+@EnableTransactionManagement
 public class NoticeApplication {
     public static void main(String[] args){
         SpringApplication.run(NoticeApplication.class, args);
