@@ -66,10 +66,7 @@ class Signin extends Component {
                                 </div>
                                 {this.renderAlert()}
                             </div>
-
                         </div>
-
-
                     </div>
                 </div>
             </div>

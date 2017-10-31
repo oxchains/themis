@@ -4,6 +4,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import Dropzone from 'react-dropzone';
+import { Upload, Icon} from 'antd';
 import {Route, Redirect } from 'react-router-dom'
 import {Field, reduxForm} from 'redux-form';
 import {Alert,Modal,Button,Form,FormGroup,Col,ControlLabel,FormControl,Image} from 'react-bootstrap';
@@ -12,6 +13,7 @@ import TabsControl from "./react_tab";
 import {uploadEvidence} from '../actions/arbitrate';
 import {fetchOrdersDetails,fetchTradePartnerMessage,addPaymentInfo,addTransactionId,fetchKey,confirmOrder,confirmSendMoney,releaseBtc,confirmGoods,saveComment,cancelOrders} from '../actions/order';
 import $ from 'jquery';
+import { History } from 'react-router';
 
 var that;
 
@@ -33,7 +35,10 @@ class OrderProgress extends Component {
             releaseBtc:false,
             partnerName:'',
             comment:1,
-            evidence:false
+            evidence:false,
+            // previewVisible: false,
+            // previewImage: '',
+            fileList: [],
         };
       
         this.partnerMessage=this.partnerMessage.bind(this);
@@ -217,7 +222,7 @@ class OrderProgress extends Component {
                 <div>
                     <ul>
                         <li>交易数量:<span>{msg.amount}</span>BTC</li>
-                        <li>交易金额:<span>{msg.money}</span>BTC</li>
+                        <li>交易金额:<span>{msg.money}</span>CNY</li>
                         <li>订单编号:<span>{msg.id}</span></li>
                         <li>支付方式:<span>{msg.payment.payment_name}</span></li>
                         <li>广告内容:<span>{msg.notice.noticeContent}</span></li>
@@ -318,6 +323,7 @@ class OrderProgress extends Component {
             id:this.state.orderId
         }
         this.props.confirmOrder({orderId},(msg)=>{
+            console.log(msg)
              if(msg.status == 1){
                   this.setState({ orderStatus:this.state.orderStatus+1})
              }
@@ -343,6 +349,7 @@ class OrderProgress extends Component {
             userId:userId
         }
         this.props.releaseBtc({releaseData}, (msg) => {
+
             if(msg.status == 1){
                 this.setState({orderStatus:this.state.orderStatus+1})
             }
@@ -414,17 +421,23 @@ class OrderProgress extends Component {
         const evidenceDes=this.refs.voucherDes.value;
         if(evidenceDes){
             const userId= localStorage.getItem('userId');
+            const id=this.state.orderId;
             let evidenceOFile = this.state.evidenceOFile[0];
-            const evidenceData={
-                id:this.state.orderId,
-                userId:userId,
-                multipartFile:evidenceOFile,
-                content:evidenceDes
-
-            }
-            this.props.uploadEvidence({evidenceData})
+            this.props.uploadEvidence({id,userId,evidenceOFile,evidenceDes},(msg)=>{
+                if(msg.status==1){
+                    window.location.href='/orderinprogress'
+                }
+            })
         }
     }
+    // handleCancel = () => this.setState({ previewVisible: false })
+    // handlePreview = (file) => {
+    //     this.setState({
+    //         previewImage: file.url || file.thumbUrl,
+    //         previewVisible: true,
+    //     });
+    // }
+    handleChange = ({ fileList }) => this.setState({ fileList })
     render(){
          console.log('status: ' + this.state.orderStatus)
         let close = () => {
@@ -437,7 +450,16 @@ class OrderProgress extends Component {
         const orderType = orders_details && orders_details.orderType;
         const amount=orders_details && orders_details.amount;
         const money=orders_details && orders_details.money;
+        const price=orders_details && orders_details.notice.price;
         const partner=this.props.partner;
+        const {fileList } = this.state;
+        console.log(fileList)
+        const uploadButton = (
+            <div>
+                <Icon type="plus" />
+                <div className="ant-upload-text">Upload</div>
+            </div>
+        );
         return (
             <div className="order-main g-pt-50 g-pb-50">
                 <div className="order-header container text-center">
@@ -455,7 +477,7 @@ class OrderProgress extends Component {
                         <div className="col-sm-12 order-details g-mt-20 clearfix">
                             <ul>
                                 <li className="col-sm-1">订单信息</li>
-                                <li className="col-sm-2">交易价格:<span>{money}</span>CNY</li>
+                                <li className="col-sm-2">交易价格:<span>{price}</span>CNY</li>
                                 <li className="col-sm-2">交易数量:<span>{amount}</span>BTC</li>
                                 <li className="col-sm-2">交易金额:<span>{money}</span>CNY</li>
                             </ul>
@@ -495,7 +517,6 @@ class OrderProgress extends Component {
                                     </div>
                                 </div>
                                 {/*  第一页  */}
-
                                 {/*  第二页  */}
                                 <div className={`order-page1 ${this.state.orderStatus == 2 ? "show" : "hidden"}`}>
                                     <div className="row order-operation">
@@ -529,7 +550,7 @@ class OrderProgress extends Component {
                                     <div className="row order-operation">
                                         <div className="col-sm-12">
                                             {this.orderMessageDetails(orders_details)}
-                                            <div className="order-tip">{orderType=="购买"?"卖家已经" :""}</div>
+                                            {/*<div className="order-tip">{orderType=="购买"?"卖家已经释放比特币" :""}</div>*/}
                                             <div>
                                                 {orderType == "购买" ?
                                                     <div>
@@ -711,6 +732,20 @@ class OrderProgress extends Component {
                                             )
                                         }}
                                     </Dropzone>
+                                    {/*<div className="clearfix">*/}
+                                        {/*<Upload*/}
+                                            {/*action="http://192.168.1.125:8882/order/uploadEvidence"*/}
+                                            {/*listType="picture-card"*/}
+                                            {/*fileList={fileList}*/}
+                                            {/*// onPreview={this.handlePreview}*/}
+                                            {/*onChange={this.handleChange}*/}
+                                        {/*>*/}
+                                            {/*{fileList.length >= 3 ? null : uploadButton}*/}
+                                        {/*</Upload>*/}
+                                        {/*/!*<Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>*!/*/}
+                                            {/*/!*<img alt="example" style={{ width: '100%' }} src={previewImage} />*!/*/}
+                                        {/*/!*</Modal>*!/*/}
+                                    {/*</div>*/}
                                 </Col>
                                 <Col sm={12}>
                                     <textarea className="form-control" name="" id="" cols="30" rows="10" placeholder="请输入此次仲裁重要部分证据和备注" ref="voucherDes"></textarea>

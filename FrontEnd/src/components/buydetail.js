@@ -60,13 +60,13 @@ class Buydetail extends Component {
             money : this.state.messmoney,
             amount : this.state.messnum
         }
-        if(this.props.authenticated){
+        // if(this.props.authenticated){
             this.props.fetctBuynow({formdata},err=>{
                 this.setState({ isModalOpen: true , error: err , actionResult: err||'下单成功!'})
             });
-        }else {
-            alert("请先登录哦～")
-        }
+        // }else {
+        //     alert("请先登录哦～")
+        // }
 
     }
     render() {

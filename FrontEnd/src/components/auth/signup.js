@@ -92,7 +92,7 @@ class Signup extends Component {
         console.log(e.target.value)
         const phonenum = localStorage.setItem("phonenum",e.target.value)
 
-        var regex = /^1[3|4|5|8][0-9]\d{4,8}$/
+        var regex = /^1[3|4|5|7|8][0-9]\d{4,8}$/
         if (regex.test(e.target.value) ) {
 
         } else{

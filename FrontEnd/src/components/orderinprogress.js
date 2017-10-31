@@ -43,19 +43,14 @@ class OrderInProgress extends Component {
     handleSubmit(){
         const evidenceDes=this.refs.voucherDes.value;
         if(evidenceDes){
-            let {isEvidenceFileDone} = this.state;
-            console.log(`isEvidenceFileDone ${isEvidenceFileDone}`)
             const userId= localStorage.getItem('userId');
-            console.log(this.state.evidenceOFile)
+            const id=this.state.id;
             let evidenceOFile = this.state.evidenceOFile[0];
-            const evidenceData={
-                id:this.state.id,
-                userId:userId,
-                multipartFile:evidenceOFile,
-                content:evidenceDes
-
-            }
-            this.props.uploadEvidence({evidenceData})
+            this.props.uploadEvidence({id,userId,evidenceOFile,evidenceDes},(msg)=>{
+                if(msg.status==1){
+                    window.location.href='/orderinprogress'
+                }
+            })
         }
     }
     renderrow(){

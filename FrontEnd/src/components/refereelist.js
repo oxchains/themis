@@ -125,23 +125,25 @@ class RefereeList extends Component {
                         <div className="row  margin-b-15 ">
                             <label className="col-sm-4 control-label text-right"><strong>买家附件</strong></label>
                             <div className="col-sm-8 g-pb-10 ">
-                                <a className="btn btn-default" style={{color: "gray"}}
-                                   href={`${ROOT_ORDER}/order/${buyerFiles}/downloadfile`}
-                                   download="download">点击下载</a>
+                                {buyerFiles ?  <a className="btn btn-default" style={{color: "gray"}}
+                                                  href={`${ROOT_ORDER}/order/${buyerFiles}/downloadfile`}
+                                                  download="download">点击下载</a> : "暂无数据" }
+
                             </div>
                             <label className="col-sm-4 control-label text-right"><strong>卖家附件</strong></label>
                             <div className="col-sm-8 g-pb-10 ">
-                                <a className="btn btn-default" style={{color: "gray"}}
-                                   href={`${ROOT_ORDER}/order/${sellerFiles}/downloadfile`}
-                                   download="download">点击下载</a>
+                                {sellerFiles ? <a className="btn btn-default" style={{color: "gray"}}
+                                                  href={`${ROOT_ORDER}/order/${sellerFiles}/downloadfile`}
+                                                  download="download">点击下载</a> : "暂无数据"}
+
                             </div>
                             <label className="col-sm-4 control-label text-right"><strong>买家备注</strong></label>
                             <div className="col-sm-8 g-pb-10">
-                                <span>{buyerContent}</span>
+                                <span>{buyerContent ? buyerContent:"暂无数据"}</span>
                             </div>
                             <label className="col-sm-4 control-label text-right"><strong>卖家备注</strong></label>
                             <div className="col-sm-8 g-pb-10">
-                                <span>{sellerContent}</span>
+                                <span>{sellerContent ? sellerContent :"暂无数据"}</span>
                             </div>
                             <div className="col-sm-12 text-center g-pb-20">
                                 <span className="h4">仲裁胜利方</span>
