@@ -2,18 +2,28 @@
  * Created by oxchain on 2017/10/20.
  */
 import React, { Component } from 'react';
-
-import { Field } from 'redux-form';
 import { connect } from 'react-redux';
+
+import { fetctBaseInfo } from '../actions/releaseadvert'
 
 class Baseinfo extends Component {
     constructor(props) {
         super(props);
         this.state = {}
+        this.handleSave = this.handleSave.bind(this)
     }
 
-    render() {
+    componentWillMount() {
+        const userId = localStorage.getItem("userId")
 
+        this.props.fetctBaseInfo({userId}, () => {})
+    }
+
+
+    handleSave(){
+
+    }
+    render() {
         return (
             <div>
                 <div className="maininfo">
@@ -39,9 +49,9 @@ class Baseinfo extends Component {
                          <li>累计交易量:0-0.5 BTC</li>
                      </ul>
                 </div>
-                <textarea className="textarea-info" name="" id="" cols="53" rows="5" placeholder="简介，在您的公共资料上展示您的介绍信息。纯文本，不超过200字"></textarea>
+                <textarea className="textarea-info" name="" id="" cols="53" rows="5" placeholder="简介，在您的公共资料上展示您的介绍信息。纯文本，不超过200字" ref="textarea"></textarea>
                <div className="display-save">
-                   <button className="form-save">保存</button>
+                   <button className="form-save" onClick={this.handleSave}>保存</button>
                </div>
             </div>
         );
@@ -51,9 +61,9 @@ class Baseinfo extends Component {
 
 
 function mapStateToProps(state) {
+    console.log(state)
     return {
-        success: state.auth.authenticated,
-        errorMessage: state.auth.error
+       all:state.advert.all
     };
 }
-export default connect(mapStateToProps,{})(Baseinfo);
+export default connect(mapStateToProps,{fetctBaseInfo})(Baseinfo);

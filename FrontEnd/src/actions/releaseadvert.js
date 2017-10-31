@@ -6,6 +6,7 @@ import { browserHistory ,hashHistory} from 'react-router';
 import {
     ROOT_URLL,
     ROOT_URLZ,
+    ROOT_URLC,
     FETCH_ADVERT,
     FETCH_BUY_BTC,
     FETCH_SELL_BTC,
@@ -18,6 +19,8 @@ import {
     FETCH_BUY_NOW,
     FETCH_SELL_NOW,
     FETCH_MY_ADVERT,
+    FETCH_OFF_MYBTC,
+    FETCH_BASE_INFO,
     getAuthorizedHeader
 } from './types';
 
@@ -198,3 +201,39 @@ export function fetctMyAdvert({userId,noticeType,txStatus}, callback) {
     }
 }
 
+// 下架我的广告
+
+export function fetctOffMyAd({id},callback) {
+    console.log(`下架我的广告:${id} `);
+    return function(dispatch) {
+        axios.get(`${ROOT_URLL}/notice/stop?id=${id}`,{ headers: getAuthorizedHeader() })
+            .then(response => {
+                console.log(response)
+                // dispatch({type: FETCH_OFF_MYBTC, payload: response})
+                if(response.data.status == 1) {
+                    callback();
+                } else {
+                    callback(response.data.message);
+                }
+            })
+            .catch(err => {
+                console.error(err)
+            });
+    }
+}
+
+//用户基本信息
+
+export function fetctBaseInfo({userId},callback) {
+    console.log(`用户基本信息:${userId} `);
+    return function(dispatch) {
+        axios.get(`${ROOT_URLC}/user/update`,{userId},{ headers: getAuthorizedHeader() })
+            .then(response => {
+                console.log(response)
+                dispatch({type: FETCH_BASE_INFO, payload: response})
+            })
+            .catch(err => {
+                console.error(err)
+            });
+    }
+}

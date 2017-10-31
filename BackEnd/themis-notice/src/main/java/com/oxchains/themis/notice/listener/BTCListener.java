@@ -42,7 +42,7 @@ public class BTCListener {
             String result = HttpUtils.sendGet(url);
             BTCResult btcResult = (BTCResult) JsonUtil.fromJson(result, BTCResult.class);
 
-            LOG.info("BTC market: {}", btcResult);
+            LOG.debug("BTC market: {}", btcResult);
             LOG.info("This timed tasks has been completed");
 
             List<BTCResult> btcResultList = btcResultDao.findByIsSuc("true");

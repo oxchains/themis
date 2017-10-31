@@ -41,7 +41,8 @@ export const RELEASE_BTC = "release_btc"                                //卖家
 export const CONFIRM_GOODS = 'confirm_goods'                            //买家确认收货
 export const CANCEL_ORDERS = 'cancel_orders'                            //取消订单
 export const SAVE_COMMENT = 'save_comment'                               //提交评价
-
+export const FETCH_OFF_MYBTC = 'fetch_off_mybtc'                         //下架我的广告
+export const FETCH_BASE_INFO = 'fetch_base_info'                         //用户中心基本信息
 
 export function getAuthorizedHeader() {
     return { authorization: localStorage.getItem('token') }

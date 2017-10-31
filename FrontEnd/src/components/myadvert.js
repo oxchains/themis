@@ -4,11 +4,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import {fetctMyAdvert} from '../actions/releaseadvert'
+import {fetctMyAdvert,fetctOffMyAd} from '../actions/releaseadvert'
+import {
+    Modal,
+    ModalHeader,
+    ModalTitle,
+    ModalClose,
+    ModalBody,
+    ModalFooter
+} from 'react-modal-bootstrap';
+
 class Myadvert extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isModalOpen: false,
+            error: null,
+            actionResult: '',
             status:'1',
             adstatus:'1'
         }
@@ -17,6 +29,7 @@ class Myadvert extends Component {
         this.handleRowsadverting = this.handleRowsadverting.bind(this)
         this.handleRowadverted = this.handleRowadverted.bind(this)
         this.handleRow = this.handleRow.bind(this)
+        this.handleOff = this.handleOff.bind(this)
 
     }
 
@@ -54,7 +67,6 @@ class Myadvert extends Component {
     handleRow(){
         const arraydata = this.props.all || []    //列表数组的数据
         return arraydata.map((item, index) => {
-
         return(<tr key={index} className="contentborder">
                 <td>{item.id}</td>
                 <td>{item.noticeType}</td>
@@ -63,15 +75,31 @@ class Myadvert extends Component {
                 <td>{item.price}</td>
                 <td>{item.createTime}</td>
                 <td>{item.txStatus}</td>
+                <td className="tabletitle">
+                    <button className={`tablebuy ${item.txStatus == 2 ? "hidden":""}`} onClick={() => this.handleOff(item)}>下架</button>
+                </td>
             </tr>)
         })
     }
+    hideModal = () => {
+        this.setState({
+            isModalOpen: false
+        });
+    };
     componentWillMount(){
         const userId = localStorage.getItem("userId")
         console.log(userId)
         const noticeType = this.state.status
         const txStatus = this.state.adstatus
         this.props.fetctMyAdvert({userId,noticeType,txStatus},()=>{});
+    }
+    handleOff = (item) =>{
+        // const id = item.id
+
+        const {id} = item
+        this.props.fetctOffMyAd({id},err=>{
+            this.setState({ isModalOpen: true , error: err , actionResult: err||'下架成功!'})
+        })
     }
     render() {
             return (
@@ -99,6 +127,8 @@ class Myadvert extends Component {
                                         <th>溢价比例</th>
                                         <th>创建时间</th>
                                         <th>状态</th>
+                                        <th className={`${this.state.adstatus == 1 ? "hidden" :""}`}></th>
+                                        <th className={`${this.state.adstatus == 2 ? "hidden" :""}`}>操作</th>
                                     </tr>
                                     {this.handleRow()}
                                     <tr className="contentborder bottomcontent">
@@ -109,6 +139,8 @@ class Myadvert extends Component {
                                         <td></td>
                                         <td></td>
                                         <td></td>
+                                        <td></td>
+                                        {/*<td className={`${this.state.adstatus == 2 ? "hidden" :""}`}></td>*/}
                                     </tr>
                                     </tbody>
 
@@ -116,15 +148,35 @@ class Myadvert extends Component {
                             </div>
                         </div>
 
+
+                        <Modal isOpen={this.state.isModalOpen} onRequestHide={this.hideModal}>
+                            <ModalHeader>
+                                <ModalClose onClick={this.hideModal}/>
+                                <ModalTitle>提示:</ModalTitle>
+                            </ModalHeader>
+                            <ModalBody>
+                                <p className={this.state.error?'text-red':'text-green'}>
+                                    {this.state.actionResult}
+                                </p>
+                            </ModalBody>
+                            <ModalFooter>
+                                <button className='btn btn-default' onClick={this.hideModal}>
+                                    {/*<a href="/myadvert" >关闭</a>*/}
+                                    <a className="close-modal" href="" >关闭</a>
+                                </button>
+                            </ModalFooter>
+                        </Modal>
+
+
                 </div>
             );
         }
     }
 function mapStateToProps(state) {
-    console.log(state.advert.all)
     return {
-        all:state.advert.all       //我的广告
+        all:state.advert.all,     //我的广告
+        data:state.advert.data   // 下架我的广告
     };
 }
-export default connect(mapStateToProps,{  fetctMyAdvert})(Myadvert);
+export default connect(mapStateToProps,{  fetctMyAdvert,fetctOffMyAd})(Myadvert);
 

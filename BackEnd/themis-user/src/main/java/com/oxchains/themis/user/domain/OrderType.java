@@ -3,10 +3,10 @@ package com.oxchains.themis.user.domain;
 import javax.persistence.*;
 
 /**
- * @Author ccl
- * @Time 2017-10-20 17:33
- * @Name OrderType
- * @Desc:
+ * @author ccl
+ * @time 2017-10-20 17:33
+ * @name OrderType
+ * @desc:
  */
 @Entity
 @Table(name = "tbl_biz_ordertype")

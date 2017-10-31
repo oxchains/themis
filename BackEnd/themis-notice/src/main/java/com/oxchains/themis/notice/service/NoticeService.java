@@ -39,10 +39,8 @@ public class NoticeService {
     @Resource private BTCTickerDao btcTickerDao;
     @Resource private BTCResultDao btcResultDao;
     @Resource private BTCMarketDao btcMarketDao;
-    @Resource private UserDao userDao;
     @Resource private CountryDao countryDao;
     @Resource private CurrencyDao currencyDao;
-    @Resource private NoticeTypeDao noticeTypeDao;
     @Resource private PaymentDao paymentDao;
     @Resource private SearchTypeDao searchTypeDao;
     @Resource private UserTxDetailDao userTxDetailDao;
@@ -70,21 +68,19 @@ public class NoticeService {
             List<Notice> noticeListDoing = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(notice.getUserId(), notice.getNoticeType(), 1);
             List<Notice> noticeListDone = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(notice.getUserId(), notice.getNoticeType(), 2);
 
-//            User userInfo = userDao.findOne(notice.getUserId().intValue());
-//            String loginname = userInfo.getLoginname();
-
             List<BTCTicker> btcTickerList = btcTickerDao.findBySymbol("btccny");
             for (BTCTicker btcTicker : btcTickerList) {
                 Double low = btcTicker.getLow().doubleValue();
                 Double minPrice = notice.getMinPrice().doubleValue();
                 if (null == notice.getMinPrice()){
                     notice.setMinPrice(btcTicker.getLow());
-                }else {
-                    // 市场价低于定义的最低价，那么价格就是自己定义的最低价
-                    if (ArithmeticUtils.minus(low, minPrice) < 0){
-                        notice.setPrice(notice.getMinPrice());
-                    }
+                }else { // 市场价低于定义的最低价，那么价格就是自己定义的最低价
+                    if (ArithmeticUtils.minus(low, minPrice) < 0) notice.setPrice(notice.getMinPrice());
                 }
+            }
+
+            if (notice.getPremium() > 10 && notice.getPremium() < 0) {
+                return RestResp.fail("请按规输入溢价");
             }
 
             if (!noticeListDone.isEmpty() && noticeListDoing.isEmpty()){
@@ -303,7 +299,7 @@ public class NoticeService {
             Long noticeType = 2L;
             Integer pageNum = notice.getPageNum();
 
-            Pageable pageable = buildPageRequest(pageNum, 8, null);
+            Pageable pageable = buildPageRequest(pageNum, 8, "createTime");
             Page<Notice> page = null;
 
             // 对所在地，货币类型，支付方式判断，可为null
@@ -368,7 +364,7 @@ public class NoticeService {
             if (null == pageNum) pageNum = 1;
             // Integer pageSize = notice.getPageSize();
             // Sort sort = new Sort(Sort.Direction.DESC, "id");
-            Pageable pageable = buildPageRequest(pageNum, 8, null);
+            Pageable pageable = buildPageRequest(pageNum, 8, "createTime");
             Page<Notice> page = null;
             if (null != location && null != currency && null != payType) {
                 page = noticeDao.findByLocationAndCurrencyAndPayTypeAndNoticeType(location, currency, payType, noticeType, pageable);
@@ -420,6 +416,7 @@ public class NoticeService {
         }
     }
 
+    // 作废
     public RestResp defaultSearch_buy(Long noticeType, Integer pageNum){
         try {
             Pageable pageable = buildPageRequest(pageNum, 8, null);
@@ -461,6 +458,7 @@ public class NoticeService {
         }
     }
 
+    // 作废
     public RestResp defaultSearch_sell(Long noticeType, Integer pageNum){
         try {
             Pageable pageable = buildPageRequest(pageNum, 8, null);
@@ -496,6 +494,32 @@ public class NoticeService {
             pageDTO.setTotalPage(page.getTotalPages());
             pageDTO.setPageList(resultList);
             return RestResp.success("操作成功", pageDTO);
+        }catch (Exception e){
+            e.printStackTrace();
+            return RestResp.fail("操作失败", e.getMessage());
+        }
+    }
+
+    public RestResp stopNotice(Long id){
+        try {
+            Notice noticeInfo = noticeDao.findOne(id);
+            if (null != noticeInfo) {
+                if (noticeInfo.getTxStatus() == 2) return RestResp.fail("公告已下架");
+                if (noticeInfo.getTxStatus() == 1) return RestResp.fail("交易中公告，禁止下架");
+                List<Notice> noticeList = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(noticeInfo.getUserId(), noticeInfo.getNoticeType(), noticeInfo.getTxStatus());
+                if (!noticeList.isEmpty()){
+                    Notice save = null;
+                    for (Notice n : noticeList) {
+                        n.setTxStatus(2);
+                        save = noticeDao.save(n);
+                    }
+                    return RestResp.success("操作成功", save);
+                }else {
+                    return RestResp.fail("操作失败");
+                }
+            }else {
+                return RestResp.fail("操作失败");
+            }
         }catch (Exception e){
             e.printStackTrace();
             return RestResp.fail("操作失败", e.getMessage());
@@ -563,7 +587,6 @@ public class NoticeService {
         subList.get(i).setTrustPercent((int)ArithmeticUtils.multiply(trustP, (double) 100, 0));
     }
 
-
     /**
      * 创建分页请求
      * @param pageNum   当前第几页
@@ -575,7 +598,7 @@ public class NoticeService {
         Sort sort = null;
         if("auto".equals(sortType)){
             sort = new Sort(Sort.Direction.DESC, "id");
-        } else if ("noticeContent".equals(sortType)){
+        } else if ("createTime".equals(sortType)){
             sort = new Sort(Sort.Direction.ASC, "noticeContent");
         }
         return new PageRequest(pageNum - 1, pageSize, sort);

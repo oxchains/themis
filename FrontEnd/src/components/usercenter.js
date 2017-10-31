@@ -9,24 +9,28 @@ import Trust from './trusts'
 class Usercenter extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
-
+        this.state = {
+            status:'1',
+        }
     }
+
     render() {
         return (
-           <div >
-               <TabsControl >
-                   <Tab name="基本信息">
-                       <div className="baswinfo" ><Base/></div>
-                   </Tab>
-                   <Tab name="安全设置">
-                       <div className="safeset"><Safe/></div>
-                   </Tab>
-                   <Tab name="受信任的">
-                       <div className="trust"><Trust/></div>
-                   </Tab>
-               </TabsControl>
-           </div>
+
+              <div>
+                  <TabsControl >
+                      <Tab name="基本信息">
+                          <div className="baswinfo" ><Base/></div>
+                      </Tab>
+                      <Tab name="安全设置">
+                          <div className="safeset"><Safe/></div>
+                      </Tab>
+                      <Tab name="受信任的">
+                          <div className="trust"><Trust/></div>
+                      </Tab>
+                  </TabsControl>
+              </div>
+
         );
     }
 }

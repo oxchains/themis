@@ -18,10 +18,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 
 /**
- * @Author ccl
- * @Time 2017-10-12 11:21
- * @Name ApplicationConfiguration
- * @Desc:
+ * @author ccl
+ * @time 2017-10-12 11:21
+ * @nameApplicationConfiguration
+ * @desc:
  */
 
 @EnableWebSecurity

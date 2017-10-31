@@ -3,10 +3,10 @@ package com.oxchains.themis.common.util;
 import java.math.BigDecimal;
 
 /**
- * @Author ccl
- * @Time 2017-10-18 17:20
- * @Name ArithmeticUtils
- * @Desc: 提供高精度计算
+ * @author ccl
+ * @time 2017-10-18 17:20
+ * @name ArithmeticUtils
+ * @desc: 提供高精度计算
  */
 public class ArithmeticUtils {
 
@@ -288,10 +288,11 @@ public class ArithmeticUtils {
         BigDecimal b2 = new BigDecimal(v2);
         int bj = b1.compareTo(b2);
         boolean res;
-        if (bj > 0)
+        if (bj > 0){
             res = true;
-        else
+        }else {
             res = false;
+        }
         return res;
     }
 

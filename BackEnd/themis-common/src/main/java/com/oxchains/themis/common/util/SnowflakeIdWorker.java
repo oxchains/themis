@@ -1,10 +1,10 @@
 package com.oxchains.themis.common.util;
 
 /**
- * @Author ccl
- * @Time 2017-10-20 16:01
- * @Name SnowflakeIdWorker
- * @Desc:
+ * @author ccl
+ * @time 2017-10-20 16:01
+ * @name SnowflakeIdWorker
+ * @desc:
  */
 
 import java.util.UUID;
