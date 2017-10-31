@@ -1,10 +1,10 @@
 package com.oxchains.bitcoin.util;
 
 /**
- * @Author oxchains
- * @Time 2017-10-30 9:52
- * @Name BitcoinUtil
- * @Desc:
+ * @author oxchains
+ * @time 2017-10-30 9:52
+ * @nameBitcoinUtil
+ * @desc:
  */
 public class BitcoinUtil {
     public static double normalizeAmount(double amount) {

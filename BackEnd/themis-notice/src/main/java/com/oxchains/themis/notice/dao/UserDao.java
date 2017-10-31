@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @Author ccl
- * @Time 2017-10-12 17:20
- * @Name UserDao
- * @Desc:
+ * @author ccl
+ * @time 2017-10-12 17:20
+ * @nameUserDao
+ * @desc:
  */
 @Repository
 public interface UserDao extends CrudRepository<User,Integer> {

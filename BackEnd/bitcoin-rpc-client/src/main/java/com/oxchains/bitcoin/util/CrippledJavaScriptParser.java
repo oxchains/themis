@@ -6,10 +6,10 @@ import java.io.StringReader;
 import java.util.*;
 
 /**
- * @Author oxchains
- * @Time 2017-10-30 9:43
- * @Name CrippledJavaScriptParser
- * @Desc:
+ * @author oxchains
+ * @time 2017-10-30 9:43
+ * @nameCrippledJavaScriptParser
+ * @desc:
  */
 public class CrippledJavaScriptParser {
     private static boolean isDigit(char ch) {

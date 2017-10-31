@@ -5,10 +5,10 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
- * @Author ccl
- * @Time 2017-10-31 10:02
- * @Name Order
- * @Desc:
+ * @author ccl
+ * @time 2017-10-31 10:02
+ * @nameOrder
+ * @desc:
  */
 @Entity
 @Table(name = "tbl_biz_orders")

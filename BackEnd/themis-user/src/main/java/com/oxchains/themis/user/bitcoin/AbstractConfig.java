@@ -9,10 +9,10 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * @Author oxchains
- * @Time 2017-10-13 17:51
- * @Name AbstractConfig
- * @Desc:
+ * @author oxchains
+ * @time 2017-10-13 17:51
+ * @name AbstractConfig
+ * @desc:
  */
 public abstract class AbstractConfig implements Serializable {
 

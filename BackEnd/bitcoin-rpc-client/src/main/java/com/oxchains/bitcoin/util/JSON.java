@@ -4,10 +4,10 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * @Author oxchains
- * @Time 2017-10-30 9:51
- * @Name JSON
- * @Desc:
+ * @author oxchains
+ * @time 2017-10-30 9:51
+ * @nameJSON
+ * @desc:
  */
 public class JSON {
     public static String stringify(Object o) {

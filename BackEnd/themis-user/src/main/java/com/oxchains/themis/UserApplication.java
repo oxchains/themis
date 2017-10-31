@@ -6,10 +6,10 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * @Author ccl
- * @Time 2017-10-12 11:24
- * @Name UserApplication
- * @Desc:
+ * @author ccl
+ * @time 2017-10-12 11:24
+ * @name UserApplication
+ * @desc:
  */
 
 @EnableEurekaClient

@@ -3,10 +3,10 @@ package com.oxchains.themis.user.domain;
 import javax.persistence.*;
 
 /**
- * @Author ccl
- * @Time 2017-10-26 10:00
- * @Name Role
- * @Desc:
+ * @author ccl
+ * @time 2017-10-26 10:00
+ * @name Role
+ * @desc:
  */
 
 @Entity

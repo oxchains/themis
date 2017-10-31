@@ -10,10 +10,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @Author ccl
- * @Time 2017-10-12 17:13
- * @Name User
- * @Desc:
+ * @author ccl
+ * @time 2017-10-12 17:13
+ * @name User
+ * @desc:
  */
 
 @Entity

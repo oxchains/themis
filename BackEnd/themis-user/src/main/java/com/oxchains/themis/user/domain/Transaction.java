@@ -4,10 +4,10 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
- * @Author ccl
- * @Time 2017-10-17 11:11
- * @Name Transaction
- * @Desc:
+ * @author ccl
+ * @time 2017-10-17 11:11
+ * @name Transaction
+ * @desc:
  */
 @Entity
 @Table(name = "tbl_biz_transaction")

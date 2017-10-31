@@ -7,10 +7,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * @Author ccl
- * @Time 2017-10-31 10:19
- * @Name OrderDao
- * @Desc:
+ * @author ccl
+ * @time 2017-10-31 10:19
+ * @nameOrderDao
+ * @desc:
  */
 @Repository
 public interface OrderDao extends CrudRepository<Order,Long> {

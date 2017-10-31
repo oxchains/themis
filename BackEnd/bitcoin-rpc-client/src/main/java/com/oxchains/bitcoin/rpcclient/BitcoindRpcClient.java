@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Author oxchains
- * @Time 2017-10-30 9:53
- * @Name BitcoindRpcClient
- * @Desc:
+ * @author oxchains
+ * @time 2017-10-30 9:53
+ * @nameBitcoindRpcClient
+ * @desc:
  * @url https://bitcoin.org/en/developer-reference#rpcs
  */
 public interface BitcoindRpcClient extends BaseRpcClient{

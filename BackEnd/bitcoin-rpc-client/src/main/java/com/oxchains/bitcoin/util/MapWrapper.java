@@ -5,10 +5,10 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * @Author oxchains
- * @Time 2017-10-30 9:48
- * @Name MapWrapper
- * @Desc:
+ * @author oxchains
+ * @time 2017-10-30 9:48
+ * @nameMapWrapper
+ * @desc:
  */
 public class MapWrapper {
     public final Map m;

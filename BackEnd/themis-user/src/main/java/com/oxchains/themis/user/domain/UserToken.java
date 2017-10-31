@@ -1,10 +1,10 @@
 package com.oxchains.themis.user.domain;
 
 /**
- * @Author ccl
- * @Time 2017-10-20 10:38
- * @Name UserToken
- * @Desc:
+ * @author ccl
+ * @time 2017-10-20 10:38
+ * @name UserToken
+ * @desc:
  */
 public class UserToken {
 

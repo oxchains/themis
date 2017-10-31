@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Author oxchains
- * @Time 2017-10-30 9:49
- * @Name ListMapWrapper
- * @Desc:
+ * @author oxchains
+ * @time 2017-10-30 9:49
+ * @nameListMapWrapper
+ * @desc:
  */
 public abstract class ListMapWrapper<T> extends AbstractList<T> {
     public final List<Map> list;

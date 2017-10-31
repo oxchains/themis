@@ -3,10 +3,10 @@ package com.oxchains.themis.common.model;
 import java.io.Serializable;
 
 /**
- * @Author ccl
- * @Time 2017-10-20 18:21
- * @Name AddressKeys
- * @Desc:
+ * @author ccl
+ * @time 2017-10-20 18:21
+ * @name AddressKeys
+ * @desc:
  */
 public class AddressKeys implements Serializable{
     private String address;

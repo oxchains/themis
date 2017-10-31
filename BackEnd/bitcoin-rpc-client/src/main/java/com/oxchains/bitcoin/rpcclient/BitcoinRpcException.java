@@ -1,10 +1,10 @@
 package com.oxchains.bitcoin.rpcclient;
 
 /**
- * @Author oxchains
- * @Time 2017-10-30 9:55
- * @Name BitcoinRpcException
- * @Desc:
+ * @author oxchains
+ * @time 2017-10-30 9:55
+ * @nameBitcoinRpcException
+ * @desc:
  */
 public class BitcoinRpcException extends RuntimeException{
     public BitcoinRpcException() {

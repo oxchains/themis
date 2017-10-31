@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 /**
- * @Author ccl
- * @Time 2017-10-12 18:19
- * @Name UserController
- * @Desc:
+ * @author ccl
+ * @time 2017-10-12 18:19
+ * @name UserController
+ * @desc:
  */
 @RestController
 @RequestMapping(value = "/user")

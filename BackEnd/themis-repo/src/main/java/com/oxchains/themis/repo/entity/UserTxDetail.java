@@ -6,10 +6,10 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 /**
- * @Author ccl
- * @Time 2017-10-30 19:00
- * @Name UserTxDetail
- * @Desc:
+ * @author ccl
+ * @time 2017-10-30 19:00
+ * @nameUserTxDetail
+ * @desc:
  */
 @Entity
 @Table(name = "user_tx_detail")

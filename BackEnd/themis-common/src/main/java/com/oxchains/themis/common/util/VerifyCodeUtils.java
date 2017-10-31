@@ -2,10 +2,10 @@ package com.oxchains.themis.common.util;
 import java.util.Random;
 
 /**
- * @Author ccl
- * @Time 2017-10-19 14:10
- * @Name VerifyCodeUtils
- * @Desc: 验证码生成工具
+ * @author ccl
+ * @time 2017-10-19 14:10
+ * @name VerifyCodeUtils
+ * @desc: 验证码生成工具
  */
 public class VerifyCodeUtils {
     private VerifyCodeUtils(){}

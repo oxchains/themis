@@ -1,10 +1,10 @@
 package com.oxchains.themis.common.auth;
 
 /**
- * @Author ccl
- * @Time 2017-10-31 13:50
- * @Name AuthorizationConst
- * @Desc:
+ * @author ccl
+ * @time 2017-10-31 13:50
+ * @name AuthorizationConst
+ * @desc:
  */
 public class AuthorizationConst {
     public static final String AUTHORIZATION_HEADER = "Authorization";

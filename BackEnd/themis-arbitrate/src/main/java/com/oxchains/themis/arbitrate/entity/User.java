@@ -3,10 +3,10 @@ package com.oxchains.themis.arbitrate.entity;
 import javax.persistence.*;
 
 /**
- * @Author ccl
- * @Time 2017-10-12 17:13
- * @Name User
- * @Desc:
+ * @author ccl
+ * @time 2017-10-12 17:13
+ * @nameUser
+ * @desc:
  */
 
 @Entity

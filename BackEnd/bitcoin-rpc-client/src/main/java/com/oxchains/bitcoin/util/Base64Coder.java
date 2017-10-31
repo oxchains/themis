@@ -1,10 +1,10 @@
 package com.oxchains.bitcoin.util;
 
 /**
- * @Author oxchains
- * @Time 2017-10-30 9:42
- * @Name Base64Coder
- * @Desc:
+ * @author oxchains
+ * @time 2017-10-30 9:42
+ * @nameBase64Coder
+ * @desc:
  */
 public class Base64Coder {
 

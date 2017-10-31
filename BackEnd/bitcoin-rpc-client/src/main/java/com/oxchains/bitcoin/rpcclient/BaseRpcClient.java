@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Author oxchains
- * @Time 2017-10-30 11:28
- * @Name BaseRpcClient
- * @Desc:
+ * @author oxchains
+ * @time 2017-10-30 11:28
+ * @nameBaseRpcClient
+ * @desc:
  */
 public interface BaseRpcClient {
     interface DecodedScript extends Serializable {
