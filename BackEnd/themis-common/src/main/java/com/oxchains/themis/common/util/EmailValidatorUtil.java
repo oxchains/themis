@@ -105,9 +105,5 @@ public class EmailValidatorUtil {
         }
         return false;
     }
-    public static void main(String[] args){
-        System.out.println(isEmailValid("274335720@qq.com"));
-        System.out.println("-----------------------------------------");
-        System.out.println(isEmailValid("1345175456@qq.com"));
-    }
+
 }

@@ -175,13 +175,5 @@ public class IdcardInfoExtractorUtil {
                 + this.birthday;
     }
 
-    public static void main(String[] args) {
-        String idcard = "152626199002082110";
-        IdcardInfoExtractorUtil ie = new IdcardInfoExtractorUtil(idcard);
-        System.out.println(ie.getProvince());
-        System.out.println(ie.getGender());
-        String time = new SimpleDateFormat("yyyy-MM-dd").format(ie.birthday);
-        System.out.println(time);
-        System.out.println(ie.toString());
-    }
+
 }

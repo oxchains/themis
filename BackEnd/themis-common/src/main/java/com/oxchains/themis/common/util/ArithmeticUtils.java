@@ -299,10 +299,4 @@ public class ArithmeticUtils {
     private ArithmeticUtils() {
     }
 
-    public static void main(String[] args) {
-        double d1 = 50.0d;
-        double d2 = 0.0000001;
-        System.out.println(plus(d1, d2));
-        System.out.println(minus(d1, d2));
-    }
 }

@@ -15,8 +15,34 @@ import java.util.Optional;
  */
 @Repository
 public interface UserDao extends CrudRepository<User,Integer> {
+    /**
+     * find by loginname
+     * @param loginname
+     * @return
+     */
     User findByLoginname(String loginname);
+
+    /**
+     *
+     * @param loginname
+     * @param password
+     * @return
+     */
     Optional<User> findByLoginnameAndPassword(String loginname,String password);
+
+    /**
+     *
+     * @param loginname
+     * @param password
+     * @return
+     */
     Optional<User> findByEmailAndPassword(String loginname,String password);
+
+    /**
+     *
+     * @param loginname
+     * @param password
+     * @return
+     */
     Optional<User> findByMobilephoneAndPassword(String loginname,String password);
 }

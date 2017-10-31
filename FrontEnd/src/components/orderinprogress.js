@@ -4,11 +4,20 @@
 import React,{ Component }from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
+import Dropzone from 'react-dropzone';
+import {Alert,Modal,Button,Form,FormGroup,Col,ControlLabel,FormControl,Image} from 'react-bootstrap';
+import {uploadEvidence} from '../actions/arbitrate';
 import {fetchNoCompletedOrders} from '../actions/order';
 
 class OrderInProgress extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            show:false,
+            evidenceOFile: [],
+            id:1,
+            isEvidenceFileDone:false
+        }
         this.renderrow = this.renderrow.bind(this);
     }
     componentWillMount() {
@@ -17,6 +26,37 @@ class OrderInProgress extends Component {
             userId:userId
         }
         this.props.fetchNoCompletedOrders({formData});
+    }
+    handleEvidence(item){
+        console.log(item)
+        this.setState({
+            id:item,
+            show:!this.state.show
+        })
+    }
+    evidenceFile(files) {
+        console.log('files', files);
+        this.setState({
+            evidenceOFile: files
+        })
+    }
+    handleSubmit(){
+        const evidenceDes=this.refs.voucherDes.value;
+        if(evidenceDes){
+            let {isEvidenceFileDone} = this.state;
+            console.log(`isEvidenceFileDone ${isEvidenceFileDone}`)
+            const userId= localStorage.getItem('userId');
+            console.log(this.state.evidenceOFile)
+            let evidenceOFile = this.state.evidenceOFile[0];
+            const evidenceData={
+                id:this.state.id,
+                userId:userId,
+                multipartFile:evidenceOFile,
+                content:evidenceDes
+
+            }
+            this.props.uploadEvidence({evidenceData})
+        }
     }
     renderrow(){
         const userId= localStorage.getItem('userId');
@@ -35,15 +75,17 @@ class OrderInProgress extends Component {
                     <td>{item.amount}</td>
                     <td>{item.createTime}</td>
                     <td>{item.orderStatusName}</td>
-                    <td><Link className="btn btn-primary" to={path} onClick={localStorage.setItem("friendUsername",item.friendUsername)}>详情</Link></td>
-                    <td><Link className="btn btn-primary" to="/arbitrationbuyer">THEMIS仲裁</Link></td>
+                    <td><Link className="btn btn-primary" to={path} onClick={localStorage.setItem("receiverId",item.orderType == "购买" ? item.sellerId : item.buyerId)}>详情</Link></td>
+                    <td>{item.orderStatus == 3 || item.orderStatus == 8 ? <button className="btn btn-primary" onClick={this.handleEvidence.bind(this,item.id)}>THEMIS仲裁</button> : <div></div>}</td>
                 </tr>
                 )
         })
 
     }
     render() {
-
+        let close = () => {
+            this.setState({show:false})
+        };
         let {not_completed_orders} = this.props;
         if(this.props.not_completed_orders===null){
             return <div className="container">
@@ -51,7 +93,7 @@ class OrderInProgress extends Component {
             </div>
         }
         return (
-        <div className="container">
+        <div className="container g-pb-150">
             <div className="orderType text-center g-pt-50 g-pb-50">
                 <ul className="row">
                     <li className="col-xs-6"> <a className="orderTypeBar g-pb-3" href="/orderinprogress">进行中的交易</a></li>
@@ -75,12 +117,55 @@ class OrderInProgress extends Component {
                         </tr>
                         </thead>
                         <tbody>
-                        {this.renderrow()}
+                        {this.props.not_completed_orders == null ? <tr><td colSpan={8}>暂无数据</td></tr> : this.renderrow()}
+                        {/*{this.renderrow()}*/}
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div className="text-center">没有更多内容了</div>
+            <Modal show={this.state.show} onHide={close} container={this} aria-labelledby="contained-modal-title">
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title text-center">证据存根</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form horizontal>
+                        <FormGroup controlId="formHorizontalPassword" >
+                            <Col componentClass={ControlLabel} sm={2}>
+                                上传截图
+                            </Col>
+                            <Col sm={10}>
+                                <Dropzone onDrop={this.evidenceFile.bind(this)} className="sign-up"
+                                          accept="image/png,image/gif,image/jpeg">
+                                    {({isDragActive, isDragReject, acceptedFiles, rejectedFiles}) => {
+                                        return (
+                                            <div>
+                                                <div className="col-sm-6">
+                            <span className="btn btn-default"
+                                  style={{color: "white", background: '#a6a5a6', marginLeft: '-15px'}}>选择文件</span>
+                                                </div>
+                                                <div className="col-sm-6">
+                                                    <p style={{
+                                                        height: '100%',
+                                                        color: 'gray',
+                                                        fontSize: '8px'
+                                                    }}>{acceptedFiles.length > 0 ? acceptedFiles[0].name : ''}</p>
+                                                </div>
+                                            </div>
+                                        )
+                                    }}
+                                </Dropzone>
+                            </Col>
+                            <Col sm={12}>
+                                <textarea className="form-control" name="" id="" cols="30" rows="10" placeholder="请输入此次仲裁重要部分证据和备注" ref="voucherDes"></textarea>
+                            </Col>
+                        </FormGroup>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={this.handleSubmit.bind(this)}>确定</Button>
+                    <Button onClick={close}>取消</Button>
+                </Modal.Footer>
+            </Modal>
         </div>
         )
     }
@@ -91,4 +176,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { fetchNoCompletedOrders })(OrderInProgress);
+export default connect(mapStateToProps, { fetchNoCompletedOrders,uploadEvidence})(OrderInProgress);

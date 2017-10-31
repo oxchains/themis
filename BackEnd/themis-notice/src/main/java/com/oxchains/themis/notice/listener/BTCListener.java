@@ -31,9 +31,12 @@ public class BTCListener {
     @Resource private BTCMarketDao btcMarketDao;
     @Resource private BTCTickerDao btcTickerDao;
 
-    //@Scheduled(cron="0 */12 * * * ?") // 每12min 0-23点 执行一次
-    @Scheduled(fixedRate = 1000 * 720)  // 12分钟执行一次
-    public void BTCListener(){
+    /**
+     * 调度器
+     * 每间隔 12 分钟执行一次
+     */
+    @Scheduled(fixedRate = 1000 * 720)
+    public void queryBTCMarket(){
         try {
             String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
             LOG.info("Timed tasks begin to run：{} BTC market", currentTime);
@@ -98,6 +101,7 @@ public class BTCListener {
             }
         }catch (Exception e){
             e.printStackTrace();
+            LOG.error("定时任务：获取BTC深度行情异常", e.getMessage());
         }
     }
 }

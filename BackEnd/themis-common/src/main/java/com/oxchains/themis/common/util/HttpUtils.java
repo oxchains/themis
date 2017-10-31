@@ -51,12 +51,5 @@ public class HttpUtils {
         return result;
     }
 
-    public static void main(String[] args){
-        String url = "https://www.btc123.com/api/getTicker?symbol=huobibtccny";
-        String result = HttpUtils.sendGet(url);
-        System.out.println(result);
-        // BTCResult result1 = (BTCResult) JsonUtil.fromJson(result, BTCResult.class);
-        // System.out.println("json转换 ： "+result1);
-    }
 
 }

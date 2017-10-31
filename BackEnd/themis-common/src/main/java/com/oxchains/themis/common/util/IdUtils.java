@@ -20,7 +20,5 @@ public class IdUtils {
         return uuids[uuids.length-1].toUpperCase();
     }
 
-    public static void main(String[] args) {
-        System.out.println(IdUtils.getUUID10());
-    }
+
 }

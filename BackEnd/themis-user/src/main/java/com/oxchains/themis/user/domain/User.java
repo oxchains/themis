@@ -49,6 +49,12 @@ public class User {
 
     private Date createTime;
 
+    @Column(length = 64)
+    private String image;
+
+    @Column(length = 256)
+    private String description;
+
     public Long getId() {
         return id;
     }
@@ -176,6 +182,22 @@ public class User {
         this.userTxDetail = userTxDetail;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public User(User user){
         //setAuthorities(user.getAuthorities());
         setRole(user.getRole());
@@ -190,5 +212,8 @@ public class User {
         setCreateTime(user.getCreateTime());
 
         setUserTxDetail(user.getUserTxDetail());
+
+        setImage(user.getImage());
+        setDescription(user.getDescription());
     }
 }

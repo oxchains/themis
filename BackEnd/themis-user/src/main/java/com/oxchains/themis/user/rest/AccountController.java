@@ -120,8 +120,8 @@ public class AccountController {
     }
 
     @PostMapping(value = "/{orderId}")
-    public String addTxid(@PathVariable String orderId,String txId){
-        return JsonUtil.toJson(bitcoinService.addTxid(orderId,txId));
+    public String addTxid(@PathVariable String orderId,@RequestBody OrdersKeyAmount keyAmount){
+        return JsonUtil.toJson(bitcoinService.addTxid(orderId,keyAmount.getTxId()));
     }
 
     @GetMapping(value = "/{orderId}")

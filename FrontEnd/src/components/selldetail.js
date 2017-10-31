@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-
+import {Link} from 'react-router-dom';
 import { Field } from 'redux-form';
 import { connect } from 'react-redux';
 import { fetctSellBtcDetail,fetctSellnow} from '../actions/releaseadvert'
@@ -28,6 +28,8 @@ class Selldetail extends Component {
         }
         this.handelChange = this.handelChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.handlePayway = this.handlePayway.bind(this)
+
 
     }
     handelChange(e){
@@ -63,9 +65,13 @@ class Selldetail extends Component {
             money : this.state.messmoney,
             amount : this.state.messnum
         }
-        this.props.fetctSellnow({formdata},err=>{
-            this.setState({ isModalOpen: true , error: err , actionResult: err||'下单成功!'})
-        });
+        // if(this.props.authenticated){
+            this.props.fetctSellnow({formdata},err=>{
+                this.setState({ isModalOpen: true , error: err , actionResult: err||'下单成功!'})
+            });
+        // }else {
+        //     alert("请先登录哦～")
+        // }
     }
 
     renderAlert() {
@@ -82,14 +88,22 @@ class Selldetail extends Component {
             );
         }
     }
+    handlePayway(item){
+        console.log(item)
+    }
     render() {
+        const userId=localStorage.getItem("userId");
         const messmoney = this.state.messmoney;
         const messnum = this.state.messnum;
-
+        console.log(this.props.data);
         const data = this.props.all.notice || [];
-        const datanum = this.props.all
-        const time = data.validPayTime/1000/60
-
+        const datanum = this.props.all;
+        const time = data.validPayTime/1000/60;
+        const dataDetail = {id:this.props.data.id,userId:userId,partnerId:this.props.data.sellerId == userId ?this.props.data.buyerId:this.props.data.sellerId};
+        const path = {
+            pathname:'/orderprogress',
+            state:dataDetail,
+        }
         return (
             <div className="maincontent">
                 <div className="detail-title">
@@ -126,6 +140,7 @@ class Selldetail extends Component {
                             <ul className="priceul">
                                 <li>报价 : &#x3000;&#x3000;&#x3000;&#x3000;&#x3000;{data.price}CNY/BTC</li>
                                 <li>交易额度 : &#x3000;&#x3000;&#x3000;{data.minTxLimit}-{data.maxTxLimit} CNY</li>
+                                {/*<li>{(item) => this.handlePayway(item)}</li>*/}
                                 <li>付款方式 : &#x3000;&#x3000;&#x3000;{data.payType == 1 ?"现金":data.payType == 2 ?"转账":data.payType == 3 ?"支付宝":data.payType == 4 ? "微信":data.payType == 5 ? "Apple Pay":""}</li>
                                 <li>付款期限 : &#x3000;&#x3000;&#x3000;{time}分钟</li>
                             </ul>
@@ -169,7 +184,8 @@ class Selldetail extends Component {
                     <ModalFooter>
                         <button className='btn btn-default' onClick={this.hideModal}>
                             {/*<a href="/myadvert" >关闭</a>*/}
-                            <a className="close-modal" href="/orderprogress" >关闭</a>
+                            <Link className="close-modal" to={path}>关闭</Link>
+                            {/*<a className="close-modal" href="/orderprogress" >关闭</a>*/}
                         </button>
                     </ModalFooter>
                 </Modal>
