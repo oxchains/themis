@@ -20,19 +20,19 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 /**
  * @Author ccl
  * @Time 2017-10-12 11:21
- * @Name ApplicationConfiguration
+ * @Name UserApplicationConfiguration
  * @Desc:
  */
 
 @EnableWebSecurity
 @Configuration
-public class ApplicationConfiguration extends WebSecurityConfigurerAdapter{
+public class UserApplicationConfiguration extends WebSecurityConfigurerAdapter{
 
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
     private final JwtTokenFilter jwtTokenFilter;
     private AuthError authError;
 
-    public ApplicationConfiguration(@Autowired JwtTokenFilter jwtTokenFilter, @Autowired JwtAuthenticationProvider jwtAuthenticationProvider, @Autowired AuthError authError) {
+    public UserApplicationConfiguration(@Autowired JwtTokenFilter jwtTokenFilter, @Autowired JwtAuthenticationProvider jwtAuthenticationProvider, @Autowired AuthError authError) {
         this.jwtTokenFilter = jwtTokenFilter;
         this.jwtAuthenticationProvider = jwtAuthenticationProvider;
         this.authError = authError;
