@@ -1,4 +1,4 @@
-package com.oxchains.themis.repo.domain;
+package com.oxchains.themis.repo.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;

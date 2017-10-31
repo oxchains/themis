@@ -1,10 +1,18 @@
 package com.oxchains.themis.repo.dao;
 
+import com.oxchains.themis.repo.entity.Order;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
 /**
- * @Author oxchains
+ * @Author ccl
  * @Time 2017-10-31 10:19
  * @Name OrderDao
  * @Desc:
  */
-public class OrderDao {
+@Repository
+public interface OrderDao extends CrudRepository<Order,Long> {
+    List<Order> findByBuyerIdOrSellerId(Long buyId, Long sellerId);
 }

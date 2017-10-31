@@ -1,4 +1,4 @@
-package com.oxchains.themis.bitcoin.util;
+package com.oxchains.bitcoin.util;
 
 import java.math.BigDecimal;
 import java.util.Date;

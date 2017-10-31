@@ -13,7 +13,7 @@ import javax.transaction.Transactional;
  * @Name TransactionService
  * @Desc:
  */
-@Transactional
+//@Transactional
 @Service
 public class TransactionService {
     @Resource

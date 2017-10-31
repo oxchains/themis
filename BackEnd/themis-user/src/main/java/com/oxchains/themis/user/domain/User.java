@@ -1,6 +1,7 @@
 package com.oxchains.themis.user.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.oxchains.themis.repo.entity.UserTxDetail;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;

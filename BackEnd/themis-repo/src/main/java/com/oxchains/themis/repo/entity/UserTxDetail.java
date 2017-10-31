@@ -1,4 +1,4 @@
-package com.oxchains.themis.user.domain;
+package com.oxchains.themis.repo.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -23,6 +23,15 @@ public class UserTxDetail {
     private String firstBuyTime;  //第一次购买时间
     private String createTime;     //用户创建时间
     private Integer believeNum;    // 信任次数
+
+    /**
+     * 交总量
+     */
+    @Transient
+    private Double buyAmount;
+
+    @Transient
+    private Double sellAmount;
 
     public Long getId() {
         return id;
@@ -86,5 +95,21 @@ public class UserTxDetail {
 
     public void setBelieveNum(Integer believeNum) {
         this.believeNum = believeNum;
+    }
+
+    public Double getBuyAmount() {
+        return buyAmount;
+    }
+
+    public void setBuyAmount(Double buyAmount) {
+        this.buyAmount = buyAmount;
+    }
+
+    public Double getSellAmount() {
+        return sellAmount;
+    }
+
+    public void setSellAmount(Double sellAmount) {
+        this.sellAmount = sellAmount;
     }
 }

@@ -1,4 +1,4 @@
-package com.oxchains.themis.bitcoin.rpcclient;
+package com.oxchains.bitcoin.rpcclient;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
