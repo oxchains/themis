@@ -91,19 +91,20 @@ public class BitcoinService {
         try{
             BitcoindRpcClient.RawTransaction rawTransaction = client.getRawTransaction(txId);
 
-            if(VoutHashType.SCRIPT_HASH.getName().equals(rawTransaction.vOut().get(0).scriptPubKey().type())){
-                Transaction transaction = transactionDao.findByOrderId(orderId);
-                if(null != transaction){
-                    transaction.setUtxoTxid(txId);
-                    transactionDao.save(transaction);
-                    return RestResp.success(transaction);
-                }else {
-                    return RestResp.fail("订单不成立");
-                }
+            Transaction transaction = transactionDao.findByOrderId(orderId);
+            if(null != transaction){
+                transaction.setUtxoTxid(txId);
+                transactionDao.save(transaction);
+                return RestResp.success(transaction);
+            }else {
+                return RestResp.fail("订单不成立");
+            }
+
+            /*if(VoutHashType.SCRIPT_HASH.getName().equals(rawTransaction.vOut().get(0).scriptPubKey().type())){
 
             }else {
                return RestResp.fail("交易不成立,请重新发送比特币到合约地址");
-            }
+            }*/
         }catch (Exception e){
             logger.error(e.getMessage());
             return RestResp.fail("交易不成立,请重新发送比特币到合约地址",e.getMessage());
@@ -118,7 +119,7 @@ public class BitcoinService {
             if(null != rawTransaction){
                 try {
                     int confirmations = rawTransaction.confirmations();
-                    double value = rawTransaction.vOut().get(0).value();
+                    //double value = rawTransaction.vOut().get(0).value();
                     return RestResp.success("交易已有 "+confirmations+" 个确认");
                 }catch (Exception e){
                     return RestResp.success("交易还未确认");
@@ -146,14 +147,16 @@ public class BitcoinService {
             List<BitcoindRpcClient.TxInput> txInputs = new ArrayList<>();
             List<BitcoindRpcClient.TxOutput> txOutputs = new ArrayList<>();
             List<BitcoindRpcClient.RawTransaction.Out> outs = rawTransaction.vOut();
+            int vout = 0;
             for(BitcoindRpcClient.RawTransaction.Out out : outs){
                 BitcoindRpcClient.RawTransaction.Out.ScriptPubKey scriptPubKey = out.scriptPubKey();
                 String type = scriptPubKey.type();
                 if(VoutHashType.SCRIPT_HASH.getName().equals(type)){
                     //BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), P2SH_REDEEM_SCRIPT, BigDecimal.valueOf(amount));
-                    BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT);
+                    BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), vout);//0  Previous output scriptPubKey mismatch
                     txInputs.add(txInput);
                     logger.info("Input: "+txInputs.toString());
+                    amount = out.value();
                     BitcoindRpcClient.TxOutput txOutput = new BitcoindRpcClient.BasicTxOutput(recvAddress, ArithmeticUtils.minus(amount, TX_FEE));//outputAmount
                     txOutputs.add(txOutput);
                     logger.info("Output: "+txOutputs.toString());
@@ -174,6 +177,7 @@ public class BitcoinService {
 
                     return RestResp.success(RestResp.success(order));
                 }
+                vout ++;
             }
             return RestResp.fail("++++++++++");
         }catch (Exception e){
