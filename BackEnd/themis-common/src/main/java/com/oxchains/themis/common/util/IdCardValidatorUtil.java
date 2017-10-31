@@ -406,13 +406,4 @@ public class IdCardValidatorUtil {
         return a;
     }
 
-    public static void main(String[] args) throws Exception {
-
-        String idcard15 = "142431199001145";//15位
-        String idcard18 = "152626199002082110";//18位
-        IdCardValidatorUtil iv = new IdCardValidatorUtil();
-        System.out.println(iv.isValidatedAllIdcard(idcard15));
-        System.out.println(iv.isValidatedAllIdcard(idcard18));
-
-    }
 }
