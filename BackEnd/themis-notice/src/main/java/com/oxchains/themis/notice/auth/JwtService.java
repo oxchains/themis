@@ -33,7 +33,7 @@ import static java.util.Optional.empty;
 @Service
 public class JwtService {
 
-    private Logger LOG = LoggerFactory.getLogger(getClass());
+    private static final Logger LOG = LoggerFactory.getLogger(JwtService.class);
 
     @Value("${jwt.key.store}") private String keystore;
 
@@ -83,6 +83,7 @@ public class JwtService {
             JwtAuthentication jwtAuthentication=new JwtAuthentication(user,token,claims);
             return Optional.of(jwtAuthentication);
         } catch (Exception e) {
+            e.printStackTrace();
             LOG.error("failed to parse jwt token {}: ", token, e);
         }
         return empty();
