@@ -9,10 +9,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * @Author ccl
- * @Time 2017-10-12 15:49
- * @Name EncryptUtil
- * @Desc: 加密工具类
+ * @author ccl
+ * @time 2017-10-12 15:49
+ * @name EncryptUtil
+ * @desc: 加密工具类
  */
 public class EncryptUtils {
     public static String encodeMD5(String str){

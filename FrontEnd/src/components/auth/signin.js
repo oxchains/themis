@@ -12,7 +12,6 @@ class Signin extends Component {
         super(props);
         this.state = {}
     }
-
     handlePhoneSubmit() {
         const mobilephone= this.refs.loginname.value ;
         const password = this.refs.password.value ;
@@ -35,8 +34,7 @@ class Signin extends Component {
             );
         }
     }
-    render() {
-
+    render(){
         return (
             <div>
 

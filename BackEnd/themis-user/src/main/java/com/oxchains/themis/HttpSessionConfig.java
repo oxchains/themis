@@ -4,10 +4,10 @@ package com.oxchains.themis;
 //import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 /**
- * @Author ccl
- * @Time 2017-10-18 14:11
- * @Name HttpSessionConfig
- * @Desc:
+ * @author ccl
+ * @time 2017-10-18 14:11
+ * @name HttpSessionConfig
+ * @desc:
  */
 //@Configuration
 //@EnableRedisHttpSession

@@ -8,12 +8,12 @@ import javax.annotation.Resource;
 import javax.transaction.Transactional;
 
 /**
- * @Author ccl
- * @Time 2017-10-17 11:27
- * @Name TransactionService
- * @Desc:
+ * @author ccl
+ * @time 2017-10-17 11:27
+ * @name TransactionService
+ * @desc:
  */
-@Transactional
+//@Transactional
 @Service
 public class TransactionService {
     @Resource

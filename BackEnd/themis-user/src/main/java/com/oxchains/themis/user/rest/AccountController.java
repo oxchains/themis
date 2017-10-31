@@ -11,10 +11,10 @@ import javax.annotation.Resource;
 import java.util.Arrays;
 
 /**
- * @Author ccl
- * @Time 2017-10-16 17:44
- * @Name AccountController
- * @Desc:
+ * @author ccl
+ * @time 2017-10-16 17:44
+ * @name AccountController
+ * @desc:
  */
 @RestController
 @RequestMapping(value = "/account")

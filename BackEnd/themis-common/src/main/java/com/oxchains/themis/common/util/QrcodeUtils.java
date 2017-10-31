@@ -20,10 +20,10 @@ import java.util.Random;
 import static io.undertow.security.impl.BasicAuthenticationMechanism.CHARSET;
 
 /**
- * @Author ccl
- * @Time 2017-10-13 14:21
- * @Name QrcodeUtils
- * @Desc: 二维码生成工具
+ * @author ccl
+ * @time 2017-10-13 14:21
+ * @name QrcodeUtils
+ * @desc: 二维码生成工具
  */
 public class QrcodeUtils {
     private static final Logger logger= LoggerFactory.getLogger(QrcodeUtils.class);

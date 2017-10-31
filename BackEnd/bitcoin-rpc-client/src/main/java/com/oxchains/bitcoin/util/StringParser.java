@@ -1,10 +1,10 @@
-package com.oxchains.themis.bitcoin.util;
+package com.oxchains.bitcoin.util;
 
 /**
- * @Author oxchains
- * @Time 2017-10-30 9:44
- * @Name StringParser
- * @Desc:
+ * @author oxchains
+ * @time 2017-10-30 9:44
+ * @nameStringParser
+ * @desc:
  */
 public class StringParser {
     private String string;

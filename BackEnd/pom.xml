@@ -22,6 +22,9 @@
         <module>themis-common</module>
         <module>themis-order</module>
         <module>themis-arbitrate</module>
+        <module>themis-repo</module>
+
+        <!--<module>bitcoin-rpc-client</module>-->
     </modules>
 
     <properties>

@@ -1,14 +1,14 @@
-package com.oxchains.themis.bitcoin.util;
+package com.oxchains.bitcoin.util;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Map;
 
 /**
- * @Author oxchains
- * @Time 2017-10-30 9:48
- * @Name MapWrapper
- * @Desc:
+ * @author oxchains
+ * @time 2017-10-30 9:48
+ * @nameMapWrapper
+ * @desc:
  */
 public class MapWrapper {
     public final Map m;

@@ -3,56 +3,124 @@
  */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import { Upload, Icon, message } from 'antd';
 import { fetctBaseInfo } from '../actions/releaseadvert'
+import {
+    Modal,
+    ModalHeader,
+    ModalTitle,
+    ModalClose,
+    ModalBody,
+    ModalFooter
+} from 'react-modal-bootstrap';
+
+function getBase64(img, callback) {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result));
+    reader.readAsDataURL(img);
+}
 
 class Baseinfo extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            isModalOpen: false,
+            error: null,
+            actionResult: '',
+        }
         this.handleSave = this.handleSave.bind(this)
+        this.handleChange = this.handleChange.bind(this)
     }
 
-    componentWillMount() {
-        const userId = localStorage.getItem("userId")
-
-        this.props.fetctBaseInfo({userId}, () => {})
+    hideModal = () => {
+        this.setState({
+            isModalOpen: false
+        });
+    };
+    handleChange = (info) => {
+        if (info.file.status === 'done') {
+            // Get this url from response in real world.
+            getBase64(info.file.originFileObj, imageUrl => this.setState({ imageUrl }));
+        }
     }
-
 
     handleSave(){
-
+        const description = this.refs.description.value;
+        const image =  this.state.imageUrl
+        console.log(image)
+        console.log(description)
+        this.props.fetctBaseInfo({description,image}, err=>{
+            this.setState({ isModalOpen: true , error: err , actionResult: err||'保存成功!'});
+        })
     }
+
     render() {
+           const loginname = localStorage.getItem('loginname');//手机号
+           const mobilephone = localStorage.getItem('mobilephone');//手机号
+           const createTime = localStorage.getItem('createTime');//注册时间
+           const email =  localStorage.getItem('email');//邮箱
+           const firstBuyTime = localStorage.getItem('firstBuyTime') //第一次交易时间
+           const  txNum = localStorage.getItem('txNum') //交易次数
+           const  believeNum = localStorage.getItem('believeNum') //信任人数
+           const  sellAmount = localStorage.getItem('sellAmount') //出售的累计交易数量
+           const  buyAmount = localStorage.getItem('buyAmount') //购买的累计交易数量
+           const imageUrl = this.state.imageUrl;
         return (
             <div>
                 <div className="maininfo">
                     <div className="display-info">
-                        <img className="baseinfoimg" src="./public/img/user.jpg" alt=""/>
+                        {/*<img className="baseinfoimg" src="./public/img/user.jpg" alt=""/>*/}
+                        <Upload
+                            className="avatar-uploader"
+                            name="avatar"
+                            showUploadList={false}
+                            action="//jsonplaceholder.typicode.com/posts/"
+                            onChange={this.handleChange}
+                        >
+                            {
+                                imageUrl ?
+                                    <img src={imageUrl} alt="" className="avatar" /> :
+                                    <Icon type="plus" className=" avatar-uploader-trigger " />
+                            }
+                        </Upload>
                     </div>
                     <div className="display-info">
-                        <input className="inputfile" type="file"/>
-                    </div>
-                    <div className="display-info">
-                        <h5 style={{marginBottom:20+'px'}}>TONSION</h5>
+                        <h5 style={{marginBottom:20+'px',marginTop:10+'px'}}>{loginname}</h5>
                     </div>
                 </div>
                 <div className="validateinfo">
                      <ul>
                          <li>身份证验证:已验证</li>
-                         <li>电子邮件验证:已验证</li>
-                         <li>手机号码:已验证</li>
-                         <li>注册时间:2017-9-20 11:03:33</li>
-                         <li>第一次交易时间：2017-9-20 16:20:38</li>
-                         <li>信任人数:被 1 人信任</li>
-                         <li>累计交易次数: 1</li>
-                         <li>累计交易量:0-0.5 BTC</li>
+                         <li>电子邮件验证:{email ?"已验证" : "未验证"}</li>
+                         <li>手机号码:{mobilephone}</li>
+                         <li>注册时间: {createTime}</li>
+                         <li>第一次交易时间：{firstBuyTime}</li>
+                         <li>信任人数:被 {believeNum} 人信任</li>
+                         <li>累计交易次数: {txNum}</li>
+                         <li>累计交易量:（买）{buyAmount} —（卖）{sellAmount} BTC</li>
                      </ul>
                 </div>
-                <textarea className="textarea-info" name="" id="" cols="53" rows="5" placeholder="简介，在您的公共资料上展示您的介绍信息。纯文本，不超过200字" ref="textarea"></textarea>
+                <textarea className="textarea-info" name="" id="" cols="53" rows="5" placeholder="简介，在您的公共资料上展示您的介绍信息。纯文本，不超过200字" ref="description"></textarea>
                <div className="display-save">
                    <button className="form-save" onClick={this.handleSave}>保存</button>
                </div>
+
+                <Modal isOpen={this.state.isModalOpen} onRequestHide={this.hideModal}>
+                    <ModalHeader>
+                        <ModalClose onClick={this.hideModal}/>
+                        <ModalTitle>提示:</ModalTitle>
+                    </ModalHeader>
+                    <ModalBody>
+                        <p className={this.state.error?'text-red':'text-green'}>
+                            {this.state.actionResult}
+                        </p>
+                    </ModalBody>
+                    <ModalFooter>
+                        <button className='btn btn-default' onClick={this.hideModal}>
+                            <a className="close-modal" href="" >关闭</a>
+                        </button>
+                    </ModalFooter>
+                </Modal>
             </div>
         );
     }

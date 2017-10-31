@@ -33,24 +33,29 @@ import static java.util.Optional.empty;
 @Service
 public class JwtService {
 
-    private Logger LOG = LoggerFactory.getLogger(getClass());
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
 
-    @Value("${jwt.key.store}") private String keystore;
+    @Value("${jwt.key.store}")
+    private String keystore;
 
-    @Value("${jwt.key.pass}") private String keypass;
+    @Value("${jwt.key.pass}")
+    private String keypass;
 
-    @Value("${jwt.key.alias}") private String keyalias;
+    @Value("${jwt.key.alias}")
+    private String keyalias;
 
-    @Value("${jwt.cert}") private String cert;
+    @Value("${jwt.cert}")
+    private String cert;
 
     private PrivateKey privateKey;
     private PublicKey publicKey;
 
     private final UserDao userDao;
 
-    public JwtService(UserDao userDao){
-        this.userDao=userDao;
+    public JwtService(UserDao userDao) {
+        this.userDao = userDao;
     }
+
     @PostConstruct
     private void init() throws Exception {
         char[] pass = keypass.toCharArray();
@@ -63,12 +68,12 @@ public class JwtService {
         publicKey = x509Cert.getPublicKey();
     }
 
-    public String generate(User user){
+    public String generate(User user) {
         return new DefaultJwtBuilder().
                 setId(UUID.randomUUID().toString()).
                 setSubject(user.getLoginname()).
-                setExpiration(Date.from(ZonedDateTime.now().plusWeeks(1).toInstant())).claim("id",user.getId()).claim("email",user.getEmail()).
-                signWith(SignatureAlgorithm.ES256,privateKey).
+                setExpiration(Date.from(ZonedDateTime.now().plusWeeks(1).toInstant())).claim("id", user.getId()).claim("email", user.getEmail()).
+                signWith(SignatureAlgorithm.ES256, privateKey).
                 compact();
     }
 
@@ -79,8 +84,8 @@ public class JwtService {
                     .setSigningKey(publicKey)
                     .parseClaimsJws(token);
             Claims claims = jws.getBody();
-            User user=userDao.findByLoginname(claims.getSubject());
-            JwtAuthentication jwtAuthentication=new JwtAuthentication(user,token,claims);
+            User user = userDao.findByLoginname(claims.getSubject());
+            JwtAuthentication jwtAuthentication = new JwtAuthentication(user, token, claims);
             return Optional.of(jwtAuthentication);
         } catch (Exception e) {
             LOG.error("failed to parse jwt token {}: ", token, e);
