@@ -102,7 +102,7 @@ export function fetctBuynow({formdata},callback) {
             headers: getAuthorizedHeader()
         }).then(response => {
                 console.log(response)
-                // dispatch({type: FETCH_BUY_NOW, payload: response})
+                dispatch({type: FETCH_BUY_NOW, payload: response})
                 if(response.data.status == 1) {
                     callback();
                 } else {
@@ -128,7 +128,7 @@ export function fetctSellnow({formdata},callback) {
             headers: getAuthorizedHeader()
         }).then(response => {
                 console.log(response)
-                // dispatch({type: FETCH_SELL_NOW, payload: response})
+                dispatch({type: FETCH_SELL_NOW, payload: response})
                 if(response.data.status == 1) {
                     callback();
                 } else {

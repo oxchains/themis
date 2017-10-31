@@ -2,7 +2,6 @@
  * Created by oxchain on 2017/10/18.
  */
 export const ROOT_URLC = 'http://192.168.1.111:8081';
-
 export const ROOT_URLL = 'http://192.168.1.170:8083';
 
 export const ROOT_ORDER= 'http://192.168.1.125:8882';
@@ -41,6 +40,10 @@ export const RELEASE_BTC = "release_btc"                                //卖家
 export const CONFIRM_GOODS = 'confirm_goods'                            //买家确认收货
 export const CANCEL_ORDERS = 'cancel_orders'                            //取消订单
 export const SAVE_COMMENT = 'save_comment'                               //提交评价
+export const FETCH_ARBITRATE_LIST = 'fetch_arbitrate_list'               //获取仲裁人消息列表
+export const UPLOAD_EVIDENCE = 'upload_evidence'                         //提交仲裁凭证
+export const FETCH_EVIDENCE = 'fetch_evidence'                           //获取仲裁凭证
+export const ARBITRATE_RESULT = 'arbitrate_result'                       //仲裁结果
 
 
 export function getAuthorizedHeader() {

@@ -8,7 +8,7 @@ import {
     AUTH_USER,
     UNAUTH_USER,
     AUTH_ERROR,
-    FETCH_VERIFY_CODE
+    FETCH_VERIFY_CODE,
 } from './types';
 
 
@@ -18,13 +18,15 @@ import {
 export function signinAction({mobilephone, password}) {
     console.log(`点击登录按钮传过来的数据是 ${mobilephone},${password}`)
     return function(dispatch) {
-        axios.post(`${ROOT_URLC}/login`, { mobilephone, password})
+        axios.post(`${ROOT_URLC}/user/login`, { mobilephone, password})
             .then(response => {
                 console.log(response)
                 if(response.data.status == 1) {
                     localStorage.setItem('token', response.data.data.token);
                     localStorage.setItem('userId', response.data.data.id);
                     localStorage.setItem('loginname',response.data.data.loginname);
+                    localStorage.setItem('role',response.data.data.role.id);
+
                     dispatch({type: AUTH_USER});
                     browserHistory.push('/');
                 } else {
