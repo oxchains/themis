@@ -12,24 +12,21 @@ import javax.persistence.Table;
 public class Payment {
     @Id
     private Long id;
-    private String payment_name;
+    private String paymentName;
+
     public Long getId() {
         return id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
-    public String getPayment_name() {
-        return payment_name;
+
+    public String getPaymentName() {
+        return paymentName;
     }
-    public void setPayment_name(String payment_name) {
-        this.payment_name = payment_name;
-    }
-    @Override
-    public String toString() {
-        return "Payment{" +
-                "id=" + id +
-                ", payment_name='" + payment_name + '\'' +
-                '}';
+
+    public void setPaymentName(String paymentName) {
+        this.paymentName = paymentName;
     }
 }

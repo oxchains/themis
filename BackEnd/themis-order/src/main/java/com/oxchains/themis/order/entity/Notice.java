@@ -12,9 +12,9 @@ public class Notice {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    // user表的id
     @Column(name = "userid")
-    private Long userId;       // user表的id
+    private Long userId;
 
     @Column(name = "noticetype")
     private Long noticeType;      // 购买BTC/出售BTC

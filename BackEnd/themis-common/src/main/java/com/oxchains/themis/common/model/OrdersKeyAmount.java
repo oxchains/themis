@@ -9,8 +9,6 @@ public class OrdersKeyAmount {
     private Double amount;
     private String recvAddress;
     private String prvKeys;
-
-
     private String txId;
 
     public String getTxId() {

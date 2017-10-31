@@ -17,7 +17,10 @@ public class UserTxDetail {
     private Integer goodDesc;   //好评次数
     private Integer badDesc;    //差评次数
     private String firstBuyTime;  //第一次购买时间
+    private Long userId;
+    @Transient
     private String createTime;     //用户创建时间
+
     private Integer believeNum;    // 信任次数
     @Transient
     private Notice notice;      //公告详细信息
@@ -31,6 +34,14 @@ public class UserTxDetail {
     private String loginname;
     @Transient
     private String goodDegree;//好评度
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
     public String getLoginname() {
         return loginname;
