@@ -183,6 +183,7 @@ export function addTransactionId({txIdInfo},callback) {
             data: txIdInfo,
             headers: getAuthorizedHeader()
         }).then((res) => {
+            console.log(res)
             if (res.data.status == 1) {
                 dispatch({
                     type: ADD_TRANSACTION_ID,

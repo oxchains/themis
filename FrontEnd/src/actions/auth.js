@@ -23,9 +23,7 @@ export function signinAction({mobilephone, password}) {
                 console.log(response)
                 if(response.data.status == 1) {
                     localStorage.setItem('token', response.data.data.token);
-
                     localStorage.setItem('role',response.data.data.role.id);
-
                     localStorage.setItem('userId', response.data.data.id); //用户ID
                     localStorage.setItem('loginname',response.data.data.loginname); //用户登录名
                     localStorage.setItem('mobilephone',response.data.data.mobilephone);//手机号

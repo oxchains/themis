@@ -174,4 +174,34 @@
             </plugin>
         </plugins>
     </build>
+<<<<<<< HEAD
+=======
+
+    <!--
+    <repositories>
+        <repository>
+            <id>oxchains-repo</id>
+            <url>http://maven.oxchains.com/repository/maven-public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>oxchains-repo</id>
+            <url>http://maven.oxchains.com/repository/maven-public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+    -->
+>>>>>>> 7447c51e7a75de3fbaab81ca62ed92b3a29cd539
 </project>

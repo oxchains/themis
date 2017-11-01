@@ -176,7 +176,6 @@ class Releaseadvert extends Component {
                     <textarea name="" id="" cols="150" rows="6" className="display text-content" ref="noticeContent" placeholder="请说明有关您交易的相关条款或备注您的支付方式，如微信号，支付宝号等，以便对方可以快速和您交易。(下单前后都可见)" ></textarea>
                     <button type="submit" className="  form-apply">申请发布</button>
                 </form>
-
                 <Modal isOpen={this.state.isModalOpen} onRequestHide={this.hideModal}>
                     <ModalHeader>
                         <ModalClose onClick={this.hideModal}/>
@@ -193,7 +192,6 @@ class Releaseadvert extends Component {
                         </button>
                     </ModalFooter>
                 </Modal>
-
             </div>
         );
     }

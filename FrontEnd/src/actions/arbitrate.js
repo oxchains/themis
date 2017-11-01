@@ -42,13 +42,18 @@ export function fetchArbitrateList({userIdDate}) {
  * @returns {Function}
  */
 
-export function uploadEvidence({evidenceData}) {
-    console.log(evidenceData)
+export function uploadEvidence({id,userId,evidenceOFile,evidenceDes},callback) {
+    let formData = new FormData();
+    formData.append("id", id);
+    formData.append("userId", userId);
+    formData.append("multipartFile", evidenceOFile);
+    formData.append("content", evidenceDes);
+    console.log(formData)
     return function(dispatch) {
         axios({
             method:'post',
             url:`${ROOT_ORDER}/order/uploadEvidence`,
-            data:evidenceData,
+            data:formData,
             headers: getAuthorizedHeader(),
             headers: {'content-type': 'multipart/form-data'},
             withCredentials: true
@@ -59,7 +64,7 @@ export function uploadEvidence({evidenceData}) {
                     type: UPLOAD_EVIDENCE,
                     payload: res.data.data
                 })
-                callback();
+                callback(res.data);
             }
         }).catch( err => dispatch(requestError(err.message)) );
     }
