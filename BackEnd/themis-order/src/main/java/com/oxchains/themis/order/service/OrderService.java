@@ -226,43 +226,34 @@ public class OrderService {
         Orders orders1 = null;
         try {
             Orders orders = orderRepo.findOne(id);
+            Notice notice = noticeRepo.findOne(orders.getNotice().getId());
+            notice.setTxStatus(2);
             if(orders.getOrderStatus()==1){
                 //当订单状态为1 时 买家已拍下 但商家还未确认 可以直接取消订单 不采取任何操作
-                orders.setOrderStatus(6L);
+                orders.setOrderStatus(7L);
+                noticeRepo.save(notice);
             }
             if(orders.getOrderStatus()==2){
                 //买家的私匙给卖家
                 OrderAddresskeys orderAddresskeys = orderAddresskeyRepo.findOrderAddresskeysByOrderId(id);
                 orderAddresskeys.setSellerBuyerPriAuth(orderAddresskeys.getBuyerPriAuth());
 
-                //将卖家的BTC从写上地址转回到 买家账户
+                //将卖家的BTC从协商地址转回到 买家账户
                 String s = orderAddresskeys.getBuyerPriAuth()+","+orderAddresskeys.getSellerPriAuth();
                 OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orders.getId(),s,orders.getAmount().doubleValue(),userRepo.findOne(orders.getSellerId()).getFirstAddress());
                 HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), this.getHttpHeader());
                 JSONObject jsonObject = restTemplate.postForObject("http://themis-user/account/p2ur",formEntity,JSONObject.class);
+                Integer status = (Integer) jsonObject.get("status");
+                if(status == 1){
+                    orders.setOrderStatus(7L);
+                    noticeRepo.save(notice);
+                }
 
-                orders.setOrderStatus(6L);
             }
             if(orders.getOrderStatus()==3){
-                if(userId == orders.getBuyerId().longValue()){
-                    //买家取消订单 证明收到退款 调用接口让BTC回到卖家地址 状态改为6
-                    OrderAddresskeys orderAddresskeys = orderAddresskeyRepo.findOrderAddresskeysByOrderId(orders.getId());
-                    orderAddresskeys.setSellerBuyerPriAuth(orderAddresskeys.getBuyerPriAuth());
-                    orderAddresskeyRepo.save(orderAddresskeys);
-                    orders.setOrderStatus(6L);
-
-                    //将卖家的BTC从协商地址转回到 卖家账户
-                    String s = orderAddresskeys.getBuyerPriAuth()+","+orderAddresskeys.getSellerPriAuth();
-                    OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orders.getId(),s,orders.getAmount().doubleValue(),userRepo.findOne(orders.getSellerId()).getFirstAddress());
-                    HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), this.getHttpHeader());
-                    JSONObject jsonObject = restTemplate.postForObject("http://themis-user/account/p2ur",formEntity,JSONObject.class);
-
-                }
-                if(userId == orders.getSellerId().longValue()){
-                    //卖家取消订单 状态改为7 等待买家收到退款
-                    orders.setOrderStatus(7L);
-                }
+                orders.setOrderStatus(8L);
             }
+
             orders1 = orderRepo.save(orders);
             this.setOrderStatusName(orders1);
         } catch (Exception e) {
@@ -337,11 +328,11 @@ public class OrderService {
     public Orders confirmReceiveRefund(Pojo pojo){
         try {
             Orders orders = orderRepo.findOne(pojo.getId());
-            if(orders.getBuyerId().longValue() == pojo.getUserId() && orders.getOrderStatus().longValue() == 7){
+            if(orders.getBuyerId().longValue() == pojo.getUserId() && orders.getOrderStatus().longValue() == 8){
                 OrderAddresskeys orderAddresskeys = orderAddresskeyRepo.findOrderAddresskeysByOrderId(orders.getId());
                 orderAddresskeys.setSellerBuyerPriAuth(orderAddresskeys.getBuyerPriAuth());
                 orderAddresskeyRepo.save(orderAddresskeys);
-                orders.setOrderStatus(6L);
+                orders.setOrderStatus(7L);
                 orders = orderRepo.save(orders);
 
                 //将卖家的BTC从写上地址转回到 买家账户
@@ -476,7 +467,7 @@ public class OrderService {
                     }
                 }
                 if(buyerk>=2){
-                    orders.setOrderStatus(2L);
+                    orders.setArbitrate(2);
                     orders.setOrderStatus(7L);
                     orderRepo.save(orders);
                     //将卖家的BTC从写上地址转回到 买家账户
@@ -486,7 +477,7 @@ public class OrderService {
                     JSONObject jsonObject = restTemplate.postForObject("http://themis-user/account/p2ur",formEntity,JSONObject.class);
                 }
                 if(sellerk>=2){
-                    orders.setOrderStatus(2L);
+                    orders.setArbitrate(2);
                     orders.setOrderStatus(7L);
                     orderRepo.save(orders);
                     //将卖家的BTC从写上地址转回到 买家账户
@@ -634,9 +625,6 @@ public class OrderService {
             if(orders.getOrderStatus()==2){
                 orders.setOrderStatus(3L);
                 return orderRepo.save(orders);
-            }
-            if(orders.getOrderStatus()==3){
-                return orders;
             }
         } catch (Exception e) {
             LOG.error("confirm send money faild : {}",e.getMessage(),e);

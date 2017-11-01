@@ -6,6 +6,7 @@ import com.oxchains.themis.order.common.RegisterRequest;
 import com.oxchains.themis.order.entity.*;
 import com.oxchains.themis.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +26,7 @@ import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 
 /**
  * Created by huohuo on 2017/10/23.
+ * @Author huohuo
  */
 @RestController
 public class OrderController {
@@ -32,6 +34,8 @@ public class OrderController {
     public OrderController(@Autowired OrderService orderService) {
         this.orderService = orderService;
     }
+    @Value("${order.image.url}")
+    private String imageUrl;
     /*
    * 一 ：添加订单
    * */
@@ -155,8 +159,8 @@ public class OrderController {
      return o!=null?RestResp.success(o): RestResp.fail();
     }
     /*
- * 根据id查询自己已完成的的订单
- * */
+    * 根据id查询自己已完成的的订单
+    * */
     @RequestMapping("/order/findCompletedOrders")
     public RestResp findCompletedOrders(@RequestBody Pojo pojo){
         List<Orders>  list= orderService.findCompletedOrdersById(pojo.getUserId());
@@ -166,7 +170,7 @@ public class OrderController {
    * 根据id查询自己未完成的的订单
    * */
     @RequestMapping("/order/findNoCompletedOrders")
-    public RestResp findNoCompletedOrders(@RequestBody Pojo pojo){
+    public RestResp findNoCompletedOrders(@RequestBody Pojo pojo,@RequestParam(value = "pageNum",defaultValue = "1") Integer pageNum,@RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize){
         List<Orders>  list= orderService.findNoCompletedOrdersById(pojo.getUserId());
         return list!=null?RestResp.success(list):RestResp.fail();
     }
@@ -222,6 +226,9 @@ public class OrderController {
         boolean b = orderService.sellerReleaseBTCIsOrNot(pojo);
         return b?RestResp.success():RestResp.fail();
     }
+    /*
+    * 仲裁者获取 卖家买家上传的交易凭据
+    * */
     @RequestMapping("/order/getEvidence")
     public RestResp getEvidence(@RequestBody Pojo pojo){
         return orderService.getEvidence(pojo);
@@ -232,7 +239,7 @@ public class OrderController {
     @RequestMapping("/order/{fileName}/downloadfile")
     public void downloadfile(@PathVariable String fileName, HttpServletRequest request, HttpServletResponse response){
         try {
-            File applicationFile = new File("D://tmp/images/" + fileName);
+            File applicationFile = new File(imageUrl + fileName);
             if(applicationFile.exists()){
                 Path filePath = applicationFile.toPath();
                 response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + applicationFile.getName());
@@ -259,12 +266,14 @@ public class OrderController {
     @RequestMapping("/order/uploadEvidence")
     public RestResp uploadEvidence(@ModelAttribute @Valid RegisterRequest registerRequest) throws IOException {
         MultipartFile multipartFile = registerRequest.getMultipartFile();
-        String filename = multipartFile.getOriginalFilename();
-        String suffix = filename.substring(filename.lastIndexOf("."));
-        UUID uuid = UUID.randomUUID();
-        String newFileName = uuid.toString() + suffix;
-        multipartFile.transferTo(new File("D://tmp/images/"+newFileName));
-        registerRequest.setFileName(newFileName);
+        if(multipartFile !=null ){
+            String filename = multipartFile.getOriginalFilename();
+            String suffix = filename.substring(filename.lastIndexOf("."));
+            UUID uuid = UUID.randomUUID();
+            String newFileName = uuid.toString() + suffix;
+            multipartFile.transferTo(new File(imageUrl+newFileName));
+            registerRequest.setFileName(newFileName);
+        }
         return orderService.uploadEvidence(registerRequest);
     }
 
