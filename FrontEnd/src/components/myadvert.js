@@ -67,12 +67,13 @@ class Myadvert extends Component {
     handleRow(){
         const arraydata = this.props.all || []    //列表数组的数据
         return arraydata.map((item, index) => {
+            console.log(item)
         return(<tr key={index} className="contentborder">
                 <td>{item.id}</td>
-                <td>{item.noticeType}</td>
-                <td>{item.location} </td>
+                <td>{item.noticeType == 1?"购买" : "出售"}</td>
+                <td>{item.location == 1 ? "中国" : item.location == 2 ?"美国" :""} </td>
                 <td>{item.price}</td>
-                <td>{item.price}</td>
+                <td>{item.premium}</td>
                 <td>{item.createTime}</td>
                 <td>{item.txStatus}</td>
                 <td className="tabletitle">
