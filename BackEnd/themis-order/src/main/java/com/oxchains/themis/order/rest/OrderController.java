@@ -5,13 +5,10 @@ import com.oxchains.themis.order.common.Pojo;
 import com.oxchains.themis.order.common.RegisterRequest;
 import com.oxchains.themis.order.entity.*;
 import com.oxchains.themis.order.service.OrderService;
-import org.bouncycastle.ocsp.Req;
-import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,7 +19,6 @@ import java.net.HttpURLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;

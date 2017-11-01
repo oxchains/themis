@@ -8,7 +8,6 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>themis-common</artifactId>
     <packaging>jar</packaging>
     <dependencies>
@@ -23,6 +22,5 @@
             <version>2.1.8</version>
         </dependency>
     </dependencies>
-
 
 </project>
