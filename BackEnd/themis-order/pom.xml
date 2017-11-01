@@ -181,7 +181,7 @@
         </dependencies>
     </dependencyManagement>
     <build>
-        <finalName>themis-chat</finalName>
+        <finalName>themis-order</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
