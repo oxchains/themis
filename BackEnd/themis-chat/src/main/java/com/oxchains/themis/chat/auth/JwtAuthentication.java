@@ -69,4 +69,12 @@ public class JwtAuthentication implements Authentication {
     public String toString() {
         return token;
     }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

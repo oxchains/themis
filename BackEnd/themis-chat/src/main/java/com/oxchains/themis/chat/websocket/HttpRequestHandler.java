@@ -1,4 +1,5 @@
 package com.oxchains.themis.chat.websocket;
+import com.oxchains.themis.chat.common.User;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -14,7 +15,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private final String wsUri;
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
-
     public HttpRequestHandler(String wsUri) {
         this.wsUri = wsUri;
     }
@@ -23,10 +23,9 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
         String requestUri =  request.getUri().toString();
         if (requestUri.length()>5 && requestUri.contains(wsUri)){
             String message = requestUri.substring(requestUri.lastIndexOf("?")+1);
-            String token = message.substring(0,message.lastIndexOf("_"));
-            System.out.println(token);
-            String id = ChatUtil.parse(token).getId()+"";
+            String id = message.substring(0,message.lastIndexOf("_"));
             String receiverId = message.substring(message.lastIndexOf("_")+1);
+
             if(ChatUtil.userChannels.get(id) == null){
                 ChatUtil.userChannels.put(id,new ConcurrentHashMap<String ,ChannelHandler>());
             }
@@ -59,6 +58,4 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
         cause.printStackTrace();
         ctx.close();
     }
-
-
 }

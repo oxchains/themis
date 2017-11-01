@@ -126,4 +126,5 @@ public class User {
     public void setLoginStatus(Integer loginStatus) {
         this.loginStatus = loginStatus;
     }
+
 }

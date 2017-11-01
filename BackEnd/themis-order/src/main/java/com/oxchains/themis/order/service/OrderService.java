@@ -227,7 +227,7 @@ public class OrderService {
         try {
             Orders orders = orderRepo.findOne(id);
             Notice notice = noticeRepo.findOne(orders.getNotice().getId());
-            notice.setTxStatus(2);
+            notice.setTxStatus(0);
             if(orders.getOrderStatus()==1){
                 //当订单状态为1 时 买家已拍下 但商家还未确认 可以直接取消订单 不采取任何操作
                 orders.setOrderStatus(7L);
@@ -340,6 +340,12 @@ public class OrderService {
                 OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orders.getId(),s,orders.getAmount().doubleValue(),userRepo.findOne(orders.getSellerId()).getFirstAddress());
                 HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), this.getHttpHeader());
                 JSONObject jsonObject = restTemplate.postForObject("http://themis-user/account/p2ur",formEntity,JSONObject.class);
+                Integer status = (Integer) jsonObject.get("status");
+                if(status == 1){
+                    Notice notice = noticeRepo.findOne(orders.getNotice().getId());
+                    notice.setTxStatus(0);
+                    noticeRepo.save(notice);
+                }
                 this.setOrderStatusName(orders);
                 return orders;
             }
@@ -473,8 +479,16 @@ public class OrderService {
                     //将卖家的BTC从写上地址转回到 买家账户
                     buyerStr = buyerStr.substring(1);
                     OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orders.getId(),buyerStr,orders.getAmount().doubleValue(),userRepo.findOne(orders.getBuyerId()).getFirstAddress());
+                    System.out.println(ordersKeyAmount);
                     HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), this.getHttpHeader());
                     JSONObject jsonObject = restTemplate.postForObject("http://themis-user/account/p2ur",formEntity,JSONObject.class);
+                    Integer status = (Integer) jsonObject.get("status");
+                    if(status==1){
+                        return orderArbitrate;
+                    }
+                    else{
+                        return null;
+                    }
                 }
                 if(sellerk>=2){
                     orders.setArbitrate(2);
@@ -482,9 +496,23 @@ public class OrderService {
                     orderRepo.save(orders);
                     //将卖家的BTC从写上地址转回到 买家账户
                     sellerStr = sellerStr.substring(1);
-                    OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orders.getId(),sellerStr,orders.getAmount().doubleValue(),userRepo.findOne(orders.getBuyerId()).getFirstAddress());
+                    OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orders.getId(),sellerStr,orders.getAmount().doubleValue(),userRepo.findOne(orders.getSellerId()).getFirstAddress());
+                    System.out.println(ordersKeyAmount);
                     HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), this.getHttpHeader());
                     JSONObject jsonObject = restTemplate.postForObject("http://themis-user/account/p2ur",formEntity,JSONObject.class);
+                    Integer status = (Integer) jsonObject.get("status");
+                    if(status==1){
+                        Notice notice = noticeRepo.findOne(orders.getNotice().getId());
+                        notice.setTxStatus(2);
+                        noticeRepo.save(notice);
+                        return orderArbitrate;
+                    }
+                    else{
+                        Notice notice = noticeRepo.findOne(orders.getNotice().getId());
+                        notice.setTxStatus(2);
+                        noticeRepo.save(notice);
+                        return null;
+                    }
                 }
             }
         } catch (Exception e) {
