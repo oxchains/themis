@@ -2,6 +2,7 @@ package com.oxchains.themis.user.rest;
 
 
 import com.oxchains.themis.common.model.RestResp;
+import com.oxchains.themis.common.param.ParamType;
 import com.oxchains.themis.common.util.VerifyCodeUtils;
 
 import com.oxchains.themis.user.domain.User;
@@ -33,8 +34,6 @@ public class UserController {
         return userService.login(user);
     }
 
-
-
     @PostMapping(value = "/update")
     public RestResp update(@RequestBody User user){
         return userService.updateUser(user);
@@ -51,6 +50,31 @@ public class UserController {
     @GetMapping(value = "/verifyCode")
     public RestResp verifyCode(){
         return RestResp.success(VerifyCodeUtils.getRandCode(6));
+    }
+
+    @RequestMapping(value = "/info")
+    public RestResp info(@ModelAttribute User user){
+        return userService.updateUser(user,ParamType.UpdateUserInfoType.INFO);
+    }
+
+    @PostMapping(value = "/fpassword")
+    public RestResp fpassword(@RequestBody User user){
+        return userService.updateUser(user, ParamType.UpdateUserInfoType.FPWD);
+    }
+
+    @PostMapping(value = "/email")
+    public RestResp email(@RequestBody User user){
+        return userService.updateUser(user, ParamType.UpdateUserInfoType.EMAIL);
+    }
+
+    @PostMapping(value = "/phone")
+    public RestResp phone(@RequestBody User user){
+        return userService.updateUser(user, ParamType.UpdateUserInfoType.PHONE);
+    }
+
+    @PostMapping(value = "/password")
+    public RestResp password(@RequestBody User user){
+        return userService.updateUser(user, ParamType.UpdateUserInfoType.PWD);
     }
 
 }
