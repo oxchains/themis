@@ -99,7 +99,6 @@ public class BitcoinService {
             }else {
                 return RestResp.fail("订单不成立");
             }
-
             /*if(VoutHashType.SCRIPT_HASH.getName().equals(rawTransaction.vOut().get(0).scriptPubKey().type())){
 
             }else {
@@ -119,7 +118,6 @@ public class BitcoinService {
             if(null != rawTransaction){
                 try {
                     int confirmations = rawTransaction.confirmations();
-                    //double value = rawTransaction.vOut().get(0).value();
                     return RestResp.success("交易已有 "+confirmations+" 个确认");
                 }catch (Exception e){
                     return RestResp.success("交易还未确认");
@@ -212,8 +210,7 @@ public class BitcoinService {
 
             String rawTx = client.createRawTransaction(txInputs, txOutputs);
             String SIGNED_TX = client.signRawTransaction(rawTx);
-            //rawTransaction = client.decodeRawTransaction(SIGNED_TX);
-            //submitRawTransaction(SIGNED_TX);
+
             String txId = client.sendRawTransaction(SIGNED_TX);
 
             logger.info(txId);

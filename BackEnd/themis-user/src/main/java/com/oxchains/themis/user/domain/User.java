@@ -2,6 +2,7 @@ package com.oxchains.themis.user.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.oxchains.themis.repo.entity.UserTxDetail;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
@@ -54,6 +55,9 @@ public class User {
 
     @Column(length = 256)
     private String description;
+
+    @Column(length = 128)
+    private String fpassword;
 
     public Long getId() {
         return id;
@@ -150,6 +154,10 @@ public class User {
     @Transient
     private UserTxDetail userTxDetail;
 
+
+    @Transient
+    private MultipartFile file;
+
     public Role getRole() {
         return role;
     }
@@ -198,8 +206,23 @@ public class User {
         this.description = description;
     }
 
+    public String getFpassword() {
+        return fpassword;
+    }
+
+    public void setFpassword(String fpassword) {
+        this.fpassword = fpassword;
+    }
+
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    public void setFile(MultipartFile file) {
+        this.file = file;
+    }
+
     public User(User user){
-        //setAuthorities(user.getAuthorities());
         setRole(user.getRole());
         setRoleId(user.getRoleId());
         setEmail(user.getEmail());
