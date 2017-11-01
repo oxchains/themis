@@ -22,7 +22,4 @@ public class VerifyCodeUtils {
         return from + r.nextInt(to - from);
     }
 
-    public static void main(String[] args) {
-
-    }
 }
