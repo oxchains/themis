@@ -1,6 +1,6 @@
 package com.oxchains.themis.notice.rest;
 
-import com.oxchains.themis.common.model.RestResp;
+import com.oxchains.themis.notice.auth.RestResp;
 import com.oxchains.themis.notice.domain.Notice;
 import com.oxchains.themis.notice.service.NoticeService;
 import org.springframework.web.bind.annotation.*;
