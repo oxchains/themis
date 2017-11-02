@@ -1,5 +1,6 @@
 package com.oxchains.themis.chat.common;
 
+import com.oxchains.themis.chat.auth.JwtService;
 import com.oxchains.themis.chat.service.KafkaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

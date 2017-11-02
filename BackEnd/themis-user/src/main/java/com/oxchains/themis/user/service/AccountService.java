@@ -50,7 +50,8 @@ public class AccountService {
     private String P2SH_REDEEM_SCRIPT = null;
     private String SIGNED_TX = null;
 
-    private String UTXO_TXID = null;//"f7deaad94a0157432fe20203e68d0f3e139dd1031da9e2e53eb52781e891a916";
+    //"f7deaad94a0157432fe20203e68d0f3e139dd1031da9e2e53eb52781e891a916";
+    private String UTXO_TXID = null;
     private int UTXO_VOUT = 0;
     private String UTXO_OUTPUT_SCRIPT = null;
     private String RAW_TX = null;
