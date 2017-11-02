@@ -9,7 +9,5 @@ package com.oxchains.themis;
  * @name HttpSessionConfig
  * @desc:
  */
-//@Configuration
-//@EnableRedisHttpSession
 public class HttpSessionConfig {
 }

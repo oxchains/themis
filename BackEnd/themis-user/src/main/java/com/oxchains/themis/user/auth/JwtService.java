@@ -78,7 +78,6 @@ public class JwtService {
     }
 
     Optional<JwtAuthentication> parse(String token) {
-
         try {
             Jws<Claims> jws = new DefaultJwtParser()
                     .setSigningKey(publicKey)

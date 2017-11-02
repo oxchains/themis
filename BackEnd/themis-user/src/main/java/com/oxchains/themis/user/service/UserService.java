@@ -1,6 +1,7 @@
 package com.oxchains.themis.user.service;
 
 import com.oxchains.themis.common.model.RestResp;
+import com.oxchains.themis.common.param.ParamType;
 import com.oxchains.themis.common.util.ConstantUtils;
 import com.oxchains.themis.common.util.EncryptUtils;
 import com.oxchains.themis.repo.dao.OrderDao;
@@ -76,8 +77,6 @@ public class UserService extends BaseService {
         userTxDetail.setUserId(user.getId());
 
         userTxDetailDao.save(userTxDetail);
-        //注册比特币账户
-        //String address = accountService.enrollAccount(user.getLoginname());
 
         return RestResp.success("操作成功");
     }
@@ -91,14 +90,39 @@ public class UserService extends BaseService {
         }
         return RestResp.success("操作成功");
     }
+    public RestResp updateUser(User user, ParamType.UpdateUserInfoType uuit) {
+        User u = userDao.findByLoginname(user.getLoginname());
+        switch (uuit){
+            case PWD:
+                u.setPassword(EncryptUtils.encodeSHA256(user.getPassword()));
+                break;
+            case FPWD:
+                u.setFpassword(EncryptUtils.encodeSHA256(user.getPassword()));
+                break;
+            case EMAIL:
+                u.setEmail(user.getEmail());
+                break;
+            case PHONE:
+                u.setMobilephone(user.getMobilephone());
+                break;
+                default:
+        }
+        return save(u);
+    }
+    private RestResp save(User user){
+        try {
+            userDao.save(user);
+            return RestResp.success("操作成功");
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            return RestResp.fail("操作失败");
+        }
+    }
 
     public RestResp login(User user) {
         user.setPassword(EncryptUtils.encodeSHA256(user.getPassword()));
         Optional<User> optional = findUser(user);
         return optional.map(u -> {
-            /*if (u.getLoginStatus() != 0 ){
-                return RestResp.fail("用户已经登录");
-            }*/
             String token = "Bearer " + jwtService.generate(user);
             Role role = roleDao.findById(u.getRoleId());
             UserTxDetail userTxDetail = userTxDetailDao.findByUserId(u.getId());
@@ -123,9 +147,6 @@ public class UserService extends BaseService {
             userInfo.setToken(token);
 
             userInfo.setUserTxDetail(userTxDetail);
-            //u.setLoginStatus(1);
-            //userDao.save(u);
-
             ConstantUtils.USER_TOKEN.put(u.getLoginname(), token);
             return RestResp.success("登录成功", userInfo); //new UserToken(u.getUsername(),token)
         }).orElse(RestResp.fail("登录失败"));

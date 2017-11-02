@@ -22,6 +22,7 @@ public class UserController {
 
     @RequestMapping("/user/login")
     public RestResp enroll(User user, HttpServletResponse response) {
+        System.out.println(user);
       UserToken userToken = userService.tokenForUser(user);
       if(userToken!=null){
       }
