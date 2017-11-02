@@ -84,7 +84,7 @@ export function signupUser({ loginname, mobilephone, email,password }, callback)
  * 获取验证码
  */
 
-export function GetverifyCode({phonenum},callback) {
+export function GetverifyCode({phonenum}) {
     console.log("点击发送验证码带过来的手机号" + phonenum)
     return function(dispatch) {
         axios.get(`${ROOT_URLC}/verifyCode`,{phonenum})

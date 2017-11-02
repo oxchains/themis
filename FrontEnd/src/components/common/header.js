@@ -18,14 +18,14 @@ class Header extends Component{
             return (
                 <div className="navbar-custom-menu">
                     <ul className="nav navbar-nav">
-                        {role == 3 ?  <li className="order-style" style={{width:"135px"}}><a href="/refereelist">仲裁人消息列表</a></li> : "" }
+                        {role == 3 ?  <li className="order-style" style={{width:"135px"}}><a href="/refereelist">消息列表</a></li> : "" }
                         <li className="order-style"><a href="/orderinprogress">订单</a></li>
                         <li className="order-style"><a href="/orderinprogress">钱包</a></li>
-                        <li className="dropdown user user-menu">
+                        <li className="ordermenu-style dropdown user user-menu">
                             <a href="#" className="dropdown-toggle" data-toggle="dropdown">
                                 <span className="hidden-xs">{loginname}</span>
                             </a>
-                            <ul className="dropdown-menu">
+                            <ul className="  dropdown-menu">
                                 <li className="info-self">
                                     <div className="info-style">
                                         <a  href="/usercenter" >用户中心</a>

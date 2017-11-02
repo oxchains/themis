@@ -205,6 +205,7 @@ div {
     border:1px solid #ccc;
     padding: 10px;
 }
+
 .form-style-test
 {
     display: flex;
@@ -216,7 +217,7 @@ div {
     margin-top: 10px;
     margin-left: 5px;
     cursor: pointer;
-    color: #101010;
+    color: #2ad0e9;
 }
 .login-box-msg
 {
@@ -1098,6 +1099,7 @@ table { border-spacing: 0;  border-collapse: collapse; }
 }
 .info-style>a:hover
 {
+    color: white;
     border-bottom: 1px solid white;
 }
 .dropdown-toggle:after
@@ -1121,15 +1123,46 @@ table { border-spacing: 0;  border-collapse: collapse; }
     color:#ffffff;
     background-color: #2ad0e9;
 }
+
+.order-style
+{
+    width: 135px;
+    height: 53px;
+    text-align: center;
+    padding: 15px 0;
+}
 .order-style>a
 {
-    margin-right: 20px;
+    /*margin-right: 20px;*/
     color: black;
 }
 .order-style>a:hover
 {
     background-color: #fff!important;
 }
+.ordermenu-style
+{
+    /*width: 135px;*/
+    height: 36px;
+    text-align: center;
+    padding: 6px 0;
+    margin-top: 10px;
+}
+.ordermenu-style>a
+{
+    height: 36px;
+    padding: 0;
+}
+.ordermenu-style>a:hover
+{
+    color: white;
+}
+.ordermenu-style:hover
+{
+    background-color: #2ad0e9;
+    color: white;
+}
+
 .ant-select-selection__rendered
 {
     margin-left:16px !important;
@@ -1211,20 +1244,122 @@ table { border-spacing: 0;  border-collapse: collapse; }
     margin:10px 150px 10px 40px;
     width: 300px;
 }
-.changePhone
-{
-    display: inline-block;
-    padding: 2px 20px;
-    border:1px solid #16F6EA;
-    background: linear-gradient(to right,#27D7E9,#16F6EA);
-    box-shadow: 0 0 20px #a0e9f4;
-    color: white;
-    font-size: 12px;
-    border-radius: 4px;
-}
+
 .bindinfo
 {
     font-size: 11px;
     color: #bbbbbb;
     margin-top: 5px;
+}
+.ant-btn-primary
+{
+    border:1px solid #16F6EA!important;
+    background: linear-gradient(to right,#27D7E9,#16F6EA)!important;
+}
+.ant-btn:hover, .ant-btn:focus
+{
+    border:1px solid #D9D9D9!important;
+    color: #444444!important;
+}
+.ant-btn-primary:hover, .ant-btn-primary:focus
+{
+    color: white!important;
+}
+.changePhone
+{
+    display: inline-block;
+    padding: 2px 20px;
+    border:1px solid #16F6EA!important;
+    background: linear-gradient(to right,#27D7E9,#16F6EA)!important;
+    box-shadow: 0 0 20px #a0e9f4!important;
+    color: white!important;
+    font-size: 12px;
+    border-radius: 4px;
+}
+.changePhone:hover,.changePhone:focus
+{
+    color: white!important;
+    border:1px solid #16F6EA!important;
+}
+.formChange
+{
+    display:block!important;
+    width:60%!important;
+    height: 36px;
+    margin: 0 auto;
+    margin-bottom: 15px;
+    border-radius:5px;
+    border:1px solid #cccccc;
+    padding: 10px;
+    font-size: 12px;
+    color: #cccccc;
+}
+.Verifycodewidth
+{
+    width:60%!important;
+    height: 36px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+}
+.formVerifycode
+{
+    /*display:block!important;*/
+    width:70%!important;
+    border-radius:5px;
+    border:1px solid #cccccc;
+    padding: 10px;
+    font-size: 12px;
+    color: #cccccc;
+}
+.confirmStyle
+{
+   width: 30%;
+    box-shadow: 0 0 15px #87ddea!important;
+}
+.confirmStyle:hover,.confirmStyle:active
+{
+    border:none!important;
+}
+.ant-modal-body
+{
+    width: 90%;
+    margin: 0 auto;
+    padding: 30px 20px 16px 16px!important;
+}
+.ant-modal-footer
+{
+    border: none!important;
+}
+.ant-modal-header
+{
+    width: 90%;
+    margin: 0 auto;
+    text-align: center;
+    padding: 18px 16px!important;
+
+}
+.ant-modal-title
+{
+    color: #313131!important;
+    font-size: 16px !important;
+}
+.ant-modal-footer
+{
+    text-align: center!important;
+    border:none!important;
+    padding: 0 16px 20px 10px !important;
+}
+.nav>li>a
+{
+    padding: 0!important;
+}
+.navbar-nav
+{
+    margin-top: 10px;
+}
+.nav .open, .nav .open:focus, .nav .open:hover, .nav .open:active
+{
+    color: white;
+    background-color: #2ad0e9
 }

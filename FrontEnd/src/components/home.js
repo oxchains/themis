@@ -20,7 +20,7 @@ class Home extends Component {
     }
 
 
-    renderRows(item,index){
+    renderRows(){
         const arraydata = this.props.all || []    //列表数组的数据
 
         console.log(arraydata)
@@ -51,7 +51,6 @@ class Home extends Component {
                     </div>
                     <button className="home-button" ><a href="/buybtc">{item.noticeType == 2?"购买比特币" : "出售比特币"}</a></button>
                 </div>
-
         )
     })
     }
