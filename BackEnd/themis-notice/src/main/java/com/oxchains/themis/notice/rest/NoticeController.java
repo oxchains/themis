@@ -77,6 +77,15 @@ public class NoticeController {
     }
 
     /**
+     * 实时获取BlockChain.info BTC 价格
+     * @return
+     */
+    @GetMapping(value = "/query/blockchain.info")
+    public RestResp queryBlockChainInfo(){
+        return noticeService.queryBlockChainInfo();
+    }
+
+    /**
      * 搜索购买公告
      * @param notice
      * @return
