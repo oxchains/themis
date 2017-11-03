@@ -4,23 +4,16 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import Dropzone from 'react-dropzone';
-import { Upload, Icon} from 'antd';
-import {Route, Redirect } from 'react-router-dom'
-import {Field, reduxForm} from 'redux-form';
 import {Alert,Modal,Button,Form,FormGroup,Col,ControlLabel,FormControl,Image} from 'react-bootstrap';
 import Chat from './chat';
 import TabsControl from "./react_tab";
 import {uploadEvidence} from '../actions/arbitrate';
 import {fetchOrdersDetails,fetchTradePartnerMessage,addPaymentInfo,addTransactionId,fetchKey,confirmOrder,confirmSendMoney,releaseBtc,confirmGoods,saveComment,cancelOrders} from '../actions/order';
 import $ from 'jquery';
-import { History } from 'react-router';
-
-var that;
 
 class OrderProgress extends Component {
     constructor(props) {
         super(props);
-        that = this;
         this.state = {
             orderStatus:0,
             alertVisible: false,
@@ -35,12 +28,8 @@ class OrderProgress extends Component {
             releaseBtc:false,
             partnerName:'',
             comment:1,
-            evidence:false,
-            // previewVisible: false,
-            // previewImage: '',
-            fileList: [],
+            evidence:false
         };
-      
         this.partnerMessage=this.partnerMessage.bind(this);
         this.renderDangerAlert = this.renderDangerAlert.bind(this);
         this.orderMessageDetails=this.orderMessageDetails.bind(this);
@@ -49,7 +38,6 @@ class OrderProgress extends Component {
         const partnerName=localStorage.getItem("friendUsername")
         const message = this.props.location.state;
         const data={id:message.id,userId:message.userId}
-        console.log(data)
         this.setState({partnerName:partnerName});
 
         this.props.fetchOrdersDetails({data},(msg)=>{
@@ -224,7 +212,7 @@ class OrderProgress extends Component {
                         <li>交易数量:<span>{msg.amount}</span>BTC</li>
                         <li>交易金额:<span>{msg.money}</span>CNY</li>
                         <li>订单编号:<span>{msg.id}</span></li>
-                        <li>支付方式:<span>{msg.payment.payment_name}</span></li>
+                        <li>支付方式:<span>{msg.payment.paymentName}</span></li>
                         <li>广告内容:<span>{msg.notice.noticeContent}</span></li>
                     </ul>
                 </div>
@@ -430,14 +418,6 @@ class OrderProgress extends Component {
             })
         }
     }
-    // handleCancel = () => this.setState({ previewVisible: false })
-    // handlePreview = (file) => {
-    //     this.setState({
-    //         previewImage: file.url || file.thumbUrl,
-    //         previewVisible: true,
-    //     });
-    // }
-    handleChange = ({ fileList }) => this.setState({ fileList })
     render(){
          console.log('status: ' + this.state.orderStatus)
         let close = () => {
@@ -452,14 +432,6 @@ class OrderProgress extends Component {
         const money=orders_details && orders_details.money;
         const price=orders_details && orders_details.notice.price;
         const partner=this.props.partner;
-        const {fileList } = this.state;
-        console.log(fileList)
-        const uploadButton = (
-            <div>
-                <Icon type="plus" />
-                <div className="ant-upload-text">Upload</div>
-            </div>
-        );
         return (
             <div className="order-main g-pt-50 g-pb-50">
                 <div className="order-header container text-center">
@@ -476,15 +448,15 @@ class OrderProgress extends Component {
                         </div>
                         <div className="col-sm-12 order-details g-mt-20 clearfix">
                             <ul>
-                                <li className="col-sm-1">订单信息</li>
-                                <li className="col-sm-2">交易价格:<span>{price}</span>CNY</li>
-                                <li className="col-sm-2">交易数量:<span>{amount}</span>BTC</li>
-                                <li className="col-sm-2">交易金额:<span>{money}</span>CNY</li>
+                                <li className="col-sm-2">订单信息</li>
+                                <li className="col-sm-3">交易价格:<span>{price}</span>CNY</li>
+                                <li className="col-sm-3">交易数量:<span>{amount}</span>BTC</li>
+                                <li className="col-sm-3">交易金额:<span>{money}</span>CNY</li>
                             </ul>
                         </div>
                     </div>
                 </div>
-                <div className="order-content container">
+                <div className="order-content container g-pb-100">
                     <div className="row">
                         <div className="col-sm-7">
                             <div className="order-chat clearfix text-center">
@@ -566,7 +538,6 @@ class OrderProgress extends Component {
                                                 }
                                                 <br/>
                                                 <button className="btn btn-primary" onClick={this.handleEvidence.bind(this)}>THEMIS仲裁</button>
-                                                {/*<a href="/arbitrationbuyer">交易有疑问？点此联系THEMIS仲裁</a>*/}
                                             </div>
                                         </div>
                                     </div>
@@ -578,7 +549,7 @@ class OrderProgress extends Component {
                                 <div className="row order-operation">
                                     <div className="col-sm-12">
                                         {this.orderMessageDetails(orders_details)}
-                                        <div className="order-tip">{orderType=="购买"?"卖家已经" :""}</div>
+                                        <div className="order-tip">{orderType=="购买"?"卖家已经释放比特币，请确认是否收到比特币" :""}</div>
                                         <div>
                                             {orderType == "购买" ?
                                                 <div>
@@ -590,10 +561,8 @@ class OrderProgress extends Component {
                                                     <button type="button" className="btn btn-primary btn-flat" onClick={this.handlereleaseBtc.bind(this)} >等待买家收货</button>
                                                     <button type="button" className="btn btn-primary btn-flat" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
                                                 </div>
-
                                             }
                                             <br/>
-                                            <a href="/arbitrationbuyer">交易有疑问？点此联系THEMIS仲裁</a>
                                         </div>
                                     </div>
                                 </div>
@@ -732,20 +701,6 @@ class OrderProgress extends Component {
                                             )
                                         }}
                                     </Dropzone>
-                                    {/*<div className="clearfix">*/}
-                                        {/*<Upload*/}
-                                            {/*action="http://192.168.1.125:8882/order/uploadEvidence"*/}
-                                            {/*listType="picture-card"*/}
-                                            {/*fileList={fileList}*/}
-                                            {/*// onPreview={this.handlePreview}*/}
-                                            {/*onChange={this.handleChange}*/}
-                                        {/*>*/}
-                                            {/*{fileList.length >= 3 ? null : uploadButton}*/}
-                                        {/*</Upload>*/}
-                                        {/*/!*<Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>*!/*/}
-                                            {/*/!*<img alt="example" style={{ width: '100%' }} src={previewImage} />*!/*/}
-                                        {/*/!*</Modal>*!/*/}
-                                    {/*</div>*/}
                                 </Col>
                                 <Col sm={12}>
                                     <textarea className="form-control" name="" id="" cols="30" rows="10" placeholder="请输入此次仲裁重要部分证据和备注" ref="voucherDes"></textarea>

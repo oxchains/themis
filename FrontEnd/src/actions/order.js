@@ -84,11 +84,12 @@ export function fetchOrdersDetails({data},callback) {
             headers: getAuthorizedHeader()
         }).then((res) => {
             if (res.data.status == 1) {
+                callback(res.data.data);
                 dispatch({
                     type: FETCH_ORDERS_DETAILS,
                     payload: res.data.data
                 })
-                callback(res.data.data);
+
             }
         }).catch(err => dispatch(requestError(err.message)));
     }

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.oxchains.themis.common.model.RestResp.fail;
+import static com.oxchains.themis.notice.auth.RestResp.fail;
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
