@@ -12,7 +12,10 @@ export const UNAUTH_USER = 'unauth_user';                           //退出登�
 export const AUTH_ERROR = 'auth_error';                             //登录失败
 export const REQUEST_SUCCESS = 'request_success';                   //http请求正确
 export const REQUEST_ERROR = 'request_error';                       //http请求返回错误
-export const FETCH_VERIFY_CODE = 'request_verifycode';              //获取验证码
+export const FETCH_VERIFY_CODE = 'request_verifycode';              //注册获取验证码
+export const FETCH_VERIFY_CODE_PHONE = 'request_verifycode_phone';              //修改手机获取验证码
+
+
 export const FETCH_ADVERT = 'FETCH_ADVERT'                          //发布广告
 export const FETCH_BUY_BTC = 'fetch_buy_btc'                        //购买比特币
 export const FETCH_SELL_BTC = 'fetch_sell_btc'                      //出售比特币
@@ -48,7 +51,8 @@ export const ARBITRATE_RESULT = 'arbitrate_result'                       //仲�
 export const FETCH_OFF_MYBTC = 'fetch_off_mybtc'                         //下架我的广告
 export const FETCH_BASE_INFO = 'fetch_base_info'                         //用户中心基本信息
 export const FETCH_TRUSTED = 'fetch_trusted'                             //用户中心受信任的
-
+export const FETCH_PHONE = 'fetch_phone'                             //用户中心修改手机号
+export const FETCH_PASSWORD = 'fetch_password'                             //用户中心修改密码
 
 
 export function getAuthorizedHeader() {

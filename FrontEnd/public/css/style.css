@@ -44,7 +44,7 @@ div {
     border-radius:1px;
     margin-bottom: 20px;
     padding: 0 10px;
-    font-size: 16px;
+    font-size: 13px;
     background-color: #fff;
 }
 .form-style
@@ -164,9 +164,10 @@ div {
     height: 40px;
     margin-bottom: 15px;
     border-radius:3px;
-    background-color: #444444;
     color: white;
-    border:1px solid #444444;
+    background: linear-gradient(to right,#27D7E9,#16F6EA);
+    border:1px solid #16F6EA;
+    box-shadow: 0 0 5px #16F6EA;
 
 }
 .form-login
@@ -176,8 +177,10 @@ div {
     height: 40px;
     margin-bottom: 15px;
     border-radius:3px;
-    background-color: #444444;
     color: white;
+    background: linear-gradient(to right,#27D7E9,#16F6EA);
+    border:1px solid #16F6EA;
+    box-shadow: 0 0 5px #16F6EA;
 }
 .form-save
 {
@@ -185,9 +188,12 @@ div {
     width:50%!important;
     height: 40px;
     border-radius:3px;
-    background-color: #444444;
     color: white;
-    border:1px solid #444444;
+    background: linear-gradient(to right,#27D7E9,#16F6EA);
+    border:1px solid #16F6EA;
+    box-shadow: 0 0 5px #16F6EA;
+    font-weight: 500;
+    font-size: 15px;
 }
 
 .checkbox-margin
@@ -231,8 +237,9 @@ div {
 }
 .form-register:hover,.form-register:active,.form-login:hover,.form-login:active
 {
-    background-color: #444444;
-    border:2px solid #444444;
+    background: linear-gradient(to right,#27D7E9,#16F6EA);
+    border:1px solid #16F6EA;
+    box-shadow: 0 0 5px #16F6EA;
     color: white;
 }
 .checkbox-width
@@ -582,12 +589,13 @@ div {
 .form-seach
 {
     width: 14%;
-    background-color: #444444;
     color: white;
-    border:1px solid #444444;
     height: 40px;
     border-radius: 3px;
     font-size: 17px;
+    background: linear-gradient(to right,#27D7E9,#16F6EA);
+    border:1px solid #16F6EA;
+    box-shadow: 0 0 5px #16F6EA;
 }
 .tableborder
 {
@@ -625,10 +633,11 @@ div {
 .tablebuy
 {
    padding: 3px 15px;
-    background-color: #444444;
     color: white;
-    border:1px solid #444444;
     border-radius: 3px;
+    background: linear-gradient(to right,#27D7E9,#16F6EA);
+    border:1px solid #16F6EA;
+    box-shadow: 0 0 5px #16F6EA;
 }
 .tablebuy>a
 {
@@ -667,15 +676,16 @@ div {
 }
 .detail-title
 {
-    width: 90%;
+    width: 77%;
     margin: 0 auto;
     display: block;
-    height: 140px;
-    border-bottom: 2px solid #BBBBBB;
+    height: 200px;
+    border-bottom: 1px solid #BBBBBB;
 }
 .detailul
 {
     width: 100%;
+    margin: 0 auto;
 }
 .detailul,.priceul
 {
@@ -686,7 +696,7 @@ div {
 .detailul>li
 {
     float: left;
-    width: 19%;
+    width: 25%;
     margin-top: 10px;
 }
 .detailul>li>p
@@ -717,11 +727,15 @@ div {
 }
 .price-detail
 {
-    width: 90%;
+    width: 77%;
     margin: 0 auto;
     display: block;
     height: 300px;
-    border-bottom: 2px solid #BBBBBB;
+    border-bottom: 1px solid #BBBBBB;
+}
+.detailPrice
+{
+    padding: 0;
 }
 .sellwhat
 {
@@ -734,9 +748,12 @@ div {
     height: 40px;
     margin-bottom: 15px;
     border-radius:3px;
-    border:1px solid #444444;
-    background-color: #444444;
+    background: linear-gradient(to right,#27D7E9,#16F6EA);
+    border:1px solid #16F6EA;
+    box-shadow: 0 0 5px #16F6EA;
     color: white;
+    font-size: 15px;
+    font-weight: 500;
 }
 .sellmoney
 {
@@ -744,19 +761,27 @@ div {
 }
 .adcontent
 {
-    padding: 20px 0;
-    border-bottom: 1px solid #BBBBBB;
+    padding: 5px 0;
+
 }
 .ad-info
 {
     padding: 0;
     margin: 0;
-    width: 70%;
+    /*width: 70%;*/
     flex-wrap: wrap;
+}
+.advertContent
+{
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #F5F5F5;
+    border-radius: 10px;
+    font-size: 15px;
 }
 .detail-notice
 {
-    width: 90%;
+    width: 77%;
     margin: 0 auto;
 }
 .detail-notice>p
@@ -1022,7 +1047,6 @@ table { border-spacing: 0;  border-collapse: collapse; }
     margin: 20px auto;
     height: 35px;
     border-radius: 10px;
-    /*background-color: #27D7E9;*/
     background: linear-gradient(to right,#27D7E9,#16F6EA);
     border:1px solid #16F6EA;
     box-shadow: 0 0 5px #16F6EA;
@@ -1210,6 +1234,8 @@ table { border-spacing: 0;  border-collapse: collapse; }
     width: 100px;
     height: 100px;
     margin-bottom: 0px;
+    border-radius: 50%;
+    border:none!important;
 }
 .avatar-uploader-trigger
 {
@@ -1228,10 +1254,22 @@ table { border-spacing: 0;  border-collapse: collapse; }
     font-size: 28px;
     color: #999;
 }
+.touxiangStyle
+{
+    margin-bottom: 10px;
+}
+.touxiangStyle>p
+{
+    text-align: center;
+    color: #2ad0e9;
+    /*border-bottom: 1px solid #2ad0e9;*/
+    /*margin: 5px 0;*/
+}
 .fa-mobile
 {
    font-size: 40px;
     color: #909090;
+
 }
 .fa-unlock-alt
 {
@@ -1314,7 +1352,7 @@ table { border-spacing: 0;  border-collapse: collapse; }
 }
 .confirmStyle
 {
-   width: 30%;
+    width: 30%;
     box-shadow: 0 0 15px #87ddea!important;
 }
 .confirmStyle:hover,.confirmStyle:active
@@ -1362,4 +1400,10 @@ table { border-spacing: 0;  border-collapse: collapse; }
 {
     color: white;
     background-color: #2ad0e9
+}
+.detailTitle
+{
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
 }

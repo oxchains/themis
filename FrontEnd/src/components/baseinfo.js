@@ -80,12 +80,15 @@ class Baseinfo extends Component {
                             {
                                 imageUrl ?
                                     <img src={imageUrl} alt="" className="avatar" /> :
-                                    <Icon type="plus" className=" avatar-uploader-trigger " />
+                                    <div className="touxiangStyle">
+                                        <img src="./public/img/default.png"  className="avatar" alt=""/>
+                                        <p>上传头像</p>
+                                    </div>
                             }
                         </Upload>
                     </div>
                     <div className="display-info">
-                        <h5 style={{marginBottom:20+'px',marginTop:20 +'px'}}>{loginname}</h5>
+                        <h5 style={{marginBottom:20+'px',marginTop:30 +'px'}}>{loginname}</h5>
                     </div>
                 </div>
                 <div className="validateinfo">

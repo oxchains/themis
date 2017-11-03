@@ -9,6 +9,10 @@ import {
     UNAUTH_USER,
     AUTH_ERROR,
     FETCH_VERIFY_CODE,
+    FETCH_VERIFY_CODE_PHONE,
+    FETCH_PHONE,
+    FETCH_PASSWORD,
+    getAuthorizedHeader
 } from './types';
 
 
@@ -81,7 +85,7 @@ export function signupUser({ loginname, mobilephone, email,password }, callback)
 }
 
 /**
- * 获取验证码
+ * 注册获取验证码
  */
 
 export function GetverifyCode({phonenum}) {
@@ -92,6 +96,72 @@ export function GetverifyCode({phonenum}) {
                 console.log("获取验证码的接口通了")
                 console.log(response)
                 dispatch({ type: FETCH_VERIFY_CODE, payload:response })
+
+            })
+            .catch(err => (err.message));
+    }
+}
+
+
+
+
+/**
+ * 修改手机号获取验证码
+ */
+
+export function GetverifyCodePhone({loginname,phonenum}) {
+    console.log("修改手机号" + phonenum ,loginname)
+    return function(dispatch) {
+        axios.get(`${ROOT_URLC}/user/verifyCode`,{loginname,phonenum}, { headers: getAuthorizedHeader() })
+            .then(response => {
+                console.log("修改手机号获取验证码的接口通了")
+                console.log(response)
+                dispatch({ type: FETCH_VERIFY_CODE_PHONE, payload:response })
+
+            })
+            .catch(err => (err.message));
+    }
+}
+
+
+/**
+ * 修改手机号
+ */
+
+export function ChangePhoneSave({loginname,mobilephone},callback) {
+    console.log("修改手机号" + mobilephone ,loginname)
+    return function(dispatch) {
+        axios.post(`${ROOT_URLC}/user/phone`,{loginname,mobilephone}, { headers: getAuthorizedHeader() })
+            .then(response => {
+                console.log(response)
+                dispatch({ type: FETCH_PHONE, payload:response })
+                if(response.data.status == 1) {
+                    callback();
+                } else {
+                    callback(response.data.message);
+                }
+
+            })
+            .catch(err => (err.message));
+    }
+}
+
+/**
+ * 修改密码
+ */
+
+export function ChangePasswordSave({loginname,mobilephone},callback) {
+    console.log("修改密码" + mobilephone ,loginname)
+    return function(dispatch) {
+        axios.post(`${ROOT_URLC}/user/phone`,{loginname,mobilephone}, { headers: getAuthorizedHeader() })
+            .then(response => {
+                console.log(response)
+                dispatch({ type: FETCH_PASSWORD, payload:response })
+                if(response.data.status == 1) {
+                    callback();
+                } else {
+                    callback(response.data.message);
+                }
 
             })
             .catch(err => (err.message));

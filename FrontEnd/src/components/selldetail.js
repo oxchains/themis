@@ -107,11 +107,9 @@ class Selldetail extends Component {
         return (
             <div className="maincontent">
                 <div className="detail-title">
-                    <div className="col-lg-8 col-xs-12 col-md-12" style={{padding:0}}>
-                        <div className="col-lg-3 col-xs-3 col-md-3 title-img">
-                            <img src="./public/img/touxiang.jpg" style={{width:100+'px'}} alt=""/>
-                        </div>
-                        <div className="col-lg-9 col-xs-9 col-md-9 title-img">
+                    <div className="detailTitle" style={{padding:0}}>
+
+                            <img src="./public/img/touxiang.png" style={{width:100+'px',borderRadius:50 +'%'}} alt=""/>
                             <h4 style={{marginBottom:10+'px',paddingLeft:15+'px'}}>{datanum.loginname}</h4>
                             <ul className="detailul">
                                 <li>
@@ -127,15 +125,15 @@ class Selldetail extends Component {
                                     <p>好评度</p>
                                 </li>
                                 <li>
-                                    <p>{datanum.goodDegree}</p>
+                                    <p>{datanum.successCount} BTC</p>
                                     <p>历史成交数</p>
                                 </li>
                             </ul>
-                        </div>
+
                     </div>
                 </div>
                 <div className="price-detail clear">
-                    <div className="col-lg-9 col-xs-9 col-md-9">
+                    <div className="col-lg-9 col-xs-9 col-md-9 detailPrice">
                         <div>
                             <ul className="priceul">
                                 <li>报价 : &#x3000;&#x3000;&#x3000;&#x3000;&#x3000;{data.price}CNY/BTC</li>
@@ -152,7 +150,7 @@ class Selldetail extends Component {
                         </div>
                     </div>
 
-                    <div className="col-lg-3 col-xs-3 col-md-3">
+                    <div className="col-lg-3 col-xs-3 col-md-3 advertContent">
                           <h5 className="adcontent">广告内容</h5>
                         <div className="ad-info">
                           <p> {data.noticeContent}</p>
