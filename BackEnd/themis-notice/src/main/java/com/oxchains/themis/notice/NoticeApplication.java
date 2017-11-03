@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @EnableScheduling
 @EnableAutoConfiguration
+@EnableEurekaClient
 public class NoticeApplication {
     public static void main(String[] args){
         SpringApplication.run(NoticeApplication.class, args);

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -81,6 +82,23 @@ public class NoticeService {
                         }
                     }
                 }
+            }else {
+                // 选填项（最低价判断）
+                List<CNYDetail> cnyDetailList = cnyDetailDao.findBySymbol("¥");
+                if (cnyDetailList.size() != 0){
+                    for (CNYDetail c : cnyDetailList){
+                        if (null == notice.getMinPrice()){
+                            notice.setMinPrice(new BigDecimal(c.getLast()));
+                        }else {
+
+                            Double low = Double.valueOf(c.getLast());
+                            Double minPrice = notice.getMinPrice().doubleValue();
+                            if (ArithmeticUtils.minus(low, minPrice) < 0){
+                                notice.setPrice(notice.getMinPrice());
+                            }
+                        }
+                    }
+                }
             }
 
             // 溢价判断
@@ -99,9 +117,6 @@ public class NoticeService {
             }
 
             String createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-            /*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            sdf.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-            String createTime = sdf.format(new Date());*/
             notice.setCreateTime(createTime);
             Notice n = noticeDao.save(notice);
             return RestResp.success("操作成功", n);
@@ -194,6 +209,7 @@ public class NoticeService {
         return RestResp.fail("操作失败");
     }
 
+    @Deprecated
     public RestResp queryBTCPrice(){
         try {
             List<BTCTicker> btcTickerList = btcTickerDao.findBySymbol("btccny");
@@ -209,6 +225,7 @@ public class NoticeService {
         return RestResp.fail("操作失败");
     }
 
+    @Deprecated
     public RestResp queryBTCMarket(){
         try {
             List<BTCResult> btcResultList = btcResultDao.findByIsSuc("true");
@@ -232,6 +249,21 @@ public class NoticeService {
         }catch (Exception e){
             e.printStackTrace();
             LOG.error("查询BTC深度行情异常", e.getMessage());
+        }
+        return RestResp.fail("操作失败");
+    }
+
+    public RestResp queryBlockChainInfo(){
+        try {
+            List<CNYDetail> cnyDetailList = cnyDetailDao.findBySymbol("¥");
+            if (cnyDetailList.size() != 0){
+                return RestResp.success("操作成功", cnyDetailList);
+            }else {
+                return RestResp.fail("操作失败");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            LOG.error("获取BTC价格异常", e.getMessage());
         }
         return RestResp.fail("操作失败");
     }
@@ -431,7 +463,6 @@ public class NoticeService {
         }
         return RestResp.fail("操作失败");
     }
-
 
     // =================================================================
 
