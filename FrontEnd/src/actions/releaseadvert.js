@@ -233,7 +233,9 @@ export function fetctBaseInfo({formdata},callback) {
             method: 'post',
             url: `${ROOT_URLC}/user/info `,
             data: formdata,
-            headers: getAuthorizedHeader()
+            headers: getAuthorizedHeader(),
+            headers: {'content-type': 'multipart/form-data'},
+            withCredentials: true
         }).then(response => {
                 console.log(response)
                 // dispatch({type: FETCH_BASE_INFO, payload: response})

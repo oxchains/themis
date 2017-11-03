@@ -52,11 +52,16 @@ class Baseinfo extends Component {
         // console.log(description)
         // console.log(image)
 
-        const formdata = {
+       /* const formdata = {
             loginname : localStorage.getItem("loginname"),
             description : this.refs.description.value,
             image : this.state.imageUrl
-        }
+        }*/
+
+       let formdata = new FormData();
+       formdata.append("loginname",localStorage.getItem("loginname"));
+       formdata.append("description",this.refs.description.value);
+       formdata.append("image",this.state.imageUrl);
 
         console.log(formdata)
         this.props.fetctBaseInfo({formdata}, err=>{
@@ -65,16 +70,16 @@ class Baseinfo extends Component {
     }
 
     render() {
-           const loginname = localStorage.getItem('loginname');//手机号
-           const mobilephone = localStorage.getItem('mobilephone');//手机号
-           const createTime = localStorage.getItem('createTime');//注册时间
-           const email =  localStorage.getItem('email');//邮箱
-           const firstBuyTime = localStorage.getItem('firstBuyTime') //第一次交易时间
-           const  txNum = localStorage.getItem('txNum') //交易次数
-           const  believeNum = localStorage.getItem('believeNum') //信任人数
-           const  sellAmount = localStorage.getItem('sellAmount') //出售的累计交易数量
-           const  buyAmount = localStorage.getItem('buyAmount') //购买的累计交易数量
-           const imageUrl = this.state.imageUrl;
+        const loginname = localStorage.getItem('loginname');//手机号
+        const mobilephone = localStorage.getItem('mobilephone');//手机号
+        const createTime = localStorage.getItem('createTime');//注册时间
+        const email =  localStorage.getItem('email');//邮箱
+        const firstBuyTime = localStorage.getItem('firstBuyTime') //第一次交易时间
+        const  txNum = localStorage.getItem('txNum') //交易次数
+        const  believeNum = localStorage.getItem('believeNum') //信任人数
+        const  sellAmount = localStorage.getItem('sellAmount') //出售的累计交易数量
+        const  buyAmount = localStorage.getItem('buyAmount') //购买的累计交易数量
+        const imageUrl = this.state.imageUrl;
         return (
             <div>
                 <div className="maininfo">
@@ -102,21 +107,21 @@ class Baseinfo extends Component {
                     </div>
                 </div>
                 <div className="validateinfo">
-                     <ul>
-                         <li>身份证验证:已验证</li>
-                         <li>电子邮件验证:{email ?"已验证" : "未验证"}</li>
-                         <li>手机号码:{mobilephone}</li>
-                         <li>注册时间: {createTime}</li>
-                         <li>第一次交易时间：{firstBuyTime}</li>
-                         <li>信任人数:被 {believeNum} 人信任</li>
-                         <li>累计交易次数: {txNum}</li>
-                         <li>累计交易量:（买）{buyAmount} —（卖）{sellAmount} BTC</li>
-                     </ul>
+                    <ul>
+                        <li>身份证验证:已验证</li>
+                        <li>电子邮件验证:{email ?"已验证" : "未验证"}</li>
+                        <li>手机号码:{mobilephone}</li>
+                        <li>注册时间: {createTime}</li>
+                        <li>第一次交易时间：{firstBuyTime}</li>
+                        <li>信任人数:被 {believeNum} 人信任</li>
+                        <li>累计交易次数: {txNum}</li>
+                        <li>累计交易量:（买）{buyAmount} —（卖）{sellAmount} BTC</li>
+                    </ul>
                 </div>
                 <textarea className="textarea-info" name="" id="" cols="53" rows="5" placeholder="简介，在您的公共资料上展示您的介绍信息。纯文本，不超过200字" ref="description"></textarea>
-               <div className="display-save">
-                   <button className="form-save" onClick={this.handleSave}>保存</button>
-               </div>
+                <div className="display-save">
+                    <button className="form-save" onClick={this.handleSave}>保存</button>
+                </div>
 
                 <Modal isOpen={this.state.isModalOpen} onRequestHide={this.hideModal}>
                     <ModalHeader>
@@ -143,7 +148,7 @@ class Baseinfo extends Component {
 
 function mapStateToProps(state) {
     return {
-       all:state.advert.all
+        all:state.advert.all
     };
 }
 export default connect(mapStateToProps,{fetctBaseInfo})(Baseinfo);
