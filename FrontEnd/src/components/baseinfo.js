@@ -45,11 +45,21 @@ class Baseinfo extends Component {
     }
 
     handleSave(){
-        const description = this.refs.description.value;
-        const image =  this.state.imageUrl
-        console.log(image)
-        console.log(description)
-        this.props.fetctBaseInfo({description,image}, err=>{
+        // const loginname = localStorage.getItem("loginname")
+        // const description = this.refs.description.value;
+        // const image =  this.state.imageUrl
+        // console.log(loginname)
+        // console.log(description)
+        // console.log(image)
+
+        const formdata = {
+            loginname : localStorage.getItem("loginname"),
+            description : this.refs.description.value,
+            image : this.state.imageUrl
+        }
+
+        console.log(formdata)
+        this.props.fetctBaseInfo({formdata}, err=>{
             this.setState({ isModalOpen: true , error: err , actionResult: err||'保存成功!'});
         })
     }

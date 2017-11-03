@@ -3,7 +3,6 @@
  */
 import React, { Component } from 'react';
 import { Route, Redirect } from 'react-router-dom'
-import { Field } from 'redux-form';
 import { connect } from 'react-redux';
 import { signinAction } from '../../actions/auth'
 

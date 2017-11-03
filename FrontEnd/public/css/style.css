@@ -1046,7 +1046,7 @@ table { border-spacing: 0;  border-collapse: collapse; }
     width: 75%;
     margin: 20px auto;
     height: 35px;
-    border-radius: 10px;
+    border-radius: 5px;
     background: linear-gradient(to right,#27D7E9,#16F6EA);
     border:1px solid #16F6EA;
     box-shadow: 0 0 5px #16F6EA;
@@ -1210,14 +1210,14 @@ table { border-spacing: 0;  border-collapse: collapse; }
 
 .ant-pagination-item-active
 {
-    background-color: #444444!important;
-    border:1px solid #444444!important;
+    background: linear-gradient(to right,#27D7E9,#16F6EA)!important;
+    border:1px solid #16F6EA!important;
+    box-shadow: 0 0 5px #16F6EA;
     color: white!important;
 }
 .ant-pagination-item:focus, .ant-pagination-item:hover
 {
-    border:1px solid #d9d9d9!important;
-    color: black!important;
+    border:1px solid#16F6EA!important;
 }
 .close-modal,.close-modal:hover,.close-modal:active
 {

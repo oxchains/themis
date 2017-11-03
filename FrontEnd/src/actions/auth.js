@@ -59,8 +59,8 @@ export function authError(error) {
 // 登出
 export function signoutUser() {
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('username');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('loginname');
     return { type: UNAUTH_USER };
 }
 
@@ -69,7 +69,7 @@ export function signoutUser() {
  */
 
 export function signupUser({ loginname, mobilephone, email,password }, callback) {
-    console.log(`注册传送的数据: ${loginname}, ${mobilephone},${email}, ${password}`);
+    // console.log(`注册传送的数据: ${loginname}, ${mobilephone},${email}, ${password}`);
     return function(dispatch) {
         axios.post(`${ROOT_URLC}/user/register`, { loginname, mobilephone, email,password })
             .then(response => {
@@ -150,10 +150,10 @@ export function ChangePhoneSave({loginname,mobilephone},callback) {
  * 修改密码
  */
 
-export function ChangePasswordSave({loginname,mobilephone},callback) {
-    console.log("修改密码" + mobilephone ,loginname)
+export function ChangePasswordSave({loginname,password,newPassword},callback) {
+    console.log("修改密码" + loginname,password,newPassword)
     return function(dispatch) {
-        axios.post(`${ROOT_URLC}/user/phone`,{loginname,mobilephone}, { headers: getAuthorizedHeader() })
+        axios.post(`${ROOT_URLC}/user/password`,{loginname,password,newPassword}, { headers: getAuthorizedHeader() })
             .then(response => {
                 console.log(response)
                 dispatch({ type: FETCH_PASSWORD, payload:response })

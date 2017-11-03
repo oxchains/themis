@@ -8,7 +8,8 @@ import {
     AUTH_ERROR,
     FETCH_VERIFY_CODE,
     FETCH_VERIFY_CODE_PHONE,
-    FETCH_PHONE
+    FETCH_PHONE,
+    FETCH_PASSWORD
 } from '../actions/types';
 
 const INITIAL_STATE = { all:null ,array: [] ,data:null,};
@@ -27,6 +28,8 @@ export default function(state = INITIAL_STATE, action) {
             return { ...state, all: action.payload.data.data };
         case FETCH_PHONE:
             return { ...state, data: action.payload.data.data };
+        case FETCH_PASSWORD:
+            return { ...state, error: '', authenticated: false };
     }
 
     return state;

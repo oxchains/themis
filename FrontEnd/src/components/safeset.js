@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 import { Modal, Button } from 'antd';
-import { GetverifyCodePhone ,ChangePhoneSave} from '../actions/auth'
+import { GetverifyCodePhone ,ChangePhoneSave,ChangePasswordSave} from '../actions/auth'
 class Safeset extends Component {
     constructor(props) {
         super(props);
@@ -41,10 +41,18 @@ class Safeset extends Component {
         })
     }
     handleOkPSW = () => {
-        this.setState({ loadingpsw: true });
-        setTimeout(() => {
-            this.setState({ loadingpsw: false, visiblepsw: false });
-        }, 3000);
+        const loginname = localStorage.getItem("loginname")
+        const password = this.refs.password.value
+        const newPassword = this.refs.newPassword.value
+
+        this.props.ChangePasswordSave({loginname,password,newPassword},err=>{
+            this.setState({ loadingpsw: true });
+            setTimeout(() => {
+                this.setState({ loadingpsw: false, visiblepsw: false });
+            }, 3000);
+        })
+
+
     }
     handleCancel = () => {
         this.setState({ visible: false });
@@ -142,8 +150,8 @@ class Safeset extends Component {
                             </Button>,
                         ]}
                     >
-                        <input className="formChange" type="text" placeholder="请输入旧密码" />
-                        <input className="formChange " type="text" placeholder=" 请输入新密码"/>
+                        <input className="formChange" type="text" placeholder="请输入旧密码"  ref="password"/>
+                        <input className="formChange " type="text" placeholder=" 请输入新密码" ref="newPassword"/>
                     </Modal>
                 </div>
 
@@ -160,4 +168,4 @@ function mapStateToProps(state) {
      all:state.auth.all
     };
 }
-export default connect(mapStateToProps,{GetverifyCodePhone,ChangePhoneSave})(Safeset);
+export default connect(mapStateToProps,{GetverifyCodePhone,ChangePhoneSave,ChangePasswordSave})(Safeset);
