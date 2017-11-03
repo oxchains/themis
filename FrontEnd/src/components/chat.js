@@ -105,7 +105,7 @@ class Chat extends Component{
             } else {
                 $(".chat-head").html("重新连接中...")
                 let ws = new WebSocket("ws://192.168.1.125:9999/ws?"+partner.userId+"_"+receiverId); //链接websocket
-                $(".chat-head").html("与"+receiverName+"聊天中...");
+                $(".chat-head").html(receiverName);
                 ws.onopen = tempWs.onopen;
                 ws.onmessage = tempWs.onmessage;
                 ws.onerror = tempWs.onerror;
@@ -162,7 +162,7 @@ class Chat extends Component{
                 </div>
                 <div className="clearfix">
                     <input type="text" className="message" ref="message"/>
-                    <button className="btn btn-primary send float-right">发送</button>
+                    <button className="ant-btn ant-btn-primary ant-btn-lg send float-right">发送</button>
                 </div>
             </div>
         );

@@ -111,7 +111,7 @@ class Sellbtc extends Component {
     }
     render() {
         const totalNum = this.props.all.rowCount
-
+        console.log(this.props.all)
         const Option = Select.Option;
         return (
             <div className="mainbuy">

@@ -17,7 +17,7 @@ class OrderProgress extends Component {
         this.state = {
             orderStatus:0,
             alertVisible: false,
-            show: false,
+            show:false,
             shownext:false,
             tip:'',
             orderId:1,
@@ -36,9 +36,11 @@ class OrderProgress extends Component {
     }
     componentWillMount() {
         const partnerName=localStorage.getItem("friendUsername")
+        const userId=localStorage.getItem("userId")
         const message = this.props.location.state;
-        const data={id:message.id,userId:message.userId}
+        const data={id:message.id,userId:userId}
         this.setState({partnerName:partnerName});
+        console.log(data)
 
         this.props.fetchOrdersDetails({data},(msg)=>{
             console.log(msg)
@@ -151,7 +153,7 @@ class OrderProgress extends Component {
               <div className="h2 g-pt-20 g-pb-20">
                   <div className={`${this.state.orderStatus == 7 ? 'show' : 'hidden'}`}>订单已取消</div>
                   <div className={`${this.state.orderStatus == 8 ? 'show' : 'hidden'}`}>订单已取消，退款中 <br/>
-                      <button className="btn btn-primary" onClick={this.handleEvidence.bind(this)}>THEMIS仲裁</button>
+                      <button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleEvidence.bind(this)}>THEMIS仲裁</button>
                   </div>
               </div>
             )
@@ -226,10 +228,10 @@ class OrderProgress extends Component {
             }}>
                 <h5>确定已付款给卖家？</h5>
                 <div>
-                    <button type="button" className="btn btn-primary btn-flat" onClick={this.showAlert}>
+                    <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.showAlert}>
                        取消
                     </button>
-                    <button type="button" className="btn btn-primary btn-flat" onClick={this.handleSendMoney.bind(this)} >
+                    <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleSendMoney.bind(this)} >
                         确定
                     </button>
                 </div>
@@ -419,7 +421,7 @@ class OrderProgress extends Component {
         }
     }
     render(){
-         console.log('status: ' + this.state.orderStatus)
+        console.log('status: ' + this.state.orderStatus)
         let close = () => {
             this.setState({show:false,shownext:false,evidence:false})
         };
@@ -478,10 +480,10 @@ class OrderProgress extends Component {
                                             <div>
                                                 {orderType == "购买" ? "":
                                                     <span>
-                                                        <button className="btn btn-primary btn-flat g-mb-10" onClick={this.addPaymentInfo.bind(this)}>填写付款信息</button><br/>
-                                                        <button type="button" className="btn btn-primary btn-flat g-mr-10" disabled={this.state.confirm} onClick={this.handleConfirmOrder.bind(this)}>确认</button>
+                                                        <button className="ant-btn ant-btn-primary ant-btn-lg g-mb-10" onClick={this.addPaymentInfo.bind(this)}>填写付款信息</button><br/>
+                                                        <button type="button" className="ant-btn ant-btn-primary ant-btn-lg g-mr-10" disabled={this.state.confirm} onClick={this.handleConfirmOrder.bind(this)}>确认</button>
                                                     </span>}
-                                                <button type="button" className="btn btn-primary btn-flat" onClick={this.handleCancleOrders.bind(this)}>
+                                                <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>
                                                     取消订单
                                                 </button>
                                             </div>
@@ -498,13 +500,13 @@ class OrderProgress extends Component {
                                             <div>
                                                 {orderType == "购买" ?
                                                     <div>
-                                                        <button type="button" className="btn btn-primary btn-flat" onClick={this.showAlert.bind(this)}>标记为已经付款</button>
-                                                        <button type="button" className="btn btn-primary btn-flat" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
+                                                        <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.showAlert.bind(this)}>标记为已经付款</button>
+                                                        <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
                                                     </div>
                                                     :
                                                     <div>
-                                                        <button type="button" className="btn btn-primary btn-flat" disabled>等待买家付款</button>
-                                                        <button type="button" className="btn btn-primary btn-flat" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
+                                                        <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" disabled>等待买家付款</button>
+                                                        <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
                                                     </div>
                                                 }
 
@@ -526,18 +528,18 @@ class OrderProgress extends Component {
                                             <div>
                                                 {orderType == "购买" ?
                                                     <div>
-                                                        <button type="button" className="btn btn-primary btn-flat" disabled >等待卖家释放比特币</button>
-                                                        <button type="button" className="btn btn-primary btn-flat" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
+                                                        <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" disabled >等待卖家释放比特币</button>
+                                                        <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
                                                     </div>
                                                     :
                                                     <div>
-                                                        <button type="button" className="btn btn-primary btn-flat" onClick={this.handlereleaseBtc.bind(this)} >释放比特币</button>
-                                                        <button type="button" className="btn btn-primary btn-flat" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
+                                                        <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handlereleaseBtc.bind(this)} >释放比特币</button>
+                                                        <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
                                                     </div>
 
                                                 }
                                                 <br/>
-                                                <button className="btn btn-primary" onClick={this.handleEvidence.bind(this)}>THEMIS仲裁</button>
+                                                <button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleEvidence.bind(this)}>THEMIS仲裁</button>
                                             </div>
                                         </div>
                                     </div>
@@ -553,13 +555,13 @@ class OrderProgress extends Component {
                                         <div>
                                             {orderType == "购买" ?
                                                 <div>
-                                                    <button type="button" className="btn btn-primary btn-flat" onClick={this.handleConfirmGoods.bind(this)} >收到比特币</button>
-                                                    <button type="button" className="btn btn-primary btn-flat" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
+                                                    <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleConfirmGoods.bind(this)} >收到比特币</button>
+                                                    <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
                                                 </div>
                                                 :
                                                 <div>
-                                                    <button type="button" className="btn btn-primary btn-flat" onClick={this.handlereleaseBtc.bind(this)} >等待买家收货</button>
-                                                    <button type="button" className="btn btn-primary btn-flat" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
+                                                    <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handlereleaseBtc.bind(this)} >等待买家收货</button>
+                                                    <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
                                                 </div>
                                             }
                                             <br/>
@@ -589,7 +591,7 @@ class OrderProgress extends Component {
 
                                                 <textarea className="form-control" name="" id="" ref="comment" cols="30" rows="10"></textarea>
                                             </div>
-                                            <button className="btn btn-primary btn-block btn-flat"  onClick={this.handleComment.bind(this)}>
+                                            <button className="ant-btn ant-btn-primary ant-btn-lg"  onClick={this.handleComment.bind(this)}>
                                                 提交评论
                                             </button>
                                             <br/>
@@ -687,7 +689,7 @@ class OrderProgress extends Component {
                                             return (
                                                 <div>
                                                     <div className="col-sm-6">
-                            <span className="btn btn-default"
+                            <span className="ant-btn ant-btn-primary ant-btn-lg"
                                   style={{color: "white", background: '#a6a5a6', marginLeft: '-15px'}}>选择文件</span>
                                                     </div>
                                                     <div className="col-sm-6">
