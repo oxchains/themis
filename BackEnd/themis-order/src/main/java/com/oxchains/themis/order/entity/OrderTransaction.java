@@ -6,6 +6,7 @@ import javax.persistence.Table;
 
 /**
  * Created by huohuo on 2017/10/26.
+ * @author huohuo
  */
 @Entity
 @Table(name = "tbl_biz_transaction")

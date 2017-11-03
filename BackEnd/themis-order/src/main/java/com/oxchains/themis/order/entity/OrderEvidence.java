@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 /**
  * Created by huohuo on 2017/10/31.
+ * @author huohuo
  */
 @Entity
 @Table(name = "order_arbitrate_upload_evidence")

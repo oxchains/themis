@@ -7,6 +7,7 @@ import javax.persistence.Transient;
 
 /**
  * Created by huohuo on 2017/10/26.
+ * @author huohuo
  */
 @Entity
 @Table(name = "user_tx_detail")
@@ -20,7 +21,6 @@ public class UserTxDetail {
     private Long userId;
     @Transient
     private String createTime;     //用户创建时间
-
     private Integer believeNum;    // 信任次数
     @Transient
     private Notice notice;      //公告详细信息
@@ -34,6 +34,16 @@ public class UserTxDetail {
     private String loginname;
     @Transient
     private String goodDegree;//好评度
+    @Transient
+    private Integer successCount;
+
+    public Integer getSuccessCount() {
+        return successCount;
+    }
+
+    public void setSuccessCount(Integer successCount) {
+        this.successCount = successCount;
+    }
 
     public Long getUserId() {
         return userId;

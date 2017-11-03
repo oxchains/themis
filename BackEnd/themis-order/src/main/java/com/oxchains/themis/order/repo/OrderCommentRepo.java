@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * Created by huohuo on 2017/10/28.
+ * @author huohuo
  */
 @Repository
 public interface OrderCommentRepo extends CrudRepository<OrderComment,Long>{

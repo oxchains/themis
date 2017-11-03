@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * Created by huohuo on 2017/10/25.
+ * @author huohuo
  */
 @Repository
 public interface UserRepo extends CrudRepository<User,Long> {

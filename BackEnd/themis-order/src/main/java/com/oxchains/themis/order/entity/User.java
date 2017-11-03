@@ -3,10 +3,7 @@ package com.oxchains.themis.order.entity;
 import javax.persistence.*;
 
 /**
- * @author ccl
- * @time 2017-10-12 17:13
- * @nameUser
- * @desc:
+ * @author huohuo
  */
 
 @Entity
