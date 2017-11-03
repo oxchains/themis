@@ -60,14 +60,9 @@ class Buydetail extends Component {
             money : this.state.messmoney,
             amount : this.state.messnum
         }
-        // if(this.props.authenticated){
             this.props.fetctBuynow({formdata},err=>{
                 this.setState({ isModalOpen: true , error: err , actionResult: err||'下单成功!'})
             });
-        // }else {
-        //     alert("请先登录哦～")
-        // }
-
     }
     render() {
         const userId=localStorage.getItem("userId");
@@ -84,11 +79,11 @@ class Buydetail extends Component {
         return (
             <div className="maincontent">
                 <div className="detail-title">
-                    <div className="col-lg-8 col-xs-12 col-md-12" style={{padding:0}}>
-                        <div className="col-lg-3 col-xs-3 col-md-3 title-img">
-                            <img src="./public/img/touxiang.jpg" style={{width:100+'px'}} alt=""/>
-                        </div>
-                        <div className="col-lg-9 col-xs-9 col-md-9 title-img">
+                    <div className="detailTitle" style={{padding:0}}>
+                        {/*<div className=" title-img">*/}
+                            <img src="./public/img/touxiang.png" style={{width:100+'px',borderRadius:50 +'%'}} alt=""/>
+                        {/*</div>*/}
+                        {/*<div className=" title-img">*/}
                             <h4 style={{marginBottom:10+'px',paddingLeft:15+'px'}}>{datanum.loginname}</h4>
                             <ul className="detailul">
                                 <li>
@@ -104,15 +99,15 @@ class Buydetail extends Component {
                                     <p>好评度</p>
                                 </li>
                                 <li>
-                                    <p>{datanum.goodDegree}</p>
+                                    <p>{datanum.successCount} BTC</p>
                                     <p>历史成交数</p>
                                 </li>
                             </ul>
-                        </div>
+                        {/*</div>*/}
                     </div>
                 </div>
                 <div className="price-detail clear">
-                    <div className="col-lg-9 col-xs-9 col-md-9">
+                    <div className="col-lg-9 col-xs-9 col-md-9 detailPrice">
                         <div>
                             <ul className="priceul">
                                 <li>报价 : &#x3000;&#x3000;&#x3000;&#x3000;&#x3000;{data.price} CNY/BTC</li>
