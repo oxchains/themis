@@ -73,7 +73,6 @@ class Signup extends Component {
         }
         const phonenum = localStorage.getItem("phonenum")
         this.props.GetverifyCode({phonenum},()=>{})
-
     }
     handleChange(e) {
         let {index} = this.state;

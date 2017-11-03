@@ -1,8 +1,7 @@
 package com.oxchains.themis.notice.service;
 
-import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
-import com.oxchains.themis.common.model.RestResp;
-import com.oxchains.themis.common.util.ArithmeticUtils;
+import com.oxchains.themis.notice.auth.ArithmeticUtils;
+import com.oxchains.themis.notice.auth.RestResp;
 import com.oxchains.themis.notice.dao.*;
 import com.oxchains.themis.notice.domain.*;
 import com.oxchains.themis.notice.domain.Currency;
@@ -15,10 +14,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import sun.invoke.empty.Empty;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -28,6 +27,7 @@ import java.util.List;
  * @create 2017-10-25 10:21
  **/
 @Service
+@Transactional
 public class NoticeService {
 
     private static final Logger LOG = LoggerFactory.getLogger(NoticeService.class);
@@ -36,6 +36,7 @@ public class NoticeService {
     @Resource private BTCTickerDao btcTickerDao;
     @Resource private BTCResultDao btcResultDao;
     @Resource private BTCMarketDao btcMarketDao;
+    @Resource private CNYDetailDao cnyDetailDao;
     @Resource private CountryDao countryDao;
     @Resource private CurrencyDao currencyDao;
     @Resource private PaymentDao paymentDao;
@@ -67,16 +68,35 @@ public class NoticeService {
                 return RestResp.fail("必填项不能为空");
             }
 
-            // 选填项(最低价)判断
+            // 选填项(最低价)判断-11.1中国又禁止一部分btc相关平台，此价格获取失败
             List<BTCTicker> btcTickerList = btcTickerDao.findBySymbol("btccny");
-            for (BTCTicker btcTicker : btcTickerList) {
-                Double low = btcTicker.getLow().doubleValue();
-                Double minPrice = notice.getMinPrice().doubleValue();
-                if (null == notice.getMinPrice()){
-                    notice.setMinPrice(btcTicker.getLow());
-                }else { // 市场价低于定义的最低价，那么价格就是自己定义的最低价
-                    if (ArithmeticUtils.minus(low, minPrice) < 0) {
-                        notice.setPrice(notice.getMinPrice());
+            if (btcTickerList.size() != 0){
+                for (BTCTicker btcTicker : btcTickerList) {
+                    Double low = btcTicker.getLow().doubleValue();
+                    Double minPrice = notice.getMinPrice().doubleValue();
+                    if (null == notice.getMinPrice()){
+                        notice.setMinPrice(btcTicker.getLow());
+                    }else { // 市场价低于定义的最低价，那么价格就是自己定义的最低价
+                        if (ArithmeticUtils.minus(low, minPrice) < 0) {
+                            notice.setPrice(notice.getMinPrice());
+                        }
+                    }
+                }
+            }else {
+                // 选填项（最低价判断）
+                List<CNYDetail> cnyDetailList = cnyDetailDao.findBySymbol("¥");
+                if (cnyDetailList.size() != 0){
+                    for (CNYDetail c : cnyDetailList){
+                        if (null == notice.getMinPrice()){
+                            notice.setMinPrice(new BigDecimal(c.getLast()));
+                        }else {
+
+                            Double low = Double.valueOf(c.getLast());
+                            Double minPrice = notice.getMinPrice().doubleValue();
+                            if (ArithmeticUtils.minus(low, minPrice) < 0){
+                                notice.setPrice(notice.getMinPrice());
+                            }
+                        }
                     }
                 }
             }
@@ -189,6 +209,7 @@ public class NoticeService {
         return RestResp.fail("操作失败");
     }
 
+    @Deprecated
     public RestResp queryBTCPrice(){
         try {
             List<BTCTicker> btcTickerList = btcTickerDao.findBySymbol("btccny");
@@ -204,6 +225,7 @@ public class NoticeService {
         return RestResp.fail("操作失败");
     }
 
+    @Deprecated
     public RestResp queryBTCMarket(){
         try {
             List<BTCResult> btcResultList = btcResultDao.findByIsSuc("true");
@@ -227,6 +249,21 @@ public class NoticeService {
         }catch (Exception e){
             e.printStackTrace();
             LOG.error("查询BTC深度行情异常", e.getMessage());
+        }
+        return RestResp.fail("操作失败");
+    }
+
+    public RestResp queryBlockChainInfo(){
+        try {
+            List<CNYDetail> cnyDetailList = cnyDetailDao.findBySymbol("¥");
+            if (cnyDetailList.size() != 0){
+                return RestResp.success("操作成功", cnyDetailList);
+            }else {
+                return RestResp.fail("操作失败");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            LOG.error("获取BTC价格异常", e.getMessage());
         }
         return RestResp.fail("操作失败");
     }
@@ -406,6 +443,7 @@ public class NoticeService {
             Iterable<Payment> payment = paymentDao.findAll();
             Iterable<SearchType> searchType = searchTypeDao.findAll();
             Iterable<BTCTicker> btcTiker = btcTickerDao.findBTCTickerBySymbol("btccny");
+            List<CNYDetail> cnyDetailList = cnyDetailDao.findBySymbol("¥");
 
             if (location.iterator().hasNext() && currency.iterator().hasNext() && payment.iterator().hasNext() && searchType.iterator().hasNext()){
                 StatusDTO statusDTO = new StatusDTO<>();
@@ -414,6 +452,7 @@ public class NoticeService {
                 statusDTO.setPaymentList(payment);
                 statusDTO.setSearchTypeList(searchType);
                 statusDTO.setBTCMarketList(btcTiker);
+                statusDTO.setCnyDetailList(cnyDetailList);
                 return RestResp.success("操作成功", statusDTO);
             } else {
                 return RestResp.fail("操作失败");
@@ -424,7 +463,6 @@ public class NoticeService {
         }
         return RestResp.fail("操作失败");
     }
-
 
     // =================================================================
 
@@ -463,7 +501,7 @@ public class NoticeService {
             subList.get(i).setTxNum(userTxDetail.getTxNum());
             subList.get(i).setTrustNum(userTxDetail.getBelieveNum());
             double trustP = ArithmeticUtils.divide(userTxDetail.getBelieveNum(), userTxDetail.getTxNum(), 2);
-            subList.get(i).setTrustPercent((int)ArithmeticUtils.multiply(trustP, (double) 100, 0));
+            subList.get(i).setTrustPercent((int) ArithmeticUtils.multiply(trustP, (double) 100, 0));
         }
 
     }

@@ -5,6 +5,7 @@ import React,{ Component }from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 import Dropzone from 'react-dropzone';
+import { Pagination } from 'antd';
 import {Alert,Modal,Button,Form,FormGroup,Col,ControlLabel,FormControl,Image} from 'react-bootstrap';
 import {uploadEvidence} from '../actions/arbitrate';
 import {fetchNoCompletedOrders} from '../actions/order';
@@ -16,14 +17,17 @@ class OrderInProgress extends Component {
             show:false,
             evidenceOFile: [],
             id:1,
-            isEvidenceFileDone:false
+            isEvidenceFileDone:false,
+            pageSize:8, //每页显示的条数8条
         }
         this.renderrow = this.renderrow.bind(this);
     }
     componentWillMount() {
         const userId= localStorage.getItem('userId');
         const formData={
-            userId:userId
+            userId:userId,
+            pageNum:1,
+            pageSize:this.state.pageSize, //每页显示的条数8条
         }
         this.props.fetchNoCompletedOrders({formData});
     }
@@ -53,6 +57,15 @@ class OrderInProgress extends Component {
             })
         }
     }
+    onPagination(pageNum) {
+        const userId= localStorage.getItem('userId');
+        const formData={
+            userId:userId,
+            pageNum:pageNum,
+            pageSize:this.state.pageSize
+        }
+        this.props.fetchNoCompletedOrders({formData}, ()=>{});
+    }
     renderrow(){
         const userId= localStorage.getItem('userId');
         return this.props.not_completed_orders.map((item,index) =>{
@@ -70,8 +83,8 @@ class OrderInProgress extends Component {
                     <td>{item.amount}</td>
                     <td>{item.createTime}</td>
                     <td>{item.orderStatusName}</td>
-                    <td><Link className="btn btn-primary" to={path} onClick={localStorage.setItem("receiverId",item.orderType == "购买" ? item.sellerId : item.buyerId)}>详情</Link></td>
-                    <td>{item.orderStatus == 3 || item.orderStatus == 8 ? <button className="btn btn-primary" onClick={this.handleEvidence.bind(this,item.id)}>THEMIS仲裁</button> : <div></div>}</td>
+                    <td><Link className="ant-btn ant-btn-primary ant-btn-lg" to={path} onClick={localStorage.setItem("receiverId",item.orderType == "购买" ? item.sellerId : item.buyerId)}>详情</Link></td>
+                    <td>{item.orderStatus == 3 || item.orderStatus == 8 ? <button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleEvidence.bind(this,item.id)}>仲裁</button> : <div></div>}</td>
                 </tr>
                 )
         })
@@ -81,7 +94,9 @@ class OrderInProgress extends Component {
         let close = () => {
             this.setState({show:false})
         };
-        let {not_completed_orders} = this.props;
+        const not_completed_orders = this.props.not_completed_orders;
+        const totalNum = not_completed_orders && not_completed_orders[0].pageCount
+        console.log(totalNum)
         if(this.props.not_completed_orders===null){
             return <div className="container">
                 <div className="h1 text-center">Loading...</div>
@@ -113,9 +128,11 @@ class OrderInProgress extends Component {
                         </thead>
                         <tbody>
                         {this.props.not_completed_orders == null ? <tr><td colSpan={8}>暂无数据</td></tr> : this.renderrow()}
-                        {/*{this.renderrow()}*/}
                         </tbody>
                     </table>
+                </div>
+                <div className="pagecomponent">
+                    <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.onPagination(e)}/>
                 </div>
             </div>
             <Modal show={this.state.show} onHide={close} container={this} aria-labelledby="contained-modal-title">

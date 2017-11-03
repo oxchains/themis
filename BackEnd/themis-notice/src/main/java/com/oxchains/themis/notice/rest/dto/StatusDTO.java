@@ -19,4 +19,5 @@ public class StatusDTO <T> {
     private Iterable<T> paymentList;
 
     private Iterable<T> bTCMarketList;
+    private List<T> cnyDetailList;
 }

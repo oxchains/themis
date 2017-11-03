@@ -4,21 +4,39 @@
 import React,{ Component }from 'react';
 import {connect} from 'react-redux';
 import { Link } from 'react-router-dom';
+import { Pagination } from 'antd';
 import {fetchCompletedOrders} from '../actions/order';
 
 class OrderCompleted extends Component {
     constructor(props) {
         super(props);
         this.renderrow = this.renderrow.bind(this);
+        this.state={
+            pageSize:8, //每页显示的条数8条
+        }
     }
     componentWillMount() {
         const userIdInfo= localStorage.getItem('userId');
-        const userId={userId:userIdInfo}
-        this.props.fetchCompletedOrders({userId},()=>{});
+        const userId={
+            userId:userIdInfo,
+            pageNum:1,
+            pageSize:this.state.pageSize, //每页显示的条数8条
+        }
+        this.props.fetchCompletedOrders({userId});
+    }
+    onPagination(pageNum) {
+        const userIdInfo= localStorage.getItem('userId');
+        const userId={
+            userId:userIdInfo,
+            pageNum:pageNum,
+            pageSize:this.state.pageSize, //每页显示的条数8条
+        }
+        this.props.fetchCompletedOrders({userId});
     }
     renderrow(){
+        const userId=localStorage.getItem("userId");
         return this.props.completed_orders.map((item,index)=>{
-            const data = {id:item.id,userId:1,partnerId:item.orderType == "购买"?item.sellerId:item.buyerId};
+            const data = {id:item.id,userId:userId,partnerId:item.orderType == "购买"?item.sellerId:item.buyerId};
             const path = {
                 pathname:'/orderprogress',
                 state:data,
@@ -32,13 +50,16 @@ class OrderCompleted extends Component {
                     <td>{item.amount}</td>
                     <td>{item.createTime}</td>
                     <td>{item.orderStatusName}</td>
-                    <td><Link className="btn btn-primary" to={path}>详情</Link></td>
+                    <td><Link className="ant-btn ant-btn-primary ant-btn-lg" to={path}>详情</Link></td>
                     {/*<td><Link className="btn btn-primary" to="/arbitrationbuyer">THEMIS仲裁</Link></td>*/}
                 </tr>
             )
         })
     }
     render() {
+        const completed_orders = this.props.completed_orders;
+        const totalNum = completed_orders && completed_orders[0].pageCount
+        console.log(totalNum)
         console.log(this.props.completed_orders)
         if(this.props.completed_orders===null){
             return(
@@ -76,6 +97,9 @@ class OrderCompleted extends Component {
                             {/*{this.renderrow()}*/}
                             </tbody>
                         </table>
+                    </div>
+                    <div className="pagecomponent">
+                        <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.onPagination(e)}/>
                     </div>
                 </div>
             </div>

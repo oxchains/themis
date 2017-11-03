@@ -3,6 +3,7 @@
  */
 import React,{ Component }from 'react';
 import {connect} from 'react-redux';
+import { Pagination } from 'antd';
 import {Alert,Modal,Button,Form,FormGroup,Col,ControlLabel,FormControl,Image} from 'react-bootstrap';
 import {fetchArbitrateList,fetchEvidence,arbitrateResult} from '../actions/arbitrate';
 import {ROOT_ORDER} from '../actions/types'
@@ -14,16 +15,18 @@ class RefereeList extends Component {
         this.state={
             show:false,
             pageSize:8, //每页显示的条数8条
-            current: 1,//默认的当前第一页
             result:1
         }
         this.renderrow = this.renderrow.bind(this);
     }
     componentWillMount(){
         const userId=localStorage.getItem("userId")
-        const userIdDate={userId:userId}
+        const userIdDate={
+            userId:userId,
+            pageNum:1,
+            pageSize:this.state.pageSize, //每页显示的条数8条
+        }
         this.props.fetchArbitrateList({userIdDate});
-        // this.props.fetctSellSeach({pageNum}, ()=>{});
     }
     showEvidence(item){
         console.log(item)
@@ -59,12 +62,11 @@ class RefereeList extends Component {
                         <div>卖方:{item.sellerUsername}</div>
                     </td>
                     <td>{item.id}</td>
-                    <td>{item.orderStatusName}</td>
                     <td>{item.money}</td>
                     <td>{item.amount}</td>
-                    <td>{item.creatTime}</td>
+                    <td>{item.createTime}</td>
                     <td>{item.orderStatusName}</td>
-                    <td><button className="btn btn-primary" onClick={this.showEvidence.bind(this,item.id)}>仲裁</button></td>
+                    <td>{item.status == 1 ? <button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.showEvidence.bind(this,item.id)}>仲裁</button> : ""}</td>
                 </tr>
             )
         })
@@ -73,20 +75,27 @@ class RefereeList extends Component {
         this.setState({result:e.target.value})
     }
     onPagination(pageNum) {
-        // console.log("当前页数" + pageNum)  //当前页数
-        // this.props.fetctSellSeach({pageNum}, ()=>{});
+        const userId=localStorage.getItem("userId")
+        const userIdDate={
+            userId:userId,
+            pageNum:pageNum,
+            pageSize:this.state.pageSize, //每页显示的条数8条
+        }
+        this.props.fetchArbitrateList({userIdDate});
     }
     render() {
         let close = () => {
             this.setState({show:false})
         };
+        const arbitrate_list=this.props.arbitrate_list;
         const evidenceData = this.props.evidenceData;
+        const totalNum = arbitrate_list && arbitrate_list[0].pageCount
         const buyerContent = evidenceData && evidenceData.buyerContent;
         const sellerContent = evidenceData && evidenceData.sellerContent;
         const buyerFiles = evidenceData && evidenceData.buyerFiles;
         const sellerFiles = evidenceData && evidenceData.sellerFiles;
-        // const {buyerContent, sellerContent} = evidenceData;
-        // const totalNum = this.props.all.rowCount
+        console.log(evidenceData)
+        console.log(totalNum)
         return (
             <div className="container">
                 <div className="referee-list  g-pt-50 g-pb-50">
@@ -98,7 +107,6 @@ class RefereeList extends Component {
                                 <tr>
                                     <th>交易人</th>
                                     <th>订单编号</th>
-                                    <th>类型</th>
                                     <th>交易金额</th>
                                     <th>交易数量</th>
                                     <th>创建时间</th>
@@ -111,11 +119,10 @@ class RefereeList extends Component {
                                 </tbody>
                             </table>
                         </div>
+                        <div className="pagecomponent">
+                            <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.onPagination(e)}/>
+                        </div>
                     </div>
-                    {/*<div className="pagecomponent">*/}
-                        {/*<Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.onPagination(e)}/>*/}
-                    {/*</div>*/}
-                    {/*<div className="text-center">没有更多内容了</div>*/}
                 </div>
                 <Modal show={this.state.show} onHide={close} container={this} aria-labelledby="contained-modal-title">
                     <Modal.Header closeButton>

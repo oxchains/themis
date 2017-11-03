@@ -1,6 +1,6 @@
 package com.oxchains.themis.notice.rest;
 
-import com.oxchains.themis.common.model.RestResp;
+import com.oxchains.themis.notice.auth.RestResp;
 import com.oxchains.themis.notice.domain.Notice;
 import com.oxchains.themis.notice.service.NoticeService;
 import org.springframework.web.bind.annotation.*;
@@ -74,6 +74,15 @@ public class NoticeController {
     @GetMapping(value = "/query/BTCMarket")
     public RestResp queryBTCMarket(){
         return noticeService.queryBTCMarket();
+    }
+
+    /**
+     * 实时获取BlockChain.info BTC 价格
+     * @return
+     */
+    @GetMapping(value = "/query/blockchain.info")
+    public RestResp queryBlockChainInfo(){
+        return noticeService.queryBlockChainInfo();
     }
 
     /**

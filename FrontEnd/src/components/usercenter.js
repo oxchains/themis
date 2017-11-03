@@ -13,7 +13,6 @@ class Usercenter extends Component {
             status:'1',
         }
     }
-
     render() {
         return (
 
