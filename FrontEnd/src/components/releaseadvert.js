@@ -129,8 +129,8 @@ class Releaseadvert extends Component {
                     <h5 className="h3title">*选择广告类型</h5>
                     <span className="tipspan"> &nbsp;&nbsp;您想要创建什么样的交易广告？如果您希望出售比特币,请确保您在THEMIS的钱包中有比特币。</span>
                     <ul className=" buytype">
-                        <li className={` ${this.state.status == 1 ? "tab-title-item active" :" tab-title-item"} `}   onClick={this.handleRowsbuy}>在线购买比特币</li>
-                        <li className={`${this.state.status == 2 ? "tab-title-item active" :" tab-title-item "}`} onClick={this.handleRowssell}>在线出售比特币</li>
+                        <li className={` ${this.state.status == 1 ? "tab-way-item active" :" tab-way-item"} `}   onClick={this.handleRowsbuy}>在线购买比特币</li>
+                        <li className={`${this.state.status == 2 ? "tab-way-item active" :" tab-way-item "}`} onClick={this.handleRowssell}>在线出售比特币</li>
                     </ul>
                     <div className="clear display"></div>
                     <h5 className="h3title clear">*所在地</h5>
@@ -199,7 +199,6 @@ class Releaseadvert extends Component {
 
 
 function mapStateToProps(state) {
-    console.log(state);
     return {
         authenticated: state.auth.authenticated,
         errorMessage: state.auth.error,

@@ -35,8 +35,7 @@ class Signin extends Component {
     }
     render(){
         return (
-            <div>
-
+            <div className="mainbgc">
                 <div className="login-box">
                     <div className="login-box-body">
 

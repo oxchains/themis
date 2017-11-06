@@ -15,4 +15,5 @@ import java.util.List;
 @Repository
 public interface OrderDao extends CrudRepository<Order,Long> {
     List<Order> findByBuyerIdOrSellerId(Long buyId, Long sellerId);
+    int countByBuyerIdOrSellerId(Long buyId,Long sellerId);
 }

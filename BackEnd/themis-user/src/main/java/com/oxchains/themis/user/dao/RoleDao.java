@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
  * @desc:
  */
 @Repository
-public interface RoleDao extends CrudRepository<Role,Integer> {
+public interface RoleDao extends CrudRepository<Role,Long> {
     /**
      * find role info by id
      * @param id

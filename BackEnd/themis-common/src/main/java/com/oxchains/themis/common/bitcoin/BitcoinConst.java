@@ -11,6 +11,8 @@ public interface BitcoinConst {
      * 中继费账户
      */
      String OXCHAINS_DEFAULT_FEE_ACCOUNT = "oxchainsfees";
+
+     String OXCHAINS_DEFAULT_FEE_ADDRESS = "n3hZbBiMHFvyqVTjFcPC2nTsArNzV128vF";
     /**
      * 签名地址账户
      */
@@ -20,9 +22,13 @@ public interface BitcoinConst {
      */
      String OXCHAINS_DEFAULT_KEYS_ACCOUNT = "AllKeys";
     /**
-     * 矿工费
+     * 交易费
      */
     double OXCHAINS_DEFAULT_TX_FEE = 0.0001D;
+    /**
+     * 矿工
+     */
+    double OXCHAINS_DEFAULT_MINER_FEE = 0.0001D;
     /**
      * 确认block数
      */

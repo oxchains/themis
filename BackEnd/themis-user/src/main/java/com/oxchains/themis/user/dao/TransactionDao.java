@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
  * @desc:
  */
 @Repository
-public interface TransactionDao extends CrudRepository<Transaction,Integer> {
+public interface TransactionDao extends CrudRepository<Transaction,Long> {
     /**
      * find by recv address
      * @param recvAddress

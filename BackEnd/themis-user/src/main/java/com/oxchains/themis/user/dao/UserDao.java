@@ -14,7 +14,7 @@ import java.util.Optional;
  * @desc:
  */
 @Repository
-public interface UserDao extends CrudRepository<User,Integer> {
+public interface UserDao extends CrudRepository<User,Long> {
     /**
      * find by loginname
      * @param loginname
