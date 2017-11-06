@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * Created by Luo_xuri on 2017/10/20.
+ * @author luoxuri
  */
 @Repository
 public interface PaymentDao extends CrudRepository<Payment,Long> {
