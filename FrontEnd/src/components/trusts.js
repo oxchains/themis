@@ -9,29 +9,41 @@ class Trust extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isTrusted:"1"
+            isTrusted:1
         }
         this.handleTrustYou = this.handleTrustYou.bind(this)
         this.handleYouTrust = this.handleYouTrust.bind(this)
         this.handleShielded = this.handleShielded.bind(this)
+        this.handleRow = this.handleRow.bind(this)
     }
     componentWillMount() {
-       // this.props.fetctTrusted({})
+        const loginname = localStorage.getItem('loginname');//登录名
+        this.props.fetctTrusted({loginname},()=>{})
     }
 
     handleTrustYou(){
-        this.state.isTrusted = 1
-        const isTrusted = this.state.isTrusted
+        // this.state.isTrusted = 1
+        this.setState({
+            isTrusted:1
+        })
+        // const isTrusted = this.state.isTrusted
         // this.props.fetctTrusted({})
     }
     handleYouTrust(){
-        this.state.isTrusted = 2
-        const isTrusted = this.state.isTrusted
+        // this.state.isTrusted = 2
+        this.setState({
+            isTrusted:2
+        })
+
+        // const isTrusted = this.state.isTrusted
         // this.props.fetctTrusted({})
     }
     handleShielded(){
-        this.state.isTrusted = 3
-        const isTrusted = this.state.isTrusted
+        // this.state.isTrusted = 3
+        this.setState({
+            isTrusted:3
+        })
+        // const isTrusted = this.state.isTrusted
         // this.props.fetctTrusted({})
     }
     handleRow( item,index){

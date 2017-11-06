@@ -35,9 +35,7 @@ export function fetctHome(callback) {
                 // console.log(response)
                 dispatch({type: FETCH_HOME, payload: response})
             })
-            .catch(err => {
-                console.error(err)
-            });
+            .catch(err => callback(err.message));
     }
 }
 
@@ -87,9 +85,7 @@ export function fetctBuyBtcDetail({noticeId},callback) {
                 // console.log(response)
                 dispatch({type: FETCH_BUY_BTC_DETAIL, payload: response})
             })
-            .catch(err => {
-                console.error(err)
-            });
+            .catch(err => callback(err.message));
     }
 }
 
@@ -114,9 +110,7 @@ export function fetctBuynow({formdata},callback) {
                     callback(response.data.message);
                 }
             })
-            .catch(err => {
-                console.error(err)
-            });
+            .catch(err => callback(err.message));
     }
 }
 
@@ -125,7 +119,6 @@ export function fetctSellnow({formdata},callback) {
     // console.log("出售下单传送的数据")
     // console.log(formdata);
     return function(dispatch) {
-        // axios.post(`${ROOT_URLZ}/order/addOrder`,{formdata}, { headers: getAuthorizedHeader() })
         axios({
             method: 'post',
             url: `${ROOT_URLZ}/order/addOrder `,
@@ -140,9 +133,7 @@ export function fetctSellnow({formdata},callback) {
                     callback(response.data.message);
                 }
             })
-            .catch(err => {
-                console.error(err)
-            });
+            .catch(err => callback(err.message));
     }
 }
 
@@ -156,16 +147,13 @@ export function fetctSellBtcDetail({noticeId},callback) {
                 // console.log(response)
                 dispatch({type: FETCH_SELL_BTC_DETAIL, payload: response})
             })
-            .catch(err => {
-                console.error(err)
-            });
+            .catch(err => callback(err.message));
     }
 }
 
 // 出售比特币搜索
 
 export function fetctSellSeach({searchType,location,currency,payType,pageNum }, callback) {
-    // console.log(`点击出售搜索传送的数据:${searchType},${location},${currency} ,${payType},${pageNum}`);
     return function(dispatch) {
         axios.post(`${ROOT_URLL}/notice/search/page/sell`, {searchType,location,currency,payType,pageNum },{ headers: getAuthorizedHeader() })
             .then(response => {
@@ -177,7 +165,7 @@ export function fetctSellSeach({searchType,location,currency,payType,pageNum }, 
 }
 // 选择框数据
 
-export function fetctArray( callback) {
+export function fetctArray(callback) {
     return function(dispatch) {
         axios.get(`${ROOT_URLL}/notice/query/statusKV`, { headers: getAuthorizedHeader() })
             .then(response => {
@@ -185,20 +173,20 @@ export function fetctArray( callback) {
                 // console.log(response)
                 dispatch({type: FETCH_ARRAY, payload: response})
             })
-            .catch(err => console.error(err.message));
+            .catch(err => callback(err.message));
     }
 }
 
 // 我的广告
 
-export function fetctMyAdvert({userId,noticeType,txStatus}) {
+export function fetctMyAdvert({userId,noticeType,txStatus},callback) {
     return function(dispatch) {
         axios.get(`${ROOT_URLL}/notice/query/me2?userId=${userId}&noticeType=${noticeType}&txStatus=${txStatus}`, { headers: getAuthorizedHeader() })
             .then(response => {
                 // console.log(response)
                 dispatch({type: FETCH_MY_ADVERT, payload: response})
             })
-            .catch(err => console.error(err.message));
+            .catch(err => callback(err.message));
     }
 }
 
@@ -217,9 +205,7 @@ export function fetctOffMyAd({id},callback) {
                     callback(response.data.message);
                 }
             })
-            .catch(err => {
-                console.error(err)
-            });
+            .catch(err => callback(err.message));
     }
 }
 
@@ -245,9 +231,7 @@ export function fetctBaseInfo({formdata},callback) {
                     callback(response.data.message);
                 }
             })
-            .catch(err => {
-                console.error(err)
-            });
+            .catch(err => callback(err.message));
     }
 }
 //用户中心受信任的
@@ -261,8 +245,6 @@ export function fetctTrusted({description,image},callback) {
                 dispatch({type: FETCH_TRUSTED, payload: response})
 
             })
-            .catch(err => {
-                console.error(err)
-            });
+            .catch(err => callback(err.message));
     }
 }

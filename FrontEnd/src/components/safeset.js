@@ -163,7 +163,6 @@ class Safeset extends Component {
 
 
 function mapStateToProps(state) {
-    console.log(state.auth.all)
     return {
      all:state.auth.all
     };

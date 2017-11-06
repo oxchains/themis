@@ -23,7 +23,7 @@ class Releaseadvert extends Component {
             error: null,
             actionResult: '',
             currentIndex:0,
-            status:'1'
+            status:1
         }
         this.handleRowsbuy = this.handleRowsbuy.bind(this)
         this.handleRowssell = this.handleRowssell.bind(this)
@@ -43,15 +43,17 @@ class Releaseadvert extends Component {
     }
 
     handleRowsbuy(){
-        this.setState({
-            status:'1'
-        })
+        // this.setState({
+        //     status:'1'
+        // })
+        this.state.status = 1
         console.log(this.state.status)
     }
     handleRowssell(){
-        this.setState({
-            status:'2'
-        })
+        // this.setState({
+        //     status:'2'
+        // })
+        this.state.status = 2
         console.log(this.state.status)
     }
 
@@ -199,7 +201,6 @@ class Releaseadvert extends Component {
 
 
 function mapStateToProps(state) {
-    console.log(state);
     return {
         authenticated: state.auth.authenticated,
         errorMessage: state.auth.error,

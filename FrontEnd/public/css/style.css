@@ -142,6 +142,10 @@ div {
     }
 
 }
+.sildbar
+{
+    border:1px solid #E9E9E9;
+}
 .header-position
 {
     width: 66%;
@@ -257,27 +261,34 @@ div {
 }
 .liheight
 {
-    width: 60%;
-    background-color: #bfbfbf;
-    padding: 11px 20px;
-    color: white;
+    /*width: 60%;*/
+    /*background-color: #bfbfbf;*/
+    padding: 11px 0px;
+    color: #444444;
+    cursor: pointer;
+    font-size: 15px;
     margin-bottom: 3px;
     text-align: center;
-    border-radius: 3px;
-    cursor: pointer;
+    border-bottom: 1px solid #E9E9E9;
+}
+.liheight:nth-child(3)
+{
+    border-bottom:none;
 }
 .liheight>a,.liheight>a:hover,.liheight:active
 {
-    color: white;
+    /*color: white;*/
 }
 .liheight:active
 {
-    background-color: #444444;
+    /*background-color: #444444;*/
 }
-.tab-title-item.active{
-    background-color: #444444;
-    color: #fff;
+.tab-title-item.active>p{
+    /*background-color: #444444;*/
+    color: #7CD3E8;
     cursor: pointer;
+    font-size: 15px;
+    border-left: 2px solid #7CD3E8;
 }
 
 .login-title-item.active{
@@ -298,16 +309,14 @@ div {
 }
 
 .baswinfo {
-    /*background-color: red;*/
-    height: 80%;
-    margin: 0 auto;
+    margin-left: 50px;
 
 }
 .safeset {
-    /*background-color: yellow;*/
+    margin-left: 50px;
 }
 .trust {
-    /*background-color: blue;*/
+   margin-left: 50px;
 }
 .loginli
 {
