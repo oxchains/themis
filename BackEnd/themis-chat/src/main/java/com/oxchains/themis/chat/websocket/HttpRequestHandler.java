@@ -1,5 +1,4 @@
 package com.oxchains.themis.chat.websocket;
-import com.oxchains.themis.chat.common.User;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -7,11 +6,13 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.oxchains.themis.chat.common.ChannelHandler;
-import com.oxchains.themis.chat.common.ChatUtil;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
+/**
+ * create by huohuo
+ * @author huohuo
+ */
 public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private final String wsUri;
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
@@ -21,22 +22,24 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
     @Override
     public void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
         String requestUri =  request.getUri().toString();
-        if (requestUri.length()>5 && requestUri.contains(wsUri)){
+        if (requestUri.contains(wsUri)){
             String message = requestUri.substring(requestUri.lastIndexOf("?")+1);
-            String id = message.substring(0,message.lastIndexOf("_"));
-            String receiverId = message.substring(message.lastIndexOf("_")+1);
-
-            if(ChatUtil.userChannels.get(id) == null){
+            String[] ids = message.split("_");
+            String id = null;
+            String receiverId = null;
+            if(ids.length>2){
+                id = ids[0];
+                receiverId = ids[1];
                 ChatUtil.userChannels.put(id,new ConcurrentHashMap<String ,ChannelHandler>());
+                String keyIds = ChatUtil.getIDS(id,receiverId);
+                Map<String,ChannelHandler> channelHandlerMap =  ChatUtil.userChannels.get(id);
+                if(channelHandlerMap.get(keyIds) != null){
+                    channelHandlerMap.get(keyIds).close();
+                    channelHandlerMap.remove(keyIds);
+                }
+                channelHandlerMap.put(keyIds,new ChannelHandler(ctx.channel(),System.currentTimeMillis()));
+                ctx.fireChannelRead(request.retain());
             }
-            String keyIds = ChatUtil.getIDS(id,receiverId);
-            Map<String,ChannelHandler> channelHandlerMap =  ChatUtil.userChannels.get(id);
-            if(channelHandlerMap.get(keyIds) != null){
-                channelHandlerMap.get(keyIds).close();
-                channelHandlerMap.remove(keyIds);
-            }
-            channelHandlerMap.put(keyIds,new ChannelHandler(ctx.channel(),System.currentTimeMillis()));
-            ctx.fireChannelRead(request.retain());
         }
         else {
             HttpResponse response = new DefaultHttpResponse(request.getProtocolVersion(), HttpResponseStatus.OK);

@@ -7,7 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Created by xuqi on 2017/10/18.
+ * create by huohuo
+ * @author huohuo
  */
 @Repository
 public interface MongoRepo extends MongoRepository<ChatContent, String> {

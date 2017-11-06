@@ -2,7 +2,7 @@ package com.oxchains.themis.chat.service;
 
 import com.oxchains.themis.chat.auth.JwtService;
 import com.oxchains.themis.chat.auth.UserToken;
-import com.oxchains.themis.chat.common.User;
+import com.oxchains.themis.chat.entity.User;
 import com.oxchains.themis.chat.repo.UserRepo;
 import com.oxchains.themis.chat.repo.UserTokenRepo;
 import com.oxchains.themis.common.util.EncryptUtils;
@@ -14,7 +14,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * Created by xuqi on 2017/10/12.
+ * create by huohuo
+ * @author huohuo
  */
 @Service
 public class UserService {

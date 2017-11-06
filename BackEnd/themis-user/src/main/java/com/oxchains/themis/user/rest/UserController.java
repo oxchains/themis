@@ -76,5 +76,4 @@ public class UserController {
     public RestResp password(@RequestBody User user){
         return userService.updateUser(user, ParamType.UpdateUserInfoType.PWD);
     }
-
 }

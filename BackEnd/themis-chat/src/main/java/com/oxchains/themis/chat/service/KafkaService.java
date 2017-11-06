@@ -8,7 +8,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 /**
- * Created by xuqi on 2017/10/20.
+ * create by huohuo
+ * @author huohuo
  */
 @Service
 public class KafkaService {

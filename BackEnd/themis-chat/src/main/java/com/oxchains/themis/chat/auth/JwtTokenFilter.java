@@ -1,6 +1,8 @@
 package com.oxchains.themis.chat.auth;
 
+import com.oxchains.themis.common.auth.AuthorizationConst;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -9,12 +11,15 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
- * @author aiet
+ * create by huohuo
+ * @author huohuo
  */
 @Component
 public class JwtTokenFilter implements Filter {
 
     private final JwtService jwtService;
+    @Value("${websocket.start.with}")
+    private String websocketStartWith;
 
     @Autowired
     public JwtTokenFilter(JwtService jwtService) {
@@ -28,14 +33,14 @@ public class JwtTokenFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest servletRequest = (HttpServletRequest) request;
-        String authorization = servletRequest.getHeader("Authorization");
-        if (authorization != null && authorization.startsWith("Bearer ")) {
+        String authorization = servletRequest.getHeader(AuthorizationConst.AUTHORIZATION_HEADER);
+        if (authorization != null && authorization.startsWith(AuthorizationConst.AUTHORIZATION_START)) {
             JwtAuthentication jwtAuthentication = jwtService.parse(authorization.replaceAll("Bearer ", ""));
             if(jwtAuthentication!=null){
                 SecurityContextHolder.getContext().setAuthentication(jwtAuthentication);
             }
         }
-        else if(((HttpServletRequest) request).getRequestURL().toString().startsWith("ws")){
+        else if(((HttpServletRequest) request).getRequestURL().toString().startsWith(websocketStartWith)){
             String authorizationss =  ((HttpServletRequest) request).getParameter("Authorization");
             JwtAuthentication jwtAuthentication = jwtService.parse(authorization.replaceAll("Bearer ", ""));
             if(jwtAuthentication!=null){

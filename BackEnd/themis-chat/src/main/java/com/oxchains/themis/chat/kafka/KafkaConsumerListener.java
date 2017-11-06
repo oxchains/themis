@@ -13,14 +13,15 @@ import javax.annotation.Resource;
 import java.util.Optional;
 
 /**
- * Created by xuqi on 2017/10/17.
+ * create by huohuo
+ * @author huohuo
  */
 @Component
-public class Listener {
+public class KafkaConsumerListener {
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
     @Resource
     private MongoRepo mongoRepo;
-    public Listener(){};
+    public KafkaConsumerListener(){};
 
     @KafkaListener(topics = {"chatContent"})
     public void listen(ConsumerRecord<?, ?> record) {
@@ -29,7 +30,6 @@ public class Listener {
             if (kafkaMessage.isPresent()) {
                 Object message = kafkaMessage.get();
                 ChatContent chatContent = (ChatContent) JsonUtil.fromJson((String)message, ChatContent.class);
-                System.out.println(chatContent+"-------------------");
                 mongoRepo.save(chatContent);
             }
         }catch (Exception e){

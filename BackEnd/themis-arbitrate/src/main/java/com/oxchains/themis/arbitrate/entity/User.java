@@ -1,13 +1,15 @@
-package com.oxchains.themis.chat.common;
+package com.oxchains.themis.arbitrate.entity;
 
 import javax.persistence.*;
 
 /**
- * Created by xuqi on 2017/10/12.
+ * @author huohuo
  */
+
 @Entity
 @Table(name = "tbl_sys_user")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -33,26 +35,24 @@ public class User {
 
     private Long roleId;
 
-    public User() {
+    private String createTime;
+
+    public String getCreateTime() {
+        return createTime;
     }
 
-
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
 
     private Integer loginStatus;
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", loginname='" + loginname + '\'' +
-                ", email='" + email + '\'' +
-                ", mobilephone='" + mobilephone + '\'' +
-                ", password='" + password + '\'' +
-                ", firstAddress='" + firstAddress + '\'' +
-                ", roleId=" + roleId +
-                ", loginStatus=" + loginStatus +
-                '}';
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
     }
 
     public Long getId() {
@@ -111,14 +111,6 @@ public class User {
         this.firstAddress = firstAddress;
     }
 
-    public Long getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(Long roleId) {
-        this.roleId = roleId;
-    }
-
     public Integer getLoginStatus() {
         return loginStatus;
     }
@@ -126,5 +118,4 @@ public class User {
     public void setLoginStatus(Integer loginStatus) {
         this.loginStatus = loginStatus;
     }
-
 }

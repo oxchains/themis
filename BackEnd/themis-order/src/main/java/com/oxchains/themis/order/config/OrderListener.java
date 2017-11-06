@@ -26,6 +26,7 @@ public class OrderListener {
         for (Orders o: ordersByOrderStatus) {
             JSONObject restResp = restTemplate.getForObject("http://themis-user/account/"+o.getId(), JSONObject.class);
             Integer status  = (Integer) restResp.get("status");
+            System.out.println(status);
             if(status==1){
                 o.setOrderStatus(2L);
                 o = orderRepo.save(o);

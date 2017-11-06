@@ -5,7 +5,8 @@ import org.springframework.stereotype.Repository;
 import com.oxchains.themis.chat.auth.UserToken;
 
 /**
- * Created by xuqi on 2017/10/13.
+ * create by huohuo
+ * @author huohuo
  */
 @Repository
 public interface UserTokenRepo extends CrudRepository<UserToken,String> {
