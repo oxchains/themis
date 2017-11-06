@@ -137,9 +137,9 @@ public class UserController {
 
     @GetMapping(value = "/trust")
     public RestResp trust(com.oxchains.themis.common.param.RequestBody body){
-        if(body.getType() == 1){
+        if(body.getType() == ParamType.TrustTabType.TRUSTED.getType()){
             return userService.trustedUsers(body);
-        }else if(body.getType() == 2){
+        }else if(body.getType() == ParamType.TrustTabType.TRUST.getType()){
             return userService.trustUsers(body, Status.TrustStatus.TRUST);
         }else {
             return userService.trustUsers(body, Status.TrustStatus.SHIELD);
