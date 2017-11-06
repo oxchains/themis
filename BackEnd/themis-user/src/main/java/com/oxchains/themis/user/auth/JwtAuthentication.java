@@ -55,7 +55,7 @@ public class JwtAuthentication implements Authentication {
 
     @Override
     public boolean isAuthenticated() {
-        return user != null && user.getLoginname() != null && user.getEmail() != null && user.getMobilephone() != null;
+        return user != null && (user.getLoginname() != null || user.getEmail() != null || user.getMobilephone() != null);
         // return true;
     }
 

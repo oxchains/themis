@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 /**
  * Created by huohuo on 2017/10/25.
+ * @author huohuo
  */
 @Entity
 @Table(name = "order_address_key")
@@ -115,5 +116,16 @@ public class OrderAddresskeys {
                 ", userPubAuth='" + userPubAuth + '\'' +
                 ", userPriAuth='" + userPriAuth + '\'' +
                 '}';
+    }
+
+    public OrderAddresskeys(String orderId, String buyerPubAuth, String buyerPriAuth, String userPubAuth, String userPriAuth) {
+        this.orderId = orderId;
+        this.buyerPubAuth = buyerPubAuth;
+        this.buyerPriAuth = buyerPriAuth;
+        this.userPubAuth = userPubAuth;
+        this.userPriAuth = userPriAuth;
+    }
+
+    public OrderAddresskeys() {
     }
 }

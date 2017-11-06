@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * @author aiet
+ * @author huohuo
  */
 @Slf4j
 @JsonIgnoreProperties(ignoreUnknown = true)

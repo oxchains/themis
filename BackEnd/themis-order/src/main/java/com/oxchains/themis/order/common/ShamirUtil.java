@@ -8,10 +8,11 @@ import java.util.List;
 
 /**
  * Created by huohuo on 2017/10/25.
+ * @author huohuo
  */
 public class ShamirUtil {
-    private static final Integer K = 2;
-    private static final Integer N = 3;
+    public static final Integer K = 2;
+    public static final Integer N = 3;
     private static final String DESCRIPTION = "this is 4096";
     private static final SecretShare.PublicInfo PUBLIC_INFO = new SecretShare.PublicInfo(N,K,SecretShare.getPrimeUsedFor4096bigSecretPayload(),DESCRIPTION);
     private static final SecretShare SPLIT = new SecretShare(PUBLIC_INFO);

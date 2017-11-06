@@ -15,10 +15,13 @@ import com.oxchains.themis.user.domain.Role;
 import com.oxchains.themis.user.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -93,11 +96,19 @@ public class UserService extends BaseService {
     public RestResp updateUser(User user, ParamType.UpdateUserInfoType uuit) {
         User u = userDao.findByLoginname(user.getLoginname());
         switch (uuit){
+            case INFO:
+                u.setImage(user.getImage());
+                u.setDescription(user.getDescription());
+                break;
             case PWD:
-                u.setPassword(EncryptUtils.encodeSHA256(user.getPassword()));
+                if(EncryptUtils.encodeSHA256(user.getPassword()).equals(u.getPassword())){
+                    u.setPassword(EncryptUtils.encodeSHA256(user.getNewPassword()));
+                }else {
+                    return RestResp.fail("输入的旧密码错误");
+                }
                 break;
             case FPWD:
-                u.setFpassword(EncryptUtils.encodeSHA256(user.getPassword()));
+                u.setFpassword(EncryptUtils.encodeSHA256(user.getFpassword()));
                 break;
             case EMAIL:
                 u.setEmail(user.getEmail());
@@ -123,7 +134,7 @@ public class UserService extends BaseService {
         user.setPassword(EncryptUtils.encodeSHA256(user.getPassword()));
         Optional<User> optional = findUser(user);
         return optional.map(u -> {
-            String token = "Bearer " + jwtService.generate(user);
+            String token = "Bearer " + jwtService.generate(u);
             Role role = roleDao.findById(u.getRoleId());
             UserTxDetail userTxDetail = userTxDetailDao.findByUserId(u.getId());
             List<Order> orders = orderDao.findByBuyerIdOrSellerId(u.getId(), u.getId());

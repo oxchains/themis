@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 
 /**
  * Created by Luo_xuri on 2017/10/20.
+ * @author huohuo
  */
 @Entity
 @Table(name = "notice")

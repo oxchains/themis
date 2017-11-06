@@ -23,6 +23,13 @@ public interface UserDao extends CrudRepository<User,Integer> {
     User findByLoginname(String loginname);
 
     /**
+     * 通过手机查找
+     * @param mobilephone
+     * @return
+     */
+    User findByMobilephone(String mobilephone);
+
+    /**
      *
      * @param loginname
      * @param password
