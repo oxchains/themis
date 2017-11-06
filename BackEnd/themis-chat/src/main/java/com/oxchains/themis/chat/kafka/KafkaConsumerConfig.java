@@ -1,7 +1,6 @@
 package com.oxchains.themis.chat.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by xuqi on 2017/10/17.
+ * create by huohuo
+ * @author huohuo
  */
 @Configuration
 @EnableKafka
@@ -43,7 +43,7 @@ public class KafkaConsumerConfig {
     }
 
     public Map<String, Object> consumerConfigs() {
-        Map<String, Object> propsMap = new HashMap<>();
+        Map<String, Object> propsMap = new HashMap<>(10);
         propsMap.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaSeerviceConfig);
         propsMap.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         propsMap.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "100");
@@ -56,7 +56,7 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public Listener listener() {
-        return new Listener();
+    public KafkaConsumerListener listener() {
+        return new KafkaConsumerListener();
     }
 }

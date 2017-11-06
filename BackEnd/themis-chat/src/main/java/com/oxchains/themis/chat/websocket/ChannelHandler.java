@@ -1,10 +1,10 @@
-package com.oxchains.themis.chat.common;
+package com.oxchains.themis.chat.websocket;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-
 /**
- * Created by xuqi on 2017/10/19.
+ * create by huohuo
+ * @author huohuo
  */
 public class ChannelHandler {
     private Channel channel;

@@ -80,6 +80,9 @@ public interface NoticeConst {
         }
     }
 
+    /**
+     * 搜索类型
+     */
     enum SearchType{
         ONE(1L, "搜公告"), TWO(2L, "搜用户");
         private Long status;

@@ -6,7 +6,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
 /**
- * @author aiet
+ * create by huohuo
+ * @author huohuo
  */
 @Component
 public class JwtAuthenticationProvider implements AuthenticationProvider {

@@ -1,7 +1,8 @@
 package com.oxchains.themis.chat.auth;
 
 /**
- * @author aiet
+ * create by huohuo
+ * @author huohuo
  */
 public class Authorities {
 

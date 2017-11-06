@@ -24,4 +24,22 @@ public interface ParamType {
             this.type = type;
         }
     }
+
+    enum TrustTabType implements ParamType{
+        TRUSTED(1),TRUST(2),SHIELD(3);
+
+        TrustTabType(int type) {
+            this.type = type;
+        }
+
+        private int type;
+
+        public int getType() {
+            return type;
+        }
+
+        public void setType(int type) {
+            this.type = type;
+        }
+    }
 }

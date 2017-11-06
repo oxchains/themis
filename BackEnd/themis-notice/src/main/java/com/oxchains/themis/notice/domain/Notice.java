@@ -1,6 +1,7 @@
 package com.oxchains.themis.notice.domain;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import lombok.Data;
 
@@ -75,6 +76,12 @@ public class Notice {
 
     @Transient
     private Integer pageNum;
+
+    @Transient
+    private String searchName;
+
+    @Transient
+    private String defaultHead;
 
     public Notice(){}
 }

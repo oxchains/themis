@@ -50,8 +50,8 @@ public class NoticeController {
      * @param txStatus  交易状态
      */
     @GetMapping(value = "/query/me2")
-    public RestResp queryMeAllNotice(@RequestParam Long userId, @RequestParam Long noticeType, @RequestParam Integer txStatus){
-        return noticeService.queryMeAllNotice(userId, noticeType, txStatus);
+    public RestResp queryMeAllNotice(@RequestParam Long userId, @RequestParam Integer pageNum, @RequestParam Long noticeType, @RequestParam Integer txStatus){
+        return noticeService.queryMeAllNotice(userId, pageNum, noticeType, txStatus);
     }
 
     /**

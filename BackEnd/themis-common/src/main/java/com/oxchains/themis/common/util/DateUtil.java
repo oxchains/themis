@@ -12,7 +12,7 @@ public class DateUtil {
     /*
     * 获取当前时间精确到毫秒
     * */
-    public static String getPresentTime(){
+    private static String getPresentTime(){
         Calendar Cld= Calendar.getInstance();
         int YY = Cld.get(Calendar.YEAR) ;
         int MM = Cld.get(Calendar.MONTH)+1;
@@ -24,7 +24,7 @@ public class DateUtil {
         return ""+YY+MM+DD+HH+mm+SS+MI;
     }
     /*
-    * 获取杜昂掐年时间格式为 YY-MM-dd HH:mm:ss
+    * 获取当前时间格式为 YY-MM-dd HH:mm:ss
     * */
     public static String getPresentDate(){
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());

@@ -9,7 +9,6 @@ import com.oxchains.themis.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,7 +18,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 /**
  * Created by huohuo on 2017/10/23.
@@ -108,12 +106,7 @@ public class OrderController {
     @RequestMapping("/order/findArbitrareOrderById")
 
     public RestResp findArbitrareOrderById(@RequestBody Pojo pojo){
-        if(pojo.getPageNum() == null){
-            pojo.setPageNum(1);
-        }
-        if(pojo.getPageSize() == null){
-            pojo.setPageSize(8);
-        }
+        this.checkPage(pojo);
         return orderService.findArbitrareOrderById(pojo);
     }
     /*
@@ -143,7 +136,6 @@ public class OrderController {
     * */
     @RequestMapping("/order/findOrdersDetails")
     public RestResp findOrdersDetails(@RequestBody Pojo pojo){
-        System.out.println(pojo);
         OrdersInfo o = orderService.findOrdersDetails(pojo);
      return o!=null?RestResp.success(o): RestResp.fail();
     }
@@ -152,12 +144,7 @@ public class OrderController {
     * */
     @RequestMapping("/order/findCompletedOrders")
     public RestResp findCompletedOrders(@RequestBody Pojo pojo){
-        if(pojo.getPageNum() == null){
-            pojo.setPageNum(1);
-        }
-        if(pojo.getPageSize() == null){
-            pojo.setPageSize(8);
-        }
+        this.checkPage(pojo);
         return orderService.findCompletedOrdersById(pojo);
     }
     /*
@@ -165,12 +152,7 @@ public class OrderController {
    * */
     @RequestMapping("/order/findNoCompletedOrders")
     public RestResp findNoCompletedOrders(@RequestBody Pojo pojo){
-        if(pojo.getPageNum() == null){
-            pojo.setPageNum(1);
-        }
-        if(pojo.getPageSize() == null){
-            pojo.setPageSize(8);
-        }
+        this.checkPage(pojo);
         return orderService.findNoCompletedOrdersById(pojo);
     }
 
@@ -190,7 +172,7 @@ public class OrderController {
     @RequestMapping("/order/findUserTxDetail")
     public RestResp findUserTxDetail(@RequestBody Pojo pojo){
         UserTxDetail userTxDetail = orderService.findUserTxDetail(pojo);
-        return userTxDetail!=null?RestResp.success(userTxDetail):RestResp.fail();
+        return userTxDetail!=null?RestResp.success(userTxDetail):RestResp.fail("未知错误");
     }
     /*
     * 购买出售详情页面需要查的用户的历史交易信息 和公告的信息
@@ -198,7 +180,7 @@ public class OrderController {
     @RequestMapping("/order/findUserTxDetailAndNotice")
     public RestResp findUserTxDetailAndNotice(@RequestBody Pojo pojo){
         UserTxDetail userTxDetailAndNotice = orderService.findUserTxDetailAndNotice(pojo);
-        return userTxDetailAndNotice==null?RestResp.fail():RestResp.success(userTxDetailAndNotice);
+        return userTxDetailAndNotice==null?RestResp.fail("未知错误"):RestResp.success(userTxDetailAndNotice);
     }
     /*
     * 判断卖家有没有上传公私匙
@@ -216,7 +198,7 @@ public class OrderController {
         return b?RestResp.success():RestResp.fail();
     }
     /*
-    * 仲裁者获取 卖家买家上传的交易凭据
+    * 仲裁者获取 卖家买家上传的聊天记录和转账记录附件
     * */
     @RequestMapping("/order/getEvidence")
     public RestResp getEvidence(@RequestBody Pojo pojo){
@@ -243,14 +225,7 @@ public class OrderController {
             e.printStackTrace();
         }
     }
-    private void fileNotFound(HttpServletResponse response) {
-        try {
-            response.setStatus(SC_NOT_FOUND);
-            response.getWriter().write("file not found");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+
     //上传交易凭据 包括 文本 和 图片 附件
     @RequestMapping("/order/uploadEvidence")
     public RestResp uploadEvidence(@ModelAttribute @Valid RegisterRequest registerRequest) throws IOException {
@@ -263,6 +238,31 @@ public class OrderController {
     public RestResp findUserDetail(@RequestBody Pojo pojo){
         UserTxDetail userTxDetailAndNotice = orderService.findUserTxDetailAndNotice(pojo);
         return userTxDetailAndNotice==null?RestResp.fail():RestResp.success(userTxDetailAndNotice);
+    }
+
+    private void checkPage(Pojo pojo){
+        if(pojo.getPageSize() == null){
+            pojo.setPageSize(8);
+        }
+        if(pojo.getPageNum() == null){
+            pojo.setPageNum(1);
+        }
+    }
+    private void fileNotFound(HttpServletResponse response) {
+        try {
+            response.setStatus(SC_NOT_FOUND);
+            response.getWriter().write("file not found");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    /*
+    * 张晓晶 调试状态用
+    * */
+    @RequestMapping("/order/{orderid}/{status}")
+    public RestResp updateOrderStatus(@PathVariable("orderid") String orderId,@PathVariable("status") Long status){
+        Orders o = orderService.updateOrderStatus(orderId,status);
+        return o==null?RestResp.fail():RestResp.success(o);
     }
 }
 
