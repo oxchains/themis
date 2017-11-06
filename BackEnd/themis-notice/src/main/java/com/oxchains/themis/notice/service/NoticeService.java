@@ -1,13 +1,14 @@
 package com.oxchains.themis.notice.service;
 
 import com.oxchains.themis.common.model.RestResp;
-import com.oxchains.themis.notice.auth.ArithmeticUtils;
+import com.oxchains.themis.common.util.ArithmeticUtils;
 import com.oxchains.themis.notice.common.NoticeConst;
 import com.oxchains.themis.notice.dao.*;
 import com.oxchains.themis.notice.domain.*;
 import com.oxchains.themis.notice.domain.Currency;
 import com.oxchains.themis.notice.rest.dto.PageDTO;
 import com.oxchains.themis.notice.rest.dto.StatusDTO;
+import org.omg.CORBA.INTERNAL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -43,6 +44,7 @@ public class NoticeService {
     @Resource private PaymentDao paymentDao;
     @Resource private SearchTypeDao searchTypeDao;
     @Resource private UserTxDetailDao userTxDetailDao;
+    @Resource private UserDao userDao;
 
     public RestResp broadcastNotice(Notice notice){
         try {
@@ -174,19 +176,38 @@ public class NoticeService {
         return RestResp.fail("操作失败");
     }
 
-    public RestResp queryMeAllNotice(Long userId, Long noticeType, Integer txStatus){
+    public RestResp queryMeAllNotice(Long userId, Integer pageNum, Long noticeType, Integer txStatus){
         try {
             List<Notice> resultList = new ArrayList<>();
+            Pageable pageable = buildPageRequest(pageNum, NoticeConst.Constant.EIGHT.getValue(), "auto");
+            Page<Notice> page = null;
             if (txStatus.equals(NoticeConst.TxStatus.TWO.getStatus())){
-                List<Notice> noticeList = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(userId, noticeType, NoticeConst.TxStatus.TWO.getStatus());
-                resultList.addAll(noticeList);
-            } else {
+                page = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(userId, noticeType, NoticeConst.TxStatus.TWO.getStatus(), pageable);
+                Iterator<Notice> it = page.iterator();
+                while (it.hasNext()){
+                    resultList.add(it.next());
+                }
+            }else {
                 List<Notice> unDoneNoticeList = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(userId, noticeType, NoticeConst.TxStatus.ZERO.getStatus());
                 List<Notice> doingNoticeList = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(userId, noticeType, NoticeConst.TxStatus.ONE.getStatus());
                 resultList.addAll(unDoneNoticeList);
                 resultList.addAll(doingNoticeList);
             }
-            return RestResp.success("操作成功", resultList);
+            PageDTO<Notice> pageDTO = new PageDTO<>();
+            if (page == null){
+                pageDTO.setCurrentPage(NoticeConst.Constant.ONE.getValue());
+                pageDTO.setPageSize(NoticeConst.Constant.EIGHT.getValue());
+                pageDTO.setRowCount((long)resultList.size());
+                pageDTO.setTotalPage(NoticeConst.Constant.ONE.getValue());
+                pageDTO.setPageList(resultList);
+            }else {
+                pageDTO.setCurrentPage(pageNum);
+                pageDTO.setPageSize(NoticeConst.Constant.EIGHT.getValue());
+                pageDTO.setRowCount(page.getTotalElements());
+                pageDTO.setTotalPage(page.getTotalPages());
+                pageDTO.setPageList(resultList);
+            }
+            return RestResp.success("操作成功", pageDTO);
         }catch (Exception e){
             e.printStackTrace();
             LOG.error("查询我的公告异常", e.getMessage());
