@@ -25,19 +25,29 @@ class Myadvert extends Component {
             status:'1',
             adstatus:'1',
             pageSize:8, //每页显示的条数8条
+            pageNo: 1,//默认的当前第一页
         }
         this.handleRowsbuy = this.handleRowsbuy.bind(this)
         this.handleRowssell = this.handleRowssell.bind(this)
         this.handleRowsadverting = this.handleRowsadverting.bind(this)
         this.handleRowadverted = this.handleRowadverted.bind(this)
         this.handleRow = this.handleRow.bind(this)
-        this.handleOff = this.handleOff.bind(this)
-
+    }
+    componentWillMount(){
+        const userId = localStorage.getItem("userId")
+        const noticeType = this.state.status
+        const txStatus = this.state.adstatus
+        const pageNo = this.state.pageNo
+        this.props.fetctMyAdvert({userId,noticeType,txStatus,pageNo},()=>{});
     }
     onPagination(pageNum) {
-        console.log( "当前页数"+ pageNum) //当前页数
-
-        // this.props.fetcAdvertSeach({pageNum}, ()=>{});
+        console.log( "当前页数"+ pageNum)
+        this.state.pageNo = pageNum
+        const userId = localStorage.getItem("userId")
+        const noticeType = this.state.status
+        const txStatus = this.state.adstatus
+        const pageNo = this.state.pageNo
+        this.props.fetctMyAdvert({userId,noticeType,txStatus,pageNo}, ()=>{});
     }
 
     handleRowsbuy(){
@@ -93,12 +103,7 @@ class Myadvert extends Component {
             isModalOpen: false
         });
     };
-    componentWillMount(){
-        const userId = localStorage.getItem("userId")
-        const noticeType = this.state.status
-        const txStatus = this.state.adstatus
-        this.props.fetctMyAdvert({userId,noticeType,txStatus},()=>{});
-    }
+
     handleOff = (item) =>{
         // const id = item.id
 

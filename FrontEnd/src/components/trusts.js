@@ -1,4 +1,3 @@
-
 /**
  * Created by oxchain on 2017/10/20.
  */
@@ -21,36 +20,19 @@ class Trust extends Component {
         this.handleRow = this.handleRow.bind(this)
     }
     componentWillMount() {
-
-        // let formdata = new FormData();
-        // formdata.append("userId",localStorage.getItem("userId"));
-        // formdata.append("type",this.state.isTrusted);
-        // formdata.append("pageNo",this.state.current);
-        // formdata.append("pageSize",this.state.pageSize);
-
         const formdata = {
             userId:localStorage.getItem("userId"),
             type : this.state.isTrusted,
             pageNo : this.state.current,
             pageSize : this.state.pageSize
         }
-
         console.log(formdata)
-        // const userId = localStorage.getItem("userId")
-        // const type = this.state.isTrusted
-        // const pageNo = this.state.current
-        // const pageSize = this.state.pageSize
         this.props.fetctTrusted({formdata},()=>{})
     }
     onPagination(pageNum) {
         console.log( "当前页数"+ pageNum) //当前页数
 
         this.state.current = pageNum
-
-        // const userId = localStorage.getItem("userId")
-        // const type = this.state.isTrusted
-        // const pageNo = this.state.current
-        // const pageSize = this.state.pageSize
         const formdata = {
             userId:localStorage.getItem("userId"),
             type : this.state.isTrusted,
@@ -64,11 +46,6 @@ class Trust extends Component {
         // this.setState({
         //     isTrusted:1
         // })
-        // const userId = localStorage.getItem("userId")
-        // const type = this.state.isTrusted
-        // const pageNo = this.state.current
-        // const pageSize = this.state.pageSize
-        // this.props.fetctTrusted({userId,type,pageNo,pageSize},()=>{})
         const formdata = {
             userId:localStorage.getItem("userId"),
             type : this.state.isTrusted,
@@ -82,11 +59,6 @@ class Trust extends Component {
         // this.setState({
         //     isTrusted:2
         // })
-        // const userId = localStorage.getItem("userId")
-        // const type = this.state.isTrusted
-        // const pageNo = this.state.current
-        // const pageSize = this.state.pageSize
-        // this.props.fetctTrusted({userId,type,pageNo,pageSize},()=>{})
         const formdata = {
             userId:localStorage.getItem("userId"),
             type : this.state.isTrusted,
@@ -100,11 +72,6 @@ class Trust extends Component {
         // this.setState({
         //     isTrusted:3
         // })
-        // const userId = localStorage.getItem("userId")
-        // const type = this.state.isTrusted
-        // const pageNo = this.state.current
-        // const pageSize = this.state.pageSize
-        // this.props.fetctTrusted({userId,type,pageNo,pageSize},()=>{})
         const formdata = {
             userId:localStorage.getItem("userId"),
             type : this.state.isTrusted,

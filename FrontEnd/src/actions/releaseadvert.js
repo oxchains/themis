@@ -179,7 +179,7 @@ export function fetctArray(callback) {
 
 // 我的广告
 
-export function fetctMyAdvert({userId,noticeType,txStatus},callback) {
+export function fetctMyAdvert({userId,noticeType,txStatus,pageNo},callback) {
     return function(dispatch) {
         axios.get(`${ROOT_URLL}/notice/query/me2?userId=${userId}&noticeType=${noticeType}&txStatus=${txStatus}`, { headers: getAuthorizedHeader() })
             .then(response => {
