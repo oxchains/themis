@@ -240,14 +240,11 @@ export function fetctTrusted({formdata},callback) {
     // console.log(`受信任的:${userId},${type},${pageNo} ,${pageSize} `);
     console.log("受信任的")
     console.log(formdata)
+    console.log(formdata.userId)
     return function(dispatch) {
         // axios.get(`${ROOT_URLC}/user/trust`,{userId,type,pageNo,pageSize},{ headers: getAuthorizedHeader() })
-        axios({
-            method: 'get',
-            url: `${ROOT_URLC}/user/trust `,
-            data: formdata,
-            headers: getAuthorizedHeader(),
-        }).then(response => {
+        axios.get(`${ROOT_URLC}/user/trust?userId=${formdata.userId}&pageNo=${formdata.pageNo}&pageSize=${formdata.pageSize}&type=${formdata.type}`,
+            { headers: getAuthorizedHeader() }).then(response => {
                 console.log(response)
                 dispatch({type: FETCH_TRUSTED, payload: response})
 
