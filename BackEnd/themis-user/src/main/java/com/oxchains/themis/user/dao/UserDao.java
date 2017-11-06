@@ -14,13 +14,20 @@ import java.util.Optional;
  * @desc:
  */
 @Repository
-public interface UserDao extends CrudRepository<User,Integer> {
+public interface UserDao extends CrudRepository<User,Long> {
     /**
      * find by loginname
      * @param loginname
      * @return
      */
     User findByLoginname(String loginname);
+
+    /**
+     * 通过手机查找
+     * @param mobilephone
+     * @return
+     */
+    User findByMobilephone(String mobilephone);
 
     /**
      *

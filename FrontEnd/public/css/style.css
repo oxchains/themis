@@ -65,7 +65,7 @@ div {
         width: 60%;
         margin: 50px auto;
     }
-    .sildbar,.titleul
+    .sildbar,.titleul,.adtypeul
     {
         list-style: none;
     }
@@ -90,7 +90,7 @@ div {
         width: 60%;
         margin: 50px auto;
     }
-    .sildbar,.titleul
+    .sildbar,.titleul,.adtypeul
     {
         list-style: none;
     }
@@ -115,7 +115,7 @@ div {
         width: 100%;
         margin: 10px auto;
     }
-    .sildbar,.titleul
+    .sildbar,.titleul,.adtypeul
     {
         list-style: none;
         padding: 0;
@@ -135,13 +135,18 @@ div {
         width: 100%;
         margin: 10px auto;
     }
-    .sildbar,.titleul
+    .sildbar,.titleul,.adtypeul
     {
         list-style: none;
         padding: 0;
     }
 
 }
+.sildbar
+{
+    border:1px solid #E9E9E9;
+}
+
 .header-position
 {
     width: 66%;
@@ -257,26 +262,55 @@ div {
 }
 .liheight
 {
-    width: 60%;
-    background-color: #bfbfbf;
-    padding: 11px 20px;
-    color: white;
+    /*width: 60%;*/
+    /*background-color: #bfbfbf;*/
+    padding: 11px 0px;
+    color: #444444;
+    cursor: pointer;
+    font-size: 15px;
     margin-bottom: 3px;
     text-align: center;
     border-radius: 3px;
+    border-bottom: 1px solid #E9E9E9;
+}
+.adtype
+{
+    width: 60%;
+    background-color: #bfbfbf;
+    padding: 11px 0px;
+    color: white;
     cursor: pointer;
+    font-size: 15px;
+    margin-bottom: 3px;
+    text-align: center;
+    border-radius: 3px;
+}
+
+
+.liheight:nth-child(3)
+{
+    border-bottom:none;
 }
 .liheight>a,.liheight>a:hover,.liheight:active
 {
-    color: white;
+    /*color: white;*/
 }
 .liheight:active
 {
-    background-color: #444444;
+    /*background-color: #444444;*/
 }
-.tab-title-item.active{
+.tab-title-item.active>p{
+
+    color: #7CD3E8;
+    cursor: pointer;
+    font-size: 15px;
+    border-left: 2px solid #7CD3E8;
+}
+
+.tab-way-item.active
+{
     background-color: #444444;
-    color: #fff;
+    color: white;
     cursor: pointer;
 }
 
@@ -298,16 +332,14 @@ div {
 }
 
 .baswinfo {
-    /*background-color: red;*/
-    height: 80%;
-    margin: 0 auto;
+    margin-left: 50px;
 
 }
 .safeset {
-    /*background-color: yellow;*/
+    margin-left: 50px;
 }
 .trust {
-    /*background-color: blue;*/
+   margin-left: 50px;
 }
 .loginli
 {
@@ -524,6 +556,7 @@ div {
     border-radius: 3px;
     font-size: 13px;
     border:1px solid #BBBBBB;
+    cursor: pointer;
 }
 .display
 {
@@ -1403,14 +1436,13 @@ table { border-spacing: 0;  border-collapse: collapse; }
     color: white;
     background-color: #2ad0e9
 }
-<<<<<<< HEAD
-btn-style{
-
-=======
 .detailTitle
 {
     width: 80%;
     margin: 0 auto;
     text-align: center;
->>>>>>> c33e56fe868546fa1cf105ba9db6f928f6d1b090
+}
+.ant-btn-lg
+{
+    padding: 6px 15px!important;
 }

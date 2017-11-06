@@ -22,6 +22,11 @@ public interface NoticeDao extends CrudRepository<Notice,Long>, PagingAndSorting
     List<Notice> findByUserIdAndNoticeType(Long userId, Long noticeType);
     List<Notice> findByUserIdAndNoticeTypeAndTxStatus(Long userId, Long noticeType, Integer txStatus);
 
+    // 查询自己的公告
+
+    Page<Notice> findByUserIdAndNoticeTypeAndTxStatus(Long userId, Long noticeType, Integer txStatus, Pageable pageable);
+
+
     // 搜索广告用到的接口(未分页)
 
     List<Notice> findByNoticeType(Long noticeType);
@@ -52,5 +57,7 @@ public interface NoticeDao extends CrudRepository<Notice,Long>, PagingAndSorting
 
     List<Notice> findByNoticeTypeAndTxStatus(Long noticeType, Integer txStatus);
 
+    // 搜用户,未使用
 
+    Page<Notice> findByLoginnameAndTxStatusAndNoticeType(String loginname, Integer txStatus, Long noticeType, Pageable pageable);
 }

@@ -35,6 +35,8 @@ public class Transaction {
 
     private Integer txStatus;
 
+    private Double amount;
+
     public Long getId() {
         return id;
     }
@@ -107,5 +109,13 @@ public class Transaction {
 
     public void setUtxoTxid(String utxoTxid) {
         this.utxoTxid = utxoTxid;
+    }
+
+    public Double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
     }
 }
