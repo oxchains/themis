@@ -50,7 +50,6 @@ public class AccountService {
     private String P2SH_REDEEM_SCRIPT = null;
     private String SIGNED_TX = null;
 
-    //"f7deaad94a0157432fe20203e68d0f3e139dd1031da9e2e53eb52781e891a916";
     private String UTXO_TXID = null;
     private int UTXO_VOUT = 0;
     private String UTXO_OUTPUT_SCRIPT = null;
@@ -104,7 +103,7 @@ public class AccountService {
         }
     }
 
-    /*
+    /**
     * 1. 生成公钥/私钥
     * 2. 生成协商地址和赎回脚本
     * 3. 发送到协商地址
@@ -177,8 +176,6 @@ public class AccountService {
            String address = it.next();
             String pubKey = getPublicKey(address);
             String prvKey = getPrivateKey(address);
-            //pubKeyMap.put(address, pubKey);
-            //prvKeyMap.put(address, prvKey);
             addressKeysList.add(new AddressKeys(address,pubKey,prvKey));
         }
 
@@ -255,7 +252,6 @@ public class AccountService {
         txOutputs.add(txOutput);
         String rawTx = client.createRawTransaction(txInputs, txOutputs);
         SIGNED_TX = client.signRawTransaction(rawTx);
-        //rawTransaction = client.decodeRawTransaction(SIGNED_TX);
         submitRawTransaction(SIGNED_TX);
     }
 
