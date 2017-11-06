@@ -1,7 +1,7 @@
 package com.oxchains.themis.notice.listener;
 
-import com.oxchains.themis.notice.auth.HttpUtils;
-import com.oxchains.themis.notice.auth.JsonUtil;
+import com.oxchains.themis.common.util.HttpUtils;
+import com.oxchains.themis.common.util.JsonUtil;
 import com.oxchains.themis.notice.dao.BlockChainInfoDao;
 import com.oxchains.themis.notice.dao.CNYDetailDao;
 import com.oxchains.themis.notice.domain.BlockChainInfo;

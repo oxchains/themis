@@ -1,6 +1,7 @@
 package com.oxchains.themis.notice.rest;
 
-import com.oxchains.themis.notice.auth.RestResp;
+import com.oxchains.themis.common.model.RestResp;
+import com.oxchains.themis.notice.common.NoticeConst;
 import com.oxchains.themis.notice.domain.Notice;
 import com.oxchains.themis.notice.service.NoticeService;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +21,6 @@ public class NoticeController {
 
     /**
      * 发布公告
-     * @param notice
-     * @return
      */
     @PostMapping(value = "/broadcast")
     public RestResp broadcastNotice(@RequestBody Notice notice){
@@ -30,7 +29,6 @@ public class NoticeController {
 
     /**
      * 随机查询两条购买公告、两条出售公告
-     * @return
      */
     @GetMapping(value = "/query/random")
     public RestResp queryRandomNotice(){
@@ -39,7 +37,6 @@ public class NoticeController {
 
     /**
      * 查询所有公告
-     * @return
      */
     @GetMapping(value = "/query/all")
     public RestResp queryAllNotice(){
@@ -51,7 +48,6 @@ public class NoticeController {
      * @param userId    登录id
      * @param noticeType    公告类型
      * @param txStatus  交易状态
-     * @return
      */
     @GetMapping(value = "/query/me2")
     public RestResp queryMeAllNotice(@RequestParam Long userId, @RequestParam Long noticeType, @RequestParam Integer txStatus){
@@ -60,7 +56,6 @@ public class NoticeController {
 
     /**
      * 实时获取(火币网)BTC价格
-     * @return
      */
     @GetMapping(value = "/query/BTCPrice")
     public RestResp queryBTCPrice(){
@@ -69,7 +64,6 @@ public class NoticeController {
 
     /**
      * 实时获取(火币网)BTC行情信息
-     * @return
      */
     @GetMapping(value = "/query/BTCMarket")
     public RestResp queryBTCMarket(){
@@ -78,7 +72,6 @@ public class NoticeController {
 
     /**
      * 实时获取BlockChain.info BTC 价格
-     * @return
      */
     @GetMapping(value = "/query/blockchain.info")
     public RestResp queryBlockChainInfo(){
@@ -87,16 +80,14 @@ public class NoticeController {
 
     /**
      * 搜索购买公告
-     * @param notice
-     * @return
      */
     @PostMapping(value = "search/page/buy")
     public RestResp searchBuyPage(@RequestBody Notice notice){
         if (null == notice.getSearchType()) {
-            notice.setSearchType(1);
+            notice.setSearchType(NoticeConst.SearchType.ONE.getStatus());
         }
         /* 1 默认是搜公告 */
-        if (notice.getSearchType() == 1){
+        if (notice.getSearchType().equals(NoticeConst.SearchType.ONE.getStatus())){
             return noticeService.searchBuyPage(notice);
         }else {
             return noticeService.searchBuyPage(notice);
@@ -105,16 +96,14 @@ public class NoticeController {
 
     /**
      * 搜索出售公告
-     * @param notice
-     * @return
      */
     @PostMapping(value = "search/page/sell")
     public RestResp searchSellPage(@RequestBody Notice notice){
         if (null == notice.getSearchType()) {
-            notice.setSearchType(1);
+            notice.setSearchType(NoticeConst.SearchType.ONE.getStatus());
         }
         /* 1 默认是搜公告 */
-        if (notice.getSearchType() == 1){
+        if (notice.getSearchType().equals(NoticeConst.SearchType.ONE.getStatus())){
             return noticeService.searchSellPage(notice);
         }else {
             return noticeService.searchSellPage(notice);
@@ -124,7 +113,6 @@ public class NoticeController {
     /**
      * 下架公告
      * @param id    公告id
-     * @return
      */
     @GetMapping(value = "/stop")
     public RestResp stopNotice(@RequestParam Long id){
@@ -133,7 +121,6 @@ public class NoticeController {
 
     /**
      * 状态列表
-     * @return
      */
     @GetMapping(value = "/query/statusKV")
     public RestResp queryStatusKV(){
