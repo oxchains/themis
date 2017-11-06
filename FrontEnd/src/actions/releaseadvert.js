@@ -179,11 +179,12 @@ export function fetctArray(callback) {
 
 // 我的广告
 
-export function fetctMyAdvert({userId,noticeType,txStatus,pageNo},callback) {
+export function fetctMyAdvert({userId,noticeType,txStatus,pageNum},callback) {
+    console.log(` 我的广告: ${userId},${noticeType},${txStatus},${pageNum}`)
     return function(dispatch) {
-        axios.get(`${ROOT_URLL}/notice/query/me2?userId=${userId}&noticeType=${noticeType}&txStatus=${txStatus}`, { headers: getAuthorizedHeader() })
+        axios.get(`${ROOT_URLL}/notice/query/me2?userId=${userId}&pageNum=${pageNum}&noticeType=${noticeType}&txStatus=${txStatus}`, { headers: getAuthorizedHeader() })
             .then(response => {
-                // console.log(response)
+                console.log(response)
                 dispatch({type: FETCH_MY_ADVERT, payload: response})
             })
             .catch(err => callback(err.message));
@@ -236,14 +237,10 @@ export function fetctBaseInfo({formdata},callback) {
 }
 //用户中心受信任的
 
-export function fetctTrusted({formdata},callback) {
-    // console.log(`受信任的:${userId},${type},${pageNo} ,${pageSize} `);
-    console.log("受信任的")
-    console.log(formdata)
-    console.log(formdata.userId)
+export function fetctTrusted({userId,type,pageNo,pageSize},callback) {
+    console.log(`受信任的:${userId},${type},${pageNo} ,${pageSize} `);
     return function(dispatch) {
-        // axios.get(`${ROOT_URLC}/user/trust`,{userId,type,pageNo,pageSize},{ headers: getAuthorizedHeader() })
-        axios.get(`${ROOT_URLC}/user/trust?userId=${formdata.userId}&pageNo=${formdata.pageNo}&pageSize=${formdata.pageSize}&type=${formdata.type}`,
+        axios.get(`${ROOT_URLC}/user/trust?userId=${userId}&pageNo=${pageNo}&pageSize=${pageSize}&type=${type}`,
             { headers: getAuthorizedHeader() }).then(response => {
                 console.log(response)
                 dispatch({type: FETCH_TRUSTED, payload: response})
