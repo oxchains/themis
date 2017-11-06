@@ -1,30 +1,35 @@
 package com.oxchains.themis.user.service;
 
+import com.oxchains.themis.common.constant.Status;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.param.ParamType;
+import com.oxchains.themis.common.param.RequestBody;
 import com.oxchains.themis.common.util.ConstantUtils;
 import com.oxchains.themis.common.util.EncryptUtils;
 import com.oxchains.themis.repo.dao.OrderDao;
+import com.oxchains.themis.repo.dao.UserRelationDao;
 import com.oxchains.themis.repo.dao.UserTxDetailDao;
 import com.oxchains.themis.repo.entity.Order;
+import com.oxchains.themis.repo.entity.UserRelation;
 import com.oxchains.themis.repo.entity.UserTxDetail;
 import com.oxchains.themis.user.auth.JwtService;
 import com.oxchains.themis.user.dao.RoleDao;
 import com.oxchains.themis.user.dao.UserDao;
 import com.oxchains.themis.user.domain.Role;
 import com.oxchains.themis.user.domain.User;
+import com.oxchains.themis.user.domain.UserTrust;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.*;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.io.File;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -56,6 +61,9 @@ public class UserService extends BaseService {
     @Resource
     private OrderDao orderDao;
 
+    @Resource
+    private UserRelationDao userRelationDao;
+
 //    @Resource
 //    AccountService accountService;
 
@@ -86,6 +94,9 @@ public class UserService extends BaseService {
 
     public RestResp updateUser(User user) {
         User u = userDao.findByLoginname(user.getLoginname());
+        if(u==null){
+            return RestResp.fail("操作失败");
+        }
         u.setUsername(user.getUsername());
         user = userDao.save(u);
         if (user == null) {
@@ -136,20 +147,7 @@ public class UserService extends BaseService {
         return optional.map(u -> {
             String token = "Bearer " + jwtService.generate(u);
             Role role = roleDao.findById(u.getRoleId());
-            UserTxDetail userTxDetail = userTxDetailDao.findByUserId(u.getId());
-            List<Order> orders = orderDao.findByBuyerIdOrSellerId(u.getId(), u.getId());
-            double buyAmount = 0d;
-            double sellAmount = 0d;
-            for (Order order : orders) {
-                if (u.getId().equals(order.getBuyerId())) {
-                    buyAmount += order.getAmount() == null ? 0d : order.getAmount().doubleValue();
-                }
-                if (u.getId().equals(order.getSellerId())) {
-                    sellAmount += order.getAmount() == null ? 0d : order.getAmount().doubleValue();
-                }
-            }
-            userTxDetail.setBuyAmount(buyAmount);
-            userTxDetail.setSellAmount(sellAmount);
+            UserTxDetail userTxDetail = findUserTxDetailByUserId(u.getId());
 
             logger.info("token = " + token);
             User userInfo = new User(u);
@@ -188,6 +186,113 @@ public class UserService extends BaseService {
 
     public RestResp findUsers() {
         return RestResp.success(newArrayList(userDao.findAll()));
+    }
+
+    /**
+     * 信任/屏蔽
+     * @return
+     */
+    public RestResp trustUsers(RequestBody body, Status.TrustStatus status){
+        com.oxchains.themis.common.model.Page<UserTrust> res =new com.oxchains.themis.common.model.Page(body.getPageNo(),body.getPageSize());
+        Pageable pager=new PageRequest((body.getPageNo()-1)*body.getPageSize(),body.getPageSize(),new Sort(Sort.Direction.ASC,"toUserId"));
+        Page<UserRelation> page = null;
+        if(status.equals(Status.TrustStatus.SHIELD)){
+            page = userRelationDao.findByFromUserIdAndStatus(body.getUserId(), Status.TrustStatus.SHIELD.getStatus(),pager);
+        }else {
+            page = userRelationDao.findByFromUserIdAndStatus(body.getUserId(), Status.TrustStatus.TRUST.getStatus(),pager);
+        }
+
+        res.setTotalCount((int)page.getTotalElements());
+        res.setTotalPages(page.getTotalPages());
+        List<UserTrust> list = new ArrayList<>();
+        Iterator<UserRelation> it = page.iterator();
+        UserTrust trustu = null;
+        while (it.hasNext()){
+            UserRelation relation = it.next();
+            trustu = new UserTrust();
+            User u = userDao.findOne(relation.getToUserId());
+            int txToNum = orderDao.countByBuyerIdOrSellerId(body.getUserId(),relation.getToUserId()) + orderDao.countByBuyerIdOrSellerId(relation.getToUserId(),body.getUserId());
+            trustu.setTxToNum(txToNum);
+            trustu.setFromUserId(relation.getFromUserId());
+            trustu.setFromUserName(u.getLoginname());
+            trustu.setToUserId(relation.getToUserId());
+            trustu.setToUserName(u.getLoginname());
+
+            UserTxDetail detail = findUserTxDetailByUserId(relation.getToUserId());
+
+            trustu.setTxNum(detail.getTxNum());
+            trustu.setGoodDesc(detail.getGoodDesc());
+            trustu.setBadDesc(detail.getBadDesc());
+            trustu.setFirstBuyTime(detail.getFirstBuyTime());
+            trustu.setBelieveNum(detail.getBelieveNum());
+            trustu.setBuyAmount(detail.getBuyAmount());
+            trustu.setSellAmount(detail.getSellAmount());
+
+
+            list.add(trustu);
+        }
+        res.setResult(list);
+
+        return RestResp.success(res);
+    }
+
+    /**
+     * 被信任
+     * @return
+     */
+    public RestResp trustedUsers(RequestBody body){
+        com.oxchains.themis.common.model.Page<UserTrust> res =new com.oxchains.themis.common.model.Page(body.getPageNo(),body.getPageSize());
+        Pageable pager=new PageRequest((body.getPageNo()-1)*body.getPageSize(),body.getPageSize(),new Sort(Sort.Direction.ASC,"fromUserId"));
+        Page<UserRelation> page = userRelationDao.findByToUserIdAndStatus(body.getUserId(),Status.TrustStatus.TRUST.getStatus(),pager);
+        res.setTotalCount((int)page.getTotalElements());
+        res.setTotalPages(page.getTotalPages());
+        List<UserTrust> list = new ArrayList<>();
+        Iterator<UserRelation> it = page.iterator();
+        UserTrust trustu = null;
+        while (it.hasNext()){
+            UserRelation relation = it.next();
+            trustu = new UserTrust();
+            User u = userDao.findOne(relation.getFromUserId());
+            int txToNum = orderDao.countByBuyerIdOrSellerId(body.getUserId(),relation.getFromUserId()) + orderDao.countByBuyerIdOrSellerId(relation.getFromUserId(),body.getUserId());
+            trustu.setTxToNum(txToNum);
+            trustu.setFromUserId(relation.getFromUserId());
+            trustu.setFromUserName(u.getLoginname());
+            trustu.setToUserId(relation.getToUserId());
+            trustu.setToUserName(relation.getToUserName());
+
+            UserTxDetail detail = findUserTxDetailByUserId(relation.getFromUserId());
+
+            trustu.setTxNum(detail.getTxNum());
+            trustu.setGoodDesc(detail.getGoodDesc());
+            trustu.setBadDesc(detail.getBadDesc());
+            trustu.setFirstBuyTime(detail.getFirstBuyTime());
+            trustu.setBelieveNum(detail.getBelieveNum());
+            trustu.setBuyAmount(detail.getBuyAmount());
+            trustu.setSellAmount(detail.getSellAmount());
+            list.add(trustu);
+        }
+        res.setResult(list);
+
+        return RestResp.success(res);
+    }
+
+    private UserTxDetail findUserTxDetailByUserId(Long userId){
+        UserTxDetail userTxDetail = userTxDetailDao.findByUserId(userId);
+        List<Order> orders = orderDao.findByBuyerIdOrSellerId(userId, userId);
+        double buyAmount = 0d;
+        double sellAmount = 0d;
+        for (Order order : orders) {
+            if (userId.equals(order.getBuyerId())) {
+                buyAmount += order.getAmount() == null ? 0d : order.getAmount().doubleValue();
+            }
+            if (userId.equals(order.getSellerId())) {
+                sellAmount += order.getAmount() == null ? 0d : order.getAmount().doubleValue();
+            }
+        }
+        userTxDetail.setBuyAmount(buyAmount);
+        userTxDetail.setSellAmount(sellAmount);
+
+        return userTxDetail;
     }
 
 }

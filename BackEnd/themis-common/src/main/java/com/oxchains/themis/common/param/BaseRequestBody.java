@@ -20,6 +20,8 @@ public class BaseRequestBody {
     private Integer pageNo;
     private Integer pageSize;
 
+    private Integer type;
+
     public Integer getPageNo() {
         return pageNo;
     }
@@ -34,5 +36,13 @@ public class BaseRequestBody {
 
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 }

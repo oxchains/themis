@@ -2,6 +2,7 @@ package com.oxchains.themis.user.rest;
 
 
 import com.google.common.net.HttpHeaders;
+import com.oxchains.themis.common.constant.Status;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.param.ParamType;
 import com.oxchains.themis.common.util.ImageBase64;
@@ -133,5 +134,17 @@ public class UserController {
     public RestResp password(@RequestBody User user){
         return userService.updateUser(user, ParamType.UpdateUserInfoType.PWD);
     }
+
+    @GetMapping(value = "/trust")
+    public RestResp trust(com.oxchains.themis.common.param.RequestBody body){
+        if(body.getType() == 1){
+            return userService.trustedUsers(body);
+        }else if(body.getType() == 2){
+            return userService.trustUsers(body, Status.TrustStatus.TRUST);
+        }else {
+            return userService.trustUsers(body, Status.TrustStatus.SHIELD);
+        }
+    }
+
 
 }
