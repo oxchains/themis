@@ -4,7 +4,7 @@ package com.oxchains.themis.order.entity;/**
 import javax.persistence.*;
 
 /**
- * @author luoxuri
+ * @author huohuo
  * @create 2017-10-24 10:44
  **/
 @Entity

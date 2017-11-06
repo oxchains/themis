@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 
 /**
  * Created by huohuo on 2017/10/25.
+ * @author huohuo
  */
 public class Pojo implements Serializable {
     private Long userId;
@@ -18,6 +19,23 @@ public class Pojo implements Serializable {
     private BigDecimal money;
     private String fileName;
     private String thumbUrl;
+    private Integer pageNum;
+    private Integer pageSize;
+    public Integer getPageNum() {
+        return pageNum;
+    }
+
+    public void setPageNum(Integer pageNum) {
+        this.pageNum = pageNum;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
+    }
 
     public String getThumbUrl() {
         return thumbUrl;

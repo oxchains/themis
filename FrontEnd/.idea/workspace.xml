@@ -14,8 +14,6 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-user/src/main/java/com/oxchains/themis/user/service/UserService.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-user/src/main/java/com/oxchains/themis/user/service/UserService.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-user/src/main/resources/application.properties" afterPath="$PROJECT_DIR$/../BackEnd/themis-user/src/main/resources/application.properties" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/actions/releaseadvert.js" afterPath="$PROJECT_DIR$/src/actions/releaseadvert.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/baseinfo.js" afterPath="$PROJECT_DIR$/src/components/baseinfo.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -74,8 +72,8 @@
       <file leaf-file-name="baseinfo.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/components/baseinfo.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="380">
-              <caret line="60" column="7" lean-forward="false" selection-start-line="60" selection-start-column="7" selection-end-line="63" selection-end-column="52" />
+            <state relative-caret-position="288">
+              <caret line="56" column="54" lean-forward="true" selection-start-line="56" selection-start-column="54" selection-end-line="56" selection-end-column="54" />
               <folding />
             </state>
           </provider>
@@ -144,7 +142,7 @@
   <component name="NodeModulesDirectoryManager">
     <handled-path value="$PROJECT_DIR$/node_modules" />
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="747" />
     <option name="y" value="84" />
     <option name="width" value="1394" />
@@ -304,15 +302,15 @@
       <workItem from="1508464544398" duration="106000" />
       <workItem from="1508464673451" duration="7328000" />
       <workItem from="1508932892849" duration="5090000" />
-      <workItem from="1509678472759" duration="8629000" />
+      <workItem from="1509678472759" duration="10291000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="33250000" />
+    <option name="totallyTimeSpent" value="34912000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="TypeScript" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -647,8 +645,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/components/baseinfo.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="380">
-          <caret line="60" column="7" lean-forward="false" selection-start-line="60" selection-start-column="7" selection-end-line="63" selection-end-column="52" />
+        <state relative-caret-position="288">
+          <caret line="56" column="54" lean-forward="true" selection-start-line="56" selection-start-column="54" selection-end-line="56" selection-end-column="54" />
           <folding />
         </state>
       </provider>

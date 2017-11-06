@@ -7,6 +7,26 @@ package com.oxchains.themis.common.bitcoin;
  * @desc:
  */
 public interface BitcoinConst {
+    /**
+     * 中继费账户
+     */
+     String OXCHAINS_DEFAULT_FEE_ACCOUNT = "oxchainsfees";
+    /**
+     * 签名地址账户
+     */
+    String OXCHAINS_DEFAULT_MULTISIG_ACCOUNT = "multisig";
+    /**
+     * 公私钥账户
+     */
+     String OXCHAINS_DEFAULT_KEYS_ACCOUNT = "AllKeys";
+    /**
+     * 矿工费
+     */
+    double OXCHAINS_DEFAULT_TX_FEE = 0.0001D;
+    /**
+     * 确认block数
+     */
+     int DEFAULT_CONFIRMATIONS = 6;
     enum VoutHashType implements BitcoinConst{
         PUB_KEY_HASH("pubkeyhash",1),SCRIPT_HASH("scripthash",2);
         private String name;

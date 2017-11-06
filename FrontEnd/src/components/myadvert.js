@@ -3,7 +3,8 @@
  */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import { Pagination } from 'antd';
+import 'antd/dist/antd.css';
 import {fetctMyAdvert,fetctOffMyAd} from '../actions/releaseadvert'
 import {
     Modal,
@@ -22,7 +23,8 @@ class Myadvert extends Component {
             error: null,
             actionResult: '',
             status:'1',
-            adstatus:'1'
+            adstatus:'1',
+            pageSize:8, //每页显示的条数8条
         }
         this.handleRowsbuy = this.handleRowsbuy.bind(this)
         this.handleRowssell = this.handleRowssell.bind(this)
@@ -31,6 +33,11 @@ class Myadvert extends Component {
         this.handleRow = this.handleRow.bind(this)
         this.handleOff = this.handleOff.bind(this)
 
+    }
+    onPagination(pageNum) {
+        console.log( "当前页数"+ pageNum) //当前页数
+
+        // this.props.fetcAdvertSeach({pageNum}, ()=>{});
     }
 
     handleRowsbuy(){
@@ -67,7 +74,6 @@ class Myadvert extends Component {
     handleRow(){
         const arraydata = this.props.all || []    //列表数组的数据
         return arraydata.map((item, index) => {
-            console.log(item)
         return(<tr key={index} className="contentborder">
                 <td>{item.id}</td>
                 <td>{item.noticeType == 1?"购买" : "出售"}</td>
@@ -89,7 +95,6 @@ class Myadvert extends Component {
     };
     componentWillMount(){
         const userId = localStorage.getItem("userId")
-        console.log(userId)
         const noticeType = this.state.status
         const txStatus = this.state.adstatus
         this.props.fetctMyAdvert({userId,noticeType,txStatus},()=>{});
@@ -103,12 +108,13 @@ class Myadvert extends Component {
         })
     }
     render() {
+        const totalNum = this.props.all.length
             return (
                     <div className="mainbar">
                         <div className="col-lg-3 col-md-3 col-xs-3">
-                        <ul className=" sildbar">
-                            <li className={` liheight ${this.state.status == 1 ? "tab-title-item active" :" tab-title-item"} `}   onClick={this.handleRowsbuy}>购买广告</li>
-                            <li className={` liheight ${this.state.status == 2 ? "tab-title-item active" :" tab-title-item "}`} onClick={this.handleRowssell}>出售广告</li>
+                        <ul className=" adtypeul">
+                            <li className={` adtype ${this.state.status == 1 ? "tab-way-item active" :" tab-way-item"} `}   onClick={this.handleRowsbuy}>购买广告</li>
+                            <li className={` adtype ${this.state.status == 2 ? "tab-way-item active" :" tab-way-item "}`} onClick={this.handleRowssell}>出售广告</li>
                         </ul>
                         </div>
                         <div className="col-lg-9 col-md-9 col-xs-9">
@@ -146,8 +152,12 @@ class Myadvert extends Component {
                                     </tbody>
 
                                 </table>
+                                <div className="pagecomponent">
+                                    <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.onPagination(e)}/>
+                                </div>
                             </div>
                         </div>
+
 
 
                         <Modal isOpen={this.state.isModalOpen} onRequestHide={this.hideModal}>
@@ -174,6 +184,7 @@ class Myadvert extends Component {
         }
     }
 function mapStateToProps(state) {
+    console.log(state.advert.all.length)
     return {
         all:state.advert.all,     //我的广告
         data:state.advert.data   // 下架我的广告

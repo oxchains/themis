@@ -236,11 +236,18 @@ export function fetctBaseInfo({formdata},callback) {
 }
 //用户中心受信任的
 
-export function fetctTrusted({description,image},callback) {
-    console.log(`受信任的:${description},${image} `);
+export function fetctTrusted({formdata},callback) {
+    // console.log(`受信任的:${userId},${type},${pageNo} ,${pageSize} `);
+    console.log("受信任的")
+    console.log(formdata)
     return function(dispatch) {
-        axios.post(`${ROOT_URLC}/user/update`,{description,image},{ headers: getAuthorizedHeader() })
-            .then(response => {
+        // axios.get(`${ROOT_URLC}/user/trust`,{userId,type,pageNo,pageSize},{ headers: getAuthorizedHeader() })
+        axios({
+            method: 'get',
+            url: `${ROOT_URLC}/user/trust `,
+            data: formdata,
+            headers: getAuthorizedHeader(),
+        }).then(response => {
                 console.log(response)
                 dispatch({type: FETCH_TRUSTED, payload: response})
 

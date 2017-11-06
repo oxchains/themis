@@ -7,49 +7,32 @@ package com.oxchains.themis.common.param;
  * @desc:
  */
 public class BaseRequestBody {
-    private String username;
-    private String loginname;
-    private String email;
-    private String mobile;
-    private String password;
+    private Long id;
 
-    public String getUsername() {
-        return username;
+    public Long getId() {
+        return id;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getLoginname() {
-        return loginname;
+    private Integer pageNo;
+    private Integer pageSize;
+
+    public Integer getPageNo() {
+        return pageNo;
     }
 
-    public void setLoginname(String loginname) {
-        this.loginname = loginname;
+    public void setPageNo(Integer pageNo) {
+        this.pageNo = pageNo;
     }
 
-    public String getEmail() {
-        return email;
+    public Integer getPageSize() {
+        return pageSize;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getMobile() {
-        return mobile;
-    }
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
     }
 }

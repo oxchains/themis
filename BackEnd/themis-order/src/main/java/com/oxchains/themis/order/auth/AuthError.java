@@ -17,7 +17,7 @@ import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
- * @author aiet
+ * @author huohuo
  */
 @Component
 public class AuthError implements AuthenticationEntryPoint, AccessDeniedHandler {

@@ -2,6 +2,7 @@ package com.oxchains.themis.user.service;
 
 import com.oxchains.bitcoin.rpcclient.BitcoinJSONRPCClient;
 import com.oxchains.bitcoin.rpcclient.BitcoindRpcClient;
+import com.oxchains.themis.common.bitcoin.BitcoinConst;
 import com.oxchains.themis.common.bitcoin.BitcoinConst.VoutHashType;
 import com.oxchains.themis.common.model.AddressKeys;
 import com.oxchains.themis.common.model.RestResp;
@@ -41,9 +42,8 @@ public class BitcoinService {
         }
     }
 
-    private final double TX_FEE = 0.0001d;
-    private int UTXO_VOUT = 0;
-    private int DEFAULT_CONFIRMATIONS = 6;
+    private final int UTXO_VOUT = 0;
+
 
     private int nRequired = 2;
 
@@ -51,7 +51,7 @@ public class BitcoinService {
     private TransactionDao transactionDao;
 
     public RestResp getKeys(){
-        String address=client.getNewAddress("AllKeys");
+        String address=client.getNewAddress(BitcoinConst.OXCHAINS_DEFAULT_KEYS_ACCOUNT);
         String pubKey=client.validateAddress(address).pubKey();
         String prvKey=client.dumpPrivKey(address);
         return  RestResp.success(new AddressKeys(address,pubKey,prvKey));
@@ -65,7 +65,7 @@ public class BitcoinService {
             String p2shAddress = multiSig.address();
             String redeemScript = multiSig.redeemScript();
             logger.info("\n{\nP2SH_ADDRESS:"+p2shAddress+",\nP2SH_REDEEMSCRIPT:"+redeemScript+"\n}");
-            client.addMultiSigAddress(nRequired,signPubKeys,"multisig");
+            client.addMultiSigAddress(nRequired,signPubKeys,BitcoinConst.OXCHAINS_DEFAULT_MULTISIG_ACCOUNT);
 
             if(order == null){
                 order = new Transaction();
@@ -77,8 +77,9 @@ public class BitcoinService {
             }
             order.setP2shAddress(p2shAddress);
             order.setP2shRedeemScript(redeemScript);
+            order.setAmount(amount);
             order = transactionDao.save(order);
-
+            logger.info("*** 订单{}, 生成协商地址: {}" ,orderId, p2shAddress);
             return RestResp.success(new ScriptHash(p2shAddress,redeemScript,"bitcoin:"+p2shAddress+"?amount="+amount));
 
         }catch (Exception e){
@@ -89,21 +90,28 @@ public class BitcoinService {
 
     public RestResp addTxid(String orderId,String txId){
         try{
-            BitcoindRpcClient.RawTransaction rawTransaction = client.getRawTransaction(txId);
+            logger.info("*** 订单{}, 添加UTXO_ID: {}" ,orderId, txId);
 
             Transaction transaction = transactionDao.findByOrderId(orderId);
             if(null != transaction){
+                BitcoindRpcClient.RawTransaction rawTransaction = client.getRawTransaction(txId);
+                /*for(BitcoindRpcClient.RawTransaction.Out out : rawTransaction.vOut()){
+                    if(VoutHashType.SCRIPT_HASH.getName().equals(out.scriptPubKey().type())){
+                        double amount = out.value();
+                        double diff = ArithmeticUtils.minus(amount,transaction.getAmount());
+                        if (diff == TX_FEE || diff == 0){ //卖家或承担中继费
+                        }else {
+                            return RestResp.fail("交易比特币数量有误订单不成立");
+                        }
+                    }
+                }*/
+
                 transaction.setUtxoTxid(txId);
                 transactionDao.save(transaction);
                 return RestResp.success(transaction);
-            }else {
-                return RestResp.fail("订单不成立");
-            }
-            /*if(VoutHashType.SCRIPT_HASH.getName().equals(rawTransaction.vOut().get(0).scriptPubKey().type())){
 
-            }else {
-               return RestResp.fail("交易不成立,请重新发送比特币到合约地址");
-            }*/
+            }
+            return RestResp.fail("订单不存在");
         }catch (Exception e){
             logger.error(e.getMessage());
             return RestResp.fail("交易不成立,请重新发送比特币到合约地址",e.getMessage());
@@ -112,10 +120,30 @@ public class BitcoinService {
 
     public RestResp getTransactionStatus(String orderId){
         try{
+            logger.info("*** 订单{}, 获取订单状态" ,orderId);
             Transaction order = transactionDao.findByOrderId(orderId);
+            if(order == null){
+                logger.error("订单 {} 不存在",orderId);
+                return RestResp.fail("订单不存在");
+            }
             String txId = order.getUtxoTxid();
+            if(null == txId || "".equals(txId)){
+                logger.error("订单 {} 还未进行比特币转账",orderId);
+                return RestResp.fail("订单比特币交易不存在");
+            }
             BitcoindRpcClient.RawTransaction rawTransaction = client.getRawTransaction(txId);
             if(null != rawTransaction){
+                for(BitcoindRpcClient.RawTransaction.Out out : rawTransaction.vOut()){
+                    if(VoutHashType.SCRIPT_HASH.getName().equals(out.scriptPubKey().type())){
+                        double amount = out.value();
+                        double diff = ArithmeticUtils.minus(amount,order.getAmount());
+                        //卖家或承担中继费
+                        if (diff == BitcoinConst.OXCHAINS_DEFAULT_TX_FEE || diff == 0){
+                        }else {
+                            return RestResp.fail("交易比特币数量有误,无法继续交易");
+                        }
+                    }
+                }
                 try {
                     int confirmations = rawTransaction.confirmations();
                     return RestResp.success("交易已有 "+confirmations+" 个确认");
@@ -123,11 +151,11 @@ public class BitcoinService {
                     return RestResp.success("交易还未确认");
                 }
             }else {
-                return RestResp.fail("订单交易不存在");
+                return RestResp.fail("订单 {} 不存在",orderId);
             }
 
         }catch (Exception e){
-            logger.error(e.getMessage());
+            logger.error("订单 {},状态查询出错: {}",orderId,e.getMessage());
             return RestResp.fail(e.getMessage());
         }
 
@@ -135,6 +163,7 @@ public class BitcoinService {
 
     public RestResp payToUser(String orderId,String recvAddress,List<String> signPrvKeys,Double amount){
         try {
+            logger.info("*** 订单{}, 将比特币发送到指定账户:{}" , orderId, recvAddress);
             Transaction order = transactionDao.findByOrderId(orderId);
 
             String P2SH_REDEEM_SCRIPT = order.getP2shRedeemScript();
@@ -155,7 +184,7 @@ public class BitcoinService {
                     txInputs.add(txInput);
                     logger.info("Input: "+txInputs.toString());
                     amount = out.value();
-                    BitcoindRpcClient.TxOutput txOutput = new BitcoindRpcClient.BasicTxOutput(recvAddress, ArithmeticUtils.minus(amount, TX_FEE));//outputAmount
+                    BitcoindRpcClient.TxOutput txOutput = new BitcoindRpcClient.BasicTxOutput(recvAddress, ArithmeticUtils.minus(amount, BitcoinConst.OXCHAINS_DEFAULT_TX_FEE));//outputAmount
                     txOutputs.add(txOutput);
                     logger.info("Output: "+txOutputs.toString());
 
@@ -177,13 +206,13 @@ public class BitcoinService {
                 }
                 vout ++;
             }
-            return RestResp.fail("++++++++++");
+            return RestResp.fail("支付比特币到买家失败");
         }catch (Exception e){
             logger.error(e.getMessage());
             return RestResp.fail(e.getMessage());
         }
     }
-    /*
+    /**
     * 1. 生成公钥/私钥
     * 2. 生成协商地址和赎回脚本
     * 3. 发送到协商地址
@@ -201,7 +230,7 @@ public class BitcoinService {
             //BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.ExtendedTxInput(UTXO_TXID, 0);//UTXO_VOUT
             BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.BasicTxInput(UTXO_TXID, 0);//UTXO_VOUT
             txInputs.add(txInput);
-            amount = ArithmeticUtils.minus(amount, TX_FEE);
+            amount = ArithmeticUtils.minus(amount, BitcoinConst.OXCHAINS_DEFAULT_TX_FEE);
             BitcoindRpcClient.TxOutput txOutput = new BitcoindRpcClient.BasicTxOutput(P2SH_ADDRESS, amount);
             txOutputs.add(txOutput);
 
@@ -248,13 +277,13 @@ public class BitcoinService {
             BitcoindRpcClient.RawTransaction.Out.ScriptPubKey scriptPubKey = outs.get(0).scriptPubKey();
             BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), P2SH_REDEEM_SCRIPT, BigDecimal.valueOf(amount));
             txInputs.add(txInput);
-            BitcoindRpcClient.TxOutput txOutput = new BitcoindRpcClient.BasicTxOutput(recvAddress, ArithmeticUtils.minus(amount, TX_FEE));//outputAmount
+            BitcoindRpcClient.TxOutput txOutput = new BitcoindRpcClient.BasicTxOutput(recvAddress, ArithmeticUtils.minus(amount, BitcoinConst.OXCHAINS_DEFAULT_TX_FEE));//outputAmount
             txOutputs.add(txOutput);
 
             String rawTx = client.createRawTransaction(txInputs, txOutputs);
 
             List<BitcoindRpcClient.ExtendedTxInput> txInputs1 = new ArrayList<>();
-            BitcoindRpcClient.ExtendedTxInput txInput1 = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), P2SH_REDEEM_SCRIPT, BigDecimal.valueOf(amount - TX_FEE));//outputAmount
+            BitcoindRpcClient.ExtendedTxInput txInput1 = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), P2SH_REDEEM_SCRIPT, BigDecimal.valueOf(amount - BitcoinConst.OXCHAINS_DEFAULT_TX_FEE));//outputAmount
             txInputs1.add(txInput1);
             String lastTx = client.signRawTransaction(rawTx, txInputs1, signPrvKeys);
             client.sendRawTransaction(lastTx);

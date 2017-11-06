@@ -23,7 +23,7 @@ class Releaseadvert extends Component {
             error: null,
             actionResult: '',
             currentIndex:0,
-            status:1
+            status:'1'
         }
         this.handleRowsbuy = this.handleRowsbuy.bind(this)
         this.handleRowssell = this.handleRowssell.bind(this)
@@ -43,17 +43,15 @@ class Releaseadvert extends Component {
     }
 
     handleRowsbuy(){
-        // this.setState({
-        //     status:'1'
-        // })
-        this.state.status = 1
+        this.setState({
+            status:'1'
+        })
         console.log(this.state.status)
     }
     handleRowssell(){
-        // this.setState({
-        //     status:'2'
-        // })
-        this.state.status = 2
+        this.setState({
+            status:'2'
+        })
         console.log(this.state.status)
     }
 
@@ -131,8 +129,8 @@ class Releaseadvert extends Component {
                     <h5 className="h3title">*选择广告类型</h5>
                     <span className="tipspan"> &nbsp;&nbsp;您想要创建什么样的交易广告？如果您希望出售比特币,请确保您在THEMIS的钱包中有比特币。</span>
                     <ul className=" buytype">
-                        <li className={` ${this.state.status == 1 ? "tab-title-item active" :" tab-title-item"} `}   onClick={this.handleRowsbuy}>在线购买比特币</li>
-                        <li className={`${this.state.status == 2 ? "tab-title-item active" :" tab-title-item "}`} onClick={this.handleRowssell}>在线出售比特币</li>
+                        <li className={` ${this.state.status == 1 ? "tab-way-item active" :" tab-way-item"} `}   onClick={this.handleRowsbuy}>在线购买比特币</li>
+                        <li className={`${this.state.status == 2 ? "tab-way-item active" :" tab-way-item "}`} onClick={this.handleRowssell}>在线出售比特币</li>
                     </ul>
                     <div className="clear display"></div>
                     <h5 className="h3title clear">*所在地</h5>

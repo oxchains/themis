@@ -1,6 +1,5 @@
 package com.oxchains.themis.notice.domain;
 
-import com.oxchains.themis.notice.domain.Notice;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -11,6 +10,7 @@ import javax.persistence.Transient;
 /**
  * 交易次数，信任人数，好评度，信任度
  * Created by huohuo on 2017/10/26.
+ * @author luoxuri
  */
 @Entity
 @Table(name = "user_tx_detail")

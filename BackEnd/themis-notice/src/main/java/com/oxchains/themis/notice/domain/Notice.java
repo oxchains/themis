@@ -1,13 +1,7 @@
 package com.oxchains.themis.notice.domain;
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
-import java.security.PrivateKey;
-import java.util.Date;
-import java.util.PrimitiveIterator;
-
-import javafx.beans.DefaultProperty;
 import lombok.Data;
 
 /**
@@ -58,7 +52,7 @@ public class Notice {
     private Long validPayTime = 1800000L;      // 付款期限，默认30分钟的毫秒值1800000，字段废弃
 
     @Transient
-    private Integer searchType;
+    private Long searchType;
 
     @Column(name = "txstatus")
     private Integer txStatus = 0;           // 交易状态，默认0:非交易,1:交易进行,2:交易完成

@@ -65,7 +65,7 @@ div {
         width: 60%;
         margin: 50px auto;
     }
-    .sildbar,.titleul
+    .sildbar,.titleul,.adtypeul
     {
         list-style: none;
     }
@@ -90,7 +90,7 @@ div {
         width: 60%;
         margin: 50px auto;
     }
-    .sildbar,.titleul
+    .sildbar,.titleul,.adtypeul
     {
         list-style: none;
     }
@@ -115,7 +115,7 @@ div {
         width: 100%;
         margin: 10px auto;
     }
-    .sildbar,.titleul
+    .sildbar,.titleul,.adtypeul
     {
         list-style: none;
         padding: 0;
@@ -135,7 +135,7 @@ div {
         width: 100%;
         margin: 10px auto;
     }
-    .sildbar,.titleul
+    .sildbar,.titleul,.adtypeul
     {
         list-style: none;
         padding: 0;
@@ -146,6 +146,7 @@ div {
 {
     border:1px solid #E9E9E9;
 }
+
 .header-position
 {
     width: 66%;
@@ -269,8 +270,23 @@ div {
     font-size: 15px;
     margin-bottom: 3px;
     text-align: center;
+    border-radius: 3px;
     border-bottom: 1px solid #E9E9E9;
 }
+.adtype
+{
+    width: 60%;
+    background-color: #bfbfbf;
+    padding: 11px 0px;
+    color: white;
+    cursor: pointer;
+    font-size: 15px;
+    margin-bottom: 3px;
+    text-align: center;
+    border-radius: 3px;
+}
+
+
 .liheight:nth-child(3)
 {
     border-bottom:none;
@@ -284,11 +300,18 @@ div {
     /*background-color: #444444;*/
 }
 .tab-title-item.active>p{
-    /*background-color: #444444;*/
+
     color: #7CD3E8;
     cursor: pointer;
     font-size: 15px;
     border-left: 2px solid #7CD3E8;
+}
+
+.tab-way-item.active
+{
+    background-color: #444444;
+    color: white;
+    cursor: pointer;
 }
 
 .login-title-item.active{
@@ -358,6 +381,7 @@ div {
     list-style: none;
     margin: 0;
     padding: 0;
+    font-size: 16px;
 }
 .orderType ul li .orderTypeBar{
     display: inline-block;
@@ -532,6 +556,7 @@ div {
     border-radius: 3px;
     font-size: 13px;
     border:1px solid #BBBBBB;
+    cursor: pointer;
 }
 .display
 {
@@ -1302,6 +1327,7 @@ table { border-spacing: 0;  border-collapse: collapse; }
 {
     border:1px solid #16F6EA!important;
     background: linear-gradient(to right,#27D7E9,#16F6EA)!important;
+    box-shadow: 0 0 15px #87ddea!important;
 }
 .ant-btn:hover, .ant-btn:focus
 {
@@ -1416,9 +1442,7 @@ table { border-spacing: 0;  border-collapse: collapse; }
     margin: 0 auto;
     text-align: center;
 }
-.mainbgc
+.ant-btn-lg
 {
-    width: 100%;
-    height: 100%;
-    background-image: url(./img/登录背景.png);
+    padding: 6px 15px!important;
 }
