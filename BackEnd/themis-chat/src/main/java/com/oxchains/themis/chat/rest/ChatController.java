@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 /**
- * Created by xuqi on 2017/10/18.
+ * create by huohuo
+ * @author huohuo
  */
 @RestController
 public class ChatController {

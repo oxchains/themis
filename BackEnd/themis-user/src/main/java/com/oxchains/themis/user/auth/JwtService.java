@@ -72,7 +72,7 @@ public class JwtService {
         return new DefaultJwtBuilder().
                 setId(UUID.randomUUID().toString()).
                 setSubject(user.getLoginname()).
-                setExpiration(Date.from(ZonedDateTime.now().plusWeeks(1).toInstant())).claim("id", user.getId()).claim("email", user.getEmail()).
+                setExpiration(Date.from(ZonedDateTime.now().plusWeeks(1).toInstant())).claim("id", user.getId()).claim("email", user.getEmail()).claim("monilephone",user.getMobilephone()).claim("loginname",user.getLoginname()).
                 signWith(SignatureAlgorithm.ES256, privateKey).
                 compact();
     }
@@ -83,7 +83,8 @@ public class JwtService {
                     .setSigningKey(publicKey)
                     .parseClaimsJws(token);
             Claims claims = jws.getBody();
-            User user = userDao.findByLoginname(claims.getSubject());
+            String subject=claims.getSubject();
+            User user = userDao.findByLoginname(subject);
             JwtAuthentication jwtAuthentication = new JwtAuthentication(user, token, claims);
             return Optional.of(jwtAuthentication);
         } catch (Exception e) {

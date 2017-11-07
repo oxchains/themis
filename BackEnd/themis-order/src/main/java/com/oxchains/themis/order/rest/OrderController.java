@@ -4,13 +4,12 @@ import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.order.common.Pojo;
 import com.oxchains.themis.order.common.RegisterRequest;
 import com.oxchains.themis.order.entity.*;
+import com.oxchains.themis.order.entity.vo.OrdersInfo;
 import com.oxchains.themis.order.service.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.multipart.MultipartFile;
-
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -19,21 +18,15 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.UUID;
-
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
-
 /**
  * Created by huohuo on 2017/10/23.
- * @Author huohuo
+ * @author huohuo
  */
 @RestController
 public class OrderController {
+    @Resource
     private OrderService orderService;
-    public OrderController(@Autowired OrderService orderService) {
-        this.orderService = orderService;
-    }
     @Value("${order.image.url}")
     private String imageUrl;
     /*
@@ -41,32 +34,28 @@ public class OrderController {
    * */
     @RequestMapping("/order/addOrder")
     public RestResp addOrder(@RequestBody Pojo pojo){
-        Orders orders1 = orderService.addOrders(pojo);
-        return orders1 !=null?RestResp.success(orders1):RestResp.fail();
+        return orderService.addOrders(pojo);
     }
     /*
     * 二 ：卖家上传公私钥
     * */
     @RequestMapping("/order/saveAddresskey")
     public RestResp saveAddresskey(@RequestBody  OrderAddresskeys orderAddresskeys){
-        Orders orders = orderService.saveAddresskey(orderAddresskeys);
-        return orders==null?RestResp.fail():RestResp.success(orders);
+        return orderService.saveAddresskey(orderAddresskeys);
     }
     /*
     * 三 ：卖家上传交易凭据
     * */
     @RequestMapping("/order/uploadTxId")
     public RestResp uploadTxId(@RequestBody Pojo pojo){
-        boolean b = orderService.uploadTxId(pojo);
-        return b?RestResp.success():RestResp.fail();
+        return orderService.uploadTxId(pojo);
     }
     /*
     * 四 ：发布公告的人确认订单
     * */
     @RequestMapping("/order/confirmOrders")
     public RestResp confirmOrders(@RequestBody Pojo pojo){
-        Orders o = orderService.confirmOrders(pojo);
-        return o!=null?RestResp.success(o):RestResp.fail();
+        return orderService.confirmOrders(pojo);
     }
 
     /*
@@ -74,80 +63,72 @@ public class OrderController {
     * */
     @RequestMapping("/order/confirmSendMoney")
     public RestResp confirmSendMoney(@RequestBody Pojo pojo){
-        Orders orders = orderService.confirmSendMoney(pojo);
-        return orders!=null?RestResp.success():RestResp.fail();
+        return orderService.confirmSendMoney(pojo);
     }
     /*
     * 六 ：卖家释放BTC
     * */
     @RequestMapping("/order/releaseBTC")
     public RestResp releaseBTC(@RequestBody Pojo pojo){
-        OrderAddresskeys orderAddresskeys = orderService.releaseBTC(pojo);
-        return orderAddresskeys!=null?RestResp.success():RestResp.fail();
+        return orderService.releaseBTC(pojo);
     }
     /*
     * 七 ：买家确认收货
     * */
     @RequestMapping("/order/confirmReciveBTC")
     public RestResp confirmReciveBTC(@RequestBody Pojo pojo){
-        Orders orders = orderService.confirmReciveBTC(pojo);
-        return orders!=null?RestResp.success():RestResp.fail();
+        return orderService.confirmReciveBTC(pojo);
     }
     /*
     * 八 ：取消订单
     * */
     @RequestMapping("/order/cancelOrders")
     public RestResp cancelOrders(@RequestBody Pojo pojo){
-        Orders orders = orderService.cancelOrders(pojo.getId(),pojo.getUserId());
-        return orders!=null?RestResp.success(orders):RestResp.fail();
+        return orderService.cancelOrders(pojo.getId(),pojo.getUserId());
     }
     /*
    * 九 ：买家确认收到退款
    * */
     @RequestMapping("/order/confirmReceiveRefund")
     public RestResp confirmReceiveRefund(@RequestBody Pojo pojo){
-        Orders orders = orderService.confirmReceiveRefund(pojo);
-        return orders!=null?RestResp.success(orders):RestResp.fail();
+        return orderService.confirmReceiveRefund(pojo);
     }
     /*
     * 十 ：申请仲裁订单
     * */
     @RequestMapping("/order/arbitrateOrder")
     public RestResp arbitrateOrder(@RequestBody Pojo pojo){
-        Orders orders = orderService.arbitrateOrder(pojo.getId());
-        return orders!=null?RestResp.success(orders):RestResp.fail();
+        return orderService.arbitrateOrder(pojo.getId());
     }
     /*
     * 十一 仲裁者查看自己可以仲裁的订单
     * */
     @RequestMapping("/order/findArbitrareOrderById")
+
     public RestResp findArbitrareOrderById(@RequestBody Pojo pojo){
-        List<Orders> list = orderService.findArbitrareOrderById(pojo.getUserId());
-        return RestResp.success(list);
+        this.checkPage(pojo);
+        return orderService.findArbitrareOrderById(pojo);
     }
     /*
     * 十二 仲裁者对订单进行仲裁 仲裁者仲裁将密匙碎片给胜利者
     * */
     @RequestMapping("/order/arbitrateOrderToUser")
     public RestResp arbitrateOrderToUser(@RequestBody Pojo pojo){
-        OrderArbitrate orderArbitrate = orderService.arbitrateOrderToUser(pojo);
-        return orderArbitrate!=null?RestResp.success():RestResp.fail();
+        return orderService.arbitrateOrderToUser(pojo);
     }
     /*
     * 十三 ： 用户获取订单的 协商地址 自己的 公匙 私匙 卖家的公匙私匙 仲裁者的公匙私匙  交易的量
     * */
     @RequestMapping("/order/findOrderAddressKeys")
     public RestResp findOrderAddressKeys(@RequestBody Pojo pojo){
-        OrderAddresskeys orderAddresskeys  = orderService.findOrderAddressKeys(pojo);
-        return orderAddresskeys!=null?RestResp.success(orderAddresskeys):RestResp.fail();
+        return orderService.findOrderAddressKeys(pojo);
     }
     /*
     * 十四 ：提交评论
     * */
     @RequestMapping("/order/saveComment")
     public RestResp saveComment(@RequestBody Pojo pojo){
-        OrderComment orderComments = orderService.saveComment(pojo);
-        return orderComments!=null?RestResp.success():RestResp.fail();
+        return orderService.saveComment(pojo);
     }
 
     /*
@@ -155,7 +136,7 @@ public class OrderController {
     * */
     @RequestMapping("/order/findOrdersDetails")
     public RestResp findOrdersDetails(@RequestBody Pojo pojo){
-        Orders o = orderService.findOrdersDetails(pojo);
+        OrdersInfo o = orderService.findOrdersDetails(pojo);
      return o!=null?RestResp.success(o): RestResp.fail();
     }
     /*
@@ -163,16 +144,16 @@ public class OrderController {
     * */
     @RequestMapping("/order/findCompletedOrders")
     public RestResp findCompletedOrders(@RequestBody Pojo pojo){
-        List<Orders>  list= orderService.findCompletedOrdersById(pojo.getUserId());
-        return list!=null?RestResp.success(list):RestResp.fail();
+        this.checkPage(pojo);
+        return orderService.findCompletedOrdersById(pojo);
     }
     /*
    * 根据id查询自己未完成的的订单
    * */
     @RequestMapping("/order/findNoCompletedOrders")
-    public RestResp findNoCompletedOrders(@RequestBody Pojo pojo,@RequestParam(value = "pageNum",defaultValue = "1") Integer pageNum,@RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize){
-        List<Orders>  list= orderService.findNoCompletedOrdersById(pojo.getUserId());
-        return list!=null?RestResp.success(list):RestResp.fail();
+    public RestResp findNoCompletedOrders(@RequestBody Pojo pojo){
+        this.checkPage(pojo);
+        return orderService.findNoCompletedOrdersById(pojo);
     }
 
 
@@ -181,8 +162,7 @@ public class OrderController {
     * */
     @RequestMapping("/order/findNotConfirmOrders")
     public RestResp findNotConfirmOrders(@RequestBody Pojo pojo){
-        List<Orders> list = orderService.findNotConfirmOrders(pojo.getUserId());
-        return RestResp.success(list);
+        return orderService.findNotConfirmOrders(pojo);
     }
 
 
@@ -192,15 +172,7 @@ public class OrderController {
     @RequestMapping("/order/findUserTxDetail")
     public RestResp findUserTxDetail(@RequestBody Pojo pojo){
         UserTxDetail userTxDetail = orderService.findUserTxDetail(pojo);
-        return userTxDetail!=null?RestResp.success(userTxDetail):RestResp.fail();
-    }
-    /*
-    * 张晓晶 调试状态用
-    * */
-    @RequestMapping("/order/{orderid}/{status}")
-    public RestResp updateOrderStatus(@PathVariable("orderid") String orderId,@PathVariable("status") Long status){
-        Orders o = orderService.updateOrderStatus(orderId,status);
-     return o==null?RestResp.fail():RestResp.success(o);
+        return userTxDetail!=null?RestResp.success(userTxDetail):RestResp.fail("未知错误");
     }
     /*
     * 购买出售详情页面需要查的用户的历史交易信息 和公告的信息
@@ -208,15 +180,14 @@ public class OrderController {
     @RequestMapping("/order/findUserTxDetailAndNotice")
     public RestResp findUserTxDetailAndNotice(@RequestBody Pojo pojo){
         UserTxDetail userTxDetailAndNotice = orderService.findUserTxDetailAndNotice(pojo);
-        return userTxDetailAndNotice==null?RestResp.fail():RestResp.success(userTxDetailAndNotice);
+        return userTxDetailAndNotice==null?RestResp.fail("未知错误"):RestResp.success(userTxDetailAndNotice);
     }
     /*
     * 判断卖家有没有上传公私匙
     * */
     @RequestMapping("/order/judgeSellerPubPriAuth")
     public RestResp judgeSellerPubPriAuth(@RequestBody Pojo pojo){
-        Orders b = orderService.judgeSellerPubPriAuth(pojo);
-        return b!=null?RestResp.success(b):RestResp.fail();
+        return orderService.judgeSellerPubPriAuth(pojo);
     }
     /*
     * 判断卖家有没有释放BTC   success 已经释放   fail  未释放
@@ -227,7 +198,7 @@ public class OrderController {
         return b?RestResp.success():RestResp.fail();
     }
     /*
-    * 仲裁者获取 卖家买家上传的交易凭据
+    * 仲裁者获取 卖家买家上传的聊天记录和转账记录附件
     * */
     @RequestMapping("/order/getEvidence")
     public RestResp getEvidence(@RequestBody Pojo pojo){
@@ -254,6 +225,29 @@ public class OrderController {
             e.printStackTrace();
         }
     }
+
+    //上传交易凭据 包括 文本 和 图片 附件
+    @RequestMapping("/order/uploadEvidence")
+    public RestResp uploadEvidence(@ModelAttribute @Valid RegisterRequest registerRequest) throws IOException {
+        return orderService.uploadEvidence(registerRequest,imageUrl);
+    }
+    /*
+    * 购买出售详情页面需要查的用户的历史交易信息 和公告的信息
+    * */
+    @RequestMapping("/order/findUserDetail")
+    public RestResp findUserDetail(@RequestBody Pojo pojo){
+        UserTxDetail userTxDetailAndNotice = orderService.findUserTxDetailAndNotice(pojo);
+        return userTxDetailAndNotice==null?RestResp.fail():RestResp.success(userTxDetailAndNotice);
+    }
+
+    private void checkPage(Pojo pojo){
+        if(pojo.getPageSize() == null){
+            pojo.setPageSize(8);
+        }
+        if(pojo.getPageNum() == null){
+            pojo.setPageNum(1);
+        }
+    }
     private void fileNotFound(HttpServletResponse response) {
         try {
             response.setStatus(SC_NOT_FOUND);
@@ -262,21 +256,14 @@ public class OrderController {
             e.printStackTrace();
         }
     }
-    //上传交易凭据 包括 文本 和 图片 附件
-    @RequestMapping("/order/uploadEvidence")
-    public RestResp uploadEvidence(@ModelAttribute @Valid RegisterRequest registerRequest) throws IOException {
-        MultipartFile multipartFile = registerRequest.getMultipartFile();
-        if(multipartFile !=null ){
-            String filename = multipartFile.getOriginalFilename();
-            String suffix = filename.substring(filename.lastIndexOf("."));
-            UUID uuid = UUID.randomUUID();
-            String newFileName = uuid.toString() + suffix;
-            multipartFile.transferTo(new File(imageUrl+newFileName));
-            registerRequest.setFileName(newFileName);
-        }
-        return orderService.uploadEvidence(registerRequest);
+    /*
+    * 张晓晶 调试状态用
+    * */
+    @RequestMapping("/order/{orderid}/{status}")
+    public RestResp updateOrderStatus(@PathVariable("orderid") String orderId,@PathVariable("status") Long status){
+        Orders o = orderService.updateOrderStatus(orderId,status);
+        return o==null?RestResp.fail():RestResp.success(o);
     }
-
 }
 
 

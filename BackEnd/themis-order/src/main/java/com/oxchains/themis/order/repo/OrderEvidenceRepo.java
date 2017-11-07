@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * Created by huohuo on 2017/10/31.
+ * @author huohuo
  */
 @Repository
 public interface OrderEvidenceRepo extends CrudRepository<OrderEvidence,Long>{

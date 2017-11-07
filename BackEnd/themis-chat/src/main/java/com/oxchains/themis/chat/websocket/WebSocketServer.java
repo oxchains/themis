@@ -1,5 +1,4 @@
 package com.oxchains.themis.chat.websocket;
-import com.oxchains.themis.chat.auth.JwtService;
 import com.oxchains.themis.common.util.CustomThreadFactory;
 import com.oxchains.themis.chat.service.KafkaService;
 import io.netty.bootstrap.ServerBootstrap;
@@ -10,12 +9,14 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.oxchains.themis.chat.common.KeepAliveChannelThread;
 import org.springframework.stereotype.Component;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
 import static java.util.concurrent.Executors.newScheduledThreadPool;
+/**
+ * create by huohuo
+ * @author huohuo
+ */
 @Component
 public class WebSocketServer implements Runnable{
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());

@@ -2,7 +2,7 @@ package com.oxchains.themis.chat.auth;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.oxchains.themis.chat.common.User;
+import com.oxchains.themis.chat.entity.User;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +11,8 @@ import javax.persistence.Transient;
 import java.util.Date;
 
 /**
- * @author aiet
+ * create by huohuo
+ * @author huohuo
  */
 @Entity
 public class UserToken {

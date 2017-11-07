@@ -48,11 +48,11 @@ let TabsControl = React.createClass({
         let that = this;
         return (
             <div className="mainbar">
-               <div className="col-lg-3 col-xs-3">
+               <div className="col-lg-2 col-xs-3">
                    <ul className="sildbar ">
                        {React.Children.map(this.props.children, (element, index) => {
                            return (<li className={`liheight ${that.getTitleItemCssClasses(index)}`} onClick={() => {this.setState({currentIndex: index})}}>
-                               {element.props.name}</li>)
+                               <p>{element.props.name}</p></li>)
                        })}
                    </ul>
                </div>

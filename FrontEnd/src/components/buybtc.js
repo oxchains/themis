@@ -145,6 +145,7 @@ class Buybtc extends Component {
                 <div className="pagecomponent">
                     <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.onPagination(e)}/>
                 </div>
+
             </div>
         );
     }

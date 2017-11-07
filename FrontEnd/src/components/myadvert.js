@@ -3,7 +3,8 @@
  */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import { Pagination } from 'antd';
+import 'antd/dist/antd.css';
 import {fetctMyAdvert,fetctOffMyAd} from '../actions/releaseadvert'
 import {
     Modal,
@@ -21,16 +22,27 @@ class Myadvert extends Component {
             isModalOpen: false,
             error: null,
             actionResult: '',
-            status:'1',
-            adstatus:'1'
+            status:1,
+            adstatus:1,
+            pageSize:5, //每页显示的条数5条
+            pageNum: 1,//默认的当前第一页
         }
         this.handleRowsbuy = this.handleRowsbuy.bind(this)
         this.handleRowssell = this.handleRowssell.bind(this)
         this.handleRowsadverting = this.handleRowsadverting.bind(this)
         this.handleRowadverted = this.handleRowadverted.bind(this)
         this.handleRow = this.handleRow.bind(this)
-        this.handleOff = this.handleOff.bind(this)
+    }
 
+    onPagination(pageNo) {
+        console.log( "当前页数"+ pageNo)
+        this.state.pageNum = pageNo
+
+        const userId = localStorage.getItem("userId")
+        const noticeType = this.state.status
+        const txStatus = this.state.adstatus
+        const pageNum = this.state.pageNum
+        this.props.fetctMyAdvert({userId,noticeType,txStatus,pageNum}, ()=>{});
     }
 
     handleRowsbuy(){
@@ -38,14 +50,16 @@ class Myadvert extends Component {
         const userId = localStorage.getItem("userId")
         const noticeType = this.state.status
         const txStatus = this.state.adstatus
-        this.props.fetctMyAdvert({userId,noticeType,txStatus},()=>{});
+        const pageNum = this.state.pageNum
+        this.props.fetctMyAdvert({userId,noticeType,txStatus,pageNum},()=>{});
     }
     handleRowssell(){
         this.state.status = 2
         const userId = localStorage.getItem("userId")
         const noticeType = this.state.status
         const txStatus = this.state.adstatus
-        this.props.fetctMyAdvert({userId,noticeType,txStatus},()=>{});
+        const pageNum = this.state.pageNum
+        this.props.fetctMyAdvert({userId,noticeType,txStatus,pageNum},()=>{});
     }
 
     handleRowsadverting(){
@@ -53,7 +67,8 @@ class Myadvert extends Component {
         const userId = localStorage.getItem("userId")
         const noticeType = this.state.status
         const txStatus = this.state.adstatus
-        this.props.fetctMyAdvert({userId,noticeType,txStatus},()=>{});
+        const pageNum = this.state.pageNum
+        this.props.fetctMyAdvert({userId,noticeType,txStatus,pageNum},()=>{});
     }
 
     handleRowadverted(){
@@ -61,13 +76,20 @@ class Myadvert extends Component {
         const userId = localStorage.getItem("userId")
         const noticeType = this.state.status
         const txStatus = this.state.adstatus
-        this.props.fetctMyAdvert({userId,noticeType,txStatus},()=>{});
+        const pageNum = this.state.pageNum
+        this.props.fetctMyAdvert({userId,noticeType,txStatus,pageNum},()=>{});
+    }
+    componentWillMount(){
+        const userId = localStorage.getItem("userId")
+        const noticeType = this.state.status
+        const txStatus = this.state.adstatus
+        const pageNum = this.state.pageNum
+        this.props.fetctMyAdvert({userId,noticeType,txStatus,pageNum},()=>{});
     }
 
     handleRow(){
-        const arraydata = this.props.all || []    //列表数组的数据
+        const arraydata = this.props.all.pageList || []    //列表数组的数据
         return arraydata.map((item, index) => {
-            console.log(item)
         return(<tr key={index} className="contentborder">
                 <td>{item.id}</td>
                 <td>{item.noticeType == 1?"购买" : "出售"}</td>
@@ -87,31 +109,24 @@ class Myadvert extends Component {
             isModalOpen: false
         });
     };
-    componentWillMount(){
-        const userId = localStorage.getItem("userId")
-        console.log(userId)
-        const noticeType = this.state.status
-        const txStatus = this.state.adstatus
-        this.props.fetctMyAdvert({userId,noticeType,txStatus},()=>{});
-    }
-    handleOff = (item) =>{
-        // const id = item.id
 
+    handleOff = (item) =>{
         const {id} = item
         this.props.fetctOffMyAd({id},err=>{
             this.setState({ isModalOpen: true , error: err , actionResult: err||'下架成功!'})
         })
     }
     render() {
+        const totalNum = this.props.all.rowCount
             return (
                     <div className="mainbar">
-                        <div className="col-lg-3 col-md-3 col-xs-3">
-                        <ul className=" sildbar">
-                            <li className={` liheight ${this.state.status == 1 ? "tab-title-item active" :" tab-title-item"} `}   onClick={this.handleRowsbuy}>购买广告</li>
-                            <li className={` liheight ${this.state.status == 2 ? "tab-title-item active" :" tab-title-item "}`} onClick={this.handleRowssell}>出售广告</li>
+                        <div className="col-lg-2 col-md-2 col-xs-2">
+                        <ul className=" adtypeul">
+                            <li className={` adtype ${this.state.status == 1 ? "tab-title-item active" :" tab-title-item"} `}   onClick={this.handleRowsbuy}><p>购买广告</p></li>
+                            <li className={` adtype ${this.state.status == 2 ? "tab-title-item active" :" tab-title-item "}`} onClick={this.handleRowssell}><p>出售广告</p></li>
                         </ul>
                         </div>
-                        <div className="col-lg-9 col-md-9 col-xs-9">
+                        <div className="col-lg-10 col-md-10 col-xs-10">
                             <ul className=" titleul">
                                 <li className={` title-border ${this.state.adstatus == 1 ? "ad-title-item active" :" ad-title-item"} `}   onClick={this.handleRowsadverting}>进行中的广告</li>
                                 <li className={` title-border ${this.state.adstatus == 2 ? "ad-title-item active" :" ad-title-item "}`} onClick={this.handleRowadverted}>已下架的广告</li>
@@ -132,22 +147,15 @@ class Myadvert extends Component {
                                         <th className={`${this.state.adstatus == 2 ? "hidden" :""}`}>操作</th>
                                     </tr>
                                     {this.handleRow()}
-                                    <tr className="contentborder bottomcontent">
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>没有更多内容了</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        {/*<td className={`${this.state.adstatus == 2 ? "hidden" :""}`}></td>*/}
-                                    </tr>
                                     </tbody>
 
                                 </table>
+                                <div className="pagecomponent">
+                                    <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.onPagination(e)}/>
+                                </div>
                             </div>
                         </div>
+
 
 
                         <Modal isOpen={this.state.isModalOpen} onRequestHide={this.hideModal}>

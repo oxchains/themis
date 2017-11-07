@@ -1,6 +1,6 @@
 package com.oxchains.themis.chat.rest;
 
-import com.oxchains.themis.chat.common.User;
+import com.oxchains.themis.chat.entity.User;
 import com.oxchains.themis.common.model.RestResp;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,7 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
- * Created by xuqi on 2017/10/12.
+ * create by huohuo
+ * @author huohuo
  */
 @RestController
 public class UserController {

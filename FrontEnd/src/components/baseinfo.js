@@ -70,7 +70,7 @@ class Baseinfo extends Component {
     }
 
     render() {
-        const loginname = localStorage.getItem('loginname');//手机号
+        const loginname = localStorage.getItem('loginname');//登录名
         const mobilephone = localStorage.getItem('mobilephone');//手机号
         const createTime = localStorage.getItem('createTime');//注册时间
         const email =  localStorage.getItem('email');//邮箱
@@ -139,6 +139,8 @@ class Baseinfo extends Component {
                         </button>
                     </ModalFooter>
                 </Modal>
+
+
             </div>
         );
     }

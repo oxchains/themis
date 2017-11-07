@@ -41,6 +41,7 @@ public class UserApplicationConfiguration extends WebSecurityConfigurerAdapter{
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests().antMatchers("/user/*","/token","/account/*").permitAll()
+                //.antMatchers("/user/phone").authenticated()
                  .antMatchers("/**/*")
                 .authenticated().and()
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)

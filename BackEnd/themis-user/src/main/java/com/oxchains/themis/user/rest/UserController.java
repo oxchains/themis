@@ -1,16 +1,30 @@
 package com.oxchains.themis.user.rest;
 
 
+import com.google.common.net.HttpHeaders;
+import com.oxchains.themis.common.constant.Status;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.param.ParamType;
+import com.oxchains.themis.common.util.ImageBase64;
 import com.oxchains.themis.common.util.VerifyCodeUtils;
 
 import com.oxchains.themis.user.domain.User;
 import com.oxchains.themis.user.service.UserService;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 
 /**
  * @author ccl
@@ -23,6 +37,10 @@ import javax.annotation.Resource;
 public class UserController {
     @Resource
     UserService userService;
+
+    @Value("${user.info.image}")
+    private String imageUrl;
+
 
     @PostMapping(value = "/register")
     public RestResp register(@RequestBody User user){
@@ -38,7 +56,7 @@ public class UserController {
     public RestResp update(@RequestBody User user){
         return userService.updateUser(user);
     }
-    @GetMapping(value = "/user")
+    @GetMapping(value = "/list")
     public RestResp list(){
         return userService.findUsers();
     }
@@ -53,8 +71,48 @@ public class UserController {
     }
 
     @RequestMapping(value = "/info")
-    public RestResp info(@ModelAttribute User user){
+    public RestResp info(@ModelAttribute User user) throws Exception{
+        /*MultipartFile file = user.getFile();
+        if(null != file){
+            String fileName = file.getOriginalFilename();
+            String suffix = fileName.substring(fileName.lastIndexOf("."));
+            String newFileName = user.getLoginname() + suffix;
+            String pathName = imageUrl + newFileName;
+            file.transferTo(new File(pathName));
+            user.setImage(newFileName);
+        }*/
+        if(null == user){
+            return RestResp.fail("参数不能为空");
+        }
+        String image = user.getLoginname()+".jpg";
+        ImageBase64.generateImage(user.getImage(),imageUrl+image);
+        user.setImage(image);
         return userService.updateUser(user,ParamType.UpdateUserInfoType.INFO);
+    }
+    /*
+   *下载图片
+   * */
+    @RequestMapping(value = "/image")
+    public void downloadImage(String fileName, HttpServletResponse response){
+        try {
+            File file = new File(imageUrl + fileName);
+            if(file.exists()){
+                Path filePath = file.toPath();
+                response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + file.getName());
+                response.setContentType(HttpURLConnection.guessContentTypeFromName(file.getName()));
+                response.setContentLengthLong(file.length());
+                Files.copy(filePath, response.getOutputStream());
+            }else{
+                try {
+                    response.setStatus(SC_NOT_FOUND);
+                    response.getWriter().write("file not found");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @PostMapping(value = "/fpassword")
@@ -76,5 +134,20 @@ public class UserController {
     public RestResp password(@RequestBody User user){
         return userService.updateUser(user, ParamType.UpdateUserInfoType.PWD);
     }
+<<<<<<< HEAD
+=======
 
+    @GetMapping(value = "/trust")
+    public RestResp trust(com.oxchains.themis.common.param.RequestBody body){
+        if(body.getType() == ParamType.TrustTabType.TRUSTED.getType()){
+            return userService.trustedUsers(body);
+        }else if(body.getType() == ParamType.TrustTabType.TRUST.getType()){
+            return userService.trustUsers(body, Status.TrustStatus.TRUST);
+        }else {
+            return userService.trustUsers(body, Status.TrustStatus.SHIELD);
+        }
+    }
+
+
+>>>>>>> 6ed44c0b573fc8ba1ba247dfbd1f7a79d76e2c4f
 }

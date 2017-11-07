@@ -131,6 +131,7 @@ public class AccountController {
 
     @PostMapping(value = "/p2ur")
     public String payToUser(@RequestBody OrdersKeyAmount param){
-        return JsonUtil.toJson(bitcoinService.payToUser(param.getOrderId(),param.getRecvAddress(),Arrays.asList(param.getPrvKeys().split(",")),param.getAmount()));
+        /*return JsonUtil.toJson(bitcoinService.payToUser(param.getOrderId(),param.getRecvAddress(),Arrays.asList(param.getPrvKeys().split(",")),param.getAmount()));*/
+        return JsonUtil.toJson(bitcoinService.payToUserWithFees(param.getOrderId(),param.getRecvAddress(),Arrays.asList(param.getPrvKeys().split(",")),param.getAmount()));
     }
 }

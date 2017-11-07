@@ -154,9 +154,10 @@ public class User {
     @Transient
     private UserTxDetail userTxDetail;
 
-
     @Transient
     private MultipartFile file;
+
+    private String newPassword;
 
     public Role getRole() {
         return role;
@@ -220,6 +221,14 @@ public class User {
 
     public void setFile(MultipartFile file) {
         this.file = file;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
     }
 
     public User(User user){

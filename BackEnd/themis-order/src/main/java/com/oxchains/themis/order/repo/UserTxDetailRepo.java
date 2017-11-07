@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * Created by huohuo on 2017/10/26.
+ * @author huohuo
  */
 @Repository
 public interface UserTxDetailRepo extends CrudRepository<UserTxDetail,Long>{

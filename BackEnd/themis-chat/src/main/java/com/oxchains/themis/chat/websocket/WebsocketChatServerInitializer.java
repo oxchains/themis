@@ -11,7 +11,10 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+/**
+ * create by huohuo
+ * @author huohuo
+ */
 public class WebsocketChatServerInitializer extends
         ChannelInitializer<SocketChannel> {
 	private final Logger LOG = LoggerFactory.getLogger(this.getClass());

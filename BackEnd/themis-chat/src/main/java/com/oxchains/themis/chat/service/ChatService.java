@@ -7,13 +7,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.oxchains.themis.chat.common.ChatUtil;
+import com.oxchains.themis.chat.websocket.ChatUtil;
 
 import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * Created by xuqi on 2017/10/18.
+ * create by huohuo
+ * @author huohuo
  */
 @Service
 public class ChatService {

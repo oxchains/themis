@@ -3,6 +3,7 @@ import javax.persistence.*;
 
 /**
  * Created by huohuo on 2017/10/28.
+ * @author huohuo
  */
 @Entity
 @Table(name = "order_comment")
