@@ -79,10 +79,12 @@ public class CrippledJavaScriptParser {
             jsArray.trim();
             if (!jsArray.isEmpty()) {
                 char ch = jsArray.poll();
-                if (ch == ']')
+                if (ch == ']') {
                     return rv;
-                if (ch != ',')
+                }
+                if (ch != ',') {
                     throw new RuntimeException(jsArray.toString());
+                }
                 jsArray.trim();
             }
         }
@@ -116,12 +118,14 @@ public class CrippledJavaScriptParser {
             }
             jsHash.trim();
             if (!jsHash.isEmpty()) {
-                if (jsHash.peek() != ':')
+                if (jsHash.peek() != ':') {
                     throw new RuntimeException(jsHash.toString());
+                }
                 jsHash.forward(1);
                 jsHash.trim();
-            } else
+            } else {
                 throw new IllegalArgumentException();
+            }
             Object value = parseJSExpr(jsHash);
             jsHash.trim();
             if (!jsHash.isEmpty()) {
@@ -130,8 +134,9 @@ public class CrippledJavaScriptParser {
                     rv.put(key, value);
                     return rv;
                 }
-                if (ch != ',')
+                if (ch != ',') {
                     throw new RuntimeException(jsHash.toString());
+                }
                 jsHash.trim();
             }
             rv.put(key, value);
@@ -160,40 +165,49 @@ public class CrippledJavaScriptParser {
     };
 
     public static Object parseJSExpr(StringParser jsExpr) {
-        if (jsExpr.isEmpty())
+        if (jsExpr.isEmpty()) {
             throw new IllegalArgumentException();
+        }
         jsExpr.trim();
         char start = jsExpr.poll();
-        if (start == '[')
+        if (start == '[') {
             return parseJSArray(jsExpr);
-        if (start == '{')
+        }
+        if (start == '{') {
             return parseJSHash(jsExpr);
-        if (start == '\'' || start == '\"')
+        }
+        if (start == '\'' || start == '\"') {
             return parseJSString(jsExpr, start);
+        }
         if (isDigit(start) || start == '-' || start == '+') {
             StringBuilder b = new StringBuilder();
-            if (start != '+')
+            if (start != '+') {
                 b.append(start);
+            }
             char sc, psc = 0;
             boolean exp = false;
             boolean dot = false;
             for(;;) {
-                if (jsExpr.isEmpty())
+                if (jsExpr.isEmpty()) {
                     break;
+                }
                 sc = jsExpr.peek();
                 if (!isDigit(sc)) {
                     if (sc == 'E' || sc == 'e') {
-                        if (exp)
+                        if (exp) {
                             throw new NumberFormatException(b.toString() + jsExpr.toString());
+                        }
                         exp = true;
                     } else if (sc == '.') {
-                        if (dot || exp)
+                        if (dot || exp) {
                             throw new NumberFormatException(b.toString() + jsExpr.toString());
+                        }
                         dot = true;
                     } else if ((sc == '-' || sc == '+') && (psc == 'E' || psc == 'e')) {
                         // it's ok
-                    } else
+                    } else {
                         break;
+                    }
                 }
 
                 b.append(sc);
@@ -224,8 +238,9 @@ public class CrippledJavaScriptParser {
             jsExpr.forward("ew Date(".length());
             Number date = (Number) parseJSExpr(jsExpr);
             jsExpr.trim();
-            if (jsExpr.poll() != ')')
+            if (jsExpr.poll() != ')') {
                 throw new RuntimeException("Invalid date");
+            }
             return new Date(date.longValue());
         }
         throw new UnsupportedOperationException("Unparsable javascript expression: \""+start+jsExpr+"\"");
@@ -242,16 +257,19 @@ public class CrippledJavaScriptParser {
             String l;
             while ((l = r.readLine()) != null) {
                 l = l.trim();
-                if (l.isEmpty() || !l.startsWith("var"))
+                if (l.isEmpty() || !l.startsWith("var")) {
                     continue;
+                }
                 l = l.substring(3).trim();
                 int i = l.indexOf('=');
-                if (i == -1)
+                if (i == -1) {
                     continue;
+                }
                 String varName = l.substring(0, i).trim();
                 String expr = l.substring(i + 1).trim();
-                if (expr.endsWith(";"))
+                if (expr.endsWith(";")) {
                     expr = expr.substring(0, expr.length() - 1).trim();
+                }
                 rv.put(varName, parseJSExpr(expr));
             }
             return rv;

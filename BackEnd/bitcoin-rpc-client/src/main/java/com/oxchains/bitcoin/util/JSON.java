@@ -11,18 +11,24 @@ import java.util.Map;
  */
 public class JSON {
     public static String stringify(Object o) {
-        if (o == null)
+        if (o == null) {
             return "null";
-        if ((o instanceof Number) || (o instanceof Boolean))
+        }
+        if ((o instanceof Number) || (o instanceof Boolean)) {
             return String.valueOf(o);
-        if (o instanceof Date)
-            return "new Date("+((Date)o).getTime()+")";
-        if (o instanceof Map)
-            return stringify((Map)o);
-        if (o instanceof Iterable)
-            return stringify((Iterable)o);
-        if (o instanceof Object[])
-            return stringify((Object[])o);
+        }
+        if (o instanceof Date) {
+            return "new Date(" + ((Date) o).getTime() + ")";
+        }
+        if (o instanceof Map) {
+            return stringify((Map) o);
+        }
+        if (o instanceof Iterable) {
+            return stringify((Iterable) o);
+        }
+        if (o instanceof Object[]) {
+            return stringify((Object[]) o);
+        }
         return stringify(String.valueOf(o));
     }
 
@@ -31,10 +37,11 @@ public class JSON {
         b.append('{');
         boolean first = true;
         for (Map.Entry e : ((Map<Object, Object>)m).entrySet()) {
-            if (first)
+            if (first) {
                 first = false;
-            else
+            }else {
                 b.append(",");
+            }
             b.append(stringify(e.getKey().toString()));
             b.append(':');
             b.append(stringify(e.getValue()));
@@ -49,10 +56,11 @@ public class JSON {
         b.append('[');
         boolean first = true;
         for (Object o : c) {
-            if (first)
+            if (first) {
                 first = false;
-            else
+            }else {
                 b.append(",");
+            }
             b.append(stringify(o));
         }
         b.append(']');
@@ -64,10 +72,11 @@ public class JSON {
         b.append('[');
         boolean first = true;
         for (Object o : c) {
-            if (first)
+            if (first) {
                 first = false;
-            else
+            }else {
                 b.append(",");
+            }
             b.append(stringify(o));
         }
         b.append(']');
