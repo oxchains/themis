@@ -14,8 +14,9 @@ class Chat extends Component{
         const senderId=localStorage.getItem("userId"); //当前发送者id
         const senderName=localStorage.getItem("loginname"); //当前用户名
         let receiverId = partner.partnerId;// 当前接收者id
-        let receiverName=partner.friendUsername //   当前接收者name
-        let ws = new WebSocket("ws://192.168.1.125:9999/ws?"+partner.userId +"_"+receiverId); //链接websocket
+        let receiverName=partner.friendUsername ;//   当前接收者name
+        console.log(partner)
+        let ws = new WebSocket("ws://192.168.1.125:9999/ws?"+partner.userId +"_"+receiverId+"_"+partner.id); //链接websocket
         let flag=true;
         let reconnect = new Date().getTime(),time;
         let timeFlag=true;
@@ -25,7 +26,7 @@ class Chat extends Component{
                 $.ajax({
                     type :"POST",
                     url :'http://192.168.1.125:8881/chat/getChatHistroy',
-                    data:{senderId:senderId, receiverId:receiverId},
+                    data:{senderId:senderId, receiverId:receiverId,orderId:partner.id},
                     beforeSend: function(request) {
                         request.setRequestHeader("Authorization", 'Bearer '+token);
                     },
@@ -63,10 +64,20 @@ class Chat extends Component{
                     ws.send(heart);
                 },2000)
             }
+            $(".send").unbind("click").on("click", function (){
+                console.log(1)
+                sendMessageBtn(partner)
+            })
+            document.onkeydown = function(e) {
+                if (e && e.keyCode == 13) {
+                    sendMessageBtn(partner)
+                }
+            }
         };
         //监听 messages
         ws.onmessage = (e) => {
             var data=JSON.parse(e.data);
+            // console.log(data)
             // 收到消息，重置定时器
             clearTimeout(ws.receiveMessageTimer);
             switch (data.msgType) {
@@ -104,7 +115,7 @@ class Chat extends Component{
                 $(".chat-head").html("连接断开")
             } else {
                 $(".chat-head").html("重新连接中...")
-                let ws = new WebSocket("ws://192.168.1.125:9999/ws?"+partner.userId+"_"+receiverId); //链接websocket
+                let ws = new WebSocket("ws://192.168.1.125:9999/ws?"+partner.userId +"_"+receiverId+"_"+partner.id); //链接websocket
                 $(".chat-head").html(receiverName);
                 ws.onopen = tempWs.onopen;
                 ws.onmessage = tempWs.onmessage;
@@ -112,12 +123,12 @@ class Chat extends Component{
                 ws.onclose = tempWs.onclose;
             }
         }
-        $(".send").on("click", function (){
+        const sendMessageBtn = (partner)=>{
             clearTimeout(time);
             //发送一个文本消息
             var chatContent = $(".message").val();
             if(chatContent){
-                var message = JSON.stringify({msgType:1, senderId: senderId, senderName: senderName, receiverId: receiverId, chatContent: chatContent});
+                var message = JSON.stringify({msgType:1, senderId: senderId, senderName: senderName, receiverId: receiverId, chatContent: chatContent,orderId:partner.id});
                 sendMessage(senderName, chatContent);
                 ws.send(message);
                 $(".message").val('');
@@ -131,20 +142,19 @@ class Chat extends Component{
                     },600000)
                 }
             }
-
-        })
+        }
         //发送消息
-        function sendMessage(senderName,chatContent){
+        const sendMessage = (senderName,chatContent) =>{
             $(".chat-message").append('<li class="send-message rightd"><div class="sender rightd_h"><span>'+senderName+'</span></div><div class="content speech right">'+chatContent+'</div></li>');
         }
         //接收消息
-        function receiveMessage(receiverName,chatContent){
+        const receiveMessage = (receiverName,chatContent) => {
             $(".chat-message").append('<li class="receive-message leftd"><div class="sender leftd_h"><span>'+receiverName+'</span></div><div class="speech left">'+chatContent+'</div></li>');
         }
-        function scrollTop(){
+        const scrollTop = () => {
             $('.chat-body').scrollTop($('.chat-message').height());
         }
-        function showTime(){
+        const showTime = () => {
             let time = new Date().toLocaleString();
             $(".chat-message").append('<li class="time"><div class="">'+time+'</div></li>');
         }
@@ -154,15 +164,14 @@ class Chat extends Component{
         const friendUsername = orders_details && orders_details.friendUsername;
         return (
             <div className="chat">
-                <div className="chat-head col-sm-12 h4 text-center">{friendUsername}</div>
+                <span className="chat-head col-sm-12 h5 text-center">{friendUsername}</span>
                 <div className="chat-body g-mb-10">
                     <ul className="chat-message clearfix">
                         <li className="text-center"><a href="javascript:(0);" className="gray g-pt-10 g-pb-10 getMore">获取更多聊天记录</a></li>
                     </ul>
                 </div>
                 <div className="clearfix">
-                    <input type="text" className="message" ref="message"/>
-                    <button className="ant-btn ant-btn-primary ant-btn-lg send float-right">发送</button>
+                    <input type="text" className="message" ref="message" placeholder="请输入你要说的话"/>
                 </div>
             </div>
         );
@@ -170,7 +179,6 @@ class Chat extends Component{
 }
 function mapStateToProps(state) {
     return {
-        // partner:state.order.partner_message
         orders_details: state.order.orders_details,
     }
 }

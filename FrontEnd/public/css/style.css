@@ -351,10 +351,13 @@ div {
     padding: 0;
     font-size: 16px;
 }
+.orderType ul li a{
+    color: #909090;
+}
 .orderType ul li .orderTypeBar{
     display: inline-block;
-    border-bottom:1px solid gainsboro;
-    /*color: black;*/
+    border-bottom:2px solid #24d8e9;
+    color: #313131;
 }
 .signinWay ul li .signinTypeBar{
     display: inline-block;
@@ -385,9 +388,9 @@ div {
 }
 .order-details{
     margin:0 15px;
-    padding: 10px;
-    border:1px solid dimgrey;
-    background-color: aliceblue;
+    padding: 15px 10px;
+    border-radius: 8px;
+    background-color: #f5f5f5;
 }
 .order-details ul{
     margin: 0;
@@ -423,20 +426,25 @@ div {
 }
 
 /*orderprocess-chat*/
-.tab_title_wrap div{
+.tab_title_wrap span{
+    display: inline-block;
     cursor: pointer;
     padding: 10px 0;
-    border-bottom: 1px solid dimgrey;
+    width: 100px;
+    color: #909090;
+    margin-bottom: 10px;
 }
 .tab_title_wrap .active{
-    background-color: dimgrey;
-    color: #fff;
+    border-bottom:2px solid #23dae9;
+    color: #313131;
 }
 .tab_item{
+    background-color: #f5f5f5;
     display: none;
 }
 .order-chat{
-    border:1px solid dimgrey;
+    border:1px solid #e5e5e5;
+    border-radius: 10px;
 }
 /*arbitration_buyer*/
 .arbitration-buyer{
@@ -846,9 +854,9 @@ table { background-color: transparent; }
 table { border-spacing: 0;  border-collapse: collapse; }
 .table-bordered>tbody>tr>td, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>td, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>thead>tr>th {
     border: 1px solid #ddd; text-align: center}
-.table>thead>tr>th { vertical-align: bottom;  border-bottom: 2px solid #ddd; text-align: center}
+.table>thead>tr>th { vertical-align: bottom; text-align: center}
 .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
-    padding: 8px; line-height: 1.42857143;  vertical-align: top; border-top: 1px solid #ddd;text-align: center }
+    padding: 8px; line-height: 1.42857143;  vertical-align: top;text-align: center }
 .rightDiv{float: left;    float: left; padding-left: 16px; margin-top: 1px;}
 .paginationDiv {display: block; margin-top: 50px; color: #535353; line-height: 29px; text-align: center;margin-left: 52px;}
 .paginationDiv a {float: left;color: black;  height: 30px; padding: 0 7px; vertical-align: middle; text-decoration: none; cursor: pointer;}
@@ -1361,6 +1369,9 @@ table { border-spacing: 0;  border-collapse: collapse; }
 {
     border:none!important;
 }
+.ant-btn-lg{
+    line-height: 30px !important;
+}
 .ant-modal-body
 {
     width: 90%;
@@ -1403,14 +1414,16 @@ table { border-spacing: 0;  border-collapse: collapse; }
     color: white;
     background-color: #2ad0e9
 }
-<<<<<<< HEAD
-btn-style{
-
-=======
 .detailTitle
 {
     width: 80%;
     margin: 0 auto;
     text-align: center;
->>>>>>> c33e56fe868546fa1cf105ba9db6f928f6d1b090
+}
+.table a{
+    line-height: 30px;
+}
+td{
+    word-break:keep-all;             /* 不换行 */
+    white-space:nowrap;
 }

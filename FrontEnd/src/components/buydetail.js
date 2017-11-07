@@ -64,6 +64,13 @@ class Buydetail extends Component {
                 this.setState({ isModalOpen: true , error: err , actionResult: err||'下单成功!'})
             });
     }
+    showOrderDetail(item){
+        console.log(item)
+        const userId= localStorage.getItem('userId');
+        const orderData={id:item.id,userId:userId,partnerId:item.sellerId == userId ?item.buyerId:item.sellerId}
+        localStorage.setItem("partner",JSON.stringify(orderData));
+        window.location.href='/orderprogress';
+    }
     render() {
         const userId=localStorage.getItem("userId");
         const messmoney = this.state.messmoney;
@@ -71,11 +78,6 @@ class Buydetail extends Component {
         const data = this.props.all.notice || [];
         const datanum = this.props.all || []
         const time = data.validPayTime/1000/60
-        const dataDetail = {id:this.props.data.id,userId:userId,partnerId:this.props.data.sellerId == userId ?this.props.data.buyerId:this.props.data.sellerId};
-        const path = {
-            pathname:'/orderprogress',
-            state:dataDetail,
-        }
         return (
             <div className="maincontent">
                 <div className="detail-title">
@@ -148,7 +150,7 @@ class Buydetail extends Component {
                     <ModalFooter>
                         <button className='btn btn-default' onClick={this.hideModal}>
                             {/*<a href="/myadvert" >关闭</a>*/}
-                            <Link className="close-modal" to={path}>关闭</Link>
+                            <div className="close-modal" onClick={this.showOrderDetail.bind(this,this.props.data)}>关闭</div>
                         </button>
                     </ModalFooter>
                 </Modal>

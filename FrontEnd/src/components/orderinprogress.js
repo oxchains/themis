@@ -67,13 +67,7 @@ class OrderInProgress extends Component {
         this.props.fetchNoCompletedOrders({formData}, ()=>{});
     }
     renderrow(){
-        const userId= localStorage.getItem('userId');
         return this.props.not_completed_orders.map((item,index) =>{
-            const data = {id:item.id,userId:userId,partnerId:item.orderType == "购买"?item.sellerId:item.buyerId};
-            const path = {
-                pathname:'/orderprogress',
-                state:data,
-            }
             return(
                 <tr key={index}>
                     <td>{item.friendUsername}</td>
@@ -82,13 +76,18 @@ class OrderInProgress extends Component {
                     <td>{item.money}</td>
                     <td>{item.amount}</td>
                     <td>{item.createTime}</td>
-                    <td>{item.orderStatusName}</td>
-                    <td><Link className="ant-btn ant-btn-primary ant-btn-lg" to={path} onClick={localStorage.setItem("receiverId",item.orderType == "购买" ? item.sellerId : item.buyerId)}>详情</Link></td>
+                    <td>{item.orderStatusName}<span>{item.arbitrate == 1 ? "(仲裁中)": ""}</span></td>
+                    <td><button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.showOrderDetail.bind(this,item)}>详情</button></td>
                     <td>{item.orderStatus == 3 || item.orderStatus == 8 ? <button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleEvidence.bind(this,item.id)}>仲裁</button> : <div></div>}</td>
                 </tr>
                 )
         })
-
+    }
+    showOrderDetail(item){
+        const userId= localStorage.getItem('userId');
+        const orderData={id:item.id,userId:userId,partnerId:item.sellerId == userId ? item.buyerId : item.sellerId,friendUsername:item.friendUsername}
+        localStorage.setItem("partner",JSON.stringify(orderData));
+        window.location.href='/orderprogress';
     }
     render() {
         let close = () => {
@@ -97,11 +96,6 @@ class OrderInProgress extends Component {
         const not_completed_orders = this.props.not_completed_orders;
         const totalNum = not_completed_orders && not_completed_orders[0].pageCount
         console.log(totalNum)
-        if(this.props.not_completed_orders===null){
-            return <div className="container">
-                <div className="h1 text-center">Loading...</div>
-            </div>
-        }
         return (
         <div className="container g-pb-150">
             <div className="orderType text-center g-pt-50 g-pb-50">
@@ -111,7 +105,7 @@ class OrderInProgress extends Component {
                 </ul>
             </div>
             <div className="table-responsive">
-                <div className="table table-striped table-bordered table-hover">
+                <div className="table table-striped table-hover">
                     <table className="table">
                         <thead>
                         <tr>
@@ -127,7 +121,7 @@ class OrderInProgress extends Component {
                         </tr>
                         </thead>
                         <tbody>
-                        {this.props.not_completed_orders == null ? <tr><td colSpan={8}>暂无数据</td></tr> : this.renderrow()}
+                        {this.props.not_completed_orders == null ? <tr><td colSpan={9}>暂无数据</td></tr> : this.renderrow()}
                         </tbody>
                     </table>
                 </div>
