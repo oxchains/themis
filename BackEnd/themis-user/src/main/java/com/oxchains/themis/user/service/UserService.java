@@ -157,7 +157,8 @@ public class UserService extends BaseService {
 
             userInfo.setUserTxDetail(userTxDetail);
             ConstantUtils.USER_TOKEN.put(u.getLoginname(), token);
-            return RestResp.success("登录成功", userInfo); //new UserToken(u.getUsername(),token)
+            //new UserToken(u.getUsername(),token)
+            return RestResp.success("登录成功", userInfo);
         }).orElse(RestResp.fail("登录失败"));
     }
 

@@ -16,15 +16,33 @@ public class UserTrust {
     private String fromUserName;
     private String toUserName;
 
-    private Integer txNum;     //交易次数
-    private Integer goodDesc;   //好评次数
-    private Integer badDesc;    //差评次数
-    private String firstBuyTime;  //第一次购买时间
-    private Integer believeNum;    // 信任次数
+    /**
+     * 交易次数
+     */
+    private Integer txNum;
+    /**
+     * 好评次数
+     */
+    private Integer goodDesc;
+    /**
+     * 差评次数
+     */
+    private Integer badDesc;
+    /**
+     * 第一次购买时间
+     */
+    private String firstBuyTime;
+    /**
+     * 信任次数
+     */
+    private Integer believeNum;
     private Double buyAmount;
     private Double sellAmount;
 
-    private Integer txToNum; //交易次數
+    /**
+     * 交易次数1
+     */
+    private Integer txToNum;
 
     public Long getFromUserId() {
         return fromUserId;
