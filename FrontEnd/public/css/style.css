@@ -396,13 +396,8 @@ div {
 }
 .orderType ul li .orderTypeBar{
     display: inline-block;
-<<<<<<< HEAD
     border-bottom:1px solid gainsboro;
     color: black;
-=======
-    border-bottom:2px solid #24d8e9;
-    color: #313131;
->>>>>>> 494cd13a31976053441ec1916a320395e0c6be9f
 }
 .signinWay ul li .signinTypeBar{
     display: inline-block;
@@ -908,7 +903,7 @@ div {
 }
 html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
 /*table样式*/
-<<<<<<< HEAD
+
 .table-bordered {  border: 1px solid #ddd; }
 .table { width: 100%;  font-size: 14px ;margin-bottom:0;}
 table { background-color: transparent; }
@@ -926,7 +921,7 @@ table { border-spacing: 0;  border-collapse: collapse; }
 .paginationDiv .num:hover {background-color: #ddd; border-color: #ddd; color: #1a1a1a }
 .paginationDiv .ellipsis {width: 42px; height: 30px; color: #707070; line-height: 30px }
 .paginationDiv input {width: 44px; height: 24px; border: 1px solid #eee; text-align: center }
-=======
+
 /*.table-bordered {  border: 1px solid #ddd; }*/
 /*.table { width: 100%;  font-size: 14px ;margin-bottom:0;}*/
 /*table { background-color: transparent; }*/
@@ -1498,18 +1493,17 @@ table { border-spacing: 0;  border-collapse: collapse; }
     margin: 0 auto;
     text-align: center;
 }
-<<<<<<< HEAD
 .table a{
     line-height: 30px;
 }
-td{
-    word-break:keep-all;             /* 不换行 */
-    white-space:nowrap;
-=======
+td {
+    word-break: keep-all; /* 不换行 */
+    white-space: nowrap;
+}
 .ant-btn-lg
 {
     padding: 6px 15px!important;
-<<<<<<< HEAD
+
 }
 .ant-pagination-item, .ant-pagination-item-link, .ant-pagination-item-link
 {
