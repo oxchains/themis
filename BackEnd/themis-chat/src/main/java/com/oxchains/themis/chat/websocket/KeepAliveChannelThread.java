@@ -1,6 +1,5 @@
-package com.oxchains.themis.chat.common;
+package com.oxchains.themis.chat.websocket;
 
-import com.oxchains.themis.chat.websocket.TextWebSocketFrameHandler;
 import io.netty.channel.ChannelFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,12 +8,13 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by xuqi on 2017/10/19.
+ * create by huohuo
+ * @author huohuo
  */
 public class KeepAliveChannelThread implements Runnable {
     private ScheduledExecutorService keepAliveScheduler;
     private long keepTime;
-    private final Logger LOG = LoggerFactory.getLogger(this.getClass());
+    private static final Logger LOG = LoggerFactory.getLogger(KeepAliveChannelThread.class);
     public KeepAliveChannelThread(ScheduledExecutorService keepAliveScheduler, long keepTime) {
         this.keepAliveScheduler = keepAliveScheduler;
         this.keepTime = keepTime;

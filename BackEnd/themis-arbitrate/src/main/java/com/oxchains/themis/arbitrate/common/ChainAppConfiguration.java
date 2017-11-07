@@ -1,7 +1,8 @@
-package com.oxchains.themis.chat.common;
+package com.oxchains.themis.arbitrate.common;
 
-import com.oxchains.themis.chat.auth.JwtAuthenticationProvider;
-import com.oxchains.themis.chat.auth.JwtTokenFilter;
+import com.oxchains.themis.arbitrate.auth.AuthError;
+import com.oxchains.themis.arbitrate.auth.JwtAuthenticationProvider;
+import com.oxchains.themis.arbitrate.auth.JwtTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,10 +14,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import com.oxchains.themis.chat.auth.AuthError;
 
 /**
- * @author aiet
+ * @author huohuo
  */
 @EnableWebSecurity
 @Configuration
@@ -39,9 +39,9 @@ public class ChainAppConfiguration extends WebSecurityConfigurerAdapter {
           .csrf()
           .disable()
           .authorizeRequests()
-          .antMatchers("/user/*")
-          .permitAll()
           .antMatchers("/**/*")
+          .permitAll()
+          .antMatchers("/user")
           .authenticated()
           .and()
           .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)

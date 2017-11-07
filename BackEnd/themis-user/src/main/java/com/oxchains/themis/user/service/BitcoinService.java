@@ -228,8 +228,10 @@ public class BitcoinService {
                     //支付到卖家账户 减去矿工费
                     BitcoindRpcClient.TxOutput txOutput1 = new BitcoindRpcClient.BasicTxOutput(recvAddress, ArithmeticUtils.minus(amount, BitcoinConst.OXCHAINS_DEFAULT_MINER_FEE));
                     txOutputs.add(txOutput1);
-                    //支付到oxchains账户
-                    BitcoindRpcClient.TxOutput txOutput2 = new BitcoindRpcClient.BasicTxOutput(BitcoinConst.OXCHAINS_DEFAULT_FEE_ADDRESS, BitcoinConst.OXCHAINS_DEFAULT_TX_FEE);
+
+                    String feeAddress = getOxchainFeeAddress();
+                    //支付中介费到oxchains账户
+                    BitcoindRpcClient.TxOutput txOutput2 = new BitcoindRpcClient.BasicTxOutput(feeAddress, BitcoinConst.OXCHAINS_DEFAULT_TX_FEE);
                     txOutputs.add(txOutput2);
 
                     String rawTx = client.createRawTransaction(txInputs, txOutputs);
@@ -255,6 +257,15 @@ public class BitcoinService {
             return RestResp.fail(e.getMessage());
         }
     }
+
+    public String getOxchainFeeAddress(){
+        List<String> addresses = client.getAddressesByAccount(BitcoinConst.OXCHAINS_DEFAULT_FEE_ACCOUNT);
+        if(null == addresses || addresses.size()<1){
+            return client.getNewAddress(BitcoinConst.OXCHAINS_DEFAULT_FEE_ACCOUNT);
+        }
+        return addresses.get(0);
+    }
+
     /**
     * 1. 生成公钥/私钥
     * 2. 生成协商地址和赎回脚本

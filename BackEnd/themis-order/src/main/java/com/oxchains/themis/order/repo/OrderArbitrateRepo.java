@@ -17,5 +17,6 @@ public interface OrderArbitrateRepo extends CrudRepository<OrderArbitrate,Long>{
     Page<OrderArbitrate> findOrderArbitrateByUserIdAndAndStatusIsNot(Long userId, Integer status, Pageable pageable);
     OrderArbitrate findOrderArbitrateByUserIdAndOrderId(Long id,String orderId);
     List<OrderArbitrate> findOrderArbitrateByOrderId(String orderId);
+    OrderArbitrate findByOrOrderIdAndStatus(String id,Integer status);
 
 }

@@ -1,9 +1,9 @@
 package com.oxchains.themis.chat.entity;
 
 import javax.persistence.*;
-
 /**
- * Created by xuqi on 2017/10/17.
+ * create by huohuo
+ * @author huohuo
  */
 @Entity
 public class ChatContent {

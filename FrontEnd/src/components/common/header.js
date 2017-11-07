@@ -50,7 +50,7 @@ class Header extends Component{
                 <nav  className="header ">
                    <div className="header-position">
                        <div className="navdivimg">
-                           <img src="./public/img/nl_logo.png" className="navimg" alt=""/>
+                           <img src="./public/img/logo4.png" className="navimg" alt=""/>
                        </div>
                        <ul className="headerul" >
                            <li><a href="/" >首页</a></li>

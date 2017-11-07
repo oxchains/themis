@@ -22,22 +22,27 @@ class Myadvert extends Component {
             isModalOpen: false,
             error: null,
             actionResult: '',
-            status:'1',
-            adstatus:'1',
+            status:1,
+            adstatus:1,
             pageSize:8, //每页显示的条数8条
+            pageNum: 1,//默认的当前第一页
         }
         this.handleRowsbuy = this.handleRowsbuy.bind(this)
         this.handleRowssell = this.handleRowssell.bind(this)
         this.handleRowsadverting = this.handleRowsadverting.bind(this)
         this.handleRowadverted = this.handleRowadverted.bind(this)
         this.handleRow = this.handleRow.bind(this)
-        this.handleOff = this.handleOff.bind(this)
-
     }
-    onPagination(pageNum) {
-        console.log( "当前页数"+ pageNum) //当前页数
 
-        // this.props.fetcAdvertSeach({pageNum}, ()=>{});
+    onPagination(pageNo) {
+        console.log( "当前页数"+ pageNo)
+        this.state.pageNum = pageNo
+
+        const userId = localStorage.getItem("userId")
+        const noticeType = this.state.status
+        const txStatus = this.state.adstatus
+        const pageNum = this.state.pageNum
+        this.props.fetctMyAdvert({userId,noticeType,txStatus,pageNum}, ()=>{});
     }
 
     handleRowsbuy(){
@@ -45,14 +50,16 @@ class Myadvert extends Component {
         const userId = localStorage.getItem("userId")
         const noticeType = this.state.status
         const txStatus = this.state.adstatus
-        this.props.fetctMyAdvert({userId,noticeType,txStatus},()=>{});
+        const pageNum = this.state.pageNum
+        this.props.fetctMyAdvert({userId,noticeType,txStatus,pageNum},()=>{});
     }
     handleRowssell(){
         this.state.status = 2
         const userId = localStorage.getItem("userId")
         const noticeType = this.state.status
         const txStatus = this.state.adstatus
-        this.props.fetctMyAdvert({userId,noticeType,txStatus},()=>{});
+        const pageNum = this.state.pageNum
+        this.props.fetctMyAdvert({userId,noticeType,txStatus,pageNum},()=>{});
     }
 
     handleRowsadverting(){
@@ -60,7 +67,8 @@ class Myadvert extends Component {
         const userId = localStorage.getItem("userId")
         const noticeType = this.state.status
         const txStatus = this.state.adstatus
-        this.props.fetctMyAdvert({userId,noticeType,txStatus},()=>{});
+        const pageNum = this.state.pageNum
+        this.props.fetctMyAdvert({userId,noticeType,txStatus,pageNum},()=>{});
     }
 
     handleRowadverted(){
@@ -68,11 +76,19 @@ class Myadvert extends Component {
         const userId = localStorage.getItem("userId")
         const noticeType = this.state.status
         const txStatus = this.state.adstatus
-        this.props.fetctMyAdvert({userId,noticeType,txStatus},()=>{});
+        const pageNum = this.state.pageNum
+        this.props.fetctMyAdvert({userId,noticeType,txStatus,pageNum},()=>{});
+    }
+    componentWillMount(){
+        const userId = localStorage.getItem("userId")
+        const noticeType = this.state.status
+        const txStatus = this.state.adstatus
+        const pageNum = this.state.pageNum
+        this.props.fetctMyAdvert({userId,noticeType,txStatus,pageNum},()=>{});
     }
 
     handleRow(){
-        const arraydata = this.props.all || []    //列表数组的数据
+        const arraydata = this.props.all.pageList || []    //列表数组的数据
         return arraydata.map((item, index) => {
         return(<tr key={index} className="contentborder">
                 <td>{item.id}</td>
@@ -93,12 +109,7 @@ class Myadvert extends Component {
             isModalOpen: false
         });
     };
-    componentWillMount(){
-        const userId = localStorage.getItem("userId")
-        const noticeType = this.state.status
-        const txStatus = this.state.adstatus
-        this.props.fetctMyAdvert({userId,noticeType,txStatus},()=>{});
-    }
+
     handleOff = (item) =>{
         // const id = item.id
 
@@ -108,7 +119,7 @@ class Myadvert extends Component {
         })
     }
     render() {
-        const totalNum = this.props.all.length
+        const totalNum = this.props.all.rowCount
             return (
                     <div className="mainbar">
                         <div className="col-lg-3 col-md-3 col-xs-3">
@@ -138,17 +149,17 @@ class Myadvert extends Component {
                                         <th className={`${this.state.adstatus == 2 ? "hidden" :""}`}>操作</th>
                                     </tr>
                                     {this.handleRow()}
-                                    <tr className="contentborder bottomcontent">
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>没有更多内容了</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        {/*<td className={`${this.state.adstatus == 2 ? "hidden" :""}`}></td>*/}
-                                    </tr>
+                                    {/*<tr className="contentborder bottomcontent">*/}
+                                        {/*<td></td>*/}
+                                        {/*<td></td>*/}
+                                        {/*<td></td>*/}
+                                        {/*<td>没有更多内容了</td>*/}
+                                        {/*<td></td>*/}
+                                        {/*<td></td>*/}
+                                        {/*<td></td>*/}
+                                        {/*<td></td>*/}
+                                        {/*/!*<td className={`${this.state.adstatus == 2 ? "hidden" :""}`}></td>*!/*/}
+                                    {/*</tr>*/}
                                     </tbody>
 
                                 </table>
@@ -184,7 +195,6 @@ class Myadvert extends Component {
         }
     }
 function mapStateToProps(state) {
-    console.log(state.advert.all.length)
     return {
         all:state.advert.all,     //我的广告
         data:state.advert.data   // 下架我的广告

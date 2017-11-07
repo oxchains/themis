@@ -28,7 +28,7 @@ class Home extends Component {
         return(
                 <div  key={index} className="list-border">
                     <div className="title-bgc">
-                        <img src={item.src} alt=""/>
+                        <img src={item.src ? item.src : "/public/img/default.png"} alt=""/>
                         <p>{item.loginname}</p>
                     </div>
                     <div className="col-lg-4">

@@ -1,7 +1,6 @@
 package com.oxchains.themis.chat.auth;
 
-import com.oxchains.themis.chat.common.User;
-import com.oxchains.themis.common.auth.AuthorizationConst;
+import com.oxchains.themis.chat.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -24,9 +23,9 @@ import java.security.interfaces.ECPrivateKey;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.UUID;
-
 /**
- * @author aiet
+ * create by huohuo
+ * @author huohuo
  */
 @Component
 public class  JwtService {
@@ -46,7 +45,7 @@ public class  JwtService {
 
     private PublicKey publicKey;
 
-    private Logger LOG = LoggerFactory.getLogger(getClass());
+    private static final  Logger LOG = LoggerFactory.getLogger(JwtService.class);
 
     private final UserRepo userRepo;
     public JwtService(UserRepo userRepo) {

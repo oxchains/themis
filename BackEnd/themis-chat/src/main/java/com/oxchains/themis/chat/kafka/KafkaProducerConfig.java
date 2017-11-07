@@ -14,7 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by xuqi on 2017/10/20.
+ * create by huohuo
+ * @author huohuo
  */
 @Configuration
 @EnableKafka
@@ -22,7 +23,7 @@ public class KafkaProducerConfig {
     @Value("${kafka.service.config}")
     private String kafkaSeerviceConfig;
     public Map<String, Object> producerConfigs() {
-        Map<String, Object> props = new HashMap<>();
+        Map<String, Object> props = new HashMap<>(10);
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaSeerviceConfig);
         props.put(ProducerConfig.RETRIES_CONFIG, 0);
         props.put(ProducerConfig.BATCH_SIZE_CONFIG, 4096);

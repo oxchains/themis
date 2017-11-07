@@ -1,6 +1,6 @@
 package com.oxchains.themis.chat.auth;
 
-import com.oxchains.themis.chat.common.User;
+import com.oxchains.themis.chat.entity.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -9,7 +9,8 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * @author aiet
+ * create by huohuo
+ * @author huohuo
  */
 public class JwtAuthentication implements Authentication {
 
@@ -29,7 +30,6 @@ public class JwtAuthentication implements Authentication {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        //return user.getAuthorities().stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
        return null;
     }
 
