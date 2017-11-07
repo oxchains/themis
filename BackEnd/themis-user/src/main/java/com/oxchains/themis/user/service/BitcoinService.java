@@ -111,13 +111,13 @@ public class BitcoinService {
             logger.info("*** 订单 {}, 获取订单状态" ,orderId);
             Transaction order = transactionDao.findByOrderId(orderId);
             if(order == null){
-                logger.error("订单 {} 不存在",orderId);
-                return RestResp.fail("订单不存在");
+                logger.error("订单 {} 未形成交易",orderId);
+                return RestResp.fail("订单未创建交易");
             }
             String txId = order.getUtxoTxid();
             if(null == txId || "".equals(txId)){
                 logger.error("订单 {} 还未进行比特币转账",orderId);
-                return RestResp.fail("订单比特币交易不存在");
+                return RestResp.fail("订单未将比特币转入协商地址");
             }
             BitcoindRpcClient.RawTransaction rawTransaction = client.getRawTransaction(txId);
             if(null != rawTransaction){
@@ -154,7 +154,7 @@ public class BitcoinService {
             logger.info("*** 订单{}, 将比特币发送到指定账户:{}" , orderId, recvAddress);
             Transaction order = transactionDao.findByOrderId(orderId);
 
-            String P2SH_REDEEM_SCRIPT = order.getP2shRedeemScript();
+            String p2shRedeemScript = order.getP2shRedeemScript();
 
             BitcoindRpcClient.RawTransaction rawTransaction = client.getRawTransaction(order.getUtxoTxid());
             logger.info("rawTransaction:\n"+rawTransaction.toString());
@@ -167,20 +167,21 @@ public class BitcoinService {
                 BitcoindRpcClient.RawTransaction.Out.ScriptPubKey scriptPubKey = out.scriptPubKey();
                 String type = scriptPubKey.type();
                 if(VoutHashType.SCRIPT_HASH.getName().equals(type)){
-                    //BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), P2SH_REDEEM_SCRIPT, BigDecimal.valueOf(amount));
-                    BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), vout);//0  Previous output scriptPubKey mismatch
+                    //BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), p2shRedeemScript, BigDecimal.valueOf(amount));
+                    //0  Previous output scriptPubKey mismatch
+                    BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), vout);
                     txInputs.add(txInput);
                     logger.info("Input: "+txInputs.toString());
                     amount = out.value();
-                    BitcoindRpcClient.TxOutput txOutput = new BitcoindRpcClient.BasicTxOutput(recvAddress, ArithmeticUtils.minus(amount, BitcoinConst.OXCHAINS_DEFAULT_TX_FEE));//outputAmount
+                    BitcoindRpcClient.TxOutput txOutput = new BitcoindRpcClient.BasicTxOutput(recvAddress, ArithmeticUtils.minus(amount, BitcoinConst.OXCHAINS_DEFAULT_TX_FEE));
                     txOutputs.add(txOutput);
                     logger.info("Output: "+txOutputs.toString());
 
                     String rawTx = client.createRawTransaction(txInputs, txOutputs);
                     logger.info("RAW_TX: "+rawTx);
                     List<BitcoindRpcClient.ExtendedTxInput> txInputs1 = new ArrayList<>();
-                    //BitcoindRpcClient.ExtendedTxInput txInput1 = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), P2SH_REDEEM_SCRIPT, BigDecimal.valueOf(amount - TX_FEE));//outputAmount
-                    BitcoindRpcClient.ExtendedTxInput txInput1 = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), P2SH_REDEEM_SCRIPT);//outputAmount
+                    //BitcoindRpcClient.ExtendedTxInput txInput1 = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), p2shRedeemScript, BigDecimal.valueOf(amount - TX_FEE));//outputAmount
+                    BitcoindRpcClient.ExtendedTxInput txInput1 = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), p2shRedeemScript);
                     txInputs1.add(txInput1);
                     logger.info("SignInput: "+txInputs1.toString());
                     logger.info("SignOutput: "+signPrvKeys.toString());
@@ -206,7 +207,7 @@ public class BitcoinService {
             logger.info("*** 订单 {}, 将比特币发送到指定账户:{}" , orderId, recvAddress);
             Transaction order = transactionDao.findByOrderId(orderId);
 
-            String P2SH_REDEEM_SCRIPT = order.getP2shRedeemScript();
+            String p2shRedeemScript = order.getP2shRedeemScript();
 
             BitcoindRpcClient.RawTransaction rawTransaction = client.getRawTransaction(order.getUtxoTxid());
             logger.info("rawTransaction:\n"+rawTransaction.toString());
@@ -238,7 +239,7 @@ public class BitcoinService {
 
                     List<BitcoindRpcClient.ExtendedTxInput> txInputs1 = new ArrayList<>();
 
-                    BitcoindRpcClient.ExtendedTxInput txInput1 = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), P2SH_REDEEM_SCRIPT);
+                    BitcoindRpcClient.ExtendedTxInput txInput1 = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), p2shRedeemScript);
                     txInputs1.add(txInput1);
 
                     String lastTx = client.signRawTransaction1(rawTx, txInput1, signPrvKeys);
@@ -273,36 +274,37 @@ public class BitcoinService {
     * 4. 发送到接收地址 createrawtransaction return RAW_TX
     * 5.
     */
-    public RestResp createTransaction(String fromAddress,String UTXO_TXID, String prvKey,String recvAddress, double amount, List<String> signPubKeys, int nRequired) {
+    public RestResp createTransaction(String fromAddress,String utxoTxid, String prvKey,String recvAddress, double amount, List<String> signPubKeys, int nRequired) {
         try {
             BitcoindRpcClient.MultiSig multiSig = client.createMultiSig(nRequired, signPubKeys);
-            String P2SH_ADDRESS = multiSig.address();
-            String P2SH_REDEEM_SCRIPT = multiSig.redeemScript();
+            String p2shAddress = multiSig.address();
+            String p2shRedeemScript = multiSig.redeemScript();
 
             List<BitcoindRpcClient.TxInput> txInputs = new ArrayList<>();
             List<BitcoindRpcClient.TxOutput> txOutputs = new ArrayList<>();
             //BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.ExtendedTxInput(UTXO_TXID, 0);//UTXO_VOUT
-            BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.BasicTxInput(UTXO_TXID, 0);//UTXO_VOUT
+            BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.BasicTxInput(utxoTxid, 0);
             txInputs.add(txInput);
             amount = ArithmeticUtils.minus(amount, BitcoinConst.OXCHAINS_DEFAULT_MINER_FEE);
-            BitcoindRpcClient.TxOutput txOutput = new BitcoindRpcClient.BasicTxOutput(P2SH_ADDRESS, amount);
+            BitcoindRpcClient.TxOutput txOutput = new BitcoindRpcClient.BasicTxOutput(p2shAddress, amount);
             txOutputs.add(txOutput);
 
             // TODO
-            client.importPrivKey(prvKey,fromAddress,true);//dangerous ！！！
+            //dangerous ！！！
+            client.importPrivKey(prvKey,fromAddress,true);
 
             String rawTx = client.createRawTransaction(txInputs, txOutputs);
-            String SIGNED_TX = client.signRawTransaction(rawTx);
+            String signedTx = client.signRawTransaction(rawTx);
 
-            String txId = client.sendRawTransaction(SIGNED_TX);
+            String txId = client.sendRawTransaction(signedTx);
 
             logger.info(txId);
 
             Transaction order = new Transaction();
             order.setFromAddress(fromAddress);
-            order.setP2shAddress(P2SH_ADDRESS);
-            order.setP2shRedeemScript(P2SH_REDEEM_SCRIPT);
-            order.setSignTx(SIGNED_TX);
+            order.setP2shAddress(p2shAddress);
+            order.setP2shRedeemScript(p2shRedeemScript);
+            order.setSignTx(signedTx);
             order.setRecvAddress(recvAddress);
             order.setTxStatus(2);
             order = transactionDao.save(order);
@@ -320,24 +322,24 @@ public class BitcoinService {
         try {
             //String toAddress=null;
             Transaction order = transactionDao.findByRecvAddress(recvAddress);
-            String P2SH_ADDRESS = order.getP2shAddress();
-            String P2SH_REDEEM_SCRIPT = order.getP2shRedeemScript();
-            String SIGNED_TX = order.getSignTx();
+            String p2shAddress = order.getP2shAddress();
+            String p2shRedeemScript = order.getP2shRedeemScript();
+            String signedTx = order.getSignTx();
             BitcoindRpcClient.RawTransaction rawTransaction = client.decodeRawTransaction(order.getSignTx());
 
             List<BitcoindRpcClient.TxInput> txInputs = new ArrayList<>();
             List<BitcoindRpcClient.TxOutput> txOutputs = new ArrayList<>();
             List<BitcoindRpcClient.RawTransaction.Out> outs = rawTransaction.vOut();
             BitcoindRpcClient.RawTransaction.Out.ScriptPubKey scriptPubKey = outs.get(0).scriptPubKey();
-            BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), P2SH_REDEEM_SCRIPT, BigDecimal.valueOf(amount));
+            BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), p2shRedeemScript, BigDecimal.valueOf(amount));
             txInputs.add(txInput);
-            BitcoindRpcClient.TxOutput txOutput = new BitcoindRpcClient.BasicTxOutput(recvAddress, ArithmeticUtils.minus(amount, BitcoinConst.OXCHAINS_DEFAULT_MINER_FEE));//outputAmount
+            BitcoindRpcClient.TxOutput txOutput = new BitcoindRpcClient.BasicTxOutput(recvAddress, ArithmeticUtils.minus(amount, BitcoinConst.OXCHAINS_DEFAULT_MINER_FEE));
             txOutputs.add(txOutput);
 
             String rawTx = client.createRawTransaction(txInputs, txOutputs);
 
             List<BitcoindRpcClient.ExtendedTxInput> txInputs1 = new ArrayList<>();
-            BitcoindRpcClient.ExtendedTxInput txInput1 = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), P2SH_REDEEM_SCRIPT, BigDecimal.valueOf(amount - BitcoinConst.OXCHAINS_DEFAULT_MINER_FEE));//outputAmount
+            BitcoindRpcClient.ExtendedTxInput txInput1 = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), p2shRedeemScript, BigDecimal.valueOf(amount - BitcoinConst.OXCHAINS_DEFAULT_MINER_FEE));
             txInputs1.add(txInput1);
             String lastTx = client.signRawTransaction(rawTx, txInputs1, signPrvKeys);
             client.sendRawTransaction(lastTx);

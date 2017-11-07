@@ -18,38 +18,38 @@ public interface UserDao extends CrudRepository<User,Long> {
     /**
      * find by loginname
      * @param loginname
-     * @return
+     * @return User
      */
     User findByLoginname(String loginname);
 
     /**
      * 通过手机查找
      * @param mobilephone
-     * @return
+     * @return User
      */
     User findByMobilephone(String mobilephone);
 
     /**
-     *
+     * find by login and password
      * @param loginname
      * @param password
-     * @return
+     * @return Optional<User>
      */
     Optional<User> findByLoginnameAndPassword(String loginname,String password);
 
     /**
-     *
+     * find by email and password
      * @param loginname
      * @param password
-     * @return
+     * @return Optional<User>
      */
     Optional<User> findByEmailAndPassword(String loginname,String password);
 
     /**
-     *
+     * find by phone and password
      * @param loginname
      * @param password
-     * @return
+     * @return Optional<User>
      */
     Optional<User> findByMobilephoneAndPassword(String loginname,String password);
 }
