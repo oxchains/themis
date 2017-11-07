@@ -27,7 +27,7 @@ import {
 
 // 首页
 
-export function fetctHome(callback) {
+export function fetctHome() {
     return function(dispatch) {
         axios.get(`${ROOT_URLL}/notice/query/random`, { headers: getAuthorizedHeader() })
             .then(response => {
@@ -35,7 +35,9 @@ export function fetctHome(callback) {
                 // console.log(response)
                 dispatch({type: FETCH_HOME, payload: response})
             })
-            .catch(err => callback(err.message));
+            .catch(err =>{
+                dispatch(requestError(err.message))
+            });
     }
 }
 
@@ -43,7 +45,6 @@ export function fetctHome(callback) {
 // 发布公告
 
 export function releaseAdvert({ userId ,loginname,noticeType  ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType  ,noticeContent }, callback) {
-    // console.log(`发布广告传送的数据: ${userId},${loginname}, ${noticeType},${location}, ${currency},${premium},${price},${minPrice},${minTxLimit},${maxTxLimit},${payType},${noticeContent}`);
     return function(dispatch) {
         axios.post(`${ROOT_URLL}/notice/broadcast`, { userId ,loginname,noticeType  ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType  ,noticeContent},{ headers: getAuthorizedHeader() })
             .then(response => {
@@ -55,7 +56,9 @@ export function releaseAdvert({ userId ,loginname,noticeType  ,location ,currenc
                 }
                 // dispatch({type: FETCH_ADVERT, payload: response})
             })
-            .catch(err => callback(err));
+            .catch(err =>{
+                dispatch(requestError(err.message))
+            });
     }
 }
 // 购买比特币搜索
@@ -69,7 +72,9 @@ export function fetcAdvertSeach({searchType,location,currency,payType,pageNum },
                 // console.log(response)
                 dispatch({type: FETCH_BUY_SECAT, payload: response})
             })
-            .catch(err => callback(err.message));
+            .catch(err =>{
+                dispatch(requestError(err.message))
+            });
     }
 }
 
@@ -85,7 +90,9 @@ export function fetctBuyBtcDetail({noticeId},callback) {
                 // console.log(response)
                 dispatch({type: FETCH_BUY_BTC_DETAIL, payload: response})
             })
-            .catch(err => callback(err.message));
+            .catch(err =>{
+                dispatch(requestError(err.message))
+            });
     }
 }
 
@@ -110,7 +117,9 @@ export function fetctBuynow({formdata},callback) {
                     callback(response.data.message);
                 }
             })
-            .catch(err => callback(err.message));
+            .catch(err =>{
+                dispatch(requestError(err.message))
+            });
     }
 }
 
@@ -133,7 +142,9 @@ export function fetctSellnow({formdata},callback) {
                     callback(response.data.message);
                 }
             })
-            .catch(err => callback(err.message));
+            .catch(err =>{
+                dispatch(requestError(err.message))
+            });
     }
 }
 
@@ -147,7 +158,9 @@ export function fetctSellBtcDetail({noticeId},callback) {
                 // console.log(response)
                 dispatch({type: FETCH_SELL_BTC_DETAIL, payload: response})
             })
-            .catch(err => callback(err.message));
+            .catch(err =>{
+                dispatch(requestError(err.message))
+            });
     }
 }
 
@@ -160,7 +173,9 @@ export function fetctSellSeach({searchType,location,currency,payType,pageNum }, 
                 // console.log(response)
                 dispatch({type: FETCH_SELL_SECAT, payload: response})
             })
-            .catch(err => callback(err.message));
+            .catch(err =>{
+                dispatch(requestError(err.message))
+            });
     }
 }
 // 选择框数据
@@ -173,7 +188,9 @@ export function fetctArray(callback) {
                 // console.log(response)
                 dispatch({type: FETCH_ARRAY, payload: response})
             })
-            .catch(err => callback(err.message));
+            .catch(err =>{
+                dispatch(requestError(err.message))
+            });
     }
 }
 
@@ -187,7 +204,9 @@ export function fetctMyAdvert({userId,noticeType,txStatus,pageNum},callback) {
                 console.log(response)
                 dispatch({type: FETCH_MY_ADVERT, payload: response})
             })
-            .catch(err => callback(err.message));
+            .catch(err =>{
+                dispatch(requestError(err.message))
+            });
     }
 }
 
@@ -206,7 +225,9 @@ export function fetctOffMyAd({id},callback) {
                     callback(response.data.message);
                 }
             })
-            .catch(err => callback(err.message));
+            .catch(err =>{
+                dispatch(requestError(err.message))
+            });
     }
 }
 
@@ -232,7 +253,9 @@ export function fetctBaseInfo({formdata},callback) {
                     callback(response.data.message);
                 }
             })
-            .catch(err => callback(err.message));
+            .catch(err =>{
+                dispatch(requestError(err.message))
+            });
     }
 }
 //用户中心受信任的
@@ -246,6 +269,8 @@ export function fetctTrusted({userId,type,pageNo,pageSize},callback) {
                 dispatch({type: FETCH_TRUSTED, payload: response})
 
             })
-            .catch(err => callback(err.message));
+            .catch(err =>{
+                dispatch(requestError(err.message))
+            });
     }
 }

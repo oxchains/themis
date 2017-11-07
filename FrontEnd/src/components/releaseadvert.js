@@ -23,7 +23,9 @@ class Releaseadvert extends Component {
             error: null,
             actionResult: '',
             currentIndex:0,
-            status:'1'
+            status:'1',
+            premium:'',
+            price:''
         }
         this.handleRowsbuy = this.handleRowsbuy.bind(this)
         this.handleRowssell = this.handleRowssell.bind(this)
@@ -31,7 +33,7 @@ class Releaseadvert extends Component {
         this.renderRowscurrency = this.renderRowscurrency.bind(this)
         this.renderRowspayway = this.renderRowspayway.bind(this)
         this.handleFormSubmit = this.handleFormSubmit.bind(this)
-
+        this.handelChange = this.handelChange.bind(this)
     }
     hideModal = () => {
         this.setState({
@@ -41,18 +43,15 @@ class Releaseadvert extends Component {
     componentWillMount(){
         this.props.fetctArray({}, ()=>{});
     }
-
     handleRowsbuy(){
         this.setState({
             status:'1'
         })
-        console.log(this.state.status)
     }
     handleRowssell(){
         this.setState({
             status:'2'
         })
-        console.log(this.state.status)
     }
 
     handleFormSubmit(e){
@@ -77,8 +76,6 @@ class Releaseadvert extends Component {
         else{
             alert("请先登录哦")
         }
-
-
     }
     renderRowscountry() {
         const locationList = this.props.array.locationList || [];
@@ -111,7 +108,21 @@ class Releaseadvert extends Component {
         });
     }
 
+    handelChange(e){
+        const money = this.props.array.cnyDetailList || {};
+        const price = parseFloat(money.buy)
+            this.setState({
+                premium: e.target.value,
+                price: ((e.target.value) / 100 + 1)  * price
+            })
+    }
+
     render() {
+
+        const premium = this.state.premium;
+        const money = this.props.array.cnyDetailList || {};
+        const price =  parseFloat(this.state.price || money.buy).toFixed(2)
+
         return (
             <div className="maincontent">
                 <h2 className="h2title">发布一个比特币交易广告</h2>
@@ -147,11 +158,11 @@ class Releaseadvert extends Component {
                     </Select>
                     <h5 className="h3title clear">*溢价: </h5>
                     <span  className="tipspan">基于市场价的溢出比例,市场价是根据部分大型交易所实时价格得出的,确保您的报价趋于一个相对合理的范围,比如当前价格为7000,溢价比例为10%,那么价格为7700。</span>
-                    <input type="text" placeholder="%" className="display slectoption" ref="premium" />
+                    <input type="text" placeholder="%" className="display slectoption" onChange={this.handelChange} value={premium} ref="premium" />
 
                     <h5 className="h3title clear">*价格: </h5>
                     <span  className="tipspan">基于溢价比例得出的报价,10分钟更新一次。</span>
-                    <input type="text" placeholder="CNY" className="display slectoption" ref="price" />
+                    <input type="text" placeholder="CNY" className="display slectoption" onChange={this.handelChange} value= {price} disabled ref="price" />
 
                     <h5 className="h3title clear">*最低价: (选填)</h5>
                     <span  className="tipspan">最低可成交的价格,可帮助您在价格剧烈波动时保持稳定的盈利,比如最低价为12000,市场价处于12000以下时,您的广告将依旧以12000的价格展示出来。</span>
@@ -176,6 +187,7 @@ class Releaseadvert extends Component {
                     <textarea name="" id="" cols="150" rows="6" className="display text-content" ref="noticeContent" placeholder="请说明有关您交易的相关条款或备注您的支付方式，如微信号，支付宝号等，以便对方可以快速和您交易。(下单前后都可见)" ></textarea>
                     <button type="submit" className="  form-apply">申请发布</button>
                 </form>
+
                 <Modal isOpen={this.state.isModalOpen} onRequestHide={this.hideModal}>
                     <ModalHeader>
                         <ModalClose onClick={this.hideModal}/>
@@ -192,6 +204,9 @@ class Releaseadvert extends Component {
                         </button>
                     </ModalFooter>
                 </Modal>
+
+
+
             </div>
         );
     }
@@ -203,7 +218,7 @@ function mapStateToProps(state) {
         authenticated: state.auth.authenticated,
         errorMessage: state.auth.error,
         all:state.advert.all,
-        array:state.advert.array,
+        array:state.advert.array
     };
 }
 
