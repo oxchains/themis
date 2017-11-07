@@ -43,7 +43,7 @@ export function fetctHome(callback) {
 // 发布公告
 
 export function releaseAdvert({ userId ,loginname,noticeType  ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType  ,noticeContent }, callback) {
-    // console.log(`发布广告传送的数据: ${userId},${loginname}, ${noticeType},${location}, ${currency},${premium},${price},${minPrice},${minTxLimit},${maxTxLimit},${payType},${noticeContent}`);
+    console.log(`发布广告传送的数据: ${userId},${loginname}, ${noticeType},${location}, ${currency},${premium},${price},${minPrice},${minTxLimit},${maxTxLimit},${payType},${noticeContent}`);
     return function(dispatch) {
         axios.post(`${ROOT_URLL}/notice/broadcast`, { userId ,loginname,noticeType  ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType  ,noticeContent},{ headers: getAuthorizedHeader() })
             .then(response => {
