@@ -2,6 +2,8 @@ package com.oxchains.themis.order.entity.vo;
 import com.oxchains.themis.order.entity.Notice;
 import com.oxchains.themis.order.entity.Orders;
 import com.oxchains.themis.order.entity.Payment;
+import lombok.Data;
+
 import java.math.BigDecimal;
 
 /**
@@ -10,6 +12,7 @@ import java.math.BigDecimal;
  * @author huohuo
  * @Date:Created in 9:25 2017/11/2
  */
+@Data
 public class OrdersInfo {
     private String id;         //订单编号
     private BigDecimal money;  //订单金额
@@ -69,182 +72,6 @@ public class OrdersInfo {
             this.paymentId=orders.getPaymentId();
             this.orderStatus=orders.getOrderStatus();
         }
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public BigDecimal getMoney() {
-        return money;
-    }
-
-    public void setMoney(BigDecimal money) {
-        this.money = money;
-    }
-
-    public String getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getFinishTime() {
-        return finishTime;
-    }
-
-    public void setFinishTime(String finishTime) {
-        this.finishTime = finishTime;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public Long getPaymentId() {
-        return paymentId;
-    }
-
-    public void setPaymentId(Long paymentId) {
-        this.paymentId = paymentId;
-    }
-
-    public Long getVcurrencyId() {
-        return vcurrencyId;
-    }
-
-    public void setVcurrencyId(Long vcurrencyId) {
-        this.vcurrencyId = vcurrencyId;
-    }
-
-    public Long getCurrencyId() {
-        return currencyId;
-    }
-
-    public void setCurrencyId(Long currencyId) {
-        this.currencyId = currencyId;
-    }
-
-    public Long getBuyerId() {
-        return buyerId;
-    }
-
-    public void setBuyerId(Long buyerId) {
-        this.buyerId = buyerId;
-    }
-
-    public Long getSellerId() {
-        return sellerId;
-    }
-
-    public void setSellerId(Long sellerId) {
-        this.sellerId = sellerId;
-    }
-
-    public Long getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(Long orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public String getP2shAddress() {
-        return p2shAddress;
-    }
-
-    public void setP2shAddress(String p2shAddress) {
-        this.p2shAddress = p2shAddress;
-    }
-
-    public String getOrderStatusName() {
-        return orderStatusName;
-    }
-
-    public void setOrderStatusName(String orderStatusName) {
-        this.orderStatusName = orderStatusName;
-    }
-
-    public Notice getNotice() {
-        return notice;
-    }
-
-    public void setNotice(Notice notice) {
-        this.notice = notice;
-    }
-
-    public Payment getPayment() {
-        return payment;
-    }
-
-    public void setPayment(Payment payment) {
-        this.payment = payment;
-    }
-
-    public int getArbitrate() {
-        return arbitrate;
-    }
-
-    public void setArbitrate(int arbitrate) {
-        this.arbitrate = arbitrate;
-    }
-
-    public String getOrderType() {
-        return orderType;
-    }
-
-    public void setOrderType(String orderType) {
-        this.orderType = orderType;
-    }
-
-    public String getFriendUsername() {
-        return friendUsername;
-    }
-
-    public void setFriendUsername(String friendUsername) {
-        this.friendUsername = friendUsername;
-    }
-
-    public String getBuyerUsername() {
-        return buyerUsername;
-    }
-
-    public void setBuyerUsername(String buyerUsername) {
-        this.buyerUsername = buyerUsername;
-    }
-
-    public String getSellerUsername() {
-        return sellerUsername;
-    }
-
-    public void setSellerUsername(String sellerUsername) {
-        this.sellerUsername = sellerUsername;
-    }
-
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
-
-    public Long getNoticeId() {
-        return noticeId;
-    }
-
-    public void setNoticeId(Long noticeId) {
-        this.noticeId = noticeId;
     }
 
 }

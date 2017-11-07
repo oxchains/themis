@@ -10,6 +10,8 @@ import com.oxchains.themis.order.common.*;
 import com.oxchains.themis.order.entity.*;
 import com.oxchains.themis.order.entity.vo.OrdersInfo;
 import com.oxchains.themis.order.repo.*;
+import com.oxchains.themis.order.repo.message.MessageRepo;
+import com.oxchains.themis.order.repo.message.MessageTextRepo;
 import org.apache.commons.collections.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,8 +64,10 @@ public class OrderService {
     private OrderEvidenceRepo orderEvidenceRepo;
     @Resource
     private PaymentRepo paymentRepo;
-    private static final Integer SUCCESS_STATUS = 1;
-    private static final Integer FAILD_STATUS = 2;
+    @Resource
+    private MessageService messageService;
+    public static final Integer BUYER_SUCCESS = 1;
+    public static final Integer SELLER_SUCCESS = 2;
     /**
     * 工具类方法 用来在用户系统获取一对随机的公私匙
     * */
@@ -108,6 +112,8 @@ public class OrderService {
                     notice.getId(),
                     ParamType.ArbitrateStatus.NOARBITRATE.getStatus());
             orders =orderRepo.save(orders);
+            //发给发布公告的人的站内信
+            messageService.postOrderMessage(orders);
             //生成买家用户的公私匙 存到 order_address_key table 每个订单对应一条
             AddressKeys addressKeys = this.getAddressKeys();
             //生成仲裁者用户的公私匙 存到 订单买家卖家仲裁者表里 order_address_key 每个订单对应一条
@@ -125,6 +131,7 @@ public class OrderService {
             //将这个订单对应的公告状态设置为1 正在交易中
             notice.setTxStatus(ParamType.NoticeTxStatus.TXING.getStatus());
             noticeRepo.save(notice);
+
         }catch (Exception e){
             LOG.error("add orders faild : {}",e.getMessage(),e);
             return RestResp.fail("请正确填写订单信息");
@@ -269,6 +276,7 @@ public class OrderService {
                 orders.setOrderStatus(ParamType.OrderStatus.WAIT_REFUND.getStatus());
             }
             orders1 = orderRepo.save(orders);
+            messageService.postOrderMessage(orders1);
             ordersInfo = new OrdersInfo(orders1);
             this.setOrderStatusName(ordersInfo);
         } catch (Exception e) {
@@ -295,7 +303,8 @@ public class OrderService {
                             o = orderRepo.save(o);
                             ordersInfo = new OrdersInfo(o);
                             this.setOrderStatusName(ordersInfo);
-                            return ordersInfo!=null?RestResp.success(ordersInfo):RestResp.fail();
+                            messageService.postOrderMessage(o);
+                            return RestResp.success(ordersInfo);
                         }
             }
         } catch (Exception e) {
@@ -482,14 +491,16 @@ public class OrderService {
             orderArbitrate = orderArbitrateRepo.findOrderArbitrateByUserIdAndOrderId(pojo.getUserId(),pojo.getId());
             if(orderArbitrate.getStatus().longValue() == ParamType.ArbitrateStatus.ARBITRATEING.getStatus()){
                 Orders orders = orderRepo.findOne(pojo.getId());
-                if(pojo.getSuccessId().longValue() == SUCCESS_STATUS){
+                if(pojo.getSuccessId().longValue() == BUYER_SUCCESS){
                     orderArbitrate.setBuyerAuth(orderArbitrate.getUserAuth());
                 }
-                if(pojo.getSuccessId().longValue() == FAILD_STATUS){
+                if(pojo.getSuccessId().longValue() == SELLER_SUCCESS){
                     orderArbitrate.setSellerAuth(orderArbitrate.getUserAuth());
                 }
                 orderArbitrate.setStatus(ParamType.ArbitrateStatus.ARBITRATEEND.getStatus());
                 OrderArbitrate orderArbitrate1 = orderArbitrateRepo.save(orderArbitrate);
+                //仲裁完成后将系统通知发送到卖家买家两方
+                messageService.postArbitrateMessage(orders,pojo.getUserId(),pojo.getSuccessId());
 
                 //判断谁胜利了
                 List<OrderArbitrate> list = orderArbitrateRepo.findOrderArbitrateByOrderId(pojo.getId());
@@ -515,7 +526,7 @@ public class OrderService {
                         orders.setOrderStatus(6L);
                     }
                     if(sellerList.size()>=ShamirUtil.K){
-                        //将卖家的BTC从写上地址转回到 卖家账户
+                        //将卖家的BTC从协商地址转回到 卖家账户
                          auth = ShamirUtil.getAuth(sellerList.toArray(new String[sellerList.size()]))+","+odk.getSellerPriAuth();
                          address = userRepo.findOne(orders.getSellerId()).getFirstAddress();
                          orders.setOrderStatus(7L);
@@ -531,7 +542,8 @@ public class OrderService {
                         orders.setArbitrate(ParamType.ArbitrateStatus.ARBITRATEEND.getStatus());
                         orders.setOrderStatus(ParamType.OrderStatus.CANCEL.getStatus());
                         orders.setFinishTime(DateUtil.getPresentDate());
-                        orderRepo.save(orders);
+                        Orders save = orderRepo.save(orders);
+                        messageService.postArbitrateFinish(orders);
 
                         OrderArbitrate orderArbitrate2 = orderArbitrateRepo.findByOrOrderIdAndStatus(orders.getId(), ParamType.ArbitrateStatus.ARBITRATEING.getStatus());
                         orderArbitrateRepo.save(orderArbitrate2);
@@ -671,6 +683,7 @@ public class OrderService {
                 orders.setOrderStatus(ParamType.OrderStatus.WAIT_SEND.getStatus());
                 orders = orderRepo.save(orders);
                 ordersInfo = new OrdersInfo(orders);
+                messageService.postOrderMessage(orders);
                 return ordersInfo!=null?RestResp.success(ordersInfo):RestResp.fail();
             }
         } catch (Exception e) {
@@ -795,6 +808,7 @@ public class OrderService {
             if(orders.getBuyerId().longValue() == pojo.getUserId() && orders.getOrderStatus().longValue() ==ParamType.OrderStatus.WAIT_RECIVE.getStatus()){
                 orders.setOrderStatus(ParamType.OrderStatus.WAIT_COMMENT.getStatus());
                 orders = orderRepo.save(orders);
+                messageService.postOrderMessage(orders);
             }
         } catch (RestClientException e) {
             LOG.error("confirm recive BTC faild : {} ",e.getMessage(),e);
@@ -810,8 +824,7 @@ public class OrderService {
             if(orderComment1==null){
                 orderComment1 = new OrderComment();
                 orderComment1.setOrderId(pojo.getId());
-                orderCommentRepo.save(orderComment1);
-                orderComment1 =orderCommentRepo.findOrderCommentByOrderId(pojo.getId());
+                orderComment1 = orderCommentRepo.save(orderComment1);
             }
             Orders o = orderRepo.findOne(pojo.getId());
             if(o.getBuyerId().longValue() == pojo.getUserId()){
@@ -820,7 +833,7 @@ public class OrderService {
                 orderComment1 =  orderCommentRepo.save(orderComment1);
                 if(orderComment1.getSellerContent()!=null){
                     o.setOrderStatus(ParamType.OrderStatus.FINISH.getStatus());
-                    orderRepo.save(o);
+                    o = orderRepo.save(o);
                     Notice notice = noticeRepo.findOne(o.getNoticeId());
                     notice.setTxStatus(ParamType.NoticeTxStatus.TXEND.getStatus());
                     noticeRepo.save(notice);
@@ -832,12 +845,13 @@ public class OrderService {
                 orderComment1 = orderCommentRepo.save(orderComment1);
                 if(orderComment1.getBuyerContent()!=null){
                     o.setOrderStatus(ParamType.OrderStatus.FINISH.getStatus());
-                    orderRepo.save(o);
+                    o = orderRepo.save(o);
                     Notice notice = noticeRepo.findOne(o.getNoticeId());
                     notice.setTxStatus(ParamType.NoticeTxStatus.TXEND.getStatus());
                     noticeRepo.save(notice);
                 }
             }
+            messageService.postCommentMessage(o,pojo);
         } catch (Exception e) {
             LOG.error("faild save comment : {}",e.getMessage(),e);
             return RestResp.fail("未知错误");
@@ -868,6 +882,7 @@ public class OrderService {
                 orderEvidence = new OrderEvidence();
                 orderEvidence.setOrderId(pojo.getId());
                 orderEvidence = orderEvidenceRepo.save(orderEvidence);
+                messageService.postEvidenceMessage(orders,pojo.getUserId());
             }
             if(orders.getBuyerId() == pojo.getUserId().longValue()){
                 orderEvidence.setBuyerContent(pojo.getContent());

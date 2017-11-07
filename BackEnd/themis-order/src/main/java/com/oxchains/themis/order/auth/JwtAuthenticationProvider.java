@@ -6,6 +6,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
 /**
+ * create by huohuo
  * @author huohuo
  */
 @Component
@@ -21,7 +22,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return authentication.isAssignableFrom(null);
+        return authentication.isAssignableFrom(JwtAuthentication.class);
     }
 
 }

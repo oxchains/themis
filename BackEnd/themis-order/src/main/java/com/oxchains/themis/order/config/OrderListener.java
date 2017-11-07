@@ -3,11 +3,13 @@ package com.oxchains.themis.order.config;
 import com.alibaba.fastjson.JSONObject;
 import com.oxchains.themis.order.entity.Orders;
 import com.oxchains.themis.order.repo.OrderRepo;
+import com.oxchains.themis.order.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -16,10 +18,12 @@ import java.util.List;
  */
 @Component
 public class OrderListener {
-    @Autowired
+    @Resource
     private OrderRepo orderRepo;
-    @Autowired
+    @Resource
     private RestTemplate restTemplate;
+    @Resource
+    private MessageService messageService;
     @Scheduled(cron = "*/4 * * * * ?")
     public void orderAddressLis(){
         List<Orders> ordersByOrderStatus = orderRepo.findOrdersByOrderStatus(1L);
@@ -30,6 +34,7 @@ public class OrderListener {
             if(status==1){
                 o.setOrderStatus(2L);
                 o = orderRepo.save(o);
+                messageService.postOrderMessage(o);
             }
         }
     }

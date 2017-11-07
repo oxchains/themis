@@ -52,9 +52,11 @@ public class ArbitrateService {
     private RestTemplate restTemplate;
     @Resource
     private OrderAddresskeyRepo orderAddresskeyRepo;
+    @Resource
+    private MessageService messageService;
 
-    private static final Integer SUCCESS_STATUS = 1;
-    private static final Integer FAILD_STATUS = 2;
+    public static final Integer BUYER_SUCCESS = 1;
+    public static final Integer SELLER_SUCCESS = 2;
     /*
    * 根据仲裁者id查找哪些订单可以被自己仲裁的订单列表
    * */
@@ -144,7 +146,7 @@ public class ArbitrateService {
             LOG.error("set order status value faild : {}",e.getMessage(),e);
         }
     }
-    public RestResp uploadEvidence(RegisterRequest pojo, String imageUrl){
+    public RestResp uploadEvidence(RegisterRequest pojo,String imageUrl){
 
         OrderEvidence orderEvidence = null;
         try {
@@ -164,6 +166,7 @@ public class ArbitrateService {
                 orderEvidence = new OrderEvidence();
                 orderEvidence.setOrderId(pojo.getId());
                 orderEvidence = orderEvidenceRepo.save(orderEvidence);
+                messageService.postEvidenceMessage(orders,pojo.getUserId());
             }
             if(orders.getBuyerId() == pojo.getUserId().longValue()){
                 orderEvidence.setBuyerContent(pojo.getContent());
@@ -188,10 +191,6 @@ public class ArbitrateService {
             LOG.error("upload evidence faild : {}",e.getMessage(),e);
         }
         return  orderEvidence!=null? RestResp.success():RestResp.fail();
-    }
-    public RestResp getEvidence(Pojo pojo){
-        OrderEvidence byOrderId = orderEvidenceRepo.findByOrderId(pojo.getId());
-        return byOrderId!=null?RestResp.success(byOrderId):RestResp.fail();
     }
     /*
  * 对当前订单发起仲裁
@@ -223,22 +222,24 @@ public class ArbitrateService {
         return RestResp.fail();
     }
     /*
- * 仲裁者仲裁将密匙碎片给胜利者
- * */
+   * 仲裁者仲裁将密匙碎片给胜利者
+   * */
     public RestResp arbitrateOrderToUser(Pojo pojo){
         OrderArbitrate orderArbitrate = null;
         try {
             orderArbitrate = orderArbitrateRepo.findOrderArbitrateByUserIdAndOrderId(pojo.getUserId(),pojo.getId());
             if(orderArbitrate.getStatus().longValue() == ParamType.ArbitrateStatus.ARBITRATEING.getStatus()){
                 Orders orders = orderRepo.findOne(pojo.getId());
-                if(pojo.getSuccessId().longValue() == SUCCESS_STATUS){
+                if(pojo.getSuccessId().longValue() == BUYER_SUCCESS){
                     orderArbitrate.setBuyerAuth(orderArbitrate.getUserAuth());
                 }
-                if(pojo.getSuccessId().longValue() == FAILD_STATUS){
+                if(pojo.getSuccessId().longValue() == SELLER_SUCCESS){
                     orderArbitrate.setSellerAuth(orderArbitrate.getUserAuth());
                 }
                 orderArbitrate.setStatus(ParamType.ArbitrateStatus.ARBITRATEEND.getStatus());
                 OrderArbitrate orderArbitrate1 = orderArbitrateRepo.save(orderArbitrate);
+                //仲裁完成后将系统通知发送到卖家买家两方
+                messageService.postArbitrateMessage(orders,pojo.getUserId(),pojo.getSuccessId());
 
                 //判断谁胜利了
                 List<OrderArbitrate> list = orderArbitrateRepo.findOrderArbitrateByOrderId(pojo.getId());
@@ -253,7 +254,7 @@ public class ArbitrateService {
                     }
                 }
                 //判断如果有人胜利将BTC 转回到 胜利方的账户 订单仲裁状态改为2 仲裁结束 将仲裁表的三个仲裁人的信息全部改为2
-                if(sellerList.size()>=ShamirUtil.K || buyerList.size()>= ShamirUtil.K){
+                if(sellerList.size()>=ShamirUtil.K || buyerList.size()>=ShamirUtil.K){
                     OrderAddresskeys odk = orderAddresskeyRepo.findOrderAddresskeysByOrderId(pojo.getId());
                     String auth = "";
                     String address = "";
@@ -264,7 +265,7 @@ public class ArbitrateService {
                         orders.setOrderStatus(6L);
                     }
                     if(sellerList.size()>=ShamirUtil.K){
-                        //将卖家的BTC从写上地址转回到 卖家账户
+                        //将卖家的BTC从协商地址转回到 卖家账户
                         auth = ShamirUtil.getAuth(sellerList.toArray(new String[sellerList.size()]))+","+odk.getSellerPriAuth();
                         address = userRepo.findOne(orders.getSellerId()).getFirstAddress();
                         orders.setOrderStatus(7L);
@@ -280,7 +281,8 @@ public class ArbitrateService {
                         orders.setArbitrate(ParamType.ArbitrateStatus.ARBITRATEEND.getStatus());
                         orders.setOrderStatus(ParamType.OrderStatus.CANCEL.getStatus());
                         orders.setFinishTime(DateUtil.getPresentDate());
-                        orderRepo.save(orders);
+                        Orders save = orderRepo.save(orders);
+                        messageService.postArbitrateFinish(orders);
 
                         OrderArbitrate orderArbitrate2 = orderArbitrateRepo.findByOrOrderIdAndStatus(orders.getId(), ParamType.ArbitrateStatus.ARBITRATEING.getStatus());
                         orderArbitrateRepo.save(orderArbitrate2);
@@ -309,5 +311,9 @@ public class ArbitrateService {
             LOG.error("get http header faild : {}",e.getMessage(),e);
         }
         return  headers;
+    }
+    public RestResp getEvidence(Pojo pojo){
+        OrderEvidence byOrderId = orderEvidenceRepo.findByOrderId(pojo.getId());
+        return byOrderId!=null?RestResp.success(byOrderId):RestResp.fail();
     }
 }

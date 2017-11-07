@@ -1,5 +1,7 @@
 package com.oxchains.themis.order.entity;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
 /**
@@ -8,6 +10,7 @@ import javax.persistence.*;
  **/
 @Entity
 @Table(name = "notice_type")
+@Data
 public class NoticeType {
 
     @Id
@@ -22,21 +25,5 @@ public class NoticeType {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }
