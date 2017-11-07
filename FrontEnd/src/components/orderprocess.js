@@ -17,6 +17,8 @@ class OrderProgress extends Component {
         this.state = {
             orderStatus:0,
             alertVisible: false,
+            error:false,
+            errorMessage:"",
             show:false,
             shownext:false,
             tip:'',
@@ -28,48 +30,46 @@ class OrderProgress extends Component {
             releaseBtc:false,
             partnerName:'',
             comment:1,
-            evidence:false
+            evidence:false,
+            status:""
         };
         this.partnerMessage=this.partnerMessage.bind(this);
         this.renderDangerAlert = this.renderDangerAlert.bind(this);
         this.orderMessageDetails=this.orderMessageDetails.bind(this);
     }
     componentWillMount() {
-        const partnerName=localStorage.getItem("friendUsername")
+        const message=JSON.parse(localStorage.getItem("partner"));
         const userId=localStorage.getItem("userId")
-        const message = this.props.location.state;
         const data={id:message.id,userId:userId}
+        const partnerName=message.friendUsername
         this.setState({partnerName:partnerName});
-        console.log(data)
-
         this.props.fetchOrdersDetails({data},(msg)=>{
-            console.log(msg)
             this.setState({orderStatus:msg.orderStatus});
             this.setState({orderId:msg.id});
             switch(this.state.orderStatus){
                 case 1:
-                    this.setState({tip:"买家已拍下，等待卖家确认"});
+                    this.setState({tip:"买家已拍下，等待卖家确认",status:"等待卖家确认"});
                     break;
                 case 2:
-                    this.setState({tip:"卖家已确认，等待买家付款，30分钟内，如逾期订单将自动取消"});
+                    this.setState({tip:"卖家已确认，等待买家付款，30分钟内，如逾期订单将自动取消",status:"等待买家付款"});
                     break;
                 case 3:
-                    this.setState({tip:"买家已经标记为付款，等待卖家确认并释放比特币"});
+                    this.setState({tip:"买家已经标记为付款，等待卖家确认并释放比特币",status:"等待卖家发货"});
                     break;
                 case 4:
-                    this.setState({tip:"卖家已释放比特币，等待买家确认收货"});
+                    this.setState({tip:"卖家已释放比特币，等待买家确认收货",status:"等待买家收货"});
                     break;
                 case 5:
-                    this.setState({tip:"买家已经确认收货，交易即将完成，等待双方进行评价。"});
+                    this.setState({tip:"买家已经确认收货，交易即将完成，等待双方进行评价。",status:"等待双方评价"});
                     break;
                 case 6:
-                    this.setState({tip:"交易已完成"});
+                    this.setState({tip:"交易已完成",status:"已完成"});
                     break;
                 case 7:
-                    this.setState({tip:"交易已取消"});
+                    this.setState({tip:"交易已取消",status:"已取消"});
                     break;
                 case 8:
-                    this.setState({tip:"退款处理中"});
+                    this.setState({tip:"退款处理中",status:"退款中"});
                     break;
             }
         });
@@ -221,6 +221,13 @@ class OrderProgress extends Component {
             </div>
         )
     }
+    renderAlert(){
+        return(
+            <div>
+                {this.state.error == true ? <div className="col-xs-12 alert alert-danger alert-dismissable text-center">{this.state.errorMessage}</div> : ""}
+            </div>
+        )
+    }
     renderDangerAlert(){
         return (
             <Alert bsStyle="success" onDismiss={() => {
@@ -251,7 +258,7 @@ class OrderProgress extends Component {
              if(msg.status == 1){
                  $(function(){
                       var qrcode = new QRCode('qrcode', {
-                          text: msg.data.uri,
+                          text: msg.data.uri ? msg.data.uri :"loadding",
                           width: 150,
                           height: 150,
                           colorDark : '#000000',
@@ -278,20 +285,28 @@ class OrderProgress extends Component {
                  orderId:orderId
              }
              this.props.addPaymentInfo({paymentInfo},(msg)=>{
-                 this.setState({p2shAddress:msg.p2shAddress,amount:msg.amount})
-                 $(function(){                                       
-                      var qrcode = new QRCode('qrcode', {            
-                          text: msg.uri,
-                          width: 150,                                
-                          height: 150,                               
-                          colorDark : '#000000',                     
-                          colorLight : '#ffffff',                    
-                          correctLevel : QRCode.CorrectLevel.H       
-                      })                                             
-                                                                     
-                 });                                                 
+                 console.log(msg)
+                 if(msg.status == 1){
+                     this.setState({error:false,p2shAddress:msg.data.p2shAddress,amount:msg.data.amount,show:false,shownext:true})
+                     $(function(){
+                         var qrcode = new QRCode('qrcode', {
+                             text: msg.data.uri,
+                             width: 150,
+                             height: 150,
+                             colorDark : '#000000',
+                             colorLight : '#ffffff',
+                             correctLevel : QRCode.CorrectLevel.H
+                         })
+                     });
+                 }
+                 else{
+                    this.setState({
+                        error:true,
+                        errorMessage:msg.message
+                    })
+                 }
              })
-             this.setState({show:false,shownext:true})                          
+
         }
     }
     handleTransactionId(){
@@ -300,11 +315,22 @@ class OrderProgress extends Component {
              txId:txId,
              id:this.state.orderId
         }
+        const regex=/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{64}$/
         if(txId){
-             this.props.addTransactionId({txIdInfo})
-             this.setState({show:false,shownext:false,confirm:false})
+             this.props.addTransactionId({txIdInfo},(msg)=>{
+                 console.log(msg)
+                 if(regex.test(txId)){
+                     alert(1);
+                     this.setState({error:false,show:false,shownext:false,confirm:false})
+                 }
+                 else{
+                     this.setState({
+                         error:true,
+                         errorMessage:"请输入正确的交易ID"
+                     })
+                 }
+             })
         }
-
     }
     handleConfirmOrder(){
         const userId=localStorage.getItem('userId')
@@ -342,6 +368,12 @@ class OrderProgress extends Component {
             console.log(msg)
             if(msg.status == 1){
                 this.setState({orderStatus:this.state.orderStatus+1})
+            }
+            else{
+                this.setState({
+                    error:true,
+                    errorMessage:msg.message
+                })
             }
         })
 
@@ -423,7 +455,7 @@ class OrderProgress extends Component {
     render(){
         console.log('status: ' + this.state.orderStatus)
         let close = () => {
-            this.setState({show:false,shownext:false,evidence:false})
+            this.setState({show:false,shownext:false,evidence:false,error:false})
         };
         if(this.props.orders_details===null){
             return <div>loading....</div>
@@ -444,13 +476,13 @@ class OrderProgress extends Component {
                 <div className="text-left order-message container g-pt-30 g-pb-40" >
                     <div className="row">
                         <div className="col-sm-12 order-status">
-                            <span className="g-pr-20">已拍下</span>
+                            <span className="g-pr-20" style={{fontWeight:600}}>{this.state.status}</span>
                             <span className="g-pr-20">|</span>
                             <span>{this.state.tip}</span>
                         </div>
                         <div className="col-sm-12 order-details g-mt-20 clearfix">
                             <ul>
-                                <li className="col-sm-2">订单信息</li>
+                                <li className="col-sm-2" style={{color:"#2ad0e9",fontWeight: "600"}}>订单信息</li>
                                 <li className="col-sm-3">交易价格:<span>{price}</span>CNY</li>
                                 <li className="col-sm-3">交易数量:<span>{amount}</span>BTC</li>
                                 <li className="col-sm-3">交易金额:<span>{money}</span>CNY</li>
@@ -460,7 +492,7 @@ class OrderProgress extends Component {
                 </div>
                 <div className="order-content container g-pb-100">
                     <div className="row">
-                        <div className="col-sm-7">
+                        <div className="col-sm-8">
                             <div className="order-chat clearfix text-center">
                                 <TabsControl>
                                     <div name="聊天"><Chat/></div>
@@ -470,7 +502,7 @@ class OrderProgress extends Component {
                                 </TabsControl>
                             </div>
                         </div>
-                        <div className="col-sm-5">
+                        <div className="col-sm-4">
                                 {/*  第一页  */}
                                 <div className={`order-page0 ${this.state.orderStatus == 1 ? "show" : "hidden"}`}>
                                     <div className="row order-operation">
@@ -535,6 +567,7 @@ class OrderProgress extends Component {
                                                     <div>
                                                         <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handlereleaseBtc.bind(this)} >释放比特币</button>
                                                         <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
+                                                        {this.renderAlert()}
                                                     </div>
 
                                                 }
@@ -556,12 +589,10 @@ class OrderProgress extends Component {
                                             {orderType == "购买" ?
                                                 <div>
                                                     <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleConfirmGoods.bind(this)} >收到比特币</button>
-                                                    <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
                                                 </div>
                                                 :
                                                 <div>
                                                     <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handlereleaseBtc.bind(this)} >等待买家收货</button>
-                                                    <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
                                                 </div>
                                             }
                                             <br/>
@@ -633,7 +664,9 @@ class OrderProgress extends Component {
                                 <Col sm={10}>
                                     <input className="form-control" type="text" placeholder="请输入私钥地址" ref="sellerPriAuth"/>
                                 </Col>
+                                {this.renderAlert()}
                             </FormGroup>
+
                         </Form>
                     </Modal.Body>
                     <Modal.Footer>
@@ -662,8 +695,8 @@ class OrderProgress extends Component {
                                 </Col>
                                 <Col sm={10}>
                                     <input className="form-control" type="text" placeholder="请输入交易id" ref="txId"/>
-                         
                                 </Col>
+                                {this.renderAlert()}
                             </FormGroup>
                         </Form>
                     </Modal.Body>

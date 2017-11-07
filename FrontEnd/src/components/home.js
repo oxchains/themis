@@ -28,7 +28,7 @@ class Home extends Component {
         return(
                 <div  key={index} className="list-border">
                     <div className="title-bgc">
-                        <img src={item.src} alt=""/>
+                        <img src={item.src ? item.src : "/public/img/default.png"} alt=""/>
                         <p>{item.loginname}</p>
                     </div>
                     <div className="col-lg-4">
@@ -46,7 +46,7 @@ class Home extends Component {
                     <hr className="clear"/>
                     <div className=" home-content">
                         <p>交易价格:{item.price}CNY</p>
-                        <p>交易限额:{item.minTxLimit} - {item.maxTxLimit} CNY</p>
+                        <p>交易限额:{item.minTxLimit}-{item.maxTxLimit}CNY</p>
                         <p>付款方式:{item.payType == 1 ?"现金":item.payType == 2 ?"转账":item.payType == 3 ?"支付宝":item.payType == 4 ? "微信":item.payType == 5 ? "Apple Pay":""}</p>
                     </div>
                     <button className="home-button" ><a href="/buybtc">{item.noticeType == 2?"购买比特币" : "出售比特币"}</a></button>

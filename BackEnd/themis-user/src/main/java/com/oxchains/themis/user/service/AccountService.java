@@ -46,15 +46,18 @@ public class AccountService {
     private List<String> signPubKeys = new ArrayList<>();
     private List<String> signPrvKeys = new ArrayList<>();
 
-    private String P2SH_ADDRESS = null;
-    private String P2SH_REDEEM_SCRIPT = null;
-    private String SIGNED_TX = null;
+    private String p2shAddress = null;
+    private String p2shRedeemScript = null;
+    private String signedTx = null;
 
-    private String UTXO_TXID = null;
-    private int UTXO_VOUT = 0;
-    private String UTXO_OUTPUT_SCRIPT = null;
-    private String RAW_TX = null;
-    private double TX_FEE = 0.0001D;
+    private String utxoTxid = null;
+    private final int UTXO_VOUT = 0;
+    private String utxoOutputScript = null;
+    //private String RAW_TX = null;
+    /**
+     * 矿工费
+     */
+    private final double TX_FEE = 0.0001D;
 
     private BitcoindRpcClient.MultiSig multiSig = null;
 
@@ -84,9 +87,9 @@ public class AccountService {
         double balance = 0.0d;
         try {
             balance = client.getBalance(accountName);
+            return balance;
         } catch (Exception e) {
             logger.error(e.getMessage());
-        } finally {
             return balance;
         }
     }
@@ -96,9 +99,9 @@ public class AccountService {
         try {
             address = client.getNewAddress(accountName);
             logger.info(address);
+            return address;
         } catch (Exception e) {
             logger.error(e.getMessage());
-        } finally {
             return address;
         }
     }
@@ -122,15 +125,15 @@ public class AccountService {
             createScriptHash(nRequired);
 
             String fromAddress = getAddress(accountName);
-            UTXO_TXID = sendToAddress(accountName, fromAddress, amount);
+            utxoTxid = sendToAddress(accountName, fromAddress, amount);
 
             sendToScriptHash(accountName, amount);
 
             Transaction order = new Transaction();
             order.setFromAddress(fromAddress);
-            order.setP2shAddress(P2SH_ADDRESS);
-            order.setP2shRedeemScript(P2SH_REDEEM_SCRIPT);
-            order.setSignTx(SIGNED_TX);
+            order.setP2shAddress(p2shAddress);
+            order.setP2shRedeemScript(p2shRedeemScript);
+            order.setSignTx(signedTx);
             order.setRecvAddress(recvAddress);
             order.setTxStatus(2);
 
@@ -147,9 +150,9 @@ public class AccountService {
 
         try {
             Transaction order = transactionDao.findByRecvAddress(recvAddress);
-            P2SH_ADDRESS = order.getP2shAddress();
-            P2SH_REDEEM_SCRIPT = order.getP2shRedeemScript();
-            SIGNED_TX = order.getSignTx();
+            p2shAddress = order.getP2shAddress();
+            p2shRedeemScript = order.getP2shRedeemScript();
+            signedTx = order.getSignTx();
             rawTransaction = client.decodeRawTransaction(order.getSignTx());
             if(type == 0){
                 sendToUser(order.getFromAddress(), amount);
@@ -209,14 +212,14 @@ public class AccountService {
         BitcoindRpcClient.TxOutput pOutputs = new BitcoindRpcClient.BasicTxOutput(recvAddress, amount);
         List<BitcoindRpcClient.TxOutput> list = new ArrayList<>();
         list.add(pOutputs);
-        UTXO_TXID = client.sendMany(accountName, list);
-        return UTXO_TXID;
+        utxoTxid = client.sendMany(accountName, list);
+        return utxoTxid;
     }
 
     @Deprecated
     public String sendToAddress(String address, double amount) {
-        UTXO_TXID = client.sendToAddress(address, amount);
-        return UTXO_TXID;
+        utxoTxid = client.sendToAddress(address, amount);
+        return utxoTxid;
     }
 
     /**
@@ -226,14 +229,13 @@ public class AccountService {
      */
     private void createScriptHash(int nRequired) {
         multiSig = client.createMultiSig(nRequired, signPubKeys);
-        P2SH_ADDRESS = multiSig.address();
-        P2SH_REDEEM_SCRIPT = multiSig.redeemScript();
+        p2shAddress = multiSig.address();
+        p2shRedeemScript = multiSig.redeemScript();
     }
 
     public void getRawTransactin(String utxoTxid) {
         preRawTransaction = client.getRawTransaction(utxoTxid);
-        UTXO_VOUT = 0;
-        UTXO_OUTPUT_SCRIPT = preRawTransaction.vOut().get(0).scriptPubKey().hex();
+        utxoOutputScript = preRawTransaction.vOut().get(0).scriptPubKey().hex();
     }
 
     /**
@@ -245,14 +247,14 @@ public class AccountService {
 
         List<BitcoindRpcClient.TxInput> txInputs = new ArrayList<>();
         List<BitcoindRpcClient.TxOutput> txOutputs = new ArrayList<>();
-        BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.ExtendedTxInput(UTXO_TXID, UTXO_VOUT);//UTXO_VOUT
+        BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.ExtendedTxInput(utxoTxid, UTXO_VOUT);
         txInputs.add(txInput);
         inputAmount = ArithmeticUtils.minus(inputAmount, TX_FEE);
-        BitcoindRpcClient.TxOutput txOutput = new BitcoindRpcClient.BasicTxOutput(P2SH_ADDRESS, inputAmount);
+        BitcoindRpcClient.TxOutput txOutput = new BitcoindRpcClient.BasicTxOutput(p2shAddress, inputAmount);
         txOutputs.add(txOutput);
         String rawTx = client.createRawTransaction(txInputs, txOutputs);
-        SIGNED_TX = client.signRawTransaction(rawTx);
-        submitRawTransaction(SIGNED_TX);
+        signedTx = client.signRawTransaction(rawTx);
+        submitRawTransaction(signedTx);
     }
 
     /**
@@ -265,15 +267,15 @@ public class AccountService {
         List<BitcoindRpcClient.TxOutput> txOutputs = new ArrayList<>();
         List<BitcoindRpcClient.RawTransaction.Out> outs = rawTransaction.vOut();
         BitcoindRpcClient.RawTransaction.Out.ScriptPubKey scriptPubKey = outs.get(0).scriptPubKey();
-        BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), P2SH_REDEEM_SCRIPT, BigDecimal.valueOf(inputAmount));
+        BitcoindRpcClient.TxInput txInput = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), p2shRedeemScript, BigDecimal.valueOf(inputAmount));
         txInputs.add(txInput);
-        BitcoindRpcClient.TxOutput txOutput = new BitcoindRpcClient.BasicTxOutput(recvAddress, ArithmeticUtils.minus(inputAmount, TX_FEE));//outputAmount
+        BitcoindRpcClient.TxOutput txOutput = new BitcoindRpcClient.BasicTxOutput(recvAddress, ArithmeticUtils.minus(inputAmount, TX_FEE));
         txOutputs.add(txOutput);
 
         String rawTx = client.createRawTransaction(txInputs, txOutputs);
 
         List<BitcoindRpcClient.ExtendedTxInput> txInputs1 = new ArrayList<>();
-        BitcoindRpcClient.ExtendedTxInput txInput1 = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), P2SH_REDEEM_SCRIPT, BigDecimal.valueOf(inputAmount - TX_FEE));//outputAmount
+        BitcoindRpcClient.ExtendedTxInput txInput1 = new BitcoindRpcClient.ExtendedTxInput(rawTransaction.txId(), UTXO_VOUT, scriptPubKey.hex(), p2shRedeemScript, BigDecimal.valueOf(inputAmount - TX_FEE));
         txInputs1.add(txInput1);
         String lastTx = client.signRawTransaction(rawTx, txInputs1, signPrvKeys);
 

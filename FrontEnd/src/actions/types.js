@@ -6,6 +6,7 @@ export const ROOT_URLL = 'http://192.168.1.170:8083';
 
 export const ROOT_ORDER= 'http://192.168.1.125:8882';
 export const ROOT_URLZ = 'http://192.168.1.125:8882';
+export const ROOT_ARBITRATE = 'http://192.168.1.125:8883'
 
 export const AUTH_USER = 'auth_user';                               //登录
 export const UNAUTH_USER = 'unauth_user';                           //退出登录
