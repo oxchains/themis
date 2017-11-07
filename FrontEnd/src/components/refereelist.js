@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import { Pagination } from 'antd';
 import {Alert,Modal,Button,Form,FormGroup,Col,ControlLabel,FormControl,Image} from 'react-bootstrap';
 import {fetchArbitrateList,fetchEvidence,arbitrateResult} from '../actions/arbitrate';
-import {ROOT_ORDER} from '../actions/types'
+import {ROOT_ARBITRATE} from '../actions/types'
 
 
 class RefereeList extends Component {
@@ -133,14 +133,14 @@ class RefereeList extends Component {
                             <label className="col-sm-4 control-label text-right"><strong>买家附件</strong></label>
                             <div className="col-sm-8 g-pb-10 ">
                                 {buyerFiles ?  <a className="btn btn-default" style={{color: "gray"}}
-                                                  href={`${ROOT_ORDER}/order/${buyerFiles}/downloadfile`}
+                                                  href={`${ROOT_ARBITRATE}/arbitrate/${buyerFiles}/downloadfile`}
                                                   download="download">点击下载</a> : "暂无数据" }
 
                             </div>
                             <label className="col-sm-4 control-label text-right"><strong>卖家附件</strong></label>
                             <div className="col-sm-8 g-pb-10 ">
                                 {sellerFiles ? <a className="btn btn-default" style={{color: "gray"}}
-                                                  href={`${ROOT_ORDER}/order/${sellerFiles}/downloadfile`}
+                                                  href={`${ROOT_ARBITRATE}/arbitrate/${sellerFiles}/downloadfile`}
                                                   download="download">点击下载</a> : "暂无数据"}
 
                             </div>

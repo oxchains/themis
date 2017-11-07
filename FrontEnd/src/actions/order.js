@@ -151,6 +151,7 @@ export function fetchKey({orderId},callback) {
  * @returns {Function}
  */
 export function addPaymentInfo({paymentInfo},callback) {
+    console.log(paymentInfo)
     return function (dispatch) {
         axios({
             method: 'post',
@@ -163,8 +164,8 @@ export function addPaymentInfo({paymentInfo},callback) {
                     type: ADD_PAYMENT_INFO,
                     payload: res.data.data
                 })
-                callback(res.data.data);
             }
+            callback(res.data);
         }).catch(err =>{
             dispatch(requestError(err.message))
         });
@@ -184,14 +185,13 @@ export function addTransactionId({txIdInfo},callback) {
             data: txIdInfo,
             headers: getAuthorizedHeader()
         }).then((res) => {
-            console.log(res)
             if (res.data.status == 1) {
                 dispatch({
                     type: ADD_TRANSACTION_ID,
                     payload: res.data.data
                 })
-                callback(res.data.data);
             }
+            callback(res.data);
         }).catch(err =>{
             dispatch(requestError(err.message))
         });

@@ -3,7 +3,7 @@
  */
 import axios from 'axios';
 import {
-    ROOT_ORDER,
+    ROOT_ARBITRATE,
     FETCH_ARBITRATE_LIST,
     UPLOAD_EVIDENCE,
     FETCH_EVIDENCE,
@@ -21,7 +21,7 @@ export function fetchArbitrateList({userIdDate}) {
     return function(dispatch) {
         axios({
             method:'post',
-            url:`${ROOT_ORDER}/order/findArbitrareOrderById`,
+            url:`${ROOT_ARBITRATE} /arbitrate/findArbitrareOrderById`,
             data:userIdDate,
             headers: getAuthorizedHeader()
         }).then((res) => {
@@ -52,7 +52,7 @@ export function uploadEvidence({id,userId,evidenceOFile,evidenceDes},callback) {
     return function(dispatch) {
         axios({
             method:'post',
-            url:`${ROOT_ORDER}/order/uploadEvidence`,
+            url:`${ROOT_ARBITRATE}/arbitrate/uploadEvidence`,
             data:formData,
             headers: getAuthorizedHeader(),
             headers: {'content-type': 'multipart/form-data'},
@@ -80,7 +80,7 @@ export function fetchEvidence({orderId}) {
     return function(dispatch) {
         axios({
             method:'post',
-            url:`${ROOT_ORDER}/order/getEvidence`,
+            url:`${ROOT_ARBITRATE}/arbitrate/getEvidence`,
             data:orderId,
             headers: getAuthorizedHeader()
         }).then((res) => {
@@ -106,7 +106,7 @@ export function arbitrateResult({resultData}) {
     return function(dispatch) {
         axios({
             method:'post',
-            url:`${ROOT_ORDER}/order/arbitrateOrderToUser`,
+            url:`${ROOT_ARBITRATE}/arbitrate/arbitrateOrderToUser`,
             data:resultData,
             headers: getAuthorizedHeader()
         }).then((res) => {

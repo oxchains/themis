@@ -4,11 +4,21 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import Chat from './chat';
+import {fetchOrdersDetails } from '../actions/order'
 
 class ArbitrationBuyer extends Component{
     constructor(props) {
         super(props);
         this.orderMessageDetails=this.orderMessageDetails.bind(this);
+    }
+    componentWillMount() {
+        const partnerName = localStorage.getItem("friendUsername")
+        const userId = localStorage.getItem("userId")
+        const message = this.props.location.state;
+        const data = {id: message.id, userId: userId}
+        this.setState({partnerName: partnerName});
+        console.log(data)
+        this.props.fetchOrdersDetails({data})
     }
     goBack(){
         history.back()
@@ -53,4 +63,11 @@ class ArbitrationBuyer extends Component{
         )
     }
 }
-export default  ArbitrationBuyer;
+
+function mapStateToProps(state) {
+    return {
+        orders_details: state.order.orders_details
+    }
+}
+
+export default connect(mapStateToProps, {fetchOrdersDetails})(ArbitrationBuyer);
