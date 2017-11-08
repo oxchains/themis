@@ -690,9 +690,15 @@ div {
     font-weight: 400;
     font-size: 12px;
 }
+.contenttrust>td>img
+{
+    width:20px;
+    border-radius:50%;
+    position: relative;
+    top:5px;
+}
 .tabletitle
 {
-    /*padding: 10px 0px;*/
     text-align: center;
     font-weight: 400;
     font-size: 12px;
@@ -899,7 +905,7 @@ div {
 {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 50px;
 }
 html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
 

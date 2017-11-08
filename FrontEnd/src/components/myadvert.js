@@ -170,7 +170,6 @@ class Myadvert extends Component {
                             </ModalBody>
                             <ModalFooter>
                                 <button className='btn btn-default' onClick={this.hideModal}>
-                                    {/*<a href="/myadvert" >关闭</a>*/}
                                     <a className="close-modal" href="" >关闭</a>
                                 </button>
                             </ModalFooter>
