@@ -145,6 +145,9 @@ public class UserService extends BaseService {
         user.setPassword(EncryptUtils.encodeSHA256(user.getPassword()));
         Optional<User> optional = findUser(user);
         return optional.map(u -> {
+            if(u.getLoginStatus().equals(Status.LoginStatus.LOGIN.getStatus())){
+                return RestResp.fail("用户已经登录");
+            }
             String token = "Bearer " + jwtService.generate(u);
             Role role = roleDao.findById(u.getRoleId());
             UserTxDetail userTxDetail = findUserTxDetailByUserId(u.getId());
@@ -156,10 +159,24 @@ public class UserService extends BaseService {
             userInfo.setToken(token);
 
             userInfo.setUserTxDetail(userTxDetail);
+
+            u.setLoginStatus(Status.LoginStatus.LOGIN.getStatus());
+            userDao.save(u);
             ConstantUtils.USER_TOKEN.put(u.getLoginname(), token);
+
             //new UserToken(u.getUsername(),token)
             return RestResp.success("登录成功", userInfo);
         }).orElse(RestResp.fail("登录失败"));
+    }
+    public RestResp logout(User user){
+        User u = userDao.findByLoginname(user.getLoginname());
+        if(null != u && u.getLoginStatus().equals(Status.LoginStatus.LOGIN.getStatus())){
+            u.setLoginStatus(Status.LoginStatus.LOGOUT.getStatus());
+            userDao.save(u);
+            return RestResp.success("退出成功");
+        }else {
+            return RestResp.fail("退出失败");
+        }
     }
 
     public Optional<User> findUser(User user) {

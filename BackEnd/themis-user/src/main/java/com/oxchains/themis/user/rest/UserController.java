@@ -52,6 +52,10 @@ public class UserController {
     public RestResp login(@RequestBody User user){
         return userService.login(user);
     }
+    @PostMapping(value = "/logout")
+    public RestResp logout(@RequestBody User user){
+        return userService.logout(user);
+    }
 
     @PostMapping(value = "/update")
     public RestResp update(@RequestBody User user){
