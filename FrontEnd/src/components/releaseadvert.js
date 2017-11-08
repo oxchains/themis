@@ -65,9 +65,9 @@ class Releaseadvert extends Component {
             const maxTxLimit = this.refs.maxTxLimit.value;
             const noticeContent = this.refs.noticeContent.value;
             const noticeType = this.state.status;
-            const location = this.state.country
-            const currency = this.state.currency
-            const payType = this.state.payway
+            const location = this.state.country;
+            const currency = this.state.currency;
+            const payType = this.state.payway;
         if(this.props.authenticated){
             this.props.releaseAdvert({userId,loginname ,noticeType ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType  ,noticeContent},err=>{
                 this.setState({ isModalOpen: true , error: err , actionResult: err||'发布成功!'});
@@ -204,9 +204,6 @@ class Releaseadvert extends Component {
                         </button>
                     </ModalFooter>
                 </Modal>
-
-
-
             </div>
         );
     }
