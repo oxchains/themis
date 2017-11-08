@@ -84,7 +84,7 @@ public interface BitcoindRpcClient extends BaseRpcClient{
      * @return
      * @throws BitcoinRpcException
      */
-    String createRawTransaction(List<TxInput> inputs, List<TxOutput> outputs, int locktime) throws BitcoinRpcException;
+    String createRawTransaction(List<TxInput> inputs, List<TxOutput> outputs, Integer locktime) throws BitcoinRpcException;
 
     String createRawTransaction(List<TxInput> inputs, List<TxOutput> outputs) throws BitcoinRpcException;
 
@@ -372,7 +372,7 @@ public interface BitcoindRpcClient extends BaseRpcClient{
      * The getnettotals RPC returns information about network traffic, including bytes in, bytes out, and the current time.
      * @return
      */
-    NetTotals getNetTotals();
+    NetTotals getNetTotals() throws BitcoinRpcException;
 
     /** 46.
      * The getnetworkhashps RPC returns the estimated current or historical network hashes per second based on the last n blocks.
@@ -441,7 +441,8 @@ public interface BitcoindRpcClient extends BaseRpcClient{
      * @param account
      * @return
      */
-    BigDecimal getReceivedByAccount(String account);
+    BigDecimal getReceivedByAccount(String account, int minConf) throws BitcoinRpcException;
+    BigDecimal getReceivedByAccount(String account) throws BitcoinRpcException;
 
     /** 54.
      * Requires wallet support.
@@ -469,7 +470,7 @@ public interface BitcoindRpcClient extends BaseRpcClient{
      * @param vout
      * @return
      */
-    TxOut getTxOut(String txId, long vout);
+    TxOut getTxOut(String txId, long vout) throws BitcoinRpcException;
 
     /** 57.
      *

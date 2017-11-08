@@ -27,12 +27,15 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
             String[] ids = message.split("_");
             String id = null;
             String receiverId = null;
-            if(ids.length>2){
+            if(ids.length>=2){
                 id = ids[0];
                 receiverId = ids[1];
-                ChatUtil.userChannels.put(id,new ConcurrentHashMap<String ,ChannelHandler>());
+                if(ChatUtil.userChannels.get(id) == null){
+                    ChatUtil.userChannels.put(id,new ConcurrentHashMap<String ,ChannelHandler>());
+                }
                 String keyIds = ChatUtil.getIDS(id,receiverId);
                 Map<String,ChannelHandler> channelHandlerMap =  ChatUtil.userChannels.get(id);
+                //如果连接存在 则把以前的连接关闭掉 建立新的连接
                 if(channelHandlerMap.get(keyIds) != null){
                     channelHandlerMap.get(keyIds).close();
                     channelHandlerMap.remove(keyIds);

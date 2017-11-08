@@ -134,9 +134,6 @@ public class UserController {
     public RestResp password(@RequestBody User user){
         return userService.updateUser(user, ParamType.UpdateUserInfoType.PWD);
     }
-<<<<<<< HEAD
-=======
-
     @GetMapping(value = "/trust")
     public RestResp trust(com.oxchains.themis.common.param.RequestBody body){
         if(body.getType() == ParamType.TrustTabType.TRUSTED.getType()){
@@ -148,6 +145,4 @@ public class UserController {
         }
     }
 
-
->>>>>>> 6ed44c0b573fc8ba1ba247dfbd1f7a79d76e2c4f
 }

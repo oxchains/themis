@@ -1,4 +1,6 @@
 package com.oxchains.themis.order.entity;
+import lombok.Data;
+
 import javax.persistence.*;
 
 /**
@@ -7,6 +9,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "order_comment")
+@Data
 public class OrderComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,69 +46,5 @@ public class OrderComment {
                 ", userId=" + userId +
                 ", content='" + content + '\'' +
                 '}';
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
-    }
-
-    public Integer getSellerStatus() {
-        return sellerStatus;
-    }
-
-    public void setSellerStatus(Integer sellerStatus) {
-        this.sellerStatus = sellerStatus;
-    }
-
-    public Integer getBuyerStatus() {
-        return buyerStatus;
-    }
-
-    public void setBuyerStatus(Integer buyerStatus) {
-        this.buyerStatus = buyerStatus;
-    }
-
-    public String getBuyerContent() {
-        return buyerContent;
-    }
-
-    public void setBuyerContent(String buyerContent) {
-        this.buyerContent = buyerContent;
-    }
-
-    public String getSellerContent() {
-        return sellerContent;
-    }
-
-    public void setSellerContent(String sellerContent) {
-        this.sellerContent = sellerContent;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 }
