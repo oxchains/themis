@@ -1,7 +1,6 @@
 package com.oxchains.themis.arbitrate.service;
 
 import com.oxchains.themis.arbitrate.common.ParamType;
-import com.oxchains.themis.arbitrate.common.Pojo;
 import com.oxchains.themis.arbitrate.entity.OrderArbitrate;
 import com.oxchains.themis.arbitrate.entity.Orders;
 import com.oxchains.themis.arbitrate.repo.NoticeRepo;
