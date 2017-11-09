@@ -51,8 +51,6 @@ class Safeset extends Component {
                 this.setState({ loadingpsw: false, visiblepsw: false });
             }, 3000);
         })
-
-
     }
     handleCancel = () => {
         this.setState({ visible: false });
@@ -99,8 +97,6 @@ class Safeset extends Component {
     render() {
         var text = this.state.liked ? '发送验证码' : this.state.count + ' s ' ;
         const { visible, loading ,visiblepsw,loadingpsw} = this.state;
-
-
 
         return (
             <div >
