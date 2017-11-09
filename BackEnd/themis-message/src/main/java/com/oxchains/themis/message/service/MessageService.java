@@ -1,20 +1,24 @@
 package com.oxchains.themis.message.service;
 
-import ch.qos.logback.core.joran.conditional.ThenAction;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.message.common.MessageConst;
 import com.oxchains.themis.message.dao.MessageDao;
 import com.oxchains.themis.message.dao.MessageTextDao;
+import com.oxchains.themis.message.dao.OrderDao;
 import com.oxchains.themis.message.domain.Message;
 import com.oxchains.themis.message.domain.MessageText;
+import com.oxchains.themis.message.domain.Orders;
 import com.oxchains.themis.message.rest.dto.MessageDTO;
-import org.omg.CORBA.PUBLIC_MEMBER;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,6 +38,8 @@ public class MessageService {
     private MessageDao messageDao;
     @Resource
     private MessageTextDao messageTextDao;
+    @Resource
+    private OrderDao orderDao;
 
     public RestResp sendGlobalMessage(MessageText messageText){
         try {
@@ -55,21 +61,27 @@ public class MessageService {
         return RestResp.success("操作失败");
     }
 
-    public RestResp queryPrivateMsgNoRead(Long userId){
+    public RestResp queryGlobalMsg(Long userId, Integer pageNum, Integer pageSize){
         try {
-            MessageDTO messageDTO = new MessageDTO();
-            List<Message> messageList = messageDao.findByReceiverIdAndReadStatus(userId, MessageConst.ReadStatus.ONE.getStatus());
-            if (messageList.size() != MessageConst.ListSize.ZERO.getValue()){
-                for (Message msg : messageList) {
-                    messageDTO.setMessageType(MessageConst.MessageType.ONE.getStatus());
-                    messageDTO.setReadStatus(msg.getReadStatus());
-                    messageDTO.setMessageSize(messageList.size());
-                }
-                return RestResp.success("操作成功", messageDTO);
-            }else {
-                Thread.sleep(MessageConst.Constant.FIVE_THOUSAND.getValue());
-                return queryPrivateMsgNoRead(userId);
+            Pageable pageable = new PageRequest(pageNum - 1, pageSize, new Sort(Sort.Direction.DESC, "id"));
+            Page<Message> page = messageDao.findByReceiverIdAndMessageType(userId, MessageConst.MessageType.ONE.getStatus(), pageable);
+            Iterator<Message> it = page.iterator();
+            List<Message> mList = new ArrayList<>();
+            while (it.hasNext()){
+                Message message = it.next();
+                MessageText messageText = messageTextDao.findByIdAndMessageType(message.getMessageTextId(), MessageConst.MessageType.ONE.getStatus());
+                message.setMessageText(messageText);
+                mList.add(message);
             }
+            String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+            MessageDTO messageDTO = new MessageDTO<>();
+            messageDTO.setPageList(mList);
+            messageDTO.setRowCount(page.getTotalElements());
+            messageDTO.setTotalPage(page.getTotalPages());
+            messageDTO.setPageNum(pageNum);
+            messageDTO.setPageSize(pageSize);
+            messageDTO.setTime(currentTime);
+            return RestResp.success("操作成功", messageDTO);
         }catch (Exception e){
             e.printStackTrace();
             LOG.error("站内信：获取未读私信信息失败", e.getMessage());
@@ -77,30 +89,27 @@ public class MessageService {
         return RestResp.fail("操作失败");
     }
 
-    public RestResp queryPrivateMsgYesRead(Long userId){
+    public RestResp queryPrivateMsg(Long userId, Integer pageNum, Integer pageSize){
         try {
-            MessageDTO messageDTO = new MessageDTO();
-            List<Message> messageList = messageDao.findByReceiverIdAndReadStatus(userId, MessageConst.ReadStatus.TWO.getStatus());
-            if (messageList.size() != MessageConst.ListSize.ZERO.getValue()){
-                List<MessageText> mtList = new ArrayList<>();
-                for (Message msg : messageList) {
-                    List<MessageText> messageTextList = messageTextDao.findByIdAndMessageType(msg.getMessageTextId(), MessageConst.MessageType.ONE.getStatus());
-                    mtList.addAll(messageTextList);
-                }
-                if (mtList.size() != MessageConst.ListSize.ZERO.getValue()){
-                    messageDTO.setMessageType(MessageConst.MessageType.ONE.getStatus());
-                    messageDTO.setReadStatus(MessageConst.ReadStatus.TWO.getStatus());
-                    messageDTO.setMessageSize(mtList.size());
-                    messageDTO.setList(mtList);
-                    return RestResp.success("操作成功", messageDTO);
-                }else {
-                    Thread.sleep(MessageConst.Constant.FIVE_THOUSAND.getValue());
-                    return queryPrivateMsgYesRead(userId);
-                }
-            }else {
-                Thread.sleep(MessageConst.Constant.FIVE_THOUSAND.getValue());
-                return queryPrivateMsgYesRead(userId);
+            Pageable pageable = new PageRequest(pageNum - 1, pageSize, new Sort(Sort.Direction.DESC, "id"));
+            Page<Message> page = messageDao.findByReceiverIdAndMessageType(userId, MessageConst.MessageType.TWO.getStatus(), pageable);
+            Iterator<Message> it = page.iterator();
+            List<Message> mList = new ArrayList<>();
+            while (it.hasNext()){
+                Message message = it.next();
+                MessageText messageText = messageTextDao.findByIdAndMessageType(message.getMessageTextId(), MessageConst.MessageType.TWO.getStatus());
+                message.setMessageText(messageText);
+                mList.add(message);
             }
+            String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+            MessageDTO messageDTO = new MessageDTO<>();
+            messageDTO.setPageList(mList);
+            messageDTO.setRowCount(page.getTotalElements());
+            messageDTO.setTotalPage(page.getTotalPages());
+            messageDTO.setPageNum(pageNum);
+            messageDTO.setPageSize(pageSize);
+            messageDTO.setTime(currentTime);
+            return RestResp.success("操作成功", messageDTO);
         }catch (Exception e){
             e.printStackTrace();
             LOG.error("站内信：获取已读私信信息失败");
@@ -108,33 +117,27 @@ public class MessageService {
         return RestResp.fail("操作失败");
     }
 
-    public RestResp queryPublicMsgNoRead(Long userId, Integer userGroup){
+    public RestResp queryNoticeMsg(Long userId, Integer pageNum, Integer pageSize){
         try {
-            MessageDTO messageDTO = new MessageDTO();
-            List<MessageText> messageTextList = messageTextDao.findByMessageTypeAndUserGroup(MessageConst.MessageType.TWO.getStatus(), userGroup);
-            if (messageTextList.size() != MessageConst.ListSize.ZERO.getValue()){
-                List<Message> mList = new ArrayList<>();
-                List<MessageText> mtList = new ArrayList<>();
-                for (MessageText mt : messageTextList) {
-                    List<Message> messageList = messageDao.findByMessageTextIdAndReceiverId(mt.getId(), userId);
-                    List<MessageText> resultMessageTextList =  messageTextDao.findByIdAndMessageType(mt.getId(), MessageConst.MessageType.TWO.getStatus());
-                    mtList.addAll(resultMessageTextList);
-                    mList.addAll(messageList);
-                }
-                if (mList.size() == MessageConst.ListSize.ZERO.getValue()){
-                    messageDTO.setList(mtList);
-                    messageDTO.setMessageSize(mtList.size());
-                    messageDTO.setReadStatus(MessageConst.ReadStatus.ONE.getStatus());
-                    messageDTO.setMessageType(MessageConst.MessageType.TWO.getStatus());
-                    return RestResp.success("操作成功", messageDTO);
-                }else {
-                    Thread.sleep(MessageConst.Constant.FIVE_THOUSAND.getValue());
-                    return queryPublicMsgNoRead(userId, userGroup);
-                }
-            }else {
-                Thread.sleep(MessageConst.Constant.FIVE_THOUSAND.getValue());
-                return queryPublicMsgNoRead(userId, userGroup);
+            Pageable pageable = new PageRequest(pageNum - 1, pageSize, new Sort(Sort.Direction.DESC, "id"));
+            Page<Message> page = messageDao.findByReceiverIdAndMessageType(userId, MessageConst.MessageType.THREE.getStatus(), pageable);
+            Iterator<Message> it = page.iterator();
+            List<Message> mList = new ArrayList<>();
+            while (it.hasNext()){
+                Message message = it.next();
+                MessageText messageText = messageTextDao.findByIdAndMessageType(message.getMessageTextId(), MessageConst.MessageType.THREE.getStatus());
+                message.setMessageText(messageText);
+                mList.add(message);
             }
+            String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+            MessageDTO messageDTO = new MessageDTO<>();
+            messageDTO.setPageList(mList);
+            messageDTO.setRowCount(page.getTotalElements());
+            messageDTO.setTotalPage(page.getTotalPages());
+            messageDTO.setPageNum(pageNum);
+            messageDTO.setPageSize(pageSize);
+            messageDTO.setTime(currentTime);
+            return RestResp.success("操作成功", messageDTO);
         }catch (Exception e){
             e.printStackTrace();
             LOG.error("站内信：获取未读公共信息失败");
@@ -142,98 +145,18 @@ public class MessageService {
         return RestResp.fail("操作失败");
     }
 
-    public RestResp queryPublicMsgYesRead(Long userId){
+    public RestResp unReadCount(Long userId){
         try {
-            MessageDTO messageDTO = new MessageDTO();
-            List<Message> messageList = messageDao.findByReceiverId(userId);
-            if (messageList.size() != MessageConst.ListSize.ZERO.getValue()){
-                List<MessageText> mtList = new ArrayList<>();
-                for (Message m : messageList) {
-                    List<MessageText> resultMessageTextList =  messageTextDao.findByIdAndMessageType(m.getMessageTextId(), MessageConst.MessageType.TWO.getStatus());
-                    mtList.addAll(resultMessageTextList);
-                }
-                if (mtList.size() != MessageConst.ListSize.ZERO.getValue()){
-                    messageDTO.setList(mtList);
-                    messageDTO.setMessageSize(mtList.size());
-                    messageDTO.setReadStatus(MessageConst.ReadStatus.TWO.getStatus());
-                    messageDTO.setMessageType(MessageConst.MessageType.TWO.getStatus());
-                    return RestResp.success("操作成功", messageDTO);
-                }else {
-                    Thread.sleep(MessageConst.Constant.FIVE_THOUSAND.getValue());
-                    return queryPublicMsgYesRead(userId);
-                }
+            List<Message> messageList = messageDao.findByReceiverIdAndReadStatus(userId, 1);
+            if (messageList.size() != 0){
+               return RestResp.success("操作成功", messageList.size());
             } else {
-                Thread.sleep(MessageConst.Constant.FIVE_THOUSAND.getValue());
-                return queryPublicMsgYesRead(userId);
+                Thread.sleep(2000);
+                return unReadCount(userId);
             }
         }catch (Exception e){
             e.printStackTrace();
-            LOG.error("站内信：获取已读公共信息失败", e.getMessage());
-        }
-        return RestResp.fail("操作失败");
-    }
-
-    public RestResp queryGlobalMsgNoRead(Long userId){
-        try {
-            MessageDTO messageDTO = new MessageDTO();
-            List<MessageText> messageTextList = messageTextDao.findByMessageType(MessageConst.MessageType.THREE.getStatus());
-            if (messageTextList.size() != MessageConst.ListSize.ZERO.getValue()){
-                List<Message> mList = new ArrayList<>();
-                List<MessageText> mtList = new ArrayList<>();
-                for (MessageText mt : messageTextList) {
-                    List<Message> messageList = messageDao.findByMessageTextIdAndReceiverId(mt.getId(), userId);
-                    List<MessageText> resultMessageTextList = messageTextDao.findByIdAndMessageType(mt.getId(), MessageConst.MessageType.THREE.getStatus());
-                    mList.addAll(messageList);
-                    mtList.addAll(resultMessageTextList);
-                }
-                if (mList.size() == MessageConst.ListSize.ZERO.getValue()){
-                    messageDTO.setMessageType(MessageConst.MessageType.THREE.getStatus());
-                    messageDTO.setReadStatus(MessageConst.ReadStatus.ONE.getStatus());
-                    messageDTO.setList(mtList);
-                    messageDTO.setMessageSize(mtList.size());
-                    return RestResp.success("操作成功", messageDTO);
-                }else {
-                    Thread.sleep(MessageConst.Constant.FIVE_THOUSAND.getValue());
-                    return queryGlobalMsgNoRead(userId);
-                }
-            }else {
-                Thread.sleep(MessageConst.Constant.FIVE_THOUSAND.getValue());
-                return queryGlobalMsgNoRead(userId);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("站内信：获取未读系统信息失败", e.getMessage());
-        }
-        return RestResp.fail("操作失败");
-    }
-
-    public RestResp queryGlobalMsgYesRead(Long userId){
-        try {
-            MessageDTO messageDTO = new MessageDTO();
-            List<MessageText> mtList = new ArrayList<>();
-            List<Message> messageList = messageDao.findByReceiverId(userId);
-            if (messageList.size() != MessageConst.ListSize.ZERO.getValue()){
-                for (Message m : messageList) {
-                    List<MessageText> messageTextList = messageTextDao.findByIdAndMessageType(m.getMessageTextId(), MessageConst.MessageType.THREE.getStatus());
-                    mtList.addAll(messageTextList);
-                }
-                if (mtList.size() != MessageConst.ListSize.ZERO.getValue()){
-                    messageDTO.setList(mtList);
-                    messageDTO.setMessageSize(mtList.size());
-                    messageDTO.setReadStatus(MessageConst.ReadStatus.TWO.getStatus());
-                    messageDTO.setMessageType(MessageConst.MessageType.THREE.getStatus());
-                    return RestResp.success("操作成功", messageDTO);
-                }else {
-                    Thread.sleep(MessageConst.Constant.FIVE_THOUSAND.getValue());
-                    return queryGlobalMsgYesRead(userId);
-                }
-            }else {
-                Thread.sleep(MessageConst.Constant.FIVE_THOUSAND.getValue());
-                return queryGlobalMsgYesRead(userId);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("站内信：获取已读系统信息失败", e.getMessage());
+            LOG.error("站内信：获取未读信息数量异常", e.getMessage());
         }
         return RestResp.fail("操作失败");
     }

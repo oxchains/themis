@@ -37,62 +37,42 @@ public class MessageController {
     }
 
     /**
-     * 显示私信未读
+     * 显示系统信息
      * @param userId
      * @return
      */
-    @GetMapping(value = "/query/privateMsgNoRead")
-    public RestResp queryPrivateMsgNoRead(@RequestParam Long userId){
-        return messageService.queryPrivateMsgNoRead(userId);
+    @GetMapping(value = "/query/globalMsg")
+    public RestResp queryGlobalMsg(@RequestParam Long userId, @RequestParam Integer pageNum, @RequestParam Integer pageSize){
+        return messageService.queryGlobalMsg(userId, pageNum, pageSize);
     }
 
     /**
-     * 显示私信已读
+     * 显示私信
      * @param userId
      * @return
      */
-    @GetMapping(value = "/query/privateMsgYesRead")
-    public RestResp queryPrivateMsgYesRead(@RequestParam Long userId){
-        return messageService.queryPrivateMsgYesRead(userId);
+    @GetMapping(value = "/query/privateMsg")
+    public RestResp queryPrivateMsg(@RequestParam Long userId, @RequestParam Integer pageNum, @RequestParam Integer pageSize){
+        return messageService.queryPrivateMsg(userId, pageNum, pageSize);
     }
 
     /**
-     * 显示公共消息未读
+     * 显示公告信息
      * @param userId
      * @return ajax请求实体
      */
-    @GetMapping(value = "/query/publicMsgNoRead")
-    public RestResp queryPublicMsgNoRead(@RequestParam Long userId, @RequestParam Integer userGroup){
-        return messageService.queryPublicMsgNoRead(userId, userGroup);
+    @GetMapping(value = "/query/noticeMsg")
+    public RestResp queryNoticeMsg(@RequestParam Long userId, @RequestParam Integer pageNum, @RequestParam Integer pageSize){
+        return messageService.queryNoticeMsg(userId, pageNum, pageSize);
     }
 
     /**
-     * 显示公共消息已读
+     * 未读信息数量
      * @param userId
      * @return
      */
-    @GetMapping(value = "/query/publicMsgYesRead")
-    public RestResp queryPublicMsgYesRead(@RequestParam Long userId){
-        return messageService.queryPublicMsgYesRead(userId);
-    }
-
-    /**
-     * 显示系统信息未读
-     * @param userId
-     * @return
-     */
-    @GetMapping(value = "/query/globalMsgNoRead")
-    public RestResp queryGlobalMsgNoRead(@RequestParam Long userId){
-        return messageService.queryGlobalMsgNoRead(userId);
-    }
-
-    /**
-     * 显示系统信息已读
-     * @param userId
-     * @return
-     */
-    @GetMapping(value = "/query/globalMsgYesRead")
-    public RestResp queryGlobalMsgYesRead(@RequestParam Long userId){
-        return messageService.queryGlobalMsgYesRead(userId);
+    @GetMapping(value = "/query/unReadCount")
+    public RestResp unReadCount(@RequestParam Long userId){
+        return messageService.unReadCount(userId);
     }
 }

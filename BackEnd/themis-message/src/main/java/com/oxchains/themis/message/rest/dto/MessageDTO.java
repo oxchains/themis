@@ -12,25 +12,34 @@ import java.util.List;
  **/
 @Data
 public class MessageDTO <T> {
-    /**
-     * 消息类型，1.私信 2.公共信息 3.系统信息
-     */
-    private Integer messageType;
-
-    /**
-     * 阅读状态，1.未读 2.已读 3.删除
-     */
-    private Integer readStatus;
-
-    /**
-     * 信息的条数
-     */
-    private Integer messageSize;
 
     /**
      * T 类型集合
      */
-    private List<T> list;
+    private List<T> PageList;
 
+    /**
+     * 消息获取时间
+     */
     private String time;
+
+    /**
+     * 按照每页显示的数量返回的总页数
+     */
+    private Integer totalPage;
+
+    /**
+     * 当前显示第几页
+     */
+    private Integer PageNum;
+
+    /**
+     * 每页显示的条数
+     */
+    private Integer pageSize;
+
+    /**
+     * 返回数据总数量
+     */
+    private Long rowCount;
 }

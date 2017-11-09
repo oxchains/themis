@@ -1,6 +1,8 @@
 package com.oxchains.themis.message.dao;
 
 import com.oxchains.themis.message.domain.MessageText;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,9 +15,5 @@ import java.util.List;
 @Repository
 public interface MessageTextDao extends CrudRepository<MessageText, Long> {
 
-    List<MessageText> findByMessageTypeAndUserGroup(Integer messageType, Integer userGroup);
-
-    List<MessageText> findByMessageType(Integer messageType);
-
-    List<MessageText> findByIdAndMessageType(Long id, Integer messageType);
+    MessageText findByIdAndMessageType(Long id, Integer messageType);
 }

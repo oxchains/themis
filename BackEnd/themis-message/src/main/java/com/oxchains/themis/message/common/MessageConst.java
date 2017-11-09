@@ -29,7 +29,7 @@ public interface MessageConst {
      * 用于判断的常量
      */
     enum Constant{
-        ZERO(0), ONE(1), TWO(2), FIVE(5), TEN(10), HUNDRED(100), FIVE_THOUSAND(5000);
+        ZERO(0), ONE(1), TWO(2), FIVE(5), TEN(10), HUNDRED(100), TWO_THOUSAND(2000), FIVE_THOUSAND(5000);
         private Integer value;
 
         Constant(Integer value) {
@@ -61,7 +61,7 @@ public interface MessageConst {
     }
 
     enum MessageType{
-        ONE(1, "私信"), TWO(2, "公共信息"), THREE(3, "系统信息");
+        ONE(1, "系统信息"), TWO(2, "私信"), THREE(3, "公告");
         private Integer status;
         private String name;
         MessageType(Integer status, String name) {
