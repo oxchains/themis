@@ -24,7 +24,7 @@ class Myadvert extends Component {
             actionResult: '',
             status:1,
             adstatus:1,
-            pageSize:8, //每页显示的条数8条
+            pageSize:5, //每页显示的条数5条
             pageNum: 1,//默认的当前第一页
         }
         this.handleRowsbuy = this.handleRowsbuy.bind(this)
@@ -111,8 +111,6 @@ class Myadvert extends Component {
     };
 
     handleOff = (item) =>{
-        // const id = item.id
-
         const {id} = item
         this.props.fetctOffMyAd({id},err=>{
             this.setState({ isModalOpen: true , error: err , actionResult: err||'下架成功!'})
@@ -122,13 +120,13 @@ class Myadvert extends Component {
         const totalNum = this.props.all.rowCount
             return (
                     <div className="mainbar">
-                        <div className="col-lg-3 col-md-3 col-xs-3">
+                        <div className="col-lg-2 col-md-2 col-xs-2">
                         <ul className=" adtypeul">
-                            <li className={` adtype ${this.state.status == 1 ? "tab-way-item active" :" tab-way-item"} `}   onClick={this.handleRowsbuy}>购买广告</li>
-                            <li className={` adtype ${this.state.status == 2 ? "tab-way-item active" :" tab-way-item "}`} onClick={this.handleRowssell}>出售广告</li>
+                            <li className={` adtype ${this.state.status == 1 ? "tab-title-item active" :" tab-title-item"} `}   onClick={this.handleRowsbuy}><p>购买广告</p></li>
+                            <li className={` adtype ${this.state.status == 2 ? "tab-title-item active" :" tab-title-item "}`} onClick={this.handleRowssell}><p>出售广告</p></li>
                         </ul>
                         </div>
-                        <div className="col-lg-9 col-md-9 col-xs-9">
+                        <div className="col-lg-10 col-md-10 col-xs-10">
                             <ul className=" titleul">
                                 <li className={` title-border ${this.state.adstatus == 1 ? "ad-title-item active" :" ad-title-item"} `}   onClick={this.handleRowsadverting}>进行中的广告</li>
                                 <li className={` title-border ${this.state.adstatus == 2 ? "ad-title-item active" :" ad-title-item "}`} onClick={this.handleRowadverted}>已下架的广告</li>
@@ -149,17 +147,6 @@ class Myadvert extends Component {
                                         <th className={`${this.state.adstatus == 2 ? "hidden" :""}`}>操作</th>
                                     </tr>
                                     {this.handleRow()}
-                                    {/*<tr className="contentborder bottomcontent">*/}
-                                        {/*<td></td>*/}
-                                        {/*<td></td>*/}
-                                        {/*<td></td>*/}
-                                        {/*<td>没有更多内容了</td>*/}
-                                        {/*<td></td>*/}
-                                        {/*<td></td>*/}
-                                        {/*<td></td>*/}
-                                        {/*<td></td>*/}
-                                        {/*/!*<td className={`${this.state.adstatus == 2 ? "hidden" :""}`}></td>*!/*/}
-                                    {/*</tr>*/}
                                     </tbody>
 
                                 </table>
@@ -183,7 +170,6 @@ class Myadvert extends Component {
                             </ModalBody>
                             <ModalFooter>
                                 <button className='btn btn-default' onClick={this.hideModal}>
-                                    {/*<a href="/myadvert" >关闭</a>*/}
                                     <a className="close-modal" href="" >关闭</a>
                                 </button>
                             </ModalFooter>

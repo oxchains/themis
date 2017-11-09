@@ -51,7 +51,7 @@ class Buybtc extends Component {
         const payType = this.state.payway
         this.props.fetcAdvertSeach({searchType,location,currency,payType,pageNum}, ()=>{});
     }
-    handleRow( ){
+    handleRow(){
         const arraydata = this.props.all.pageList || []    //列表数组的数据
         return arraydata.map((item, index) => {
             return(

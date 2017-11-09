@@ -19,6 +19,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.file.Files;
@@ -51,6 +52,10 @@ public class UserController {
     public RestResp login(@RequestBody User user){
         return userService.login(user);
     }
+    @PostMapping(value = "/logout")
+    public RestResp logout(@RequestBody User user){
+        return userService.logout(user);
+    }
 
     @PostMapping(value = "/update")
     public RestResp update(@RequestBody User user){
@@ -72,21 +77,28 @@ public class UserController {
 
     @RequestMapping(value = "/info")
     public RestResp info(@ModelAttribute User user) throws Exception{
-        /*MultipartFile file = user.getFile();
+        MultipartFile file = user.getFile();
         if(null != file){
             String fileName = file.getOriginalFilename();
             String suffix = fileName.substring(fileName.lastIndexOf("."));
             String newFileName = user.getLoginname() + suffix;
             String pathName = imageUrl + newFileName;
+            File f =new File(pathName);
+            if(f.exists()){
+                f.delete();
+            }
             file.transferTo(new File(pathName));
             user.setImage(newFileName);
-        }*/
+            return userService.updateUser(user,ParamType.UpdateUserInfoType.INFO);
+        }
         if(null == user){
             return RestResp.fail("参数不能为空");
         }
         String image = user.getLoginname()+".jpg";
-        ImageBase64.generateImage(user.getImage(),imageUrl+image);
-        user.setImage(image);
+        if(null != user.getImage() && !"undefined".equals(user.getImage())) {
+            ImageBase64.generateImage(user.getImage(), imageUrl + image);
+            user.setImage(image);
+        }
         return userService.updateUser(user,ParamType.UpdateUserInfoType.INFO);
     }
     /*
@@ -134,9 +146,6 @@ public class UserController {
     public RestResp password(@RequestBody User user){
         return userService.updateUser(user, ParamType.UpdateUserInfoType.PWD);
     }
-<<<<<<< HEAD
-=======
-
     @GetMapping(value = "/trust")
     public RestResp trust(com.oxchains.themis.common.param.RequestBody body){
         if(body.getType() == ParamType.TrustTabType.TRUSTED.getType()){
@@ -148,6 +157,4 @@ public class UserController {
         }
     }
 
-
->>>>>>> 6ed44c0b573fc8ba1ba247dfbd1f7a79d76e2c4f
 }

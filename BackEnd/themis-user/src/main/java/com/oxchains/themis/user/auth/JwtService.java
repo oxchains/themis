@@ -1,5 +1,10 @@
 package com.oxchains.themis.user.auth;
 
+import com.alibaba.fastjson.JSON;
+import com.oxchains.themis.common.util.ObjectByteUtil;
+import com.oxchains.themis.repo.dao.TokenKeyDao;
+import com.oxchains.themis.repo.entity.TokenKey;
+import com.oxchains.themis.repo.util.HibernateBlobUtil;
 import com.oxchains.themis.user.dao.UserDao;
 import com.oxchains.themis.user.domain.User;
 import io.jsonwebtoken.Claims;
@@ -14,14 +19,15 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.ECPrivateKey;
-import java.sql.Date;
 import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -52,6 +58,9 @@ public class JwtService {
 
     private final UserDao userDao;
 
+    @Resource
+    private TokenKeyDao tokenKeyDao;
+
     public JwtService(UserDao userDao) {
         this.userDao = userDao;
     }
@@ -63,9 +72,17 @@ public class JwtService {
         from.load(new ClassPathResource(keystore).getInputStream(), pass);
         privateKey = (ECPrivateKey) from.getKey(keyalias, pass);
 
+        String prvKey = JSON.toJSONString(privateKey);
+        LOG.info("私钥序JSON字符串: {}" , prvKey);
+
         CertificateFactory certificatefactory = CertificateFactory.getInstance("X.509");
         X509Certificate x509Cert = (X509Certificate) certificatefactory.generateCertificate(new ClassPathResource(cert).getInputStream());
         publicKey = x509Cert.getPublicKey();
+
+        String pubKey = JSON.toJSONString(publicKey);
+        LOG.info("公钥序JSON字符串: {}" , pubKey);
+
+        saveTokenKey(publicKey,privateKey);
     }
 
     public String generate(User user) {
@@ -93,4 +110,16 @@ public class JwtService {
         return empty();
     }
 
+    private void saveTokenKey(PublicKey pubKey,PrivateKey priKey){
+        TokenKey tokenKey = tokenKeyDao.findOne(1L);
+        if(null == tokenKey){
+            tokenKey = new TokenKey();
+            tokenKey.setCreateTime(new Date());
+        }
+        tokenKey.setUpdateTime(new Date());
+        tokenKey.setPubKey(ObjectByteUtil.toByteArray(pubKey));
+        tokenKey.setPriKey(ObjectByteUtil.toByteArray(priKey));
+
+        tokenKeyDao.save(tokenKey);
+    }
 }

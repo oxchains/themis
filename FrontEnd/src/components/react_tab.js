@@ -9,7 +9,7 @@ class TabsControl extends Component{
     }
 
     check_title_index( index ){
-        return index === this.state.currentIndex ? "col-sm-6 active" : "col-sm-6"
+        return index === this.state.currentIndex ? "active" : ""
     }
 
     check_item_index( index ){
@@ -25,7 +25,10 @@ class TabsControl extends Component{
                     {
                         React.Children.map( this.props.children , ( element,index ) => {
                             return(
-                                <div onClick={ () => { this.setState({ currentIndex : index }) } } className={ this.check_title_index( index ) }>{ element.props.name }</div>
+                                <div className="col-sm-6">
+                                    <span onClick={ () => { this.setState({ currentIndex : index }) } } className={ this.check_title_index( index ) }>{ element.props.name }</span>
+                                </div>
+
                             )
                         })
                     }

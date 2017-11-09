@@ -225,7 +225,6 @@ public class OrderController {
             e.printStackTrace();
         }
     }
-
     //上传交易凭据 包括 文本 和 图片 附件
     @RequestMapping("/order/uploadEvidence")
     public RestResp uploadEvidence(@ModelAttribute @Valid RegisterRequest registerRequest) throws IOException {
@@ -259,7 +258,7 @@ public class OrderController {
     /*
     * 张晓晶 调试状态用
     * */
-    @RequestMapping("/order/{orderid}/{status}")
+    @RequestMapping("/{orderid}/{status}")
     public RestResp updateOrderStatus(@PathVariable("orderid") String orderId,@PathVariable("status") Long status){
         Orders o = orderService.updateOrderStatus(orderId,status);
         return o==null?RestResp.fail():RestResp.success(o);

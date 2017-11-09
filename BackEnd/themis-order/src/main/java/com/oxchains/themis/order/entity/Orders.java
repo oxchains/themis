@@ -2,6 +2,7 @@ package com.oxchains.themis.order.entity;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.Value;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,6 +16,7 @@ import java.math.BigDecimal;
 @Table(name = "tbl_biz_orders")
 public class Orders implements Serializable{
     @Id
+    @Column(name = "id",length = 255)
     private String id;         //订单编号
     private BigDecimal money;  //订单金额
     private String createTime;  //下单时间

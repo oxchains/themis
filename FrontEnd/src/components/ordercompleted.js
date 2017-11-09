@@ -4,6 +4,7 @@
 import React,{ Component }from 'react';
 import {connect} from 'react-redux';
 import { Link } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom'
 import { Pagination } from 'antd';
 import {fetchCompletedOrders} from '../actions/order';
 
@@ -36,11 +37,6 @@ class OrderCompleted extends Component {
     renderrow(){
         const userId=localStorage.getItem("userId");
         return this.props.completed_orders.map((item,index)=>{
-            const data = {id:item.id,userId:userId,partnerId:item.orderType == "购买"?item.sellerId:item.buyerId};
-            const path = {
-                pathname:'/orderprogress',
-                state:data,
-            }
             return(
                 <tr key={index}>
                     <td>{item.friendUsername}</td>
@@ -49,25 +45,23 @@ class OrderCompleted extends Component {
                     <td>{item.money}</td>
                     <td>{item.amount}</td>
                     <td>{item.createTime}</td>
-                    <td>{item.orderStatusName}</td>
-                    <td><Link className="ant-btn ant-btn-primary ant-btn-lg" to={path}>详情</Link></td>
-                    {/*<td><Link className="btn btn-primary" to="/arbitrationbuyer">THEMIS仲裁</Link></td>*/}
+                    <td>{item.orderStatusName}<span>{item.arbitrate == 2 ? "(仲裁完成)": ""}</span></td>
+                    <td><button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.showOrderDetail.bind(this,item)}>详情</button></td>
                 </tr>
             )
         })
+    }
+    showOrderDetail(item){
+        const userId= localStorage.getItem('userId');
+        const orderData={id:item.id,userId:userId,partnerId:item.sellerId == userId ? item.buyerId : item.sellerId,friendUsername:item.friendUsername}
+        localStorage.setItem("partner",JSON.stringify(orderData));
+        window.location.href='/orderprogress';
     }
     render() {
         const completed_orders = this.props.completed_orders;
         const totalNum = completed_orders && completed_orders[0].pageCount
         console.log(totalNum)
         console.log(this.props.completed_orders)
-        if(this.props.completed_orders===null){
-            return(
-                <div className="container">
-                    <div className="h1 text-center">Loading...</div>
-                </div>
-            )
-        }
         return (
             <div className="container">
                 <div className="orderType text-center g-pt-50 g-pb-50">
@@ -77,7 +71,7 @@ class OrderCompleted extends Component {
                     </ul>
                 </div>
                 <div className="table-responsive">
-                    <div className="table table-striped table-bordered table-hover">
+                    <div className="table table-striped table-hover">
                         <table className="table">
                             <thead>
                             <tr>
