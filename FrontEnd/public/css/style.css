@@ -187,6 +187,14 @@ div {
     border:1px solid #16F6EA;
     box-shadow: 0 0 5px #16F6EA;
 }
+.form-login>a,.form-login>a:hover,.form-login>a:active
+{
+    color: white;
+}
+.g-pb-3:hover,.g-pb-3:active
+{
+    color: #BBBBBB;
+}
 .form-save
 {
     display:block;
@@ -209,7 +217,7 @@ div {
 .form-test
 {
     display:block;
-    width:35%!important;
+    width:50%!important;
     height: 36px;
     margin-bottom: 15px;
     border-radius:1px;
@@ -692,10 +700,11 @@ div {
 }
 .contenttrust>td>img
 {
-    width:20px;
+    width:25px;
     border-radius:50%;
     position: relative;
-    top:5px;
+    top:8px;
+    margin-left: 10px;
 }
 .tabletitle
 {
@@ -1409,7 +1418,7 @@ html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
     border:none!important;
 }
 .ant-btn-lg{
-    line-height: 30px !important;
+    /*line-height: 30px !important;*/
 }
 .ant-modal-body
 {

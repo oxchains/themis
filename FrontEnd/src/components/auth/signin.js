@@ -59,7 +59,7 @@ class Signin extends Component {
                                     <button  className="btn form-login" onClick={this.handlePhoneSubmit.bind(this)}>登录</button>
                                 </div>
                                 <div className="form-group">
-                                    <a className="forgetpwd" href="">忘记密码 ?</a>
+                                    <a className="forgetpwd" href="/forgetpsw">忘记密码 ?</a>
                                 </div>
                                 {this.renderAlert()}
                             </div>

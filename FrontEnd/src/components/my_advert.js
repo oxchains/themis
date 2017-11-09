@@ -174,8 +174,6 @@ class Myadvert extends Component {
                                 </button>
                             </ModalFooter>
                         </Modal>
-
-
                 </div>
             );
         }
