@@ -25,8 +25,18 @@ public class MessageText {
 
     private Integer messageType;   // 信息类型 1.private(私信) 2.public(公共消息) 3.global(系统消息)
 
-    private Long userGroup;     // 用户组ID
+    private Integer userGroup;     // 用户组ID 1.admin 2.仲裁 3.客服 4.普通用户
 
     private String postDate;   // 站内信发送时间
 
+    public MessageText(Long senderId, String message, Integer messageType, Integer userGroup, String postDate) {
+        this.senderId = senderId;
+        this.message = message;
+        this.messageType = messageType;
+        this.userGroup = userGroup;
+        this.postDate = postDate;
+    }
+
+    public MessageText() {
+    }
 }
