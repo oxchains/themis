@@ -1,16 +1,18 @@
-package com.oxchains.themis.chat;
+package com.oxchains.themis;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * create by huohuo
+ * Created by huohuo on 2017/10/12.
  * @author huohuo
  */
+@EnableTransactionManagement
 @SpringBootApplication
 @EnableEurekaClient
 public class Application {

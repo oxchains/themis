@@ -11,12 +11,21 @@ import org.springframework.web.multipart.MultipartFile;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class RegisterRequest {
-
   private MultipartFile multipartFile;
   private String id;
   private Long userId;
   private String content;
   private String fileName;
+  private String image;
+  private MultipartFile[] files;
+
+  public MultipartFile[] getFiles() {
+    return files;
+  }
+
+  public void setFiles(MultipartFile[] files) {
+    this.files = files;
+  }
 
   public String getFileName() {
     return fileName;

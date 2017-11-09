@@ -1,7 +1,8 @@
-package com.oxchains.themis.arbitrate.common.messageCommon;
+package com.oxchains.themis.common.constant.message;
 
 /**
  * Created by xuqi on 2017/11/7.
+ * @author huohuo
  */
 public class MessageType {
     public static final Integer PRIVATE_LETTET = 1;  //私信

@@ -1,7 +1,8 @@
-package com.oxchains.themis.arbitrate.common.messageCommon;
+package com.oxchains.themis.common.constant.message;
 
 /**
  * Created by xuqi on 2017/11/7.
+ * @author huohuo
  */
 public class MessageUserGroup {
     public static final Integer ADMIN  = 1;

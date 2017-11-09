@@ -1,4 +1,4 @@
-package com.oxchains.themis.arbitrate.entity.message;
+package com.oxchains.themis.repo.entity;
 
 import lombok.Data;
 
@@ -22,13 +22,14 @@ public class Message {
     private Long receiverId;     // 接受者编号
 
     private Long messageTextId; // 站内信编号
-
+    private Integer messageType;   // 信息类型 1.private(私信) 2.public(公共消息) 3.global(系统消息)
     private Integer readStatus; // 站内信的查看状态 1.未读 2.已读 3.删除
 
-    public Message(Long receiverId, Long messageTextId, Integer readStatus) {
+    public Message(Long receiverId, Long messageTextId, Integer readStatus,Integer messageType) {
         this.receiverId = receiverId;
         this.messageTextId = messageTextId;
         this.readStatus = readStatus;
+        this.messageType = messageType;
     }
 
     public Message() {

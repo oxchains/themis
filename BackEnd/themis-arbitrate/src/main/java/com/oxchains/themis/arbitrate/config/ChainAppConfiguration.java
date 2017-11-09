@@ -1,4 +1,4 @@
-package com.oxchains.themis.arbitrate.common;
+package com.oxchains.themis.arbitrate.config;
 
 import com.oxchains.themis.arbitrate.auth.AuthError;
 import com.oxchains.themis.arbitrate.auth.JwtAuthenticationProvider;
@@ -40,8 +40,6 @@ public class ChainAppConfiguration extends WebSecurityConfigurerAdapter {
           .disable()
           .authorizeRequests()
           .antMatchers("/**/*")
-          .permitAll()
-          .antMatchers("/user")
           .authenticated()
           .and()
           .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)

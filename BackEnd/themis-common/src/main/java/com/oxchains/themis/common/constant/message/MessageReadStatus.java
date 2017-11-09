@@ -1,7 +1,8 @@
-package com.oxchains.themis.order.common.messageCommon;
+package com.oxchains.themis.common.constant.message;
 
 /**
  * Created by xuqi on 2017/11/7.
+ * @author huohuo
  */
 public class MessageReadStatus {
     public static final Integer UN_READ = 1; //未读

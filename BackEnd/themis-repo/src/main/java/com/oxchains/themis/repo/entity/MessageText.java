@@ -1,5 +1,7 @@
-package com.oxchains.themis.order.entity.message;
+package com.oxchains.themis.repo.entity;
+
 import lombok.Data;
+
 import javax.persistence.*;
 
 /**
@@ -26,14 +28,17 @@ public class MessageText {
 
     private String postDate;   // 站内信发送时间
 
+    private String orderId;
 
 
-    public MessageText(Long senderId, String message, Integer messageType, Long userGroup, String postDate) {
+
+    public MessageText(Long senderId, String message, Integer messageType, Long userGroup, String postDate,String orderId) {
         this.senderId = senderId;
         this.message = message;
         this.messageType = messageType;
         this.userGroup = userGroup;
         this.postDate = postDate;
+        this.orderId = orderId;
     }
 
     public MessageText() {

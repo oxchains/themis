@@ -2,11 +2,13 @@ package com.oxchains.themis.chat.websocket;
 import com.oxchains.themis.chat.entity.ChatContent;
 import com.oxchains.themis.chat.entity.MsgType;
 import com.oxchains.themis.chat.service.KafkaService;
+import com.oxchains.themis.chat.service.MessageService;
 import com.oxchains.themis.chat.websocket.chatfunction.ChatContext;
 import com.oxchains.themis.chat.websocket.chatfunction.function.HealthCheck;
 import com.oxchains.themis.chat.websocket.chatfunction.function.UserChat;
 import com.oxchains.themis.common.util.DateUtil;
 import com.oxchains.themis.common.util.JsonUtil;
+import com.oxchains.themis.repo.entity.Message;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -26,11 +29,12 @@ import java.util.Map;
  * create by huohuo
  * @author huohuo
  */
-@Component
 public class TextWebSocketFrameHandler extends
 		SimpleChannelInboundHandler<TextWebSocketFrame> {
 	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 	private KafkaService kafkaService;
+	@Resource
+	private MessageService messageService;
 	public TextWebSocketFrameHandler(KafkaService kafkaService){
     this.kafkaService = kafkaService;
 	}
@@ -76,6 +80,7 @@ public class TextWebSocketFrameHandler extends
 		Channel incoming = ctx.channel();
 		cause.printStackTrace();
 		ctx.close();
+		channels.remove(incoming);
 	}
 
 }

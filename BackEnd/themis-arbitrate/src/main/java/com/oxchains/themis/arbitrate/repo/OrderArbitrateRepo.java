@@ -14,9 +14,10 @@ import java.util.List;
  */
 @Repository
 public interface OrderArbitrateRepo extends CrudRepository<OrderArbitrate,Long> {
-    Page<OrderArbitrate> findOrderArbitrateByUserIdAndAndStatusIsNot(Long userId, Integer status, Pageable pageable);
-    OrderArbitrate findOrderArbitrateByUserIdAndOrderId(Long id, String orderId);
-    List<OrderArbitrate> findOrderArbitrateByOrderId(String orderId);
-    OrderArbitrate findByOrOrderIdAndStatus(String id, Integer status);
+    Page<OrderArbitrate> findByUserIdAndAndStatusIsNot(Long userId, Integer status, Pageable pageable);
+    OrderArbitrate findByUserIdAndOrderId(Long id, String orderId);
+    List<OrderArbitrate> findByOrderId(String orderId);
+
+    List<OrderArbitrate> findByOrOrderIdAndStatus(String id, Integer status);
 
 }

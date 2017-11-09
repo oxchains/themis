@@ -23,18 +23,16 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
     public void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
         String requestUri =  request.getUri().toString();
         if (requestUri.contains(wsUri)){
-            String message = requestUri.substring(requestUri.lastIndexOf("?")+1);
-            String[] ids = message.split("_");
             String id = null;
             String receiverId = null;
-            if(ids.length>=2){
-                id = ids[0];
-                receiverId = ids[1];
+            this.getIdAndReceiverId(id,receiverId,requestUri);
+            if(id != null && receiverId != null){
+                //判断当前用户的channel分区是否已经创建，如未创建 则创建之
                 if(ChatUtil.userChannels.get(id) == null){
                     ChatUtil.userChannels.put(id,new ConcurrentHashMap<String ,ChannelHandler>());
                 }
-                String keyIds = ChatUtil.getIDS(id,receiverId);
                 Map<String,ChannelHandler> channelHandlerMap =  ChatUtil.userChannels.get(id);
+                String keyIds = ChatUtil.getIDS(id,receiverId);
                 //如果连接存在 则把以前的连接关闭掉 建立新的连接
                 if(channelHandlerMap.get(keyIds) != null){
                     channelHandlerMap.get(keyIds).close();
@@ -63,5 +61,14 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
             throws Exception {
         cause.printStackTrace();
         ctx.close();
+    }
+    private void getIdAndReceiverId(String id,String receiverid,String requestUri){
+        String message = requestUri.substring(requestUri.lastIndexOf("?")+1);
+        String[] ids = message.split("_");
+        if(ids.length>=2){
+            id = ids[0];
+            receiverid = ids[1];
+        }
+
     }
 }

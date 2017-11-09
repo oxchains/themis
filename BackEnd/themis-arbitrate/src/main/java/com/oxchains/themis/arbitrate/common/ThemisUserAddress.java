@@ -2,6 +2,7 @@ package com.oxchains.themis.arbitrate.common;
 
 /**
  * Created by xuqi on 2017/11/6.
+ * @author huohuo
  */
 public class ThemisUserAddress {
     public static final String GET_ADDRESS_KEYS ="http://themis-user/account/keys";
