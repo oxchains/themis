@@ -24,7 +24,7 @@
         <module>themis-arbitrate</module>
         <module>themis-repo</module>
 
-        <!--<module>bitcoin-rpc-client</module>-->
+        <module>bitcoin-rpc-client</module>
     </modules>
 
     <properties>

@@ -107,6 +107,12 @@ public class BitcoinJSONRPCClient extends BaseBitcoinJSONRPCClient {
         return createRawTransaction(inputs,outputs,null);
     }
 
+    public RawTransaction decodeRawTransaction(String hex) throws BitcoinRpcException {
+        Map result = (Map) query("decoderawtransaction", hex);
+        RawTransaction rawTransaction = new RawTransactionImpl(result);
+        return rawTransaction.vOut().get(0).transaction();
+    }
+
     @Override
     public DecodedScript decodeScript(String hex) {
         return new DecodedScriptImpl((Map) query("decodescript", hex));
