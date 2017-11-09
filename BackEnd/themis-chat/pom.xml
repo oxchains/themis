@@ -67,12 +67,12 @@
         </dependency>
         <dependency>
             <artifactId>themis-repo</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.1-SNAPSHOT</version>
             <groupId>com.oxchains</groupId>
         </dependency>
         <dependency>
             <artifactId>themis-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.1-SNAPSHOT</version>
             <groupId>com.oxchains</groupId>
         </dependency>
         <dependency>

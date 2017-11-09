@@ -23,6 +23,7 @@
         <module>themis-order</module>
         <module>themis-arbitrate</module>
         <module>themis-repo</module>
+        <module>themis-message</module>
 
         <module>bitcoin-rpc-client</module>
         <module>themis-zuul</module>
