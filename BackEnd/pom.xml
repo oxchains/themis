@@ -25,6 +25,7 @@
         <module>themis-repo</module>
 
         <module>bitcoin-rpc-client</module>
+        <module>themis-zuul</module>
     </modules>
 
     <properties>
