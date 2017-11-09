@@ -71,20 +71,19 @@ public class NoticeService {
                 }
             }else {
                 // 选填项（最低价判断）
-                List<CNYDetail> cnyDetailList = cnyDetailDao.findBySymbol("¥");
-                if (cnyDetailList.size() != NoticeConst.ListSize.ZERO.getValue()){
-                    for (CNYDetail c : cnyDetailList){
-                        if (null == notice.getMinPrice()){
-                            notice.setMinPrice(new BigDecimal(c.getLast()));
-                        }else {
-
-                            Double low = Double.valueOf(c.getLast());
-                            Double minPrice = notice.getMinPrice().doubleValue();
-                            if (ArithmeticUtils.minus(low, minPrice) < NoticeConst.Constant.ZERO.getValue()){
-                                notice.setPrice(notice.getMinPrice());
-                            }
+                CNYDetail cnyDetail = cnyDetailDao.findBySymbol("¥");
+                if (cnyDetail != null){
+                    if (null == notice.getMinPrice()){
+                        notice.setMinPrice(new BigDecimal(cnyDetail.getLast()));
+                    }else {
+                        Double low = Double.valueOf(cnyDetail.getLast());
+                        Double minPrice = notice.getMinPrice().doubleValue();
+                        if (ArithmeticUtils.minus(low, minPrice) < NoticeConst.Constant.ZERO.getValue()){
+                            notice.setPrice(notice.getMinPrice());
                         }
                     }
+                }else {
+                    return RestResp.fail("比特币价格获取失败，请手动查询实时价格慎重");
                 }
             }
 
@@ -179,7 +178,7 @@ public class NoticeService {
     public RestResp queryMeAllNotice(Long userId, Integer pageNum, Long noticeType, Integer txStatus){
         try {
             List<Notice> resultList = new ArrayList<>();
-            Pageable pageable = buildPageRequest(pageNum, NoticeConst.Constant.EIGHT.getValue(), "auto");
+            Pageable pageable = buildPageRequest(pageNum, NoticeConst.Constant.FIVE.getValue(), "auto");
             Page<Notice> page = null;
             if (txStatus.equals(NoticeConst.TxStatus.TWO.getStatus())){
                 page = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(userId, noticeType, NoticeConst.TxStatus.TWO.getStatus(), pageable);
@@ -196,13 +195,13 @@ public class NoticeService {
             PageDTO<Notice> pageDTO = new PageDTO<>();
             if (page == null){
                 pageDTO.setCurrentPage(NoticeConst.Constant.ONE.getValue());
-                pageDTO.setPageSize(NoticeConst.Constant.EIGHT.getValue());
+                pageDTO.setPageSize(NoticeConst.Constant.FIVE.getValue());
                 pageDTO.setRowCount((long)resultList.size());
                 pageDTO.setTotalPage(NoticeConst.Constant.ONE.getValue());
                 pageDTO.setPageList(resultList);
             }else {
                 pageDTO.setCurrentPage(pageNum);
-                pageDTO.setPageSize(NoticeConst.Constant.EIGHT.getValue());
+                pageDTO.setPageSize(NoticeConst.Constant.FIVE.getValue());
                 pageDTO.setRowCount(page.getTotalElements());
                 pageDTO.setTotalPage(page.getTotalPages());
                 pageDTO.setPageList(resultList);
@@ -267,9 +266,9 @@ public class NoticeService {
 
     public RestResp queryBlockChainInfo(){
         try {
-            List<CNYDetail> cnyDetailList = cnyDetailDao.findBySymbol("¥");
-            if (cnyDetailList.size() != NoticeConst.ListSize.ZERO.getValue()){
-                return RestResp.success("操作成功", cnyDetailList);
+            CNYDetail cnyDetail = cnyDetailDao.findBySymbol("¥");
+            if (cnyDetail != null){
+                return RestResp.success("操作成功", cnyDetail);
             }else {
                 return RestResp.fail("操作失败");
             }
@@ -288,7 +287,7 @@ public class NoticeService {
             Long noticeType = NoticeConst.NoticeType.SELL.getStatus();
             Integer pageNum = notice.getPageNum();
 
-            Pageable pageable = buildPageRequest(pageNum, NoticeConst.Constant.EIGHT.getValue(), "auto");
+            Pageable pageable = buildPageRequest(pageNum, NoticeConst.Constant.FIVE.getValue(), "auto");
 
             // 对所在地，货币类型，支付方式判断，可为null
             Page<Notice> page = null;
@@ -339,7 +338,7 @@ public class NoticeService {
             // 将page相关参数设置到DTO中返回
             PageDTO<Notice> pageDTO = new PageDTO<>();
             pageDTO.setCurrentPage(pageNum);
-            pageDTO.setPageSize(NoticeConst.Constant.EIGHT.getValue());
+            pageDTO.setPageSize(NoticeConst.Constant.FIVE.getValue());
             pageDTO.setRowCount(page.getTotalElements());
             pageDTO.setTotalPage(page.getTotalPages());
             pageDTO.setPageList(resultList);
@@ -359,7 +358,7 @@ public class NoticeService {
             Long noticeType = NoticeConst.NoticeType.BUY.getStatus();
             Integer pageNum = notice.getPageNum();
 
-            Pageable pageable = buildPageRequest(pageNum, NoticeConst.Constant.EIGHT.getValue(), "createTime");
+            Pageable pageable = buildPageRequest(pageNum, NoticeConst.Constant.FIVE.getValue(), "createTime");
 
             Page<Notice> page = null;
             if (null != location && null != currency && null != payType) {
@@ -408,7 +407,7 @@ public class NoticeService {
 
             PageDTO<Notice> pageDTO = new PageDTO<>();
             pageDTO.setCurrentPage(pageNum);
-            pageDTO.setPageSize(NoticeConst.Constant.EIGHT.getValue());
+            pageDTO.setPageSize(NoticeConst.Constant.FIVE.getValue());
             pageDTO.setRowCount(page.getTotalElements());
             pageDTO.setTotalPage(page.getTotalPages());
             pageDTO.setPageList(resultList);
@@ -455,7 +454,7 @@ public class NoticeService {
             Iterable<Payment> payment = paymentDao.findAll();
             Iterable<SearchType> searchType = searchTypeDao.findAll();
             Iterable<BTCTicker> btcTiker = btcTickerDao.findBTCTickerBySymbol("btccny");
-            List<CNYDetail> cnyDetailList = cnyDetailDao.findBySymbol("¥");
+            CNYDetail cnyDetail = cnyDetailDao.findBySymbol("¥");
 
             if (location.iterator().hasNext() && currency.iterator().hasNext() && payment.iterator().hasNext() && searchType.iterator().hasNext()){
                 StatusDTO statusDTO = new StatusDTO<>();
@@ -464,7 +463,7 @@ public class NoticeService {
                 statusDTO.setPaymentList(payment);
                 statusDTO.setSearchTypeList(searchType);
                 statusDTO.setBTCMarketList(btcTiker);
-                statusDTO.setCnyDetailList(cnyDetailList);
+                statusDTO.setCnyDetailList(cnyDetail);
                 return RestResp.success("操作成功", statusDTO);
             } else {
                 return RestResp.fail("操作失败");

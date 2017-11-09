@@ -14,5 +14,5 @@ import java.util.List;
 @Repository
 public interface CNYDetailDao extends CrudRepository<CNYDetail, Long> {
 
-    List<CNYDetail> findBySymbol(String symbol);
+    CNYDetail findBySymbol(String symbol);
 }

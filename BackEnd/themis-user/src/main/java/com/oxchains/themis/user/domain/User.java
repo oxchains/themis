@@ -157,6 +157,7 @@ public class User {
     @Transient
     private MultipartFile file;
 
+    @Transient
     private String newPassword;
 
     public Role getRole() {
