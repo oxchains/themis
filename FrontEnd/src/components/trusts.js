@@ -68,6 +68,9 @@ class Trust extends Component {
         return arraydata.map((item, index) => {
         return(
             <tr key={index} className="contenttrust">
+                <td>
+                    <img src={item.src ? item.src : "/public/img/touxiang.png"} alt=""/>
+                </td>
                 <td>{item.fromUserName }</td>
                 <td>交易次数 {item.txNum }</td>
                 <td>信任人数 {item.believeNum } </td>
@@ -79,8 +82,8 @@ class Trust extends Component {
         })
     }
     render() {
-        // const totalNum = this.props.all.length;
-        const totalNum = 3
+        const arrayList = this.props.all || [];
+        const totalNum = arrayList.length
         return (
             <div className="">
                 <ul className=" titleul">

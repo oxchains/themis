@@ -3,8 +3,8 @@
  */
 import React, { Component } from 'react';
 
-import Base  from  './baseinfo'
-import Safe  from  './safeset'
+import Base  from './base_info'
+import Safe  from './safe_set'
 import Trust from './trusts'
 class Usercenter extends Component {
     constructor(props) {

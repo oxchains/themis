@@ -3,7 +3,7 @@
  */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Upload, Icon, message } from 'antd';
+import { Upload } from 'antd';
 import { fetctBaseInfo } from '../actions/releaseadvert'
 import {
     Modal,
@@ -45,25 +45,9 @@ class Baseinfo extends Component {
     }
 
     handleSave(){
-        // const loginname = localStorage.getItem("loginname")
-        // const description = this.refs.description.value;
-        // const image =  this.state.imageUrl
-        // console.log(loginname)
-        // console.log(description)
-        // console.log(image)
-
-       /* const formdata = {
-            loginname : localStorage.getItem("loginname"),
-            description : this.refs.description.value,
-            image : this.state.imageUrl
-        }*/
-
        let formdata = new FormData();
        formdata.append("loginname",localStorage.getItem("loginname"));
        formdata.append("description",this.refs.description.value);
-       formdata.append("image",this.state.imageUrl);
-
-        console.log(formdata)
         this.props.fetctBaseInfo({formdata}, err=>{
             this.setState({ isModalOpen: true , error: err , actionResult: err||'保存成功!'});
         })
@@ -80,6 +64,7 @@ class Baseinfo extends Component {
         const  sellAmount = localStorage.getItem('sellAmount') //出售的累计交易数量
         const  buyAmount = localStorage.getItem('buyAmount') //购买的累计交易数量
         const imageUrl = this.state.imageUrl;
+       const actionUrl = "http://192.168.1.111:8081/user/info?loginname=" +loginname
         return (
             <div>
                 <div className="maininfo">
@@ -87,9 +72,9 @@ class Baseinfo extends Component {
                         {/*<img className="baseinfoimg" src="./public/img/user.jpg" alt=""/>*/}
                         <Upload
                             className="avatar-uploader"
-                            name="avatar"
+                            name="file"
                             showUploadList={false}
-                            action="//jsonplaceholder.typicode.com/posts/"
+                            action={actionUrl}
                             onChange={this.handleChange}
                         >
                             {

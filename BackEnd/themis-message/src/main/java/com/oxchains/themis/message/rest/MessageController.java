@@ -1,8 +1,9 @@
 package com.oxchains.themis.message.rest;
 
+import com.oxchains.themis.common.model.RestResp;
+import com.oxchains.themis.message.domain.MessageText;
 import com.oxchains.themis.message.service.MessageService;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -23,4 +24,75 @@ public class MessageController {
 
     @Resource
     private MessageService messageService;
+
+    /**
+     * Admin发送系统消息
+     * @param messageText
+     * @return
+     */
+    @PostMapping(value = "/send/globalMessage")
+    public RestResp sendGlobalMessage(@RequestBody MessageText messageText){
+        return messageService.sendGlobalMessage(messageText);
+
+    }
+
+    /**
+     * 显示私信未读
+     * @param userId
+     * @return
+     */
+    @GetMapping(value = "/query/privateMsgNoRead")
+    public RestResp queryPrivateMsgNoRead(@RequestParam Long userId){
+        return messageService.queryPrivateMsgNoRead(userId);
+    }
+
+    /**
+     * 显示私信已读
+     * @param userId
+     * @return
+     */
+    @GetMapping(value = "/query/privateMsgYesRead")
+    public RestResp queryPrivateMsgYesRead(@RequestParam Long userId){
+        return messageService.queryPrivateMsgYesRead(userId);
+    }
+
+    /**
+     * 显示公共消息未读
+     * @param userId
+     * @return ajax请求实体
+     */
+    @GetMapping(value = "/query/publicMsgNoRead")
+    public RestResp queryPublicMsgNoRead(@RequestParam Long userId, @RequestParam Integer userGroup){
+        return messageService.queryPublicMsgNoRead(userId, userGroup);
+    }
+
+    /**
+     * 显示公共消息已读
+     * @param userId
+     * @return
+     */
+    @GetMapping(value = "/query/publicMsgYesRead")
+    public RestResp queryPublicMsgYesRead(@RequestParam Long userId){
+        return messageService.queryPublicMsgYesRead(userId);
+    }
+
+    /**
+     * 显示系统信息未读
+     * @param userId
+     * @return
+     */
+    @GetMapping(value = "/query/globalMsgNoRead")
+    public RestResp queryGlobalMsgNoRead(@RequestParam Long userId){
+        return messageService.queryGlobalMsgNoRead(userId);
+    }
+
+    /**
+     * 显示系统信息已读
+     * @param userId
+     * @return
+     */
+    @GetMapping(value = "/query/globalMsgYesRead")
+    public RestResp queryGlobalMsgYesRead(@RequestParam Long userId){
+        return messageService.queryGlobalMsgYesRead(userId);
+    }
 }

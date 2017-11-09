@@ -19,14 +19,14 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;        // 编号
 
-    private Long ReceiverId;     // 接受者编号
+    private Long receiverId;     // 接受者编号
 
     private Long messageTextId; // 站内信编号
 
     private Integer readStatus; // 站内信的查看状态 1.未读 2.已读 3.删除
 
     public Message(Long receiverId, Long messageTextId, Integer readStatus) {
-        ReceiverId = receiverId;
+        receiverId = receiverId;
         this.messageTextId = messageTextId;
         this.readStatus = readStatus;
     }

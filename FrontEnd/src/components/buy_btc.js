@@ -51,11 +51,12 @@ class Buybtc extends Component {
         const payType = this.state.payway
         this.props.fetcAdvertSeach({searchType,location,currency,payType,pageNum}, ()=>{});
     }
-    handleRow( ){
+    handleRow(){
         const arraydata = this.props.all.pageList || []    //列表数组的数据
         return arraydata.map((item, index) => {
             return(
                 <tr key={index} className="contentborder">
+
                     <td className="tabletitle">{item.loginname}</td>
                     <td className="tabletitle">交易 {item.txNum} | 好评度 {item.goodPercent} | 信任 {item.trustNum}</td>
                     <td className="tabletitle"> {item.payType == 1 ?"现金":item.payType == 2 ?"转账":item.payType == 3 ?"支付宝":item.payType == 4 ? "微信":item.payType == 5 ? "Apple Pay":""} </td>

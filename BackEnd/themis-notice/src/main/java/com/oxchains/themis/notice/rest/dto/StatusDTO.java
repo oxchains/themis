@@ -1,5 +1,6 @@
 package com.oxchains.themis.notice.rest.dto;
 
+import com.oxchains.themis.notice.domain.CNYDetail;
 import lombok.Data;
 
 import java.util.List;
@@ -19,5 +20,5 @@ public class StatusDTO <T> {
     private Iterable<T> paymentList;
 
     private Iterable<T> bTCMarketList;
-    private List<T> cnyDetailList;
+    private CNYDetail cnyDetailList;
 }

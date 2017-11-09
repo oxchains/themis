@@ -261,7 +261,7 @@ export function fetctBaseInfo({formdata},callback) {
 //用户中心受信任的
 
 export function fetctTrusted({userId,type,pageNo,pageSize},callback) {
-    console.log(`受信任的:${userId},${type},${pageNo} ,${pageSize} `);
+    // console.log(`受信任的:${userId},${type},${pageNo} ,${pageSize} `);
     return function(dispatch) {
         axios.get(`${ROOT_URLC}/user/trust?userId=${userId}&pageNo=${pageNo}&pageSize=${pageSize}&type=${type}`,
             { headers: getAuthorizedHeader() }).then(response => {
