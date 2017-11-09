@@ -8,6 +8,7 @@ import com.oxchains.themis.common.model.AddressKeys;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.model.ScriptHash;
 import com.oxchains.themis.common.util.ArithmeticUtils;
+import com.oxchains.themis.user.bitcoin.BitcoinConfig;
 import com.oxchains.themis.user.dao.TransactionDao;
 import com.oxchains.themis.user.domain.Transaction;
 import org.slf4j.Logger;

@@ -11,20 +11,23 @@ import java.util.Map;
 
 /**
  * Created by xuqi on 2017/11/7.
+ * @author huohuo
  */
 public class HealthCheck implements InfoStrategy{
     @Override
     public void disposeInfo(ChatContent chatContent) {
-        Map<String,ChannelHandler> channelHandlerMap = ChatUtil.userChannels.get(chatContent.getSenderId()+"");
-        String keyIDs = ChatUtil.getIDS(chatContent.getSenderId().toString(),chatContent.getReceiverId().toString());
-        ChannelHandler channelHandler = channelHandlerMap.get(keyIDs);
-        if(channelHandler!=null){
-            channelHandler.setLastUseTime(System.currentTimeMillis());
-            chatContent.setStatus("success");
+        Map<String,ChannelHandler> channelHandlerMap = ChatUtil.userChannels.get(chatContent.getSenderId().toString());
+        if(channelHandlerMap != null){
+            String keyIDs = ChatUtil.getIDS(chatContent.getSenderId().toString(),chatContent.getReceiverId().toString());
+            ChannelHandler channelHandler = channelHandlerMap.get(keyIDs);
+            if(channelHandler!=null){
+                channelHandler.setLastUseTime(System.currentTimeMillis());
+                chatContent.setStatus("success");
+            }
+            else{
+                chatContent.setStatus("error");
+            }
+            channelHandler.getChannel().writeAndFlush(new TextWebSocketFrame(JsonUtil.toJson(chatContent)));
         }
-        else{
-            chatContent.setStatus("error");
-        }
-        channelHandler.getChannel().writeAndFlush(new TextWebSocketFrame(JsonUtil.toJson(chatContent)));
     }
 }

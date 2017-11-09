@@ -4,6 +4,8 @@ import com.oxchains.bitcoin.util.BitcoinUtil;
 
 import java.math.BigDecimal;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -13,6 +15,21 @@ import java.util.*;
  * @desc:
  */
 public class BitcoinJSONRPCClient extends BaseBitcoinJSONRPCClient {
+
+    public BitcoinJSONRPCClient() {
+    }
+
+    public BitcoinJSONRPCClient(URL rpc) {
+        super(rpc);
+    }
+
+    public BitcoinJSONRPCClient(String rpcUrl) throws MalformedURLException {
+        super(rpcUrl);
+    }
+
+    public BitcoinJSONRPCClient(boolean testNet) {
+        super(testNet);
+    }
 
     /** <> *** bitcoin rpcs ***</> */
 
@@ -88,6 +105,12 @@ public class BitcoinJSONRPCClient extends BaseBitcoinJSONRPCClient {
     @Override
     public String createRawTransaction(List<TxInput> inputs, List<TxOutput> outputs) throws BitcoinRpcException {
         return createRawTransaction(inputs,outputs,null);
+    }
+
+    public RawTransaction decodeRawTransaction(String hex) throws BitcoinRpcException {
+        Map result = (Map) query("decoderawtransaction", hex);
+        RawTransaction rawTransaction = new RawTransactionImpl(result);
+        return rawTransaction.vOut().get(0).transaction();
     }
 
     @Override

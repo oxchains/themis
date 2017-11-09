@@ -160,7 +160,7 @@ public class UserService extends BaseService {
 
             userInfo.setUserTxDetail(userTxDetail);
 
-            u.setLoginStatus(Status.LoginStatus.LOGIN.getStatus());
+            u.setLoginStatus(Status.LoginStatus.LOGOUT.getStatus());
             userDao.save(u);
             ConstantUtils.USER_TOKEN.put(u.getLoginname(), token);
 

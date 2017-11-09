@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
  * @desc:
  */
 @Repository
-public interface UserTxDetailDao extends CrudRepository<UserTxDetail,Long>{
+public interface UserTxDetailDao  extends CrudRepository<UserTxDetail,Long>{
     UserTxDetail findByUserId(Long userId);
 }

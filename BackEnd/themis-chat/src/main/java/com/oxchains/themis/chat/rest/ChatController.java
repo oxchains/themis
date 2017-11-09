@@ -20,5 +20,4 @@ public class ChatController {
     public RestResp getChatHistroy(ChatContent chatContent){
       return RestResp.success(chatService.getChatHistroy(chatContent));
     }
-
 }

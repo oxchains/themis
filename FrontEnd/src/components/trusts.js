@@ -69,7 +69,7 @@ class Trust extends Component {
         return(
             <tr key={index} className="contenttrust">
                 <td>
-                    <img src={item.src ? item.src : "/public/img/default.png"} alt=""/>
+                    <img src={item.src ? item.src : "/public/img/touxiang.png"} alt=""/>
                 </td>
                 <td>{item.fromUserName }</td>
                 <td>交易次数 {item.txNum }</td>
@@ -82,8 +82,8 @@ class Trust extends Component {
         })
     }
     render() {
-        // const totalNum = this.props.all.length;
-        const totalNum = 3
+        const arrayList = this.props.all || [];
+        const totalNum = arrayList.length
         return (
             <div className="">
                 <ul className=" titleul">

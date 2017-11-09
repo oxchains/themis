@@ -1,18 +1,18 @@
 package com.oxchains.themis.order.service;
+import com.oxchains.themis.common.constant.message.MessageReadStatus;
+import com.oxchains.themis.common.constant.message.MessageType;
 import com.oxchains.themis.common.util.DateUtil;
 import com.oxchains.themis.order.common.ParamType;
 import com.oxchains.themis.order.common.Pojo;
-import com.oxchains.themis.order.common.messageCommon.MessageReadStatus;
-import com.oxchains.themis.order.common.messageCommon.MessageType;
 import com.oxchains.themis.order.entity.OrderArbitrate;
 import com.oxchains.themis.order.entity.Orders;
-import com.oxchains.themis.order.entity.message.Message;
-import com.oxchains.themis.order.entity.message.MessageText;
 import com.oxchains.themis.order.repo.NoticeRepo;
 import com.oxchains.themis.order.repo.OrderArbitrateRepo;
 import com.oxchains.themis.order.repo.UserRepo;
-import com.oxchains.themis.order.repo.message.MessageRepo;
-import com.oxchains.themis.order.repo.message.MessageTextRepo;
+import com.oxchains.themis.repo.dao.MessageRepo;
+import com.oxchains.themis.repo.dao.MessageTextRepo;
+import com.oxchains.themis.repo.entity.Message;
+import com.oxchains.themis.repo.entity.MessageText;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
@@ -38,33 +38,33 @@ public class MessageService {
             Long userId = noticeRepo.findOne(orders.getNoticeId()).getUserId();
             String username = userRepo.findOne(userId).getLoginname();
             String message = "恭喜你的公告已经被用户【 "+username+" 】拍下，交易数量 【 "+orders.getAmount()+" 】 订单号 【 "+orders.getId()+" 】请及时处理";
-            MessageText messageText = new MessageText(0L,message,MessageType.PRIVATE_LETTET,0L,DateUtil.getPresentDate());
+            MessageText messageText = new MessageText(0L,message, MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
             MessageText save = messageTextRepo.save(messageText);
-            Message message1 = new Message(userId,save.getId(),MessageReadStatus.UN_READ);
+            Message message1 = new Message(userId,save.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message1);
         }
         if(orders.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_PAY.getStatus()){
             String username = userRepo.findOne(orders.getSellerId()).getLoginname();
             String message = "恭喜你的订单已经被商家 【 "+username+" 】确认,订单编号【 "+orders.getId()+" 】 请您及时处理";
-            MessageText messageText = new MessageText(0L,message,MessageType.PRIVATE_LETTET,0L,DateUtil.getPresentDate());
+            MessageText messageText = new MessageText(0L,message,MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
             MessageText save = messageTextRepo.save(messageText);
-            Message message1 = new Message(orders.getBuyerId(),save.getId(),MessageReadStatus.UN_READ);
+            Message message1 = new Message(orders.getBuyerId(),save.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message1);
         }
         if(orders.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_SEND.getStatus()){
             String username = userRepo.findOne(orders.getBuyerId()).getLoginname();
             String message = "恭喜你的订单已经被买家 【 "+username+" 】 确认付款，订单编号【 "+orders.getId()+" 】,请您及时处理";
-            MessageText messageText = new MessageText(0L,message,MessageType.PRIVATE_LETTET,0L,DateUtil.getPresentDate());
+            MessageText messageText = new MessageText(0L,message,MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
             MessageText save = messageTextRepo.save(messageText);
-            Message message1 = new Message(orders.getSellerId(),save.getId(),MessageReadStatus.UN_READ);
+            Message message1 = new Message(orders.getSellerId(),save.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message1);
         }
         if(orders.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_RECIVE.getStatus()){
             String username = userRepo.findOne(orders.getSellerId()).getLoginname();
             String message = "恭喜你的订单已经被卖家 【 "+username+" 】 确认释放BTC，订单编号【 "+orders.getId()+" 】,请您及时处理";
-            MessageText messageText = new MessageText(0L,message,MessageType.PRIVATE_LETTET,0L,DateUtil.getPresentDate());
+            MessageText messageText = new MessageText(0L,message,MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
             MessageText save = messageTextRepo.save(messageText);
-            Message message1 = new Message(orders.getBuyerId(),save.getId(),MessageReadStatus.UN_READ);
+            Message message1 = new Message(orders.getBuyerId(),save.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message1);
         }
     }
@@ -88,18 +88,18 @@ public class MessageService {
         if(orders.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_REFUND.getStatus()){
              message = "你的订单已经被"+orderTyep+"【 "+username+" 】申请取消，订单编号【 "+orders.getId()+" 】请及时处理";
         }
-        MessageText messageText = new MessageText(0L,message,MessageType.PRIVATE_LETTET,0L,DateUtil.getPresentDate());
+        MessageText messageText = new MessageText(0L,message,MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
         MessageText save = messageTextRepo.save(messageText);
-        Message message1 = new Message(receiverId,save.getId(),MessageReadStatus.UN_READ);
+        Message message1 = new Message(receiverId,save.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
         messageRepo.save(message1);
     }
     //收到退款的通知
     public void postRefoundMessage(Orders orders){
         String username = userRepo.findOne(orders.getBuyerId()).getLoginname();
         String message =  "订单编号【 "+orders.getId()+" 】 卖家 【 "+username+" 】 已经确认收到退款，BTC将会在10-30分钟内到账,请查收";
-        MessageText messageText = new MessageText(0L,message,MessageType.PRIVATE_LETTET,0L,DateUtil.getPresentDate());
+        MessageText messageText = new MessageText(0L,message,MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
         MessageText save = messageTextRepo.save(messageText);
-        Message message1 = new Message(orders.getSellerId(),save.getId(),MessageReadStatus.UN_READ);
+        Message message1 = new Message(orders.getSellerId(),save.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
         messageRepo.save(message1);
     }
     //仲裁者仲裁订单的通知
@@ -107,7 +107,7 @@ public class MessageService {
         String username = userRepo.findOne(userId).getLoginname();
         Long successUserId = null;
         Long faildUserId = null;
-        if(successId == OrderService.BUYER_SUCCESS.intValue()){
+        if(successId == 1){
             successUserId = orders.getBuyerId();
             faildUserId = orders.getSellerId();
         }
@@ -117,14 +117,14 @@ public class MessageService {
         }
         String successMessage = "恭喜，仲裁者【"+username+"】在订单【"+orders.getId()+"】中判断您为胜利方，获得密匙碎片一枚";
         String faildMessage = "很遗憾，仲裁者【"+username+"】在订单【"+orders.getId()+"】中判断对方为胜利方,对方获得密匙碎片一枚";
-        MessageText successMessageText = new MessageText(0L,successMessage,MessageType.PRIVATE_LETTET,0L,DateUtil.getPresentDate());
+        MessageText successMessageText = new MessageText(0L,successMessage,MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
         MessageText successSave = messageTextRepo.save(successMessageText);
-        Message message1 = new Message(successUserId,successSave.getId(),MessageReadStatus.UN_READ);
+        Message message1 = new Message(successUserId,successSave.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
         messageRepo.save(message1);
 
-        MessageText messageText2 = new MessageText(0L,faildMessage,MessageType.PRIVATE_LETTET,0L,DateUtil.getPresentDate());
+        MessageText messageText2 = new MessageText(0L,faildMessage,MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
         MessageText faildSave = messageTextRepo.save(messageText2);
-        Message message2 = new Message(faildUserId,faildSave.getId(),MessageReadStatus.UN_READ);
+        Message message2 = new Message(faildUserId,faildSave.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
         messageRepo.save(message2);
     }
     //仲裁完毕的通知
@@ -142,14 +142,14 @@ public class MessageService {
         String successMessage = "恭喜:订单编号【"+orders.getId()+"】你是这次仲裁的胜利方,BTC将会在5-30分钟内到达你的账户,请注意查收";
         String faildMessage = "很遗憾,订单编号【"+orders.getId()+"】此次仲裁您未获胜，如有疑问请及时联系我们的客服人员";
 
-        MessageText successMessageText = new MessageText(0L,successMessage,MessageType.PRIVATE_LETTET,0L,DateUtil.getPresentDate());
+        MessageText successMessageText = new MessageText(0L,successMessage,MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
         MessageText successSave = messageTextRepo.save(successMessageText);
-        Message message1 = new Message(successId,successSave.getId(),MessageReadStatus.UN_READ);
+        Message message1 = new Message(successId,successSave.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
         messageRepo.save(message1);
 
-        MessageText messageText2 = new MessageText(0L,faildMessage,MessageType.PRIVATE_LETTET,0L,DateUtil.getPresentDate());
+        MessageText messageText2 = new MessageText(0L,faildMessage,MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
         MessageText faildSave = messageTextRepo.save(messageText2);
-        Message message2 = new Message(falidId,faildSave.getId(),MessageReadStatus.UN_READ);
+        Message message2 = new Message(falidId,faildSave.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
         messageRepo.save(message2);
     }
     //提交评论的通知
@@ -168,9 +168,9 @@ public class MessageService {
             username = userRepo.findOne(orders.getSellerId()).getLoginname();
         }
         String message = "订单编号【"+orders.getId()+"】"+orderType+" 【"+username+"】于"+DateUtil.getPresentDate()+"评价了你 .内容: "+pojo.getContent();
-        MessageText messageText = new MessageText(0L,message,MessageType.PRIVATE_LETTET,0L,DateUtil.getPresentDate());
+        MessageText messageText = new MessageText(0L,message,MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
         MessageText successSave = messageTextRepo.save(messageText);
-        Message message1 = new Message(receiveId,successSave.getId(),MessageReadStatus.UN_READ);
+        Message message1 = new Message(receiveId,successSave.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
         messageRepo.save(message1);
     }
     //上传交易凭据的通知
@@ -179,15 +179,15 @@ public class MessageService {
         Long receiverId = orders.getBuyerId() == userId.longValue()?orders.getSellerId():orders.getBuyerId();
         String username = userRepo.findOne(userId).getLoginname();
         String message = "订单编号【"+orders.getId()+"】"+orderType+" 【"+username+"】于"+DateUtil.getPresentDate()+"对订单发起了仲裁,请及时处理";
-        MessageText messageText = new MessageText(0L,message,MessageType.PRIVATE_LETTET,0L,DateUtil.getPresentDate());
+        MessageText messageText = new MessageText(0L,message,MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
         MessageText successSave = messageTextRepo.save(messageText);
-        Message message1 = new Message(receiverId,successSave.getId(),MessageReadStatus.UN_READ);
+        Message message1 = new Message(receiverId,successSave.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
         messageRepo.save(message1);
 
         List<OrderArbitrate> list = orderArbitrateRepo.findOrderArbitrateByOrderId(orders.getId());
         for (OrderArbitrate o : list){
             MessageText st = messageTextRepo.save(messageText);
-            Message abritrateMessage = new Message(o.getUserId(),st.getId(),MessageReadStatus.UN_READ);
+            Message abritrateMessage = new Message(o.getUserId(),st.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(abritrateMessage);
         }
     }

@@ -1,9 +1,11 @@
 package com.oxchains.themis.arbitrate.common;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 /**
  * Created by huohuo on 2017/10/25.
@@ -24,9 +26,11 @@ public class Pojo implements Serializable {
     private String thumbUrl;
     private Integer pageNum;
     private Integer pageSize;
+    private MultipartFile[] multipartFile;
     public Integer getPageNum() {
         return pageNum;
     }
+
     @Override
     public String toString() {
         return "Pojo{" +
@@ -35,6 +39,15 @@ public class Pojo implements Serializable {
                 ", successId=" + successId +
                 ", noticeId=" + noticeId +
                 ", txId='" + txId + '\'' +
+                ", content='" + content + '\'' +
+                ", status=" + status +
+                ", amount='" + amount + '\'' +
+                ", money=" + money +
+                ", fileName='" + fileName + '\'' +
+                ", thumbUrl='" + thumbUrl + '\'' +
+                ", pageNum=" + pageNum +
+                ", pageSize=" + pageSize +
+                ", multipartFile=" + Arrays.toString(multipartFile) +
                 '}';
     }
 }

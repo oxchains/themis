@@ -265,7 +265,7 @@ export function fetctTrusted({userId,type,pageNo,pageSize},callback) {
     return function(dispatch) {
         axios.get(`${ROOT_URLC}/user/trust?userId=${userId}&pageNo=${pageNo}&pageSize=${pageSize}&type=${type}`,
             { headers: getAuthorizedHeader() }).then(response => {
-                // console.log(response)
+                console.log(response)
                 dispatch({type: FETCH_TRUSTED, payload: response})
 
             })

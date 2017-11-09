@@ -1,8 +1,6 @@
 package com.oxchains.themis.order.rest;
-import com.google.common.net.HttpHeaders;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.order.common.Pojo;
-import com.oxchains.themis.order.common.RegisterRequest;
 import com.oxchains.themis.order.entity.*;
 import com.oxchains.themis.order.entity.vo.OrdersInfo;
 import com.oxchains.themis.order.service.OrderService;
@@ -10,15 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.io.File;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 /**
  * Created by huohuo on 2017/10/23.
  * @author huohuo
@@ -92,29 +81,6 @@ public class OrderController {
     @RequestMapping("/order/confirmReceiveRefund")
     public RestResp confirmReceiveRefund(@RequestBody Pojo pojo){
         return orderService.confirmReceiveRefund(pojo);
-    }
-    /*
-    * 十 ：申请仲裁订单
-    * */
-    @RequestMapping("/order/arbitrateOrder")
-    public RestResp arbitrateOrder(@RequestBody Pojo pojo){
-        return orderService.arbitrateOrder(pojo.getId());
-    }
-    /*
-    * 十一 仲裁者查看自己可以仲裁的订单
-    * */
-    @RequestMapping("/order/findArbitrareOrderById")
-
-    public RestResp findArbitrareOrderById(@RequestBody Pojo pojo){
-        this.checkPage(pojo);
-        return orderService.findArbitrareOrderById(pojo);
-    }
-    /*
-    * 十二 仲裁者对订单进行仲裁 仲裁者仲裁将密匙碎片给胜利者
-    * */
-    @RequestMapping("/order/arbitrateOrderToUser")
-    public RestResp arbitrateOrderToUser(@RequestBody Pojo pojo){
-        return orderService.arbitrateOrderToUser(pojo);
     }
     /*
     * 十三 ： 用户获取订单的 协商地址 自己的 公匙 私匙 卖家的公匙私匙 仲裁者的公匙私匙  交易的量
@@ -198,39 +164,6 @@ public class OrderController {
         return b?RestResp.success():RestResp.fail();
     }
     /*
-    * 仲裁者获取 卖家买家上传的聊天记录和转账记录附件
-    * */
-    @RequestMapping("/order/getEvidence")
-    public RestResp getEvidence(@RequestBody Pojo pojo){
-        return orderService.getEvidence(pojo);
-    }
-    /*
-    *下载图片
-    * */
-    @RequestMapping("/order/{fileName}/downloadfile")
-    public void downloadfile(@PathVariable String fileName, HttpServletRequest request, HttpServletResponse response){
-        try {
-            File applicationFile = new File(imageUrl + fileName);
-            if(applicationFile.exists()){
-                Path filePath = applicationFile.toPath();
-                response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + applicationFile.getName());
-                response.setContentType(HttpURLConnection.guessContentTypeFromName(applicationFile.getName()));
-                response.setContentLengthLong(applicationFile.length());
-                Files.copy(filePath, response.getOutputStream());
-            }
-            else{
-                fileNotFound(response);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    //上传交易凭据 包括 文本 和 图片 附件
-    @RequestMapping("/order/uploadEvidence")
-    public RestResp uploadEvidence(@ModelAttribute @Valid RegisterRequest registerRequest) throws IOException {
-        return orderService.uploadEvidence(registerRequest,imageUrl);
-    }
-    /*
     * 购买出售详情页面需要查的用户的历史交易信息 和公告的信息
     * */
     @RequestMapping("/order/findUserDetail")
@@ -245,14 +178,6 @@ public class OrderController {
         }
         if(pojo.getPageNum() == null){
             pojo.setPageNum(1);
-        }
-    }
-    private void fileNotFound(HttpServletResponse response) {
-        try {
-            response.setStatus(SC_NOT_FOUND);
-            response.getWriter().write("file not found");
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
     /*
