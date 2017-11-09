@@ -68,7 +68,7 @@ public interface NoticeConst {
      * 用于判断的常量
      */
     enum Constant{
-        ZERO(0), ONE(1), TWO(2), EIGHT(8), TEN(10), HUNDRED(100);
+        ZERO(0), ONE(1), TWO(2), FIVE(5), TEN(10), HUNDRED(100);
         private Integer value;
 
         Constant(Integer value) {
