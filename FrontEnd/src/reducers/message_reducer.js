@@ -7,7 +7,7 @@ import {
 } from '../actions/types';
 
 
-const INITIAL_STATE = {FETCH_UNREAD_MESSAGES: null,FETCH_READ_MESSAGES:null};
+const INITIAL_STATE = {FETCH_UNREAD_MESSAGES: null, FETCH_READ_MESSAGES:null};
 
 export default function (state = INITIAL_STATE, action) {
     switch (action.type) {

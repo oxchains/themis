@@ -6,7 +6,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import Chat from './chat';
-import {Modal,Button,FormGroup,FormControl,Form} from 'react-bootstrap';
+import {Modal, Button, FormGroup, FormControl, Form} from 'react-bootstrap';
 import Dropzone from 'react-dropzone';
 
 
@@ -57,9 +57,9 @@ class ArbitrationManage extends Component{
     render(){
         let close = () => this.setState({ show: false});
         const userList=[
-            {name:1,msg:0},{name:4,msg:2},{name:"THEMIS",msg:3}
+            {name:1, msg:0}, {name:4, msg:2}, {name:"THEMIS", msg:3}
         ]
-        const msg= {price:121,quantity:23,amount:232,number:3748937208457038,way:"支付宝",info:"100%信誉，在线10分钟迅速发货。"}
+        const msg= {price:121, quantity:23, amount:232, number:3748937208457038, way:"支付宝", info:"100%信誉，在线10分钟迅速发货。"}
         return(
             <div className=" container g-pt-100 g-pb-100">
                 <h3 className="h3 text-center">仲裁后台</h3>

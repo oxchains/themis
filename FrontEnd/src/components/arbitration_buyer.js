@@ -41,7 +41,7 @@ class ArbitrationBuyer extends Component{
         )
     }
     render(){
-        const msg= {price:121,quantity:23,amount:232,number:3748937208457038,way:"支付宝",info:"100%信誉，在线10分钟迅速发货。"}
+        const msg= {price:121, quantity:23, amount:232, number:3748937208457038, way:"支付宝",info:"100%信誉，在线10分钟迅速发货。"}
         return(
             <div className=" container g-pt-100 g-pb-100">
                 <div className="row arbitration-buyer">

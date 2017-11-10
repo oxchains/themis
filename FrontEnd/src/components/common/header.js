@@ -85,4 +85,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps,{fetchUnreadMessage})(Header);
+export default connect(mapStateToProps, {fetchUnreadMessage})(Header);

@@ -1,11 +1,11 @@
 /**
  * Created by zhangxiaojing on 2017/10/24.
  */
-import React,{ Component }from 'react';
+import React, { Component }from 'react';
 import {connect} from 'react-redux';
 import { Pagination } from 'antd';
-import {Alert,Modal,Button} from 'react-bootstrap';
-import {fetchArbitrateList,fetchEvidence,arbitrateResult} from '../actions/arbitrate';
+import {Alert, Modal, Button} from 'react-bootstrap';
+import {fetchArbitrateList, fetchEvidence, arbitrateResult} from '../actions/arbitrate';
 import {ROOT_ARBITRATE} from '../actions/types'
 
 
@@ -53,7 +53,7 @@ class RefereeList extends Component {
         })
     }
     renderrow() {
-        return this.props.arbitrate_list.map((item,index)=>{
+        return this.props.arbitrate_list.map((item, index)=>{
             const userId=localStorage.getItem("userId")
             return (
                 <tr key={index}>
@@ -66,12 +66,12 @@ class RefereeList extends Component {
                     <td>{item.amount}</td>
                     <td>{item.createTime}</td>
                     <td>{item.orderStatusName}</td>
-                    <td>{item.status == 1 ? <button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleEvidence.bind(this,item.id)}>仲裁</button> : ""}</td>
+                    <td>{item.status == 1 ? <button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleEvidence.bind(this, item.id)}>仲裁</button> : ""}</td>
                 </tr>
             )
         })
     }
-    renderDownload(val,index){
+    renderDownload(val, index){
         return(
             <a className="ant-btn ant-btn-primary ant-btn-lg" style={{color: "gray"}} key={index}
                   href={`${ROOT_ARBITRATE}/arbitrate/${val}/downloadfile`}
@@ -179,4 +179,4 @@ function mapStateToProps(state) {
         evidenceData:state.arbitrate.get_evidence
     };
 }
-export default connect(mapStateToProps,{fetchArbitrateList,fetchEvidence,arbitrateResult})(RefereeList);
+export default connect(mapStateToProps, {fetchArbitrateList, fetchEvidence, arbitrateResult})(RefereeList);

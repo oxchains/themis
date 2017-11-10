@@ -32,17 +32,8 @@ import Selldetail from './components/sell_detail';
 import Buydetail from './components/buy_detail';
 import Myadvert from './components/my_advert';
 import Home from './components/home';
-<<<<<<< HEAD
-import OrderInProgress from './components/orderinprogress';
-import OrderCompleted from './components/ordercompleted';
-import OrderProgress from './components/orderProcess';
-import ArbitrationBuyer from './components/arbitrationbuyer';
-import ArbitrationManage from './components/arbitrationmanage';
-import RefereeList from './components/refereelist';
-import StubList from './components/stublist';
-import Releaseadvert from './components/releaseadvert';
+
 import MessageNotice from './components/message/message_notice'
-=======
 import OrderInProgress from './components/order_inprogress';
 import OrderCompleted from './components/order_completed';
 import OrderProgress from './components/order_process';
@@ -52,7 +43,6 @@ import RefereeList from './components/referee_list';
 import StubList from './components/stub_list';
 import Releaseadvert from './components/release_advert';
 
->>>>>>> ab2b8895190234d5d079ff7dd9dc8b7ac23b390b
 
 const createStoreWithMiddleware = compose(
     applyMiddleware(reduxThunk),
@@ -91,16 +81,10 @@ ReactDOM.render(
                     <Route path="/selldetail:id" component={Selldetail}/>
                     <Route path="/buydetail:id" component={Buydetail}/>
                     <Route path="/myadvert" component={Myadvert}/>
-<<<<<<< HEAD
                     <Route path="/messagenotice" component={MessageNotice}/>
-=======
                     <Route path="/forgetpsw" component={Forgetpsw}/>
                     <Route path="/resetpsw" component={Resetpsw}/>
-
                     <Route path="/emailforget" component={Emialforget}/>
-
-
->>>>>>> ab2b8895190234d5d079ff7dd9dc8b7ac23b390b
                     <Route path="/" component={Home}/>
                 </Switch>
                 <Footer/>
@@ -108,6 +92,6 @@ ReactDOM.render(
         </div>
     </BrowserRouter>
     </Provider>
-    ,document.querySelector('.wrapper')
+    , document.querySelector('.wrapper')
 );
 

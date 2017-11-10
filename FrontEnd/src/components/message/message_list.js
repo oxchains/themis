@@ -33,9 +33,8 @@ class MessageList extends Component{
 }
 function mapStateToProps(state) {
     return {
-        errorMessage:state.auth.error,
-        authenticated: state.auth.authenticated,
-
+        errorMessage: state.auth.error,
+        authenticated: state.auth.authenticated
     };
 }
 export default connect(mapStateToProps,{fetchUnreadMessage})(MessageList);

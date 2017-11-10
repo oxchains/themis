@@ -3,14 +3,14 @@
  */
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Alert,Modal,Form,FormGroup,Col,ControlLabel} from 'react-bootstrap';
+import {Alert, Modal, Form, FormGroup, Col, ControlLabel} from 'react-bootstrap';
 import Chat from './chat';
 import { Upload, Button, Icon} from 'antd';
 import TabsControl from "./react_tab";
 import {uploadEvidence} from '../actions/arbitrate';
-import {fetchOrdersDetails,fetchTradePartnerMessage,addPaymentInfo,addTransactionId,fetchKey,confirmOrder,confirmSendMoney,releaseBtc,confirmGoods,saveComment,cancelOrders} from '../actions/order';
+import {fetchOrdersDetails, fetchTradePartnerMessage, addPaymentInfo, addTransactionId, fetchKey, confirmOrder, confirmSendMoney, releaseBtc, confirmGoods, saveComment, cancelOrders} from '../actions/order';
 import $ from 'jquery';
-
+var QRCode;
 
 class OrderProgress extends Component {
     constructor(props) {
@@ -42,36 +42,36 @@ class OrderProgress extends Component {
     componentWillMount() {
         const message=JSON.parse(localStorage.getItem("partner"));
         const userId=localStorage.getItem("userId")
-        const data={id:message.id,userId:userId}
+        const data={id:message.id, userId:userId}
         const partnerName=message.friendUsername
         this.setState({partnerName:partnerName});
-        this.props.fetchOrdersDetails({data},(msg)=>{
+        this.props.fetchOrdersDetails({data}, (msg)=>{
             this.setState({orderStatus:msg.orderStatus});
             this.setState({orderId:msg.id});
             switch(this.state.orderStatus){
                 case 1:
-                    this.setState({tip:"买家已拍下，等待卖家确认",status:"等待卖家确认"});
+                    this.setState({tip:"买家已拍下，等待卖家确认", status:"等待卖家确认"});
                     break;
                 case 2:
-                    this.setState({tip:"卖家已确认，等待买家付款，30分钟内，如逾期订单将自动取消",status:"等待买家付款"});
+                    this.setState({tip:"卖家已确认，等待买家付款，30分钟内，如逾期订单将自动取消", status:"等待买家付款"});
                     break;
                 case 3:
-                    this.setState({tip:"买家已经标记为付款，等待卖家确认并释放比特币",status:"等待卖家发货"});
+                    this.setState({tip:"买家已经标记为付款，等待卖家确认并释放比特币", status:"等待卖家发货"});
                     break;
                 case 4:
-                    this.setState({tip:"卖家已释放比特币，等待买家确认收货",status:"等待买家收货"});
+                    this.setState({tip:"卖家已释放比特币，等待买家确认收货", status:"等待买家收货"});
                     break;
                 case 5:
-                    this.setState({tip:"买家已经确认收货，交易即将完成，等待双方进行评价。",status:"等待双方评价"});
+                    this.setState({tip:"买家已经确认收货，交易即将完成，等待双方进行评价。", status:"等待双方评价"});
                     break;
                 case 6:
-                    this.setState({tip:"交易已完成",status:"已完成"});
+                    this.setState({tip:"交易已完成", status:"已完成"});
                     break;
                 case 7:
-                    this.setState({tip:"交易已取消",status:"已取消"});
+                    this.setState({tip:"交易已取消", status:"已取消"});
                     break;
                 case 8:
-                    this.setState({tip:"退款处理中",status:"退款中"});
+                    this.setState({tip:"退款处理中", status:"退款中"});
                     break;
             }
         });
@@ -276,7 +276,7 @@ class OrderProgress extends Component {
                       })
 
                  });                                           
-                 this.setState({p2shAddress:msg.data.p2shAddress,amount:msg.data.amount,shownext: true})
+                 this.setState({p2shAddress:msg.data.p2shAddress, amount:msg.data.amount, shownext: true})
              }
              else {
                  this.setState({show: true})
@@ -293,10 +293,10 @@ class OrderProgress extends Component {
                  sellerPriAuth:sellerPriAuth,
                  orderId:orderId
              }
-             this.props.addPaymentInfo({paymentInfo},(msg)=>{
+             this.props.addPaymentInfo({paymentInfo}, (msg)=>{
                  console.log(msg)
                  if(msg.status == 1){
-                     this.setState({error:false,p2shAddress:msg.data.p2shAddress,amount:msg.data.amount,show:false,shownext:true})
+                     this.setState({error:false, p2shAddress:msg.data.p2shAddress, amount:msg.data.amount, show:false, shownext:true})
                      $(function(){
                          var qrcode = new QRCode('qrcode', {
                              text: msg.data.uri,
@@ -326,11 +326,11 @@ class OrderProgress extends Component {
         }
         const regex=/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{64}$/
         if(txId){
-             this.props.addTransactionId({txIdInfo},(msg)=>{
+             this.props.addTransactionId({txIdInfo}, (msg)=>{
                  console.log(msg)
                  if(regex.test(txId)){
                      alert(1);
-                     this.setState({error:false,show:false,shownext:false,confirm:false})
+                     this.setState({error:false, show:false, shownext:false, confirm:false})
                  }
                  else{
                      this.setState({
@@ -347,7 +347,7 @@ class OrderProgress extends Component {
             userId:userId,
             id:this.state.orderId
         }
-        this.props.confirmOrder({orderId},(msg)=>{
+        this.props.confirmOrder({orderId}, (msg)=>{
             console.log(msg)
              if(msg.status == 1){
                   this.setState({ orderStatus:this.state.orderStatus+1})
@@ -361,7 +361,7 @@ class OrderProgress extends Component {
         const orderId={
             id:this.state.orderId
         }
-        this.props.confirmSendMoney({orderId},(msg)=>{
+        this.props.confirmSendMoney({orderId}, (msg)=>{
               if(msg.status == 1){
                   this.setState({ orderStatus:this.state.orderStatus+1})
               }
@@ -393,7 +393,7 @@ class OrderProgress extends Component {
             id:this.state.orderId,
             userId:userId
         }
-        this.props.confirmGoods({confirmGoodsData},(msg)=>{
+        this.props.confirmGoods({confirmGoodsData}, (msg)=>{
             console.log(msg)
               if(msg.status==1){
                    this.setState({ orderStatus:this.state.orderStatus+1})
@@ -412,7 +412,7 @@ class OrderProgress extends Component {
              userId:userId
          }
 
-         this.props.saveComment({commentData},(msg)=>{
+         this.props.saveComment({commentData}, (msg)=>{
              if(msg.status==1){
                this.setState({ orderStatus:this.state.orderStatus+1})
              }
@@ -425,13 +425,13 @@ class OrderProgress extends Component {
             userId:userId                             
         }
         if(this.state.orderStatus ==3){
-            this.props.cancelOrders({cancelData},(msg)=>{
+            this.props.cancelOrders({cancelData}, (msg)=>{
                 if(msg.status==1){
                     this.setState({ orderStatus:8})
                 }
             })
         }
-        this.props.cancelOrders({cancelData},(msg)=>{
+        this.props.cancelOrders({cancelData}, (msg)=>{
              if(msg.status==1){
                  this.setState({ orderStatus:7})
              }
@@ -459,7 +459,7 @@ class OrderProgress extends Component {
             this.setState({
                 uploading: true,
             });
-            this.props.uploadEvidence({formData},(msg)=>{
+            this.props.uploadEvidence({formData}, (msg)=>{
                 if(msg.status==1){
                     this.setState({
                         fileList: [],
@@ -478,7 +478,7 @@ class OrderProgress extends Component {
     render(){
         console.log('status: ' + this.state.orderStatus)
         let close = () => {
-            this.setState({show:false,shownext:false,evidence:false,error:false})
+            this.setState({show:false, shownext:false, evidence:false, error:false})
         };
         if(this.props.orders_details===null){
             return <div>loading....</div>
@@ -526,7 +526,7 @@ class OrderProgress extends Component {
                         </div>
                         <div className="col-sm-12 order-details g-mt-20 clearfix">
                             <ul>
-                                <li className="col-sm-2" style={{color:"#2ad0e9",fontWeight: "600"}}>订单信息</li>
+                                <li className="col-sm-2" style={{color:"#2ad0e9", fontWeight: "600"}}>订单信息</li>
                                 <li className="col-sm-3">交易价格:<span>{price}</span>CNY</li>
                                 <li className="col-sm-3">交易数量:<span>{amount}</span>BTC</li>
                                 <li className="col-sm-3">交易金额:<span>{money}</span>CNY</li>
@@ -788,6 +788,6 @@ function mapStateToProps(state) {
         payment_info:state.order.payment_info
     }
 }
-export default connect(mapStateToProps, {fetchOrdersDetails,fetchTradePartnerMessage,addPaymentInfo,addTransactionId,fetchKey,confirmOrder,confirmSendMoney,releaseBtc,confirmGoods,saveComment,cancelOrders,uploadEvidence})(OrderProgress);
+export default connect(mapStateToProps, {fetchOrdersDetails, fetchTradePartnerMessage, addPaymentInfo, addTransactionId, fetchKey, confirmOrder, confirmSendMoney, releaseBtc, confirmGoods, saveComment, cancelOrders, uploadEvidence })(OrderProgress);
 
 

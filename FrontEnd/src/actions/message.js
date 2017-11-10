@@ -9,7 +9,7 @@ import {
     getAuthorizedHeader,
     requestError
 } from './types';
-export function fetchUnreadMessage({userId,pageNum,pageSize}){
+export function fetchUnreadMessage({userId, pageNum, pageSize}){
     console.log(userId)
     let tip=1;
     return function message(dispatch) {
@@ -23,7 +23,7 @@ export function fetchUnreadMessage({userId,pageNum,pageSize}){
             .catch(err => dispatch(requestError(err.message)));
     }
 }
-export function fetchReadMessage({userId,pageNum,pageSize},calback){
+export function fetchReadMessage({userId, pageNum, pageSize}, calback){
     return function(dispatch) {
         axios.get(`${ROOT_MESSAGE}/message/query/privateMsgYesRead?userId=${userId}&pageNum=${pageNum}&pageSize=${pageSize}`, { headers: getAuthorizedHeader() })
             .then(response => {

@@ -1,10 +1,10 @@
 /**
  * Created by zhangxiaojing on 2017/10/20.
  */
-import React,{ Component }from 'react';
+import React, { Component }from 'react';
 import {connect} from 'react-redux';
 import {Pagination, Upload, Button, Icon} from 'antd';
-import {Alert,Modal} from 'react-bootstrap';
+import {Alert, Modal} from 'react-bootstrap';
 import {uploadEvidence} from '../actions/arbitrate';
 import {fetchNoCompletedOrders} from '../actions/order';
 
@@ -54,7 +54,7 @@ class OrderInProgress extends Component {
             this.setState({
                 uploading: true,
             });
-            this.props.uploadEvidence({formData},(msg)=>{
+            this.props.uploadEvidence({formData}, (msg)=>{
                 if(msg.status==1){
                     this.setState({
                         fileList: [],
@@ -80,7 +80,7 @@ class OrderInProgress extends Component {
         this.props.fetchNoCompletedOrders({formData}, ()=>{});
     }
     renderrow(){
-        return this.props.not_completed_orders.map((item,index) =>{
+        return this.props.not_completed_orders.map((item, index) =>{
             return(
                 <tr key={index}>
                     <td>{item.friendUsername}</td>
@@ -90,16 +90,16 @@ class OrderInProgress extends Component {
                     <td>{item.amount}</td>
                     <td>{item.createTime}</td>
                     <td>{item.orderStatusName}<span>{item.arbitrate == 1 ? "(仲裁中)": ""}</span></td>
-                    <td><button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleOrderDetail.bind(this,item)}>详情</button></td>
-                    <td>{item.orderStatus == 3 || item.orderStatus == 8 ? <button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleEvidence.bind(this,item.id)}>仲裁</button> : <div></div>}</td>
+                    <td><button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleOrderDetail.bind(this, item)}>详情</button></td>
+                    <td>{item.orderStatus == 3 || item.orderStatus == 8 ? <button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleEvidence.bind(this, item.id)}>仲裁</button> : <div></div>}</td>
                 </tr>
                 )
         })
     }
     handleOrderDetail(item){
         const userId= localStorage.getItem('userId');
-        const orderData={id:item.id,userId:userId,partnerId:item.sellerId == userId ? item.buyerId : item.sellerId,friendUsername:item.friendUsername}
-        localStorage.setItem("partner",JSON.stringify(orderData));
+        const orderData={id:item.id, userId:userId, partnerId:item.sellerId == userId ? item.buyerId : item.sellerId, friendUsername:item.friendUsername}
+        localStorage.setItem("partner", JSON.stringify(orderData));
         window.location.href='/orderprogress';
     }
     render() {
@@ -202,4 +202,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { fetchNoCompletedOrders,uploadEvidence})(OrderInProgress);
+export default connect(mapStateToProps, {fetchNoCompletedOrders, uploadEvidence})(OrderInProgress);

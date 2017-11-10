@@ -19,7 +19,7 @@ import {
 } from '../actions/types';
 
 
-const INITIAL_STATE = {not_completed_orders: null,completed_orders:null};
+const INITIAL_STATE = {not_completed_orders: null, completed_orders:null};
 
 export default function (state = INITIAL_STATE, action) {
     switch (action.type) {

@@ -1,7 +1,7 @@
 /**
  * Created by zhangxiaojing on 2017/10/20.
  */
-import React,{ Component }from 'react';
+import React, { Component }from 'react';
 import {connect} from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Route, Redirect } from 'react-router-dom'
@@ -36,7 +36,7 @@ class OrderCompleted extends Component {
     }
     renderrow(){
         const userId=localStorage.getItem("userId");
-        return this.props.completed_orders.map((item,index)=>{
+        return this.props.completed_orders.map((item, index)=>{
             return(
                 <tr key={index}>
                     <td>{item.friendUsername}</td>
@@ -46,15 +46,15 @@ class OrderCompleted extends Component {
                     <td>{item.amount}</td>
                     <td>{item.createTime}</td>
                     <td>{item.orderStatusName}<span>{item.arbitrate == 2 ? "(仲裁完成)": ""}</span></td>
-                    <td><button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleOrderDetail.bind(this,item)}>详情</button></td>
+                    <td><button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleOrderDetail.bind(this, item)}>详情</button></td>
                 </tr>
             )
         })
     }
     handleOrderDetail(item){
         const userId= localStorage.getItem('userId');
-        const orderData={id:item.id,userId:userId,partnerId:item.sellerId == userId ? item.buyerId : item.sellerId,friendUsername:item.friendUsername}
-        localStorage.setItem("partner",JSON.stringify(orderData));
+        const orderData={id:item.id, userId:userId, partnerId:item.sellerId == userId ? item.buyerId : item.sellerId, friendUsername:item.friendUsername}
+        localStorage.setItem("partner", JSON.stringify(orderData));
         window.location.href='/orderprogress';
     }
     render() {

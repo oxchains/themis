@@ -18,27 +18,27 @@ class Chat extends Component{
         console.log(partner)
         let ws = new WebSocket("ws://192.168.1.125:9999/ws?"+partner.userId +"_"+receiverId+"_"+partner.id); //链接websocket
         let flag=true;
-        let reconnect = new Date().getTime(),time;
+        let reconnect = new Date().getTime(), time;
         let timeFlag=true;
-        $(".getMore").on("click",function(){
+        $(".getMore").on("click", function(){
             if(flag){
                 //获取聊天记录
                 $.ajax({
                     type :"POST",
                     url :'http://192.168.1.125:8881/chat/getChatHistroy',
-                    data:{senderId:senderId, receiverId:receiverId,orderId:partner.id},
+                    data:{senderId:senderId, receiverId:receiverId, orderId:partner.id},
                     beforeSend: function(request) {
                         request.setRequestHeader("Authorization", 'Bearer '+token);
                     },
                     success:function(data){
                         if(data.data!=null){
                             var list=data.data;
-                            $.each(list,function(index){
+                            $.each(list, function(index){
                                 if(list[index].senderId == senderId){
-                                    sendMessage(list[index].senderName,list[index].chatContent);
+                                    sendMessage(list[index].senderName, list[index].chatContent);
                                 }
                                 else{
-                                    receiveMessage(list[index].senderName,list[index].chatContent);
+                                    receiveMessage(list[index].senderName, list[index].chatContent);
                                 }
                             })
                         }
@@ -62,7 +62,7 @@ class Chat extends Component{
                 ws.keepAliveTimer=setInterval(function(){
                     var heart=JSON.stringify({msgType: 2, senderId: senderId, receiverId: receiverId});
                     ws.send(heart);
-                },2000)
+                }, 2000)
             }
             document.onkeydown = (e) => {
                 if (e && e.keyCode == 13) {
@@ -124,7 +124,7 @@ class Chat extends Component{
             //发送一个文本消息
             var chatContent = $(".message").val();
             if(chatContent){
-                var message = JSON.stringify({msgType:1, senderId: senderId, senderName: senderName, receiverId: receiverId, chatContent: chatContent,orderId:partner.id});
+                var message = JSON.stringify({msgType:1, senderId: senderId, senderName: senderName, receiverId: receiverId, chatContent: chatContent, orderId:partner.id});
                 sendMessage(senderName, chatContent);
                 ws.send(message);
                 $(".message").val('');
@@ -135,16 +135,16 @@ class Chat extends Component{
                     timeFlag = false;
                     time=setTimeout(function(){
                         timeFlag=true;
-                    },600000)
+                    }, 600000)
                 }
             }
         }
         //发送消息
-        const sendMessage = (senderName,chatContent) =>{
+        const sendMessage = (senderName, chatContent) =>{
             $(".chat-message").append('<li class="send-message rightd"><div class="sender rightd_h"><span>'+senderName+'</span></div><div class="content speech right">'+chatContent+'</div></li>');
         }
         //接收消息
-        const receiveMessage = (receiverName,chatContent) => {
+        const receiveMessage = (receiverName, chatContent) => {
             $(".chat-message").append('<li class="receive-message leftd"><div class="sender leftd_h"><span>'+receiverName+'</span></div><div class="speech left">'+chatContent+'</div></li>');
         }
         const scrollTop = () => {
