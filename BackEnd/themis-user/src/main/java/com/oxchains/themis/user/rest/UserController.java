@@ -8,7 +8,7 @@ import com.oxchains.themis.common.param.ParamType;
 import com.oxchains.themis.common.util.ImageBase64;
 import com.oxchains.themis.common.util.VerifyCodeUtils;
 
-import com.oxchains.themis.user.domain.User;
+import com.oxchains.themis.repo.entity.User;
 import com.oxchains.themis.user.service.UserService;
 
 import org.springframework.beans.factory.annotation.Value;

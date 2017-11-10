@@ -19,12 +19,13 @@ import {
 } from '../actions/types';
 
 
-const INITIAL_STATE = {not_completed_orders: null,completed_orders:null};
+const INITIAL_STATE = {not_completed_orders: null, completed_orders:null};
 
 export default function (state = INITIAL_STATE, action) {
     switch (action.type) {
-        case FETCH_NOT_COMPLETED_ORDERS:
+        case FETCH_NOT_COMPLETED_ORDERS:{
             return {...state, not_completed_orders: action.payload};
+        }
         case FETCH_COMPLETED_ORDERS: {
             return {...state, completed_orders: action.payload};
         }

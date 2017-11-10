@@ -13,7 +13,7 @@ class Trust extends Component {
         this.state = {
             isTrusted:1,
             pageSize:8, //每页显示的条数8条
-            current: 1,//默认的当前第一页
+            current: 1, //默认的当前第一页
         }
         this.handleTrustYou = this.handleTrustYou.bind(this)
         this.handleYouTrust = this.handleYouTrust.bind(this)
@@ -25,7 +25,7 @@ class Trust extends Component {
         const type = this.state.isTrusted
         const pageNo = this.state.current
         const pageSize = this.state.pageSize
-        this.props.fetctTrusted({userId,type,pageNo,pageSize},()=>{})
+        this.props.fetctTrusted({userId, type, pageNo, pageSize}, ()=>{})
     }
     onPagination(pageNum) {
         console.log( "当前页数"+ pageNum) //当前页数
@@ -36,7 +36,7 @@ class Trust extends Component {
         const type = this.state.isTrusted
         const pageNo = this.state.current
         const pageSize = this.state.pageSize
-        this.props.fetctTrusted({userId,type,pageNo,pageSize},()=>{})
+        this.props.fetctTrusted({userId, type, pageNo, pageSize}, ()=>{})
     }
     handleTrustYou(){
         this.state.isTrusted = 1
@@ -45,7 +45,7 @@ class Trust extends Component {
         const type = this.state.isTrusted
         const pageNo = this.state.current
         const pageSize = this.state.pageSize
-        this.props.fetctTrusted({userId,type,pageNo,pageSize},()=>{})
+        this.props.fetctTrusted({userId, type, pageNo, pageSize}, ()=>{})
     }
     handleYouTrust(){
         this.state.isTrusted = 2
@@ -53,7 +53,7 @@ class Trust extends Component {
         const type = this.state.isTrusted
         const pageNo = this.state.current
         const pageSize = this.state.pageSize
-        this.props.fetctTrusted({userId,type,pageNo,pageSize},()=>{})
+        this.props.fetctTrusted({userId, type, pageNo, pageSize}, ()=>{})
     }
     handleShielded(){
         this.state.isTrusted = 3
@@ -61,7 +61,7 @@ class Trust extends Component {
         const type = this.state.isTrusted
         const pageNo = this.state.current
         const pageSize = this.state.pageSize
-        this.props.fetctTrusted({userId,type,pageNo,pageSize},()=>{})
+        this.props.fetctTrusted({userId, type, pageNo, pageSize}, ()=>{})
     }
     handleRow( ){
         const arraydata = this.props.all || []    //列表数组的数据
@@ -112,4 +112,4 @@ function mapStateToProps(state) {
         all:state.advert.all.result
     };
 }
-export default connect(mapStateToProps,{fetctTrusted})(Trust);
+export default connect(mapStateToProps, { fetctTrusted })(Trust);

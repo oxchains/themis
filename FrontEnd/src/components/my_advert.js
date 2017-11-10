@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Pagination } from 'antd';
 import 'antd/dist/antd.css';
-import {fetctMyAdvert,fetctOffMyAd} from '../actions/releaseadvert'
+import {fetctMyAdvert, fetctOffMyAd} from '../actions/releaseadvert'
 import {
     Modal,
     ModalHeader,
@@ -25,7 +25,7 @@ class Myadvert extends Component {
             status:1,
             adstatus:1,
             pageSize:5, //每页显示的条数5条
-            pageNum: 1,//默认的当前第一页
+            pageNum: 1, //默认的当前第一页
         }
         this.handleRowsbuy = this.handleRowsbuy.bind(this)
         this.handleRowssell = this.handleRowssell.bind(this)
@@ -42,7 +42,7 @@ class Myadvert extends Component {
         const noticeType = this.state.status
         const txStatus = this.state.adstatus
         const pageNum = this.state.pageNum
-        this.props.fetctMyAdvert({userId,noticeType,txStatus,pageNum}, ()=>{});
+        this.props.fetctMyAdvert({userId, noticeType, txStatus, pageNum}, ()=>{});
     }
 
     handleRowsbuy(){
@@ -51,7 +51,7 @@ class Myadvert extends Component {
         const noticeType = this.state.status
         const txStatus = this.state.adstatus
         const pageNum = this.state.pageNum
-        this.props.fetctMyAdvert({userId,noticeType,txStatus,pageNum},()=>{});
+        this.props.fetctMyAdvert({userId, noticeType, txStatus, pageNum}, ()=>{});
     }
     handleRowssell(){
         this.state.status = 2
@@ -59,7 +59,7 @@ class Myadvert extends Component {
         const noticeType = this.state.status
         const txStatus = this.state.adstatus
         const pageNum = this.state.pageNum
-        this.props.fetctMyAdvert({userId,noticeType,txStatus,pageNum},()=>{});
+        this.props.fetctMyAdvert({userId, noticeType, txStatus, pageNum}, ()=>{});
     }
 
     handleRowsadverting(){
@@ -68,7 +68,7 @@ class Myadvert extends Component {
         const noticeType = this.state.status
         const txStatus = this.state.adstatus
         const pageNum = this.state.pageNum
-        this.props.fetctMyAdvert({userId,noticeType,txStatus,pageNum},()=>{});
+        this.props.fetctMyAdvert({userId, noticeType, txStatus, pageNum}, ()=>{});
     }
 
     handleRowadverted(){
@@ -77,14 +77,14 @@ class Myadvert extends Component {
         const noticeType = this.state.status
         const txStatus = this.state.adstatus
         const pageNum = this.state.pageNum
-        this.props.fetctMyAdvert({userId,noticeType,txStatus,pageNum},()=>{});
+        this.props.fetctMyAdvert({userId, noticeType, txStatus, pageNum}, ()=>{});
     }
     componentWillMount(){
         const userId = localStorage.getItem("userId")
         const noticeType = this.state.status
         const txStatus = this.state.adstatus
         const pageNum = this.state.pageNum
-        this.props.fetctMyAdvert({userId,noticeType,txStatus,pageNum},()=>{});
+        this.props.fetctMyAdvert({userId, noticeType, txStatus, pageNum}, ()=>{});
     }
 
     handleRow(){
@@ -112,8 +112,8 @@ class Myadvert extends Component {
 
     handleOff = (item) =>{
         const {id} = item
-        this.props.fetctOffMyAd({id},err=>{
-            this.setState({ isModalOpen: true , error: err , actionResult: err||'下架成功!'})
+        this.props.fetctOffMyAd({id}, err=>{
+            this.setState({ isModalOpen: true, error: err, actionResult: err||'下架成功!'})
         })
     }
     render() {
@@ -184,5 +184,5 @@ function mapStateToProps(state) {
         data:state.advert.data   // 下架我的广告
     };
 }
-export default connect(mapStateToProps,{  fetctMyAdvert,fetctOffMyAd})(Myadvert);
+export default connect(mapStateToProps, {  fetctMyAdvert, fetctOffMyAd})(Myadvert);
 

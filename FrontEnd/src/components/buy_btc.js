@@ -7,14 +7,14 @@ import { Select } from 'antd';
 import { Pagination } from 'antd';
 import 'antd/dist/antd.css';
 import { connect } from 'react-redux';
-import { fetcAdvertSeach,fetctArray} from '../actions/releaseadvert'
+import { fetcAdvertSeach, fetctArray} from '../actions/releaseadvert'
 
 class Buybtc extends Component {
     constructor(props) {
         super(props);
         this.state = {
             pageSize:8, //每页显示的条数8条
-            current: 1,//默认的当前第一页
+            current: 1, //默认的当前第一页
             searchtype:1,
             country: '',
             currency:'',
@@ -49,7 +49,7 @@ class Buybtc extends Component {
         const location = this.state.country
         const currency = this.state.currency
         const payType = this.state.payway
-        this.props.fetcAdvertSeach({searchType,location,currency,payType,pageNum}, ()=>{});
+        this.props.fetcAdvertSeach({searchType, location, currency, payType, pageNum}, ()=>{});
     }
     handleRow(){
         const arraydata = this.props.all.pageList || []    //列表数组的数据
@@ -157,4 +157,4 @@ function mapStateToProps(state) {
         all:state.advert.all,       //页面加载时返回的数据
     };
 }
-export default connect(mapStateToProps,{fetcAdvertSeach,fetctArray})(Buybtc);
+export default connect(mapStateToProps, { fetcAdvertSeach, fetctArray})(Buybtc);

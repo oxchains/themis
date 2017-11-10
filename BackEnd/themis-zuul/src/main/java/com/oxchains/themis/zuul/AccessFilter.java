@@ -42,15 +42,21 @@ public class AccessFilter extends ZuulFilter{
     public Object run() {
         RequestContext rcx = RequestContext.getCurrentContext();
         HttpServletRequest request = rcx.getRequest();
+        String url = request.getRequestURI();
+
         //String token = request.getParameter("Authorization");
         String token = request.getHeader("Authorization");
         logger.log(Level.FINE,"Authorization token: {}",token);
         if(null == token){
-            //过滤该请求，不往下级服务去转发请求，到此结束
-            rcx.setSendZuulResponse(false);
-            rcx.setResponseStatusCode(401);
-            rcx.setResponseBody("{}");
-            return null;
+            if("/themis-user/user/login".equals(url)){
+            }else {
+                //过滤该请求，不往下级服务去转发请求，到此结束
+                rcx.setSendZuulResponse(false);
+                rcx.setResponseStatusCode(401);
+                rcx.setResponseBody("{}");
+                return null;
+
+            }
         }
         //如果有token，则进行路由转发
         logger.info("Authorized,continue...");

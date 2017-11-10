@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import { Route, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux';
-import { signinAction ,GetverifyCode} from '../../actions/auth'
+import { signinAction, GetverifyCode} from '../../actions/auth'
 
 class Forgetpsw extends Component {
     constructor(props) {
@@ -42,11 +42,11 @@ class Forgetpsw extends Component {
             }.bind(this), 1000);
         }
         const phonenum = localStorage.getItem("phonenum")
-        this.props.GetverifyCode({phonenum},()=>{})
+        this.props.GetverifyCode({phonenum}, ()=>{})
     }
     phoneChange(e){
         console.log(e.target.value)
-        const phonenum = localStorage.setItem("phonenum",e.target.value)
+        const phonenum = localStorage.setItem("phonenum", e.target.value)
 
         var regex = /^1[3|4|5|7|8][0-9]\d{4,8}$/
         if (regex.test(e.target.value) ) {
@@ -100,7 +100,7 @@ function mapStateToProps(state) {
         errorMessage: state.auth.error
     };
 }
-export default connect(mapStateToProps,{ signinAction ,GetverifyCode})(Forgetpsw);
+export default connect(mapStateToProps, { signinAction, GetverifyCode})(Forgetpsw);
 
 
 

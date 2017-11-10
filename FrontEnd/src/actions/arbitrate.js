@@ -21,7 +21,7 @@ export function fetchArbitrateList({userIdDate}) {
     return function(dispatch) {
         axios({
             method:'post',
-            url:`${ROOT_ARBITRATE} /arbitrate/findArbitrareOrderById`,
+            url:`${ROOT_ARBITRATE}/arbitrate/findArbitrareOrderById`,
             data:userIdDate,
             headers: getAuthorizedHeader()
         }).then((res) => {
@@ -31,7 +31,6 @@ export function fetchArbitrateList({userIdDate}) {
                     type: FETCH_ARBITRATE_LIST,
                     payload: res.data.data
                 })
-                callback();
             }
         }).catch( err => dispatch(requestError(err.message)) );
     }
@@ -42,20 +41,14 @@ export function fetchArbitrateList({userIdDate}) {
  * @returns {Function}
  */
 
-export function uploadEvidence({id,userId,evidenceOFile,evidenceDes},callback) {
-    let formData = new FormData();
-    formData.append("id", id);
-    formData.append("userId", userId);
-    formData.append("multipartFile", evidenceOFile);
-    formData.append("content", evidenceDes);
-    console.log(formData)
+
+export function uploadEvidence({formData}, callback) {
     return function(dispatch) {
         axios({
             method:'post',
             url:`${ROOT_ARBITRATE}/arbitrate/uploadEvidence`,
             data:formData,
-            headers: getAuthorizedHeader(),
-            headers: {'content-type': 'multipart/form-data'},
+            headers: {'content-type': 'multipart/form-data', getAuthorizedHeader},
             withCredentials: true
         }).then((res) => {
             console.log(res)
@@ -90,7 +83,6 @@ export function fetchEvidence({orderId}) {
                     type: FETCH_EVIDENCE,
                     payload: res.data.data
                 })
-                callback();
             }
         }).catch( err => dispatch(requestError(err.message)) );
     }
@@ -116,7 +108,6 @@ export function arbitrateResult({resultData}) {
                     type: ARBITRATE_RESULT,
                     payload: res.data.data
                 })
-                callback();
             }
         }).catch( err => dispatch(requestError(err.message)) );
     }

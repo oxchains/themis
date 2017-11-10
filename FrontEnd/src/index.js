@@ -32,13 +32,14 @@ import Selldetail from './components/sell_detail';
 import Buydetail from './components/buy_detail';
 import Myadvert from './components/my_advert';
 import Home from './components/home';
+
+import MessageNotice from './components/message/message_notice'
 import OrderInProgress from './components/order_inprogress';
 import OrderCompleted from './components/order_completed';
 import OrderProgress from './components/order_process';
 import ArbitrationBuyer from './components/arbitration_buyer';
 import ArbitrationManage from './components/arbitration_manage';
 import RefereeList from './components/referee_list';
-import StubList from './components/stub_list';
 import Releaseadvert from './components/release_advert';
 
 
@@ -72,19 +73,16 @@ ReactDOM.render(
                     <Route path="/arbitrationbuyer" component={ArbitrationBuyer}/>
                     <Route path="/arbitrationmanage" component={ArbitrationManage}/>
                     <Route path="/refereelist" component={RefereeList}/>
-                    <Route path="/stublist" component={StubList}/>
                     <Route path="/releaseadvert" component={Releaseadvert}/>
                     <Route path="/buybtc" component={Buybtc}/>
                     <Route path="/sellbtc" component={Sellbtc}/>
                     <Route path="/selldetail:id" component={Selldetail}/>
                     <Route path="/buydetail:id" component={Buydetail}/>
                     <Route path="/myadvert" component={Myadvert}/>
+                    <Route path="/messagenotice" component={MessageNotice}/>
                     <Route path="/forgetpsw" component={Forgetpsw}/>
                     <Route path="/resetpsw" component={Resetpsw}/>
-
                     <Route path="/emailforget" component={Emialforget}/>
-
-
                     <Route path="/" component={Home}/>
                 </Switch>
                 <Footer/>
@@ -92,6 +90,6 @@ ReactDOM.render(
         </div>
     </BrowserRouter>
     </Provider>
-    ,document.querySelector('.wrapper')
+    , document.querySelector('.wrapper')
 );
 

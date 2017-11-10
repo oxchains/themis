@@ -1,4 +1,4 @@
-package com.oxchains.themis.user.domain;
+package com.oxchains.themis.repo.entity;
 
 import javax.persistence.*;
 

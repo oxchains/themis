@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 import { Modal, Button } from 'antd';
-import { GetverifyCodePhone ,ChangePhoneSave,ChangePasswordSave} from '../actions/auth'
+import { GetverifyCodePhone, ChangePhoneSave, ChangePasswordSave} from '../actions/auth'
 class Safeset extends Component {
     constructor(props) {
         super(props);
@@ -33,7 +33,7 @@ class Safeset extends Component {
         const loginname = localStorage.getItem("loginname")
         const mobilephone = localStorage.getItem("phonenum")
 
-        this.props.ChangePhoneSave({loginname,mobilephone},err=>{
+        this.props.ChangePhoneSave({loginname, mobilephone}, err=>{
             this.setState({ loading: true });
             setTimeout(() => {
                 this.setState({ loading: false, visible: false });
@@ -45,7 +45,7 @@ class Safeset extends Component {
         const password = this.refs.password.value
         const newPassword = this.refs.newPassword.value
 
-        this.props.ChangePasswordSave({loginname,password,newPassword},err=>{
+        this.props.ChangePasswordSave({loginname, password, newPassword}, err=>{
             this.setState({ loadingpsw: true });
             setTimeout(() => {
                 this.setState({ loadingpsw: false, visiblepsw: false });
@@ -82,11 +82,11 @@ class Safeset extends Component {
         const loginname = localStorage.getItem("loginname")
         const phonenum = localStorage.getItem("phonenum")
 
-        this.props.GetverifyCodePhone({loginname,phonenum},()=>{})
+        this.props.GetverifyCodePhone({loginname, phonenum}, ()=>{})
     }
     phoneChange(e){
         console.log(e.target.value)
-        const phonenum = localStorage.setItem("phonenum",e.target.value)
+        const phonenum = localStorage.setItem("phonenum", e.target.value)
         var regex = /^1[3|4|5|7|8][0-9]\d{4,8}$/
         if (regex.test(e.target.value) ) {
 
@@ -96,7 +96,7 @@ class Safeset extends Component {
     }
     render() {
         var text = this.state.liked ? '发送验证码' : this.state.count + ' s ' ;
-        const { visible, loading ,visiblepsw,loadingpsw} = this.state;
+        const { visible, loading, visiblepsw, loadingpsw} = this.state;
 
         return (
             <div >
@@ -163,4 +163,4 @@ function mapStateToProps(state) {
      all:state.auth.all
     };
 }
-export default connect(mapStateToProps,{GetverifyCodePhone,ChangePhoneSave,ChangePasswordSave})(Safeset);
+export default connect(mapStateToProps, {GetverifyCodePhone, ChangePhoneSave, ChangePasswordSave})(Safeset);
