@@ -3,13 +3,14 @@
  */
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import Dropzone from 'react-dropzone';
-import {Alert,Modal,Button,Form,FormGroup,Col,ControlLabel,FormControl,Image} from 'react-bootstrap';
+import {Alert,Modal,Form,FormGroup,Col,ControlLabel} from 'react-bootstrap';
 import Chat from './chat';
+import { Upload, Button, Icon} from 'antd';
 import TabsControl from "./react_tab";
 import {uploadEvidence} from '../actions/arbitrate';
 import {fetchOrdersDetails,fetchTradePartnerMessage,addPaymentInfo,addTransactionId,fetchKey,confirmOrder,confirmSendMoney,releaseBtc,confirmGoods,saveComment,cancelOrders} from '../actions/order';
 import $ from 'jquery';
+
 
 class OrderProgress extends Component {
     constructor(props) {
@@ -31,11 +32,12 @@ class OrderProgress extends Component {
             partnerName:'',
             comment:1,
             evidence:false,
-            status:""
+            status:"",
+            fileList: [],
+            uploading: false,
         };
-        this.partnerMessage=this.partnerMessage.bind(this);
         this.renderDangerAlert = this.renderDangerAlert.bind(this);
-        this.orderMessageDetails=this.orderMessageDetails.bind(this);
+        this.renderOrderMessageDetails=this.renderOrderMessageDetails.bind(this);
     }
     componentWillMount() {
         const message=JSON.parse(localStorage.getItem("partner"));
@@ -79,17 +81,18 @@ class OrderProgress extends Component {
             id:this.state.orderId
         }
     }
-    showOrderStatus1() {
+    renderOrderStatus1() {
         return (
             <div>
                 <div className="col-sm-2">
                     <div>
                         <div className="row-header">
                             <div className="row-title">
-                                <h4 className={`order-flow ${this.state.orderStatus >= 1 ? 'order-active' : ''}`}>
-                                    <span>{this.state.orderStatus <= 1 ? '买家已拍下' : '买家已拍下'}</span></h4>
-                                <img className="g-ml-25" src="/public/img/arrow-r.png"
-                                     style={{width: '17px', height: '29px'}}></img>
+                                <div className="content">
+                                    <h4 className={`order-flow ${this.state.orderStatus >= 1 ? 'order-active' : ''}`}></h4>
+                                </div>
+                                <span className={`${this.state.orderStatus >= 1 ? 'orderMsg—active' : ''}`}>{this.state.orderStatus <= 1 ? '买家已拍下' : '买家已拍下'}</span>
+                                <div className={`order-bar ${this.state.orderStatus >= 1 ? 'order-bar-active' : ''}`}></div>
                             </div>
                         </div>
                     </div>
@@ -98,10 +101,11 @@ class OrderProgress extends Component {
                 <div className="col-sm-2">
                     <div className="row-header">
                         <div className="row-title">
-                            <h4 className={`order-flow ${this.state.orderStatus >= 1 ? 'order-active' : ''}`}>
-                                <span>{this.state.orderStatus <= 1 ? '等待卖家确认' : '卖家已确认'}</span></h4>
-                            <img className="g-ml-25" src="/public/img/arrow-r.png"
-                                 style={{width: '17px', height: '29px'}}></img>
+                            <div className="content">
+                                <h4 className={`order-flow ${this.state.orderStatus >= 1 ? 'order-active' : ''}`}></h4>
+                            </div>
+                            <span className={`${this.state.orderStatus >= 1 ? 'orderMsg—active' : ''}`}>{this.state.orderStatus <= 1 ? '等待卖家确认' : '卖家已确认'}</span>
+                            <div className={`order-bar ${this.state.orderStatus >= 2 ? 'order-bar-active' : ''}`}></div>
                         </div>
                     </div>
                 </div>
@@ -109,10 +113,11 @@ class OrderProgress extends Component {
                 <div className="col-sm-2">
                     <div className="row-header">
                         <div className="row-title">
-                            <h4 className={`order-flow ${this.state.orderStatus >= 2 ? 'order-active' : ''}`}>
-                                <span>{this.state.orderStatus <= 2 ? '等待买家付款' : '买家已付款'}</span></h4>
-                            <img className="g-ml-25" src="/public/img/arrow-r.png"
-                                 style={{width: '17px', height: '29px'}}></img>
+                            <div className="content">
+                                <h4 className={`order-flow ${this.state.orderStatus >= 2 ? 'order-active' : ''}`}></h4>
+                            </div>
+                            <span className={`${this.state.orderStatus >= 2 ? 'orderMsg—active' : ''}`}>{this.state.orderStatus <= 2 ? '等待买家付款' : '买家已付款'}</span>
+                            <div className={`order-bar ${this.state.orderStatus >= 3 ? 'order-bar-active' : ''}`}></div>
                         </div>
                     </div>
                 </div>
@@ -120,35 +125,39 @@ class OrderProgress extends Component {
                 <div className="col-sm-2">
                     <div className="row-header">
                         <div className="row-title">
-                            <h4 className={`order-flow ${this.state.orderStatus >= 3 ? 'order-active' : ''}`}>
-                                <span>{this.state.orderStatus <= 3 ? '等待卖家发货' : '卖家已收货'}</span></h4>
-                            <img className="g-ml-25" src="/public/img/arrow-r.png"
-                                 style={{width: '17px', height: '29px'}}></img>
+                            <div className="content">
+                                <h4 className={`order-flow ${this.state.orderStatus >= 3 ? 'order-active' : ''}`}></h4>
+                            </div>
+                            <span className={`${this.state.orderStatus >= 3 ? 'orderMsg—active' : ''}`}>{this.state.orderStatus <= 3 ? '等待卖家发货' : '卖家已收货'}</span>
+                            <div className={`order-bar ${this.state.orderStatus >= 4 ? 'order-bar-active' : ''}`}></div>
                         </div>
                     </div>
                 </div>
                 <div className="col-sm-2">
                     <div className="row-header">
                         <div className="row-title">
-                            <h4 className={`order-flow ${this.state.orderStatus >= 4 ? 'order-active' : ''}`}>
-                                <span>{this.state.orderStatus <= 4 ? '等待买家收货' : '买家已收货'}</span></h4>
-                            <img className="g-ml-25" src="/public/img/arrow-r.png"
-                                 style={{width: '17px', height: '29px'}}></img>
+                            <div className="content">
+                                <h4 className={`order-flow ${this.state.orderStatus >= 4 ? 'order-active' : ''}`}></h4>
+                            </div>
+                            <span className={`${this.state.orderStatus >= 4 ? 'orderMsg—active' : ''}`}>{this.state.orderStatus <= 4 ? '等待买家收货' : '买家已收货'}</span>
+                            <div className={`order-bar ${this.state.orderStatus >= 5 ? 'order-bar-active' : ''}`}></div>
                         </div>
                     </div>
                 </div>
                 <div className="col-sm-2">
                     <div className="row-header">
                         <div className="row-title">
-                            <h4 className={`order-flow ${this.state.orderStatus >= 5 ? 'order-active' : ''}`}>
-                                <span>{this.state.orderStatus <= 5 ? '等待双方评价' : '已评价'}</span></h4>
+                            <div className="content">
+                                <h4 className={`order-flow ${this.state.orderStatus >= 5 ? 'order-active' : ''}`}></h4>
+                            </div>
+                            <span className={`${this.state.orderStatus >= 5 ? 'orderMsg—active' : ''}`}>{this.state.orderStatus <= 5 ? '等待双方评价' : '已评价'}</span>
                         </div>
                     </div>
                 </div>
             </div>
         )
     }
-    showOrderStatus2(){
+    renderOrderStatus2(){
         return(
               <div className="h2 g-pt-20 g-pb-20">
                   <div className={`${this.state.orderStatus == 7 ? 'show' : 'hidden'}`}>订单已取消</div>
@@ -158,7 +167,7 @@ class OrderProgress extends Component {
               </div>
             )
     }
-    partnerMessage(partner){
+    renderPartnerMessage(partner){
         if(partner==null){
             return <div>loading...</div>
         }
@@ -199,7 +208,7 @@ class OrderProgress extends Component {
             </div>
         )
     }
-    orderMessageDetails(msg){
+    renderOrderMessageDetails(msg){
         if(msg==null){
             return(
                 <div>loading...</div>
@@ -235,7 +244,7 @@ class OrderProgress extends Component {
             }}>
                 <h5>确定已付款给卖家？</h5>
                 <div>
-                    <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.showAlert}>
+                    <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleAlert}>
                        取消
                     </button>
                     <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleSendMoney.bind(this)} >
@@ -245,12 +254,12 @@ class OrderProgress extends Component {
             </Alert>
         )
     }
-    showAlert(){
+    handleAlert(){
         this.setState({
             alertVisible: !this.state.alertVisible,
         })
     }
-    addPaymentInfo(){
+    handlePaymentInfo(){
         const orderId={
             id:this.state.orderId
         }
@@ -274,7 +283,7 @@ class OrderProgress extends Component {
              }
         })
     }
-    next(){
+    handleNext(){
         const sellerPubAuth=this.refs.sellerPubAuth.value;
         const sellerPriAuth=this.refs.sellerPriAuth.value;
         const orderId=this.state.orderId;
@@ -428,12 +437,6 @@ class OrderProgress extends Component {
              }
         })
     }
-    evidenceFile(files) {
-        console.log('files', files);
-        this.setState({
-            evidenceOFile: files
-        })
-    }
     handleEvidence(){
         this.setState({
             evidence:!this.state.evidence
@@ -444,10 +447,30 @@ class OrderProgress extends Component {
         if(evidenceDes){
             const userId= localStorage.getItem('userId');
             const id=this.state.orderId;
-            let evidenceOFile = this.state.evidenceOFile[0];
-            this.props.uploadEvidence({id,userId,evidenceOFile,evidenceDes},(msg)=>{
+            const {fileList} = this.state;
+            const formData = new FormData();
+            fileList.forEach((file) => {
+                formData.append('files', file);
+            });
+            formData.append("id", id);
+            formData.append("userId", userId);
+            formData.append("content", evidenceDes);
+
+            this.setState({
+                uploading: true,
+            });
+            this.props.uploadEvidence({formData},(msg)=>{
                 if(msg.status==1){
+                    this.setState({
+                        fileList: [],
+                        uploading: false,
+                    });
                     window.location.href='/orderinprogress'
+                }
+                else{
+                    this.setState({
+                        uploading: false,
+                    });
                 }
             })
         }
@@ -466,11 +489,32 @@ class OrderProgress extends Component {
         const money=orders_details && orders_details.money;
         const price=orders_details && orders_details.notice.price;
         const partner=this.props.partner;
+        const { uploading } = this.state;
+        const props = {
+            action: 'http://192.168.1.125:8883/arbitrate/uploadEvidence',
+            onRemove: (file) => {
+                this.setState(({ fileList }) => {
+                    const index = fileList.indexOf(file);
+                    const newFileList = fileList.slice();
+                    newFileList.splice(index, 1);
+                    return {
+                        fileList: newFileList,
+                    };
+                });
+            },
+            beforeUpload: (file) => {
+                this.setState(({ fileList }) => ({
+                    fileList: [...fileList, file],
+                }));
+                return false;
+            },
+            fileList: this.state.fileList,
+        };
         return (
-            <div className="order-main g-pt-50 g-pb-50">
+            <div className="order-main g-pt-50 g-pb-50" style={{width:"100%"}}>
                 <div className="order-header container text-center">
                     <div className="row">
-                        {this.state.orderStatus > 6 ? this.showOrderStatus2() :this.showOrderStatus1() }
+                        {this.state.orderStatus > 6 ? this.renderOrderStatus2() :this.renderOrderStatus1() }
                     </div>
                 </div>
                 <div className="text-left order-message container g-pt-30 g-pb-40" >
@@ -497,7 +541,7 @@ class OrderProgress extends Component {
                                 <TabsControl>
                                     <div name="聊天"><Chat/></div>
                                     <div name="卖家信息">
-                                        {this.partnerMessage(partner)}
+                                        {this.renderPartnerMessage(partner)}
                                     </div>
                                 </TabsControl>
                             </div>
@@ -507,15 +551,15 @@ class OrderProgress extends Component {
                                 <div className={`order-page0 ${this.state.orderStatus == 1 ? "show" : "hidden"}`}>
                                     <div className="row order-operation">
                                         <div className="col-sm-12">
-                                            {this.orderMessageDetails(orders_details)}
+                                            {this.renderOrderMessageDetails(orders_details)}
                                             <div className="order-tip">{orderType == "购买" ? "买家已经拍下订单，请等待卖家确定具体的交易金额和数量":"买家已拍下订单，请卖家确定具体的交易金额和数量，确认好之后，输入你的比特币钱包付款地址，比特币将进入themis托管地址中，等待买家付款，卖家确认收款后，点击释放比特币"}</div>
                                             <div>
                                                 {orderType == "购买" ? "":
                                                     <span>
-                                                        <button className="ant-btn ant-btn-primary ant-btn-lg g-mb-10" onClick={this.addPaymentInfo.bind(this)}>填写付款信息</button><br/>
+                                                        <button className="ant-btn ant-btn-primary ant-btn-lg g-mb-10" onClick={this.handlePaymentInfo.bind(this)}>填写付款信息</button><br/>
                                                         <button type="button" className="ant-btn ant-btn-primary ant-btn-lg g-mr-10" disabled={this.state.confirm} onClick={this.handleConfirmOrder.bind(this)}>确认</button>
                                                     </span>}
-                                                <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>
+                                                <button type="button" className="ant-btn ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>
                                                     取消订单
                                                 </button>
                                             </div>
@@ -527,18 +571,18 @@ class OrderProgress extends Component {
                                 <div className={`order-page1 ${this.state.orderStatus == 2 ? "show" : "hidden"}`}>
                                     <div className="row order-operation">
                                         <div className="col-sm-12">
-                                            {this.orderMessageDetails(orders_details)}
+                                            {this.renderOrderMessageDetails(orders_details)}
                                             <div className="order-tip">{orderType == "购买" ? "买家已经确认具体金额和交易数量，等待买家付款，30分钟内没有确认支付将自动关闭。":"买家已标记为付款，请卖家确认好是否收到正确的款项，如正确，请及时释放themis托管中的比特币。"}</div>
                                             <div>
                                                 {orderType == "购买" ?
                                                     <div>
-                                                        <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.showAlert.bind(this)}>标记为已经付款</button>
-                                                        <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
+                                                        <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleAlert.bind(this)}>标记为已经付款</button>
+                                                        <button type="button" className="ant-btn ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
                                                     </div>
                                                     :
                                                     <div>
                                                         <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" disabled>等待买家付款</button>
-                                                        <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
+                                                        <button type="button" className="ant-btn ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
                                                     </div>
                                                 }
 
@@ -555,18 +599,18 @@ class OrderProgress extends Component {
                                 <div className={`order-page2 ${this.state.orderStatus == 3 ? "show" : "hidden"}`}>
                                     <div className="row order-operation">
                                         <div className="col-sm-12">
-                                            {this.orderMessageDetails(orders_details)}
+                                            {this.renderOrderMessageDetails(orders_details)}
                                             {/*<div className="order-tip">{orderType=="购买"?"卖家已经释放比特币" :""}</div>*/}
                                             <div>
                                                 {orderType == "购买" ?
                                                     <div>
                                                         <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" disabled >等待卖家释放比特币</button>
-                                                        <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
+                                                        <button type="button" className="ant-btn ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
                                                     </div>
                                                     :
                                                     <div>
                                                         <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handlereleaseBtc.bind(this)} >释放比特币</button>
-                                                        <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
+                                                        <button type="button" className="ant-btn ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
                                                         {this.renderAlert()}
                                                     </div>
 
@@ -583,7 +627,7 @@ class OrderProgress extends Component {
                             <div className={`order-page2 ${this.state.orderStatus == 4 ? "show" : "hidden"}`}>
                                 <div className="row order-operation">
                                     <div className="col-sm-12">
-                                        {this.orderMessageDetails(orders_details)}
+                                        {this.renderOrderMessageDetails(orders_details)}
                                         <div className="order-tip">{orderType=="购买"?"卖家已经释放比特币，请确认是否收到比特币" :""}</div>
                                         <div>
                                             {orderType == "购买" ?
@@ -605,7 +649,7 @@ class OrderProgress extends Component {
                                 <div className={`order-page4 ${this.state.orderStatus == 5 ? "show" : "hidden"}`}>
                                     <div className="row order-operation">
                                         <div className="col-sm-12">
-                                            {this.orderMessageDetails(orders_details)}
+                                            {this.renderOrderMessageDetails(orders_details)}
                                             <div className="comment">
                                                 <h5>对用户{this.state.partnerName}进行评价</h5>
                                                 <div>
@@ -634,7 +678,7 @@ class OrderProgress extends Component {
                             <div className={`order-page4 ${this.state.orderStatus >= 6 ? "show" : "hidden"}`}>
                                 <div className="row order-operation">
                                     <div className="col-sm-12">
-                                        {this.orderMessageDetails(orders_details)}
+                                        {this.renderOrderMessageDetails(orders_details)}
                                     </div>
                                 </div>
                             </div>
@@ -670,7 +714,7 @@ class OrderProgress extends Component {
                         </Form>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button onClick={this.next.bind(this)}>下一步</Button>
+                        <Button onClick={this.handleNext.bind(this)}>下一步</Button>
                         <Button onClick={close}>取消</Button>
                     </Modal.Footer>
                 </Modal>
@@ -710,41 +754,25 @@ class OrderProgress extends Component {
                         <Modal.Title id="contained-modal-title text-center">证据存根</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <Form horizontal>
-                            <FormGroup controlId="formHorizontalPassword">
-                                <Col componentClass={ControlLabel} sm={2}>
-                                    上传截图
-                                </Col>
-                                <Col sm={10}>
-                                    <Dropzone onDrop={this.evidenceFile.bind(this)} className="sign-up"
-                                              accept="image/png,image/gif,image/jpeg">
-                                        {({isDragActive, isDragReject, acceptedFiles, rejectedFiles}) => {
-                                            return (
-                                                <div>
-                                                    <div className="col-sm-6">
-                            <span className="ant-btn ant-btn-primary ant-btn-lg"
-                                  style={{color: "white", background: '#a6a5a6', marginLeft: '-15px'}}>选择文件</span>
-                                                    </div>
-                                                    <div className="col-sm-6">
-                                                        <p style={{
-                                                            height: '100%',
-                                                            color: 'gray',
-                                                            fontSize: '8px'
-                                                        }}>{acceptedFiles.length > 0 ? acceptedFiles[0].name : ''}</p>
-                                                    </div>
-                                                </div>
-                                            )
-                                        }}
-                                    </Dropzone>
-                                </Col>
-                                <Col sm={12}>
-                                    <textarea className="form-control" name="" id="" cols="30" rows="10" placeholder="请输入此次仲裁重要部分证据和备注" ref="voucherDes"></textarea>
-                                </Col>
-                            </FormGroup>
-                        </Form>
+                        <div className="clearfix">
+                            <Upload {...props}>
+                                <Button>
+                                    <Icon type="upload" /> 聊天截图
+                                </Button>
+                            </Upload>
+                        </div>
+                        <textarea className="form-control" name="" id="" cols="30" rows="10" placeholder="请输入此次仲裁重要部分证据和备注" ref="voucherDes"></textarea>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button onClick={this.handleEvidenceSubmit.bind(this)}>确定</Button>
+                        <Button
+                            className="upload-demo-start"
+                            type="primary"
+                            onClick={this.handleEvidenceSubmit.bind(this)}
+                            disabled={this.state.fileList.length === 0}
+                            loading={uploading}
+                        >
+                            {uploading ? '上传中' : '确定' }
+                        </Button>
                         <Button onClick={close}>取消</Button>
                     </Modal.Footer>
                 </Modal>

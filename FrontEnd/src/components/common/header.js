@@ -4,21 +4,29 @@
 
 import React, { Component } from 'react';
 import { Link } from 'react-router';
+import { Icon } from 'antd';
 import { connect } from 'react-redux';
+import {fetchUnreadMessage} from "../../actions/message"
 class Header extends Component{
     constructor(props) {
         super(props);
-        this.state = {}
-        this.renderUserInfo = this.renderUserInfo.bind(this)
+        this.state = {};
+        this.renderUserInfo = this.renderUserInfo.bind(this);
     }
     renderUserInfo() {
         const role=localStorage.getItem('role')
+        console.log(this.props.unread_message)
         if(this.props.authenticated) {
             const loginname= localStorage.getItem('loginname');
             return (
                 <div className="navbar-custom-menu">
                     <ul className="nav navbar-nav">
                         {role == 3 ?  <li className="order-style" style={{width:"135px"}}><a href="/refereelist">消息列表</a></li> : "" }
+                        <li className="order-style">
+                            <a href="/messagenotice">
+                                消息{this.props.unread_message !=undefined ? <span className="message-tip">{this.props.unread_message.pageList.length}</span> :"" }
+                            </a>
+                        </li>
                         <li className="order-style"><a href="/orderinprogress">订单</a></li>
                         <li className="order-style"><a href="/orderinprogress">钱包</a></li>
                         <li className="ordermenu-style dropdown user user-menu">
@@ -40,7 +48,8 @@ class Header extends Component{
                             </ul>
                         </li>
                     </ul>
-                </div>);
+                </div>
+            );
         }
     }
     render(){
@@ -72,7 +81,8 @@ function mapStateToProps(state) {
     return {
         errorMessage:state.auth.error,
         authenticated: state.auth.authenticated,
+        unread_message:state.message.unread_message
     };
 }
 
-export default connect(mapStateToProps)(Header);
+export default connect(mapStateToProps,{fetchUnreadMessage})(Header);

@@ -36,6 +36,7 @@ import ArbitrationManage from './components/arbitrationmanage';
 import RefereeList from './components/refereelist';
 import StubList from './components/stublist';
 import Releaseadvert from './components/releaseadvert';
+import MessageNotice from './components/message/message_notice'
 
 const createStoreWithMiddleware = compose(
     applyMiddleware(reduxThunk),
@@ -74,6 +75,7 @@ ReactDOM.render(
                     <Route path="/selldetail:id" component={Selldetail}/>
                     <Route path="/buydetail:id" component={Buydetail}/>
                     <Route path="/myadvert" component={Myadvert}/>
+                    <Route path="/messagenotice" component={MessageNotice}/>
                     <Route path="/" component={Home}/>
                 </Switch>
                 <Footer/>

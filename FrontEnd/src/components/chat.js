@@ -64,11 +64,7 @@ class Chat extends Component{
                     ws.send(heart);
                 },2000)
             }
-            $(".send").unbind("click").on("click", function (){
-                console.log(1)
-                sendMessageBtn(partner)
-            })
-            document.onkeydown = function(e) {
+            document.onkeydown = (e) => {
                 if (e && e.keyCode == 13) {
                     sendMessageBtn(partner)
                 }

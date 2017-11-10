@@ -7,6 +7,7 @@ export const ROOT_URLL = 'http://192.168.1.170:8083';
 export const ROOT_ORDER= 'http://192.168.1.125:8882';
 export const ROOT_URLZ = 'http://192.168.1.125:8882';
 export const ROOT_ARBITRATE = 'http://192.168.1.125:8883'
+export const ROOT_MESSAGE = 'http://192.168.1.170:9491'
 
 export const AUTH_USER = 'auth_user';                               //登录
 export const UNAUTH_USER = 'unauth_user';                           //退出登录
@@ -52,8 +53,10 @@ export const ARBITRATE_RESULT = 'arbitrate_result'                       //仲�
 export const FETCH_OFF_MYBTC = 'fetch_off_mybtc'                         //下架我的广告
 export const FETCH_BASE_INFO = 'fetch_base_info'                         //用户中心基本信息
 export const FETCH_TRUSTED = 'fetch_trusted'                             //用户中心受信任的
-export const FETCH_PHONE = 'fetch_phone'                             //用户中心修改手机号
-export const FETCH_PASSWORD = 'fetch_password'                             //用户中心修改密码
+export const FETCH_PHONE = 'fetch_phone'                                 //用户中心修改手机号
+export const FETCH_PASSWORD = 'fetch_password'                           //用户中心修改密码
+export const FETCH_UNREAD_MESSAGES = 'fetch_unread_messages'             //获取未读消息
+export const FETCH_READ_MESSAGES = 'fetch_read_messages'                 //获取已读消息
 
 
 export function getAuthorizedHeader() {

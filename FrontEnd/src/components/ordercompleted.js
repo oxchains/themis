@@ -25,7 +25,7 @@ class OrderCompleted extends Component {
         }
         this.props.fetchCompletedOrders({userId});
     }
-    onPagination(pageNum) {
+    handlePagination(pageNum) {
         const userIdInfo= localStorage.getItem('userId');
         const userId={
             userId:userIdInfo,
@@ -46,12 +46,12 @@ class OrderCompleted extends Component {
                     <td>{item.amount}</td>
                     <td>{item.createTime}</td>
                     <td>{item.orderStatusName}<span>{item.arbitrate == 2 ? "(仲裁完成)": ""}</span></td>
-                    <td><button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.showOrderDetail.bind(this,item)}>详情</button></td>
+                    <td><button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleOrderDetail.bind(this,item)}>详情</button></td>
                 </tr>
             )
         })
     }
-    showOrderDetail(item){
+    handleOrderDetail(item){
         const userId= localStorage.getItem('userId');
         const orderData={id:item.id,userId:userId,partnerId:item.sellerId == userId ? item.buyerId : item.sellerId,friendUsername:item.friendUsername}
         localStorage.setItem("partner",JSON.stringify(orderData));
@@ -60,10 +60,8 @@ class OrderCompleted extends Component {
     render() {
         const completed_orders = this.props.completed_orders;
         const totalNum = completed_orders && completed_orders[0].pageCount
-        console.log(totalNum)
-        console.log(this.props.completed_orders)
         return (
-            <div className="container">
+            <div className="container g-pb-150">
                 <div className="orderType text-center g-pt-50 g-pb-50">
                     <ul className="row">
                         <li className="col-xs-6"> <a className="g-pb-3" href="/orderinprogress">进行中的交易</a></li>
@@ -83,17 +81,15 @@ class OrderCompleted extends Component {
                                 <th>创建时间</th>
                                 <th>交易状态</th>
                                 <th>操作</th>
-                                {/*<th></th>*/}
                             </tr>
                             </thead>
                             <tbody>
                             {this.props.completed_orders == null ? <tr><td colSpan={8}>暂无数据</td></tr> : this.renderrow()}
-                            {/*{this.renderrow()}*/}
                             </tbody>
                         </table>
                     </div>
                     <div className="pagecomponent">
-                        <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.onPagination(e)}/>
+                        <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.handlePagination(e)}/>
                     </div>
                 </div>
             </div>
