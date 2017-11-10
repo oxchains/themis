@@ -40,7 +40,6 @@ export function fetchNoCompletedOrders({formData}) {
                     type: FETCH_NOT_COMPLETED_ORDERS,
                     payload: res.data.data
                 })
-                callback();
             }
         }).catch( err => dispatch(requestError(err.message)) );
     }
@@ -65,7 +64,6 @@ export function fetchCompletedOrders({userId}) {
                     type: FETCH_COMPLETED_ORDERS,
                     payload: res.data.data
                 })
-                callback();
             }
         }).catch( err => dispatch(requestError(err.message)) );
     }
@@ -75,7 +73,7 @@ export function fetchCompletedOrders({userId}) {
  * 获取订单详情
  * @returns {Function}
  */
-export function fetchOrdersDetails({data},callback) {
+export function fetchOrdersDetails({data}, callback) {
     return function (dispatch) {
         axios({
             method: 'post',
@@ -113,7 +111,6 @@ export function fetchTradePartnerMessage({partner}) {
                     type: FETCH_TRADE_PARTNER_MESSAGE,
                     payload: res.data.data
                 })
-                callback(res);
             }
         }).catch(err =>{
                 dispatch(requestError(err.message))
@@ -125,7 +122,7 @@ export function fetchTradePartnerMessage({partner}) {
  * 获取卖家付款信息
  * @returns {Function}
  */
-export function fetchKey({orderId},callback) {
+export function fetchKey({orderId}, callback) {
     return function (dispatch) {
         axios({
             method: 'post',
@@ -150,7 +147,7 @@ export function fetchKey({orderId},callback) {
  * 卖家上传付款信息
  * @returns {Function}
  */
-export function addPaymentInfo({paymentInfo},callback) {
+export function addPaymentInfo({paymentInfo}, callback) {
     console.log(paymentInfo)
     return function (dispatch) {
         axios({
@@ -176,7 +173,7 @@ export function addPaymentInfo({paymentInfo},callback) {
  * 卖家上传交易id
  * @returns {Function}
  */
-export function addTransactionId({txIdInfo},callback) {
+export function addTransactionId({txIdInfo}, callback) {
     console.log(txIdInfo)
     return function (dispatch) {
         axios({
@@ -202,7 +199,7 @@ export function addTransactionId({txIdInfo},callback) {
  * 卖家确认订单
  * @returns {Function}
  */
-export function confirmOrder({orderId},callback) {
+export function confirmOrder({orderId}, callback) {
     console.log(orderId)
     return function (dispatch) {
         axios({
@@ -226,7 +223,7 @@ export function confirmOrder({orderId},callback) {
  * 买家付款
  * @returns {Function}
  */
-export function confirmSendMoney({orderId},callback) {
+export function confirmSendMoney({orderId}, callback) {
     return function (dispatch) {
         axios({
             method: 'post',
@@ -249,7 +246,7 @@ export function confirmSendMoney({orderId},callback) {
  * 卖家释放比特币
  * @returns {Function}
  */
-export function releaseBtc({releaseData},callback) {
+export function releaseBtc({releaseData}, callback) {
     return function (dispatch) {
         axios({
             method: 'post',
@@ -272,7 +269,7 @@ export function releaseBtc({releaseData},callback) {
  * 买家确认收货
  * @returns {Function}
  */
-export function confirmGoods({confirmGoodsData},callback) {
+export function confirmGoods({confirmGoodsData}, callback) {
     return function (dispatch) {
         axios({
             method: 'post',
@@ -297,7 +294,7 @@ export function confirmGoods({confirmGoodsData},callback) {
  * 提交评价
  * @returns {Function}
  */
-export function saveComment({commentData},callback) {
+export function saveComment({commentData}, callback) {
     return function (dispatch) {
         axios({
             method: 'post',
@@ -326,7 +323,7 @@ export function saveComment({commentData},callback) {
  * 取消订单
  * @returns {Function}
  */
-export function cancelOrders({cancelData},callback) {
+export function cancelOrders({cancelData}, callback) {
     console.log(cancelData)
     return function (dispatch) {
         axios({

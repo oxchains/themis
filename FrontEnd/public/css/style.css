@@ -413,18 +413,38 @@ div {
     color: black;
 }
 .order-flow{
-    border:1px solid dimgrey;
-    width: 100px;
-    height: 100px;
+    width: 20px;
+    height: 20px;
     -moz-border-radius: 50px;
     -webkit-border-radius: 50px;
     border-radius: 50px;
-    line-height: 100px;
-    display: inline-block;
+    line-height: 10px;
+    display: block;
+    margin: auto;
+    background-color: #eeeeee;
 }
-.order-active{
-    background-color: dimgrey;
-    color: white;
+.row-title .order-active{
+    background-color: #2ad0e9;
+}
+.row-title .content{
+    background: #fff;
+    position: relative;
+    z-index: 2;
+    width: 80%;
+}
+.order-bar{
+    width: 100%;
+    height: 2px;
+    background: #eeeeee;
+    position: absolute;
+    top: 24px;
+    left: 31px;
+}
+.order-bar-active{
+    background: #2ad0e9;
+}
+.row-title .orderMsg—active{
+ color: #2ad0e9;
 }
 .order-flow span{
     display: inline-block;
@@ -917,6 +937,27 @@ div {
     margin-top: 50px;
 }
 html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
+<<<<<<< HEAD
+/*table样式*/
+.table-bordered {  border: 1px solid #ddd; }
+.table { width: 100%;  font-size: 14px ;margin-bottom:0;}
+table { background-color: transparent; }
+table { border-spacing: 0;  border-collapse: collapse; }
+.table-bordered>tbody>tr>td, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>td, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>thead>tr>th {
+    border: 1px solid #ddd; text-align: center}
+.table>thead>tr>th { vertical-align: bottom; text-align: center}
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+    padding: 8px; line-height: 1.42857143;  vertical-align: top;text-align: center }
+.rightDiv{float: left;    float: left; padding-left: 16px; margin-top: 1px;}
+.paginationDiv {display: block; margin-top: 50px; color: #535353; line-height: 29px; text-align: center;margin-left: 52px;}
+.paginationDiv a {float: left;color: black;  height: 30px; padding: 0 7px; vertical-align: middle; text-decoration: none; cursor: pointer;}
+.paginationDiv .num {margin-left: -1px; padding: 0 7px; border: 1px solid #e5e5e5; color: #707070 }
+.paginationDiv .num.current{background-color: #337ab7; border-color: #337ab7; color: #fff }
+.paginationDiv .num:hover {background-color: #ddd; border-color: #ddd; color: #1a1a1a }
+.paginationDiv .ellipsis {width: 42px; height: 30px; color: #707070; line-height: 30px }
+.paginationDiv input {width: 44px; height: 24px; border: 1px solid #eee; text-align: center }
+=======
+>>>>>>> ab2b8895190234d5d079ff7dd9dc8b7ac23b390b
 
 .maininfo
 {
@@ -1417,9 +1458,12 @@ html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
 {
     border:none!important;
 }
+<<<<<<< HEAD
+=======
 .ant-btn-lg{
     /*line-height: 30px !important;*/
 }
+>>>>>>> ab2b8895190234d5d079ff7dd9dc8b7ac23b390b
 .ant-modal-body
 {
     width: 90%;
@@ -1478,6 +1522,34 @@ td {
 .ant-btn-lg
 {
     padding: 6px 15px!important;
+<<<<<<< HEAD
+}
+/*消息中心*/
+.message-tip{
+    height: 20px;
+    width: 20px;
+    border-radius: 10px;
+    background-color: red;
+}
+.message-box{
+    width: 100%;
+    padding: 100px 0;
+}
+.message-content{
+    padding: 0 40px;
+    border:1px solid grey;
+}
+.message-list li{
+    padding: 20px 20px;
+}
+.message-list li a{
+    padding:10px 0;
+    border-bottom: 2px solid #2ad0e9;
+    display: inline-block;
+    width: 100px;
+    color: black;
+}
+=======
 
 }
 .ant-pagination-item, .ant-pagination-item-link, .ant-pagination-item-link
@@ -1507,3 +1579,4 @@ td {
 {
     border:1px solid #D9D9D9!important;
 }
+>>>>>>> ab2b8895190234d5d079ff7dd9dc8b7ac23b390b

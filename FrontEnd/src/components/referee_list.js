@@ -1,11 +1,11 @@
 /**
  * Created by zhangxiaojing on 2017/10/24.
  */
-import React,{ Component }from 'react';
+import React, { Component }from 'react';
 import {connect} from 'react-redux';
 import { Pagination } from 'antd';
-import {Alert,Modal,Button,Form,FormGroup,Col,ControlLabel,FormControl,Image} from 'react-bootstrap';
-import {fetchArbitrateList,fetchEvidence,arbitrateResult} from '../actions/arbitrate';
+import {Alert, Modal, Button} from 'react-bootstrap';
+import {fetchArbitrateList, fetchEvidence, arbitrateResult} from '../actions/arbitrate';
 import {ROOT_ARBITRATE} from '../actions/types'
 
 
@@ -28,7 +28,7 @@ class RefereeList extends Component {
         }
         this.props.fetchArbitrateList({userIdDate});
     }
-    showEvidence(item){
+    handleEvidence(item){
         console.log(item)
         const orderId={
             id:item
@@ -53,7 +53,7 @@ class RefereeList extends Component {
         })
     }
     renderrow() {
-        return this.props.arbitrate_list.map((item,index)=>{
+        return this.props.arbitrate_list.map((item, index)=>{
             const userId=localStorage.getItem("userId")
             return (
                 <tr key={index}>
@@ -66,15 +66,22 @@ class RefereeList extends Component {
                     <td>{item.amount}</td>
                     <td>{item.createTime}</td>
                     <td>{item.orderStatusName}</td>
-                    <td>{item.status == 1 ? <button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.showEvidence.bind(this,item.id)}>仲裁</button> : ""}</td>
+                    <td>{item.status == 1 ? <button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleEvidence.bind(this, item.id)}>仲裁</button> : ""}</td>
                 </tr>
             )
         })
     }
+    renderDownload(val, index){
+        return(
+            <a className="ant-btn ant-btn-primary ant-btn-lg" style={{color: "gray"}} key={index}
+                  href={`${ROOT_ARBITRATE}/arbitrate/${val}/downloadfile`}
+                  download="download">点击下载</a>
+        )
+    }
     handleRadioValue(e){
         this.setState({result:e.target.value})
     }
-    onPagination(pageNum) {
+    handlePagination(pageNum) {
         const userId=localStorage.getItem("userId")
         const userIdDate={
             userId:userId,
@@ -94,8 +101,6 @@ class RefereeList extends Component {
         const sellerContent = evidenceData && evidenceData.sellerContent;
         const buyerFiles = evidenceData && evidenceData.buyerFiles;
         const sellerFiles = evidenceData && evidenceData.sellerFiles;
-        console.log(evidenceData)
-        console.log(totalNum)
         return (
             <div className="container">
                 <div className="referee-list  g-pt-50 g-pb-50">
@@ -120,7 +125,7 @@ class RefereeList extends Component {
                             </table>
                         </div>
                         <div className="pagecomponent">
-                            <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.onPagination(e)}/>
+                            <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.handlePagination(e)}/>
                         </div>
                     </div>
                 </div>
@@ -132,17 +137,11 @@ class RefereeList extends Component {
                         <div className="row  margin-b-15 ">
                             <label className="col-sm-4 control-label text-right"><strong>买家附件</strong></label>
                             <div className="col-sm-8 g-pb-10 ">
-                                {buyerFiles ?  <a className="btn btn-default" style={{color: "gray"}}
-                                                  href={`${ROOT_ARBITRATE}/arbitrate/${buyerFiles}/downloadfile`}
-                                                  download="download">点击下载</a> : "暂无数据" }
-
+                                {buyerFiles ? buyerFiles.split(',').map(this.renderDownload): "暂无数据" }
                             </div>
                             <label className="col-sm-4 control-label text-right"><strong>卖家附件</strong></label>
                             <div className="col-sm-8 g-pb-10 ">
-                                {sellerFiles ? <a className="btn btn-default" style={{color: "gray"}}
-                                                  href={`${ROOT_ARBITRATE}/arbitrate/${sellerFiles}/downloadfile`}
-                                                  download="download">点击下载</a> : "暂无数据"}
-
+                                {sellerFiles ? sellerFiles.split(',').map(this.renderDownload): "暂无数据" }
                             </div>
                             <label className="col-sm-4 control-label text-right"><strong>买家备注</strong></label>
                             <div className="col-sm-8 g-pb-10">
@@ -180,4 +179,4 @@ function mapStateToProps(state) {
         evidenceData:state.arbitrate.get_evidence
     };
 }
-export default connect(mapStateToProps,{fetchArbitrateList,fetchEvidence,arbitrateResult})(RefereeList);
+export default connect(mapStateToProps, {fetchArbitrateList, fetchEvidence, arbitrateResult})(RefereeList);

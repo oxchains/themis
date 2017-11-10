@@ -9,7 +9,7 @@ import {
 } from '../actions/types';
 
 
-const INITIAL_STATE = {arbitrate_list: null,get_evidence:null};
+const INITIAL_STATE = {arbitrate_list:null, get_evidence:null};
 
 export default function (state = INITIAL_STATE, action) {
     switch (action.type) {
