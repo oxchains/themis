@@ -20,9 +20,7 @@ import java.security.PublicKey;
  */
 @Component
 public class  JwtService {
-
     private static final  Logger LOG = LoggerFactory.getLogger(JwtService.class);
-
     private final UserRepo userRepo;
     public JwtService(UserRepo userRepo) {
         this.userRepo = userRepo;
