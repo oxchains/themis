@@ -1,4 +1,4 @@
-package com.oxchains.themis.user.auth;
+package com.oxchains.themis.common.auth;
 
 import com.alibaba.fastjson.JSON;
 import com.oxchains.themis.common.util.ObjectByteUtil;
@@ -35,7 +35,7 @@ import static java.util.Optional.empty;
 /**
  * @author aiet
  */
-
+@Service
 public class JwtService {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());

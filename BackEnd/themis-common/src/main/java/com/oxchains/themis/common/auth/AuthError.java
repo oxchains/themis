@@ -1,4 +1,4 @@
-package com.oxchains.themis.user.auth;
+package com.oxchains.themis.common.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.access.AccessDeniedException;
@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-
 import static com.oxchains.themis.common.model.RestResp.fail;
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -20,7 +19,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 /**
  * @author aiet
  */
-
+@Component
 public class AuthError implements AuthenticationEntryPoint, AccessDeniedHandler {
 
     @Override

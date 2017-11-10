@@ -1,6 +1,5 @@
-package com.oxchains.themis.user.auth;
+package com.oxchains.themis.common.auth;
 
-import com.oxchains.themis.common.auth.AuthorizationConst;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -12,7 +11,7 @@ import java.io.IOException;
 /**
  * @author aiet
  */
-
+@Component
 public class JwtTokenFilter implements Filter {
 
     private final JwtService jwtService;
