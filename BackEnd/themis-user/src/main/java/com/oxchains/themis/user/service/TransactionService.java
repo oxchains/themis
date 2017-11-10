@@ -1,11 +1,10 @@
 package com.oxchains.themis.user.service;
 
-import com.oxchains.themis.user.dao.TransactionDao;
-import com.oxchains.themis.user.domain.Transaction;
+import com.oxchains.themis.repo.dao.TransactionDao;
+import com.oxchains.themis.repo.entity.Transaction;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.transaction.Transactional;
 
 /**
  * @author ccl
