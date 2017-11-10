@@ -16,4 +16,6 @@ import java.util.List;
 public interface MessageTextDao extends CrudRepository<MessageText, Long> {
 
     MessageText findByIdAndMessageType(Long id, Integer messageType);
+
+    List<MessageText> findByMessageTypeAndUserGroup(Integer messageType, Long userGroup);
 }

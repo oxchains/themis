@@ -18,5 +18,9 @@ public interface MessageDao extends CrudRepository<Message, Long> {
 
     Page<Message> findByReceiverIdAndMessageType(Long receiverId, Integer messageType, Pageable pageable);
 
+    Page<Message> findByReceiverIdAndMessageTypeOrReceiverId(Long receiverId, Integer messageType, Long receiverId2,Pageable pageable);
+
     List<Message> findByReceiverIdAndReadStatus(Long receiverId, Integer readStatus);
+    List<Message> findByReceiverIdAndReadStatusAndMessageType(Long receiverId, Integer readStatus, Integer messageType);
+    List<Message> findByMessageTextIdAndReceiverId(Long messageTextId, Long receiverId);
 }
