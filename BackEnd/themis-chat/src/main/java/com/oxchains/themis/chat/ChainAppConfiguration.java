@@ -1,7 +1,8 @@
 package com.oxchains.themis.chat;
 
-import com.oxchains.themis.chat.auth.JwtAuthenticationProvider;
-import com.oxchains.themis.chat.auth.JwtTokenFilter;
+import com.oxchains.themis.common.auth.AuthError;
+import com.oxchains.themis.common.auth.JwtAuthenticationProvider;
+import com.oxchains.themis.common.auth.JwtTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +14,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import com.oxchains.themis.chat.auth.AuthError;
 
 /**
  * create by huohuo
