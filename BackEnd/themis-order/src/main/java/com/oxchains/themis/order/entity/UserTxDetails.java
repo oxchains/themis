@@ -14,7 +14,7 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "user_tx_detail")
 @Data
-public class UserTxDetail {
+public class UserTxDetails {
     @Id
     private Long id;
     private Integer txNum;     //交易次数

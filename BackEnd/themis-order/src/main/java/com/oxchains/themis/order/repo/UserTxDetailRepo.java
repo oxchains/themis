@@ -1,6 +1,6 @@
 package com.oxchains.themis.order.repo;
 
-import com.oxchains.themis.order.entity.UserTxDetail;
+import com.oxchains.themis.order.entity.UserTxDetails;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
  * @author huohuo
  */
 @Repository
-public interface UserTxDetailRepo extends CrudRepository<UserTxDetail,Long>{
-    UserTxDetail findByUserId(Long id);
+public interface UserTxDetailRepo extends CrudRepository<UserTxDetails,Long>{
+    UserTxDetails findByUserId(Long id);
 }

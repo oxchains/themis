@@ -25,7 +25,12 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
         if (requestUri.contains(wsUri)){
             String id = null;
             String receiverId = null;
-            this.getIdAndReceiverId(id,receiverId,requestUri);
+            String message = requestUri.substring(requestUri.lastIndexOf("?")+1);
+            String[] ids = message.split("_");
+            if(ids.length>=2){
+                id = ids[0];
+                receiverId = ids[1];
+            }
             if(id != null && receiverId != null){
                 //判断当前用户的channel分区是否已经创建，如未创建 则创建之
                 if(ChatUtil.userChannels.get(id) == null){
@@ -63,12 +68,7 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
         ctx.close();
     }
     private void getIdAndReceiverId(String id,String receiverid,String requestUri){
-        String message = requestUri.substring(requestUri.lastIndexOf("?")+1);
-        String[] ids = message.split("_");
-        if(ids.length>=2){
-            id = ids[0];
-            receiverid = ids[1];
-        }
+
 
     }
 }

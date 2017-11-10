@@ -136,17 +136,17 @@ public class OrderController {
     * 获取卖家历史交易资料有 好评率 交易次数 第一次购买时间 用户创建时间 交易量 电子邮箱验证否 电话号码验证否 实名认证否 信任量
     * */
     @RequestMapping("/order/findUserTxDetail")
-    public RestResp findUserTxDetail(@RequestBody Pojo pojo){
-        UserTxDetail userTxDetail = orderService.findUserTxDetail(pojo);
-        return userTxDetail!=null?RestResp.success(userTxDetail):RestResp.fail("未知错误");
+    public RestResp findUserTxDetails(@RequestBody Pojo pojo){
+        UserTxDetails UserTxDetails = orderService.findUserTxDetails(pojo);
+        return UserTxDetails!=null?RestResp.success(UserTxDetails):RestResp.fail("未知错误");
     }
     /*
     * 购买出售详情页面需要查的用户的历史交易信息 和公告的信息
     * */
     @RequestMapping("/order/findUserTxDetailAndNotice")
-    public RestResp findUserTxDetailAndNotice(@RequestBody Pojo pojo){
-        UserTxDetail userTxDetailAndNotice = orderService.findUserTxDetailAndNotice(pojo);
-        return userTxDetailAndNotice==null?RestResp.fail("未知错误"):RestResp.success(userTxDetailAndNotice);
+    public RestResp findUserTxDetailsAndNotice(@RequestBody Pojo pojo){
+        UserTxDetails UserTxDetailsAndNotice = orderService.findUserTxDetailsAndNotice(pojo);
+        return UserTxDetailsAndNotice==null?RestResp.fail("未知错误"):RestResp.success(UserTxDetailsAndNotice);
     }
     /*
     * 判断卖家有没有上传公私匙
@@ -168,8 +168,8 @@ public class OrderController {
     * */
     @RequestMapping("/order/findUserDetail")
     public RestResp findUserDetail(@RequestBody Pojo pojo){
-        UserTxDetail userTxDetailAndNotice = orderService.findUserTxDetailAndNotice(pojo);
-        return userTxDetailAndNotice==null?RestResp.fail():RestResp.success(userTxDetailAndNotice);
+        UserTxDetails UserTxDetailsAndNotice = orderService.findUserTxDetailsAndNotice(pojo);
+        return UserTxDetailsAndNotice==null?RestResp.fail():RestResp.success(UserTxDetailsAndNotice);
     }
 
     private void checkPage(Pojo pojo){
