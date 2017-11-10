@@ -27,10 +27,11 @@ public class ChatService {
     public List<ChatContent> getChatHistroy(ChatContent chatContent){
         try{
 
-            String username  = userRepo.findOne(chatContent.getSenderId().longValue()).getUsername();
-            String dusername  = userRepo.findOne(chatContent.getReceiverId().longValue()).getUsername();
+            String username  = userRepo.findOne(chatContent.getSenderId().longValue()).getLoginname();
+            String dusername  = userRepo.findOne(chatContent.getReceiverId().longValue()).getLoginname();
+
             String keyIDs = ChatUtil.getIDS(chatContent.getSenderId().toString(),chatContent.getReceiverId().toString());
-            List<ChatContent> list = mongoRepo.findChatContentByChatId(keyIDs);
+            List<ChatContent> list = mongoRepo.findChatContentByChatIdAndOrderId(keyIDs,chatContent.getOrderId());
             for (ChatContent content:list) {
                 if(content.getSenderId().longValue()==chatContent.getSenderId().longValue())
                 {
@@ -38,7 +39,7 @@ public class ChatService {
                 }
                 else{content.setSenderName(dusername);}
             }
-            return mongoRepo.findChatContentByChatId(keyIDs);
+            return list;
         }
         catch (Exception e){
             LOG.error("faild get chat history : {}",e.getMessage(),e);

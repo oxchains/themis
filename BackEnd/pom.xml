@@ -7,7 +7,7 @@
     <groupId>com.oxchains</groupId>
     <artifactId>themis</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -23,8 +23,10 @@
         <module>themis-order</module>
         <module>themis-arbitrate</module>
         <module>themis-repo</module>
+        <module>themis-message</module>
 
-        <!--<module>bitcoin-rpc-client</module>-->
+        <module>bitcoin-rpc-client</module>
+        <module>themis-zuul</module>
     </modules>
 
     <properties>

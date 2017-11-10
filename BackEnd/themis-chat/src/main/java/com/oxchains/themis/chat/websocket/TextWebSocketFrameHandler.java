@@ -2,8 +2,13 @@ package com.oxchains.themis.chat.websocket;
 import com.oxchains.themis.chat.entity.ChatContent;
 import com.oxchains.themis.chat.entity.MsgType;
 import com.oxchains.themis.chat.service.KafkaService;
+import com.oxchains.themis.chat.service.MessageService;
+import com.oxchains.themis.chat.websocket.chatfunction.ChatContext;
+import com.oxchains.themis.chat.websocket.chatfunction.function.HealthCheck;
+import com.oxchains.themis.chat.websocket.chatfunction.function.UserChat;
 import com.oxchains.themis.common.util.DateUtil;
 import com.oxchains.themis.common.util.JsonUtil;
+import com.oxchains.themis.repo.entity.Message;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -16,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -23,11 +29,12 @@ import java.util.Map;
  * create by huohuo
  * @author huohuo
  */
-@Component
 public class TextWebSocketFrameHandler extends
 		SimpleChannelInboundHandler<TextWebSocketFrame> {
 	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 	private KafkaService kafkaService;
+	@Resource
+	private MessageService messageService;
 	public TextWebSocketFrameHandler(KafkaService kafkaService){
     this.kafkaService = kafkaService;
 	}
@@ -36,38 +43,14 @@ public class TextWebSocketFrameHandler extends
 	protected void channelRead0(ChannelHandlerContext ctx,
 								TextWebSocketFrame msg) throws Exception {
 		ChatContent chatContent= (ChatContent) JsonUtil.fromJson(msg.text(), ChatContent.class);
-
-		Map<String,ChannelHandler> channelHandlerMap = ChatUtil.userChannels.get(chatContent.getSenderId()+"");
-		String keyIDs = ChatUtil.getIDS(chatContent.getSenderId().toString(),chatContent.getReceiverId().toString());
-
+		ChatContext chatContext = null;
 		if(chatContent.getMsgType() == MsgType.HEALTH_CHECK){
-			ChannelHandler channelHandler = channelHandlerMap.get(keyIDs);
-			if(channelHandler!=null){
-				channelHandler.setLastUseTime(System.currentTimeMillis());
-				chatContent.setStatus("success");
-			}
-			else{
-				chatContent.setStatus("error");
-			}
-			channelHandler.getChannel().writeAndFlush(new TextWebSocketFrame(JsonUtil.toJson(chatContent)));
+			chatContext = new ChatContext(new HealthCheck());
+			chatContext.disposeInfo(chatContent);
 		}
-
 		if(chatContent.getMsgType() == MsgType.USER_CHAT){
-			chatContent.setCreateTime(DateUtil.getPresentDate());
-			chatContent.setChatId(keyIDs);
-			String message = JsonUtil.toJson(chatContent).toString();
-			kafkaService.send(message);
-			ctx.channel().writeAndFlush(new TextWebSocketFrame(message));
-			channelHandlerMap = ChatUtil.userChannels.get(chatContent.getReceiverId().toString());
-			if( channelHandlerMap!= null && channelHandlerMap.get(keyIDs)!=null){
-				channelHandlerMap.get(keyIDs).getChannel().writeAndFlush(new TextWebSocketFrame(message));
-			}
-		}
-		if(chatContent.getMsgType() == MsgType.SYSTEM_INFO){
-
-		}
-		if(chatContent.getMsgType() == MsgType.CUSTOMER_SERVICE){
-
+			chatContext = new ChatContext(new UserChat(kafkaService,ctx));
+			chatContext.disposeInfo(chatContent);
 		}
 	}
 	@Override
@@ -97,6 +80,7 @@ public class TextWebSocketFrameHandler extends
 		Channel incoming = ctx.channel();
 		cause.printStackTrace();
 		ctx.close();
+		channels.remove(incoming);
 	}
 
 }

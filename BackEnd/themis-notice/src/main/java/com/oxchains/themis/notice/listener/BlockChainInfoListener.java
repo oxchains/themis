@@ -49,21 +49,20 @@ public class BlockChainInfoListener {
             LOG.info("BTC market: {}", blockChainInfo);
             if (null != blockChainInfo){
                 List<BlockChainInfo> bciList = blockChainInfoDao.findBySymbol("¥");
-                List<CNYDetail> cdList = cnyDetailDao.findBySymbol("¥");
-                if (bciList.size() != 0 && cdList.size() != 0){
+                CNYDetail cnyDetail = cnyDetailDao.findBySymbol("¥");
+                if (bciList.size() != 0 && cnyDetail != null){
                     for (BlockChainInfo b : bciList) {
                         b.setSaveTime(currentTime);
                         b.setSymbol("¥");
                         blockChainInfoDao.save(b);
                     }
-                    for (CNYDetail c : cdList) {
-                        c.setSaveTime(currentTime);
-                        c.setBuy(blockChainInfo.getCNY().getBuy());
-                        c.setLast(blockChainInfo.getCNY().getLast());
-                        c.setSell(blockChainInfo.getCNY().getSell());
-                        c.setSymbol(blockChainInfo.getCNY().getSymbol());
-                        cnyDetailDao.save(c);
-                    }
+                    cnyDetail.setSaveTime(currentTime);
+                    cnyDetail.setBuy(blockChainInfo.getCNY().getBuy());
+                    cnyDetail.setLast(blockChainInfo.getCNY().getLast());
+                    cnyDetail.setSell(blockChainInfo.getCNY().getSell());
+                    cnyDetail.setSymbol(blockChainInfo.getCNY().getSymbol());
+                    cnyDetailDao.save(cnyDetail);
+
                 }else {
                     blockChainInfo.setSymbol("¥");
                     blockChainInfo.setSaveTime(currentTime);

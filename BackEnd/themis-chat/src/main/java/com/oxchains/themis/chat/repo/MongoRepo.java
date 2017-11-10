@@ -12,5 +12,5 @@ import java.util.List;
  */
 @Repository
 public interface MongoRepo extends MongoRepository<ChatContent, String> {
-    List<ChatContent> findChatContentByChatId(String chatId);
+    List<ChatContent> findChatContentByChatIdAndOrderId(String chatId,String orderId);
 }

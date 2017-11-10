@@ -43,8 +43,9 @@ public class StringParser {
     public String pollBeforeSkipDelim(String s) {
         commit();
         int i = string.indexOf(s);
-        if (i == -1)
+        if (i == -1) {
             throw new RuntimeException("\"" + s + "\" not found in \"" + string + "\"");
+        }
         String rv = string.substring(0, i);
         forward(i + s.length());
         return rv;

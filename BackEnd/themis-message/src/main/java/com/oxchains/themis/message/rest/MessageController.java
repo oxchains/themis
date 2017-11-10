@@ -1,8 +1,9 @@
 package com.oxchains.themis.message.rest;
 
+import com.oxchains.themis.common.model.RestResp;
+import com.oxchains.themis.message.domain.MessageText;
 import com.oxchains.themis.message.service.MessageService;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -23,4 +24,55 @@ public class MessageController {
 
     @Resource
     private MessageService messageService;
+
+    /**
+     * Admin发送系统消息
+     * @param messageText
+     * @return
+     */
+    @PostMapping(value = "/send/globalMessage")
+    public RestResp sendGlobalMessage(@RequestBody MessageText messageText){
+        return messageService.sendGlobalMessage(messageText);
+
+    }
+
+    /**
+     * 显示系统信息
+     * @param userId
+     * @return
+     */
+    @GetMapping(value = "/query/globalMsg")
+    public RestResp queryGlobalMsg(@RequestParam Long userId, @RequestParam Integer pageNum, @RequestParam Integer pageSize){
+        return messageService.queryGlobalMsg(userId, pageNum, pageSize);
+    }
+
+    /**
+     * 显示私信
+     * @param userId
+     * @return
+     */
+    @GetMapping(value = "/query/privateMsg")
+    public RestResp queryPrivateMsg(@RequestParam Long userId, @RequestParam Integer pageNum, @RequestParam Integer pageSize){
+        return messageService.queryPrivateMsg(userId, pageNum, pageSize);
+    }
+
+    /**
+     * 显示公告信息
+     * @param userId
+     * @return ajax请求实体
+     */
+    @GetMapping(value = "/query/noticeMsg")
+    public RestResp queryNoticeMsg(@RequestParam Long userId, @RequestParam Integer pageNum, @RequestParam Integer pageSize){
+        return messageService.queryNoticeMsg(userId, pageNum, pageSize);
+    }
+
+    /**
+     * 未读信息数量
+     * @param userId
+     * @return
+     */
+    @GetMapping(value = "/query/unReadCount")
+    public RestResp unReadCount(@RequestParam Long userId){
+        return messageService.unReadCount(userId);
+    }
 }

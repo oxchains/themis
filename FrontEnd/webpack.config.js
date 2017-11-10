@@ -12,16 +12,24 @@ module.exports = {
         filename: 'bundle.js'
     },
     module: {
-        loaders: [{
-            exclude: /node_modules/,
-            loader: 'babel-loader',
-            query: {
-                presets: ['react', 'es2015', 'stage-1']
+        loaders: [
+            {
+                exclude: /node_modules/,
+                loader: 'babel-loader',
+                query: {
+                    presets: ['react', 'es2015', 'stage-1']
+                }
+            },
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                loader: 'eslint-loader'
+            },
+            {
+                test: /\.css$/,
+                loader: "style-loader!css-loader"
             }
-        },{
-            test: /\.css$/,
-            loader: "style-loader!css-loader"
-        }]
+        ]
     },
     resolve: {
         extensions: [ '.js', '.jsx',  '.css']
@@ -29,5 +37,5 @@ module.exports = {
     devServer: {
         historyApiFallback: true,
         contentBase: './'
-    }
+    },
 };

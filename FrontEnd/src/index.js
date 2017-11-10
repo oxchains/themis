@@ -21,13 +21,18 @@ import Signinemail from  './components/auth/signin_email';
 
 import Singup from  './components/auth/signup';
 import Signout from  './components/auth/signout';
-import Usercenter from './components/usercenter';
-import Buybtc from './components/buybtc';
-import Sellbtc from './components/sellbtc';
-import Selldetail from './components/selldetail';
-import Buydetail from './components/buydetail';
-import Myadvert from './components/myadvert';
+import Forgetpsw from './components/auth/forget_psw';
+import Emialforget from './components/auth/forget_email';
+import Resetpsw from './components/auth/reset_psw';
+
+import Usercenter from './components/user_center';
+import Buybtc from './components/buy_btc';
+import Sellbtc from './components/sell_btc';
+import Selldetail from './components/sell_detail';
+import Buydetail from './components/buy_detail';
+import Myadvert from './components/my_advert';
 import Home from './components/home';
+<<<<<<< HEAD
 import OrderInProgress from './components/orderinprogress';
 import OrderCompleted from './components/ordercompleted';
 import OrderProgress from './components/orderProcess';
@@ -37,6 +42,17 @@ import RefereeList from './components/refereelist';
 import StubList from './components/stublist';
 import Releaseadvert from './components/releaseadvert';
 import MessageNotice from './components/message/message_notice'
+=======
+import OrderInProgress from './components/order_inprogress';
+import OrderCompleted from './components/order_completed';
+import OrderProgress from './components/order_process';
+import ArbitrationBuyer from './components/arbitration_buyer';
+import ArbitrationManage from './components/arbitration_manage';
+import RefereeList from './components/referee_list';
+import StubList from './components/stub_list';
+import Releaseadvert from './components/release_advert';
+
+>>>>>>> ab2b8895190234d5d079ff7dd9dc8b7ac23b390b
 
 const createStoreWithMiddleware = compose(
     applyMiddleware(reduxThunk),
@@ -75,7 +91,16 @@ ReactDOM.render(
                     <Route path="/selldetail:id" component={Selldetail}/>
                     <Route path="/buydetail:id" component={Buydetail}/>
                     <Route path="/myadvert" component={Myadvert}/>
+<<<<<<< HEAD
                     <Route path="/messagenotice" component={MessageNotice}/>
+=======
+                    <Route path="/forgetpsw" component={Forgetpsw}/>
+                    <Route path="/resetpsw" component={Resetpsw}/>
+
+                    <Route path="/emailforget" component={Emialforget}/>
+
+
+>>>>>>> ab2b8895190234d5d079ff7dd9dc8b7ac23b390b
                     <Route path="/" component={Home}/>
                 </Switch>
                 <Footer/>

@@ -17,6 +17,16 @@ public class ChatContent {
     private String chatId;
     private Integer msgType;
     private String status;
+    private String orderId;
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -69,6 +79,7 @@ public class ChatContent {
                 ", chatId='" + chatId + '\'' +
                 ", msgType=" + msgType +
                 ", status='" + status + '\'' +
+                ", orderId='" + orderId + '\'' +
                 '}';
     }
 

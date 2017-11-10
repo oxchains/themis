@@ -187,6 +187,14 @@ div {
     border:1px solid #16F6EA;
     box-shadow: 0 0 5px #16F6EA;
 }
+.form-login>a,.form-login>a:hover,.form-login>a:active
+{
+    color: white;
+}
+.g-pb-3:hover,.g-pb-3:active
+{
+    color: #BBBBBB;
+}
 .form-save
 {
     display:block;
@@ -209,7 +217,7 @@ div {
 .form-test
 {
     display:block;
-    width:35%!important;
+    width:50%!important;
     height: 36px;
     margin-bottom: 15px;
     border-radius:1px;
@@ -396,8 +404,8 @@ div {
 }
 .orderType ul li .orderTypeBar{
     display: inline-block;
-    border-bottom:2px solid #24d8e9;
-    color: #313131;
+    border-bottom:1px solid gainsboro;
+    color: black;
 }
 .signinWay ul li .signinTypeBar{
     display: inline-block;
@@ -710,9 +718,16 @@ div {
     font-weight: 400;
     font-size: 12px;
 }
+.contenttrust>td>img
+{
+    width:25px;
+    border-radius:50%;
+    position: relative;
+    top:8px;
+    margin-left: 10px;
+}
 .tabletitle
 {
-    /*padding: 10px 0px;*/
     text-align: center;
     font-weight: 400;
     font-size: 12px;
@@ -919,9 +934,10 @@ div {
 {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 50px;
 }
 html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
+<<<<<<< HEAD
 /*table样式*/
 .table-bordered {  border: 1px solid #ddd; }
 .table { width: 100%;  font-size: 14px ;margin-bottom:0;}
@@ -940,6 +956,8 @@ table { border-spacing: 0;  border-collapse: collapse; }
 .paginationDiv .num:hover {background-color: #ddd; border-color: #ddd; color: #1a1a1a }
 .paginationDiv .ellipsis {width: 42px; height: 30px; color: #707070; line-height: 30px }
 .paginationDiv input {width: 44px; height: 24px; border: 1px solid #eee; text-align: center }
+=======
+>>>>>>> ab2b8895190234d5d079ff7dd9dc8b7ac23b390b
 
 .maininfo
 {
@@ -1017,9 +1035,6 @@ table { border-spacing: 0;  border-collapse: collapse; }
     background-repeat: no-repeat;
     display: flex;
     justify-content: center;
-    /*align-content: center;*/
-    /*position: relative;*/
-    /*top:-45px;*/
 }
 .bannertitle
 {
@@ -1294,9 +1309,8 @@ table { border-spacing: 0;  border-collapse: collapse; }
 
 .ant-pagination-item-active
 {
-    background: linear-gradient(to right,#27D7E9,#16F6EA)!important;
-    border:1px solid #16F6EA!important;
-    box-shadow: 0 0 5px #16F6EA;
+    background: #6c6c6c!important;
+    border:1px solid #6c6c6c!important;
     color: white!important;
 }
 .ant-pagination-item:focus, .ant-pagination-item:hover
@@ -1444,6 +1458,12 @@ table { border-spacing: 0;  border-collapse: collapse; }
 {
     border:none!important;
 }
+<<<<<<< HEAD
+=======
+.ant-btn-lg{
+    /*line-height: 30px !important;*/
+}
+>>>>>>> ab2b8895190234d5d079ff7dd9dc8b7ac23b390b
 .ant-modal-body
 {
     width: 90%;
@@ -1502,6 +1522,7 @@ td {
 .ant-btn-lg
 {
     padding: 6px 15px!important;
+<<<<<<< HEAD
 }
 /*消息中心*/
 .message-tip{
@@ -1528,3 +1549,34 @@ td {
     width: 100px;
     color: black;
 }
+=======
+
+}
+.ant-pagination-item, .ant-pagination-item-link, .ant-pagination-item-link
+{
+    border-radius: 50%!important;
+    min-width: 20px!important;
+    height: 20px!important;
+    line-height: 20px!important;
+}
+.ant-pagination-item:hover,.ant-pagination-item:active,.ant-pagination-item-link:hover,.ant-pagination-item-link:active
+{
+    border:1px solid #D9D9D9!important;
+}
+.ant-pagination-prev, .ant-pagination-next
+{
+    border-radius: 50%!important;
+    min-width: 20px!important;
+    height: 20px!important;
+    line-height: 20px!important;
+}
+.ant-pagination-prev .ant-pagination-item-link:after, .ant-pagination-next .ant-pagination-item-link:after
+{
+    height: 20px!important;
+    line-height: 20px!important;
+}
+.ant-pagination-item-active:focus, .ant-pagination-item-active:hover
+{
+    border:1px solid #D9D9D9!important;
+}
+>>>>>>> ab2b8895190234d5d079ff7dd9dc8b7ac23b390b

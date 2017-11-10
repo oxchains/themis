@@ -1,5 +1,7 @@
 package com.oxchains.themis.order.entity;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -9,6 +11,7 @@ import java.math.BigDecimal;
  */
 @Entity
 @Table(name = "notice")
+@Data
 public class Notice {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -54,123 +57,4 @@ public class Notice {
 
     public Notice(){}
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Long getNoticeType() {
-        return noticeType;
-    }
-
-    public void setNoticeType(Long noticeType) {
-        this.noticeType = noticeType;
-    }
-
-    public Long getLocation() {
-        return location;
-    }
-
-    public void setLocation(Long location) {
-        this.location = location;
-    }
-
-    public Long getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(Long currency) {
-        this.currency = currency;
-    }
-
-    public Double getPremium() {
-        return premium;
-    }
-
-    public void setPremium(Double premium) {
-        this.premium = premium;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public BigDecimal getMinPrice() {
-        return minPrice;
-    }
-
-    public void setMinPrice(BigDecimal minPrice) {
-        this.minPrice = minPrice;
-    }
-
-    public BigDecimal getMinTxLimit() {
-        return minTxLimit;
-    }
-
-    public void setMinTxLimit(BigDecimal minTxLimit) {
-        this.minTxLimit = minTxLimit;
-    }
-
-    public BigDecimal getMaxTxLimit() {
-        return maxTxLimit;
-    }
-
-    public void setMaxTxLimit(BigDecimal maxTxLimit) {
-        this.maxTxLimit = maxTxLimit;
-    }
-
-    public Long getPayType() {
-        return payType;
-    }
-
-    public void setPayType(Long payType) {
-        this.payType = payType;
-    }
-
-    public String getNoticeContent() {
-        return noticeContent;
-    }
-
-    public void setNoticeContent(String noticeContent) {
-        this.noticeContent = noticeContent;
-    }
-
-    public Long getValidPayTime() {
-        return validPayTime;
-    }
-
-    public void setValidPayTime(Long validPayTime) {
-        this.validPayTime = validPayTime;
-    }
-
-    public Integer getSearchType() {
-        return searchType;
-    }
-
-    public void setSearchType(Integer searchType) {
-        this.searchType = searchType;
-    }
-
-    public Integer getTxStatus() {
-        return txStatus;
-    }
-
-    public void setTxStatus(Integer txStatus) {
-        this.txStatus = txStatus;
-    }
 }
