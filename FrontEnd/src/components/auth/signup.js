@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
-import { signupUser ,GetverifyCode} from '../../actions/auth'
+import { signupUser, GetverifyCode} from '../../actions/auth'
 import {
     Modal,
     ModalHeader,
@@ -36,10 +36,10 @@ class Signup extends Component {
             isModalOpen: false
         });
     };
-    handleFormSubmit({ loginname, mobilephone, email,password }) {
+    handleFormSubmit({ loginname, mobilephone, email, password }) {
         if(loginname && password && mobilephone)
-            this.props.signupUser({ loginname, mobilephone, email,password }, err => {
-                this.setState({ isModalOpen: true , error: err , actionResult: err||'注册成功!' , spin:false });
+            this.props.signupUser({ loginname, mobilephone, email, password }, err => {
+                this.setState({ isModalOpen: true, error: err, actionResult: err||'注册成功!', spin:false });
             });
     }
 
@@ -72,7 +72,7 @@ class Signup extends Component {
             }.bind(this), 1000);
         }
         const phonenum = localStorage.getItem("phonenum")
-        this.props.GetverifyCode({phonenum},()=>{})
+        this.props.GetverifyCode({phonenum}, ()=>{})
     }
     handleChange(e) {
         let {index} = this.state;
@@ -89,7 +89,7 @@ class Signup extends Component {
     }
     phoneChange(e){
         console.log(e.target.value)
-        const phonenum = localStorage.setItem("phonenum",e.target.value)
+        const phonenum = localStorage.setItem("phonenum", e.target.value)
 
         var regex = /^1[3|4|5|7|8][0-9]\d{4,8}$/
         if (regex.test(e.target.value) ) {
@@ -201,4 +201,4 @@ const reduxSignupForm = reduxForm({
     // validate
 })(Signup);
 
-export default connect(mapStateToProps, { signupUser ,GetverifyCode})(reduxSignupForm);
+export default connect(mapStateToProps, { signupUser, GetverifyCode})(reduxSignupForm);

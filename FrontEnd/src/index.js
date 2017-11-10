@@ -92,6 +92,6 @@ ReactDOM.render(
         </div>
     </BrowserRouter>
     </Provider>
-    ,document.querySelector('.wrapper')
+    , document.querySelector('.wrapper')
 );
 

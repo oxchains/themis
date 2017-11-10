@@ -20,7 +20,7 @@ import {
     FETCH_TRUSTED,
 } from '../actions/types';
 
-const INITIAL_STATE = { all: [] ,array: [] ,data:[],refuse:null};
+const INITIAL_STATE = { all: [], array: [], data:[], refuse:null};
 
 export default function(state = INITIAL_STATE, action) {
     switch(action.type) {

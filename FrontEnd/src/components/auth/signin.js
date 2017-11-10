@@ -76,7 +76,7 @@ function mapStateToProps(state) {
         errorMessage: state.auth.error
     };
 }
-export default connect(mapStateToProps,{signinAction})(Signin);
+export default connect(mapStateToProps, { signinAction })(Signin);
 
 
 

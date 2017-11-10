@@ -31,7 +31,7 @@ export function fetchArbitrateList({userIdDate}) {
                     type: FETCH_ARBITRATE_LIST,
                     payload: res.data.data
                 })
-                callback();
+                // callback();
             }
         }).catch( err => dispatch(requestError(err.message)) );
     }
@@ -42,7 +42,7 @@ export function fetchArbitrateList({userIdDate}) {
  * @returns {Function}
  */
 
-export function uploadEvidence({id,userId,evidenceOFile,evidenceDes},callback) {
+export function uploadEvidence({id, userId, evidenceOFile, evidenceDes}, callback) {
     let formData = new FormData();
     formData.append("id", id);
     formData.append("userId", userId);
@@ -54,8 +54,8 @@ export function uploadEvidence({id,userId,evidenceOFile,evidenceDes},callback) {
             method:'post',
             url:`${ROOT_ARBITRATE}/arbitrate/uploadEvidence`,
             data:formData,
-            headers: getAuthorizedHeader(),
-            headers: {'content-type': 'multipart/form-data'},
+            // headers: getAuthorizedHeader(),
+            headers: {'content-type': 'multipart/form-data', getAuthorizedHeader},
             withCredentials: true
         }).then((res) => {
             console.log(res)
@@ -90,7 +90,7 @@ export function fetchEvidence({orderId}) {
                     type: FETCH_EVIDENCE,
                     payload: res.data.data
                 })
-                callback();
+                // callback();
             }
         }).catch( err => dispatch(requestError(err.message)) );
     }
@@ -116,7 +116,7 @@ export function arbitrateResult({resultData}) {
                     type: ARBITRATE_RESULT,
                     payload: res.data.data
                 })
-                callback();
+                // callback();
             }
         }).catch( err => dispatch(requestError(err.message)) );
     }

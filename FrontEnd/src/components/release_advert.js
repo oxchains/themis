@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { Select } from 'antd';
 import { connect } from 'react-redux';
-import { releaseAdvert,fetctArray } from '../actions/releaseadvert'
+import { releaseAdvert, fetctArray } from '../actions/releaseadvert'
 import {
     Modal,
     ModalHeader,
@@ -69,8 +69,8 @@ class Releaseadvert extends Component {
             const currency = this.state.currency;
             const payType = this.state.payway;
         if(this.props.authenticated){
-            this.props.releaseAdvert({userId,loginname ,noticeType ,location ,currency,premium,price,minPrice, minTxLimit,maxTxLimit,payType  ,noticeContent},err=>{
-                this.setState({ isModalOpen: true , error: err , actionResult: err||'发布成功!'});
+            this.props.releaseAdvert({userId, loginname, noticeType, location, currency, premium, price, minPrice, minTxLimit, maxTxLimit, payType, noticeContent}, err=>{
+                this.setState({ isModalOpen: true, error: err, actionResult: err||'发布成功!'});
             });
         }
         else{
@@ -219,4 +219,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps,{releaseAdvert,fetctArray})(Releaseadvert);
+export default connect(mapStateToProps, {releaseAdvert, fetctArray})(Releaseadvert);

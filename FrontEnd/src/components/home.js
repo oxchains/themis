@@ -16,7 +16,7 @@ class Home extends Component {
     }
 
     componentWillMount(){
-     this.props.fetctHome({},()=>{})
+     this.props.fetctHome({})
     }
 
 
@@ -57,7 +57,7 @@ class Home extends Component {
         )
     })
     }
-    renderArray(item,index){
+    renderArray(item, index){
         return(
             <div key={index} className="list-item">
                 <img src={item.src} alt=""/>
@@ -73,9 +73,9 @@ class Home extends Component {
     render() {
 
         const ArrayLinks = [
-            { src:"./public/img/买卖-.png",title:"快速买卖",content:"themis是一个不涉及第三方的P2P交易平台，交易过程方便快捷"},
-            { src:"./public/img/安全.png",title:"安全交易",content:"冷存储、SSL、多重加密等银行级别安全技术，十年金融安全经验安全团队"},
-            { src:"./public/img/快速.png",title:"及时掌控",content:"行情及时掌握,交易随时随地"},
+            { src:"./public/img/买卖-.png", title:"快速买卖", content:"themis是一个不涉及第三方的P2P交易平台，交易过程方便快捷"},
+            { src:"./public/img/安全.png", title:"安全交易", content:"冷存储、SSL、多重加密等银行级别安全技术，十年金融安全经验安全团队"},
+            { src:"./public/img/快速.png", title:"及时掌控", content:"行情及时掌握,交易随时随地"},
         ]
         return (
             <div className="clear">
@@ -113,4 +113,4 @@ function mapStateToProps(state) {
        all:state.advert.all
     };
 }
-export default connect(mapStateToProps,{fetctHome})(Home);
+export default connect(mapStateToProps, {fetctHome})(Home);
