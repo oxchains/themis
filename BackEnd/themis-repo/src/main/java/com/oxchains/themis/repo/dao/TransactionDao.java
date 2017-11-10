@@ -1,6 +1,6 @@
-package com.oxchains.themis.user.dao;
+package com.oxchains.themis.repo.dao;
 
-import com.oxchains.themis.user.domain.Transaction;
+import com.oxchains.themis.repo.entity.Transaction;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

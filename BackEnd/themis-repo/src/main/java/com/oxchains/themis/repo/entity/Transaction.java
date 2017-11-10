@@ -1,7 +1,6 @@
-package com.oxchains.themis.user.domain;
+package com.oxchains.themis.repo.entity;
 
 import javax.persistence.*;
-import java.util.Date;
 
 /**
  * @author ccl

@@ -1,14 +1,9 @@
-package com.oxchains.themis.user.domain;
+package com.oxchains.themis.repo.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.oxchains.themis.repo.entity.UserTxDetail;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author ccl

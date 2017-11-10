@@ -1,7 +1,6 @@
-package com.oxchains.themis.user.dao;
+package com.oxchains.themis.repo.dao;
 
-
-import com.oxchains.themis.user.domain.User;
+import com.oxchains.themis.repo.entity.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -35,7 +34,7 @@ public interface UserDao extends CrudRepository<User,Long> {
      * @param password
      * @return Optional<User>
      */
-    Optional<User> findByLoginnameAndPassword(String loginname,String password);
+    Optional<User> findByLoginnameAndPassword(String loginname, String password);
 
     /**
      * find by email and password
@@ -43,7 +42,7 @@ public interface UserDao extends CrudRepository<User,Long> {
      * @param password
      * @return Optional<User>
      */
-    Optional<User> findByEmailAndPassword(String loginname,String password);
+    Optional<User> findByEmailAndPassword(String loginname, String password);
 
     /**
      * find by phone and password
@@ -51,5 +50,5 @@ public interface UserDao extends CrudRepository<User,Long> {
      * @param password
      * @return Optional<User>
      */
-    Optional<User> findByMobilephoneAndPassword(String loginname,String password);
+    Optional<User> findByMobilephoneAndPassword(String loginname, String password);
 }
