@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import { connect } from 'react-redux';
-import { fetctBuyBtcDetail,fetctBuynow} from '../actions/releaseadvert'
+import { fetctBuyBtcDetail, fetctBuynow} from '../actions/releaseadvert'
 import {
     Modal,
     ModalHeader,
@@ -60,15 +60,15 @@ class Buydetail extends Component {
             money : this.state.messmoney,
             amount : this.state.messnum
         }
-            this.props.fetctBuynow({formdata},err=>{
-                this.setState({ isModalOpen: true , error: err , actionResult: err||'下单成功!'})
+            this.props.fetctBuynow({formdata}, err=>{
+                this.setState({ isModalOpen: true, error: err, actionResult: err||'下单成功!'})
             });
     }
     showOrderDetail(item){
         console.log(item)
         const userId= localStorage.getItem('userId');
-        const orderData={id:item.id,userId:userId,partnerId:item.sellerId == userId ?item.buyerId:item.sellerId}
-        localStorage.setItem("partner",JSON.stringify(orderData));
+        const orderData={id:item.id, userId:userId, partnerId:item.sellerId == userId ?item.buyerId:item.sellerId}
+        localStorage.setItem("partner", JSON.stringify(orderData));
         window.location.href='/orderprogress';
     }
     render() {
@@ -83,10 +83,10 @@ class Buydetail extends Component {
                 <div className="detail-title">
                     <div className="detailTitle" style={{padding:0}}>
                         {/*<div className=" title-img">*/}
-                            <img src="./public/img/touxiang.png" style={{width:100+'px',borderRadius:50 +'%'}} alt=""/>
+                            <img src="./public/img/touxiang.png" style={{width:100+'px', borderRadius:50 +'%'}} alt=""/>
                         {/*</div>*/}
                         {/*<div className=" title-img">*/}
-                            <h4 style={{marginBottom:10+'px',paddingLeft:15+'px'}}>{datanum.loginname}</h4>
+                            <h4 style={{marginBottom:10+'px', paddingLeft:15+'px'}}>{datanum.loginname}</h4>
                             <ul className="detailul">
                                 <li>
                                     <p>{datanum.txNum}</p>
@@ -150,7 +150,7 @@ class Buydetail extends Component {
                     <ModalFooter>
                         <button className='btn btn-default' onClick={this.hideModal}>
                             {/*<a href="/myadvert" >关闭</a>*/}
-                            <div className="close-modal" onClick={this.showOrderDetail.bind(this,this.props.data)}>关闭</div>
+                            <div className="close-modal" onClick={this.showOrderDetail.bind(this, this.props.data)}>关闭</div>
                         </button>
                     </ModalFooter>
                 </Modal>
@@ -166,4 +166,4 @@ function mapStateToProps(state) {
         all:state.advert.all       //广告详情页面加载时的数据
     };
 }
-export default connect(mapStateToProps,{ fetctBuyBtcDetail,fetctBuynow })(Buydetail);
+export default connect(mapStateToProps, { fetctBuyBtcDetail, fetctBuynow })(Buydetail);

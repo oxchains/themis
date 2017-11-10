@@ -263,7 +263,7 @@ class OrderProgress extends Component {
         const orderId={
             id:this.state.orderId
         }
-        this.props.fetchKey({orderId},(msg)=>{
+        this.props.fetchKey({orderId}, (msg)=>{
              if(msg.status == 1){
                  $(function(){
                       var qrcode = new QRCode('qrcode', {

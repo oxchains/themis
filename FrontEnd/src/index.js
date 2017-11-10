@@ -40,7 +40,6 @@ import OrderProgress from './components/order_process';
 import ArbitrationBuyer from './components/arbitration_buyer';
 import ArbitrationManage from './components/arbitration_manage';
 import RefereeList from './components/referee_list';
-import StubList from './components/stub_list';
 import Releaseadvert from './components/release_advert';
 
 
@@ -74,7 +73,6 @@ ReactDOM.render(
                     <Route path="/arbitrationbuyer" component={ArbitrationBuyer}/>
                     <Route path="/arbitrationmanage" component={ArbitrationManage}/>
                     <Route path="/refereelist" component={RefereeList}/>
-                    <Route path="/stublist" component={StubList}/>
                     <Route path="/releaseadvert" component={Releaseadvert}/>
                     <Route path="/buybtc" component={Buybtc}/>
                     <Route path="/sellbtc" component={Sellbtc}/>

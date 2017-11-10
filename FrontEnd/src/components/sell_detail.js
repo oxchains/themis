@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import { Field } from 'redux-form';
 import { connect } from 'react-redux';
-import { fetctSellBtcDetail,fetctSellnow} from '../actions/releaseadvert'
+import { fetctSellBtcDetail, fetctSellnow} from '../actions/releaseadvert'
 import {
     Modal,
     ModalHeader,
@@ -66,8 +66,8 @@ class Selldetail extends Component {
             amount : this.state.messnum
         }
         // if(this.props.authenticated){
-            this.props.fetctSellnow({formdata},err=>{
-                this.setState({ isModalOpen: true , error: err , actionResult: err||'下单成功!'})
+            this.props.fetctSellnow({formdata}, err=>{
+                this.setState({ isModalOpen: true, error: err, actionResult: err||'下单成功!'})
             });
         // }else {
         //     alert("请先登录哦～")
@@ -88,14 +88,11 @@ class Selldetail extends Component {
             );
         }
     }
-    handlePayway(item){
-        console.log(item)
-    }
     showOrderDetail(item){
         console.log(item)
         const userId= localStorage.getItem('userId');
-        const orderData={id:item.id,userId:userId,partnerId:item.sellerId == userId ?item.buyerId:item.sellerId}
-        localStorage.setItem("partner",JSON.stringify(orderData));
+        const orderData={id:item.id, userId:userId, partnerId:item.sellerId == userId ?item.buyerId:item.sellerId}
+        localStorage.setItem("partner", JSON.stringify(orderData));
         window.location.href='/orderprogress';
     }
     render() {
@@ -111,8 +108,8 @@ class Selldetail extends Component {
                 <div className="detail-title">
                     <div className="detailTitle" style={{padding:0}}>
 
-                            <img src="./public/img/touxiang.png" style={{width:100+'px',borderRadius:50 +'%'}} alt=""/>
-                            <h4 style={{marginBottom:10+'px',paddingLeft:15+'px'}}>{datanum.loginname}</h4>
+                            <img src="./public/img/touxiang.png" style={{width:100+'px', borderRadius:50 +'%'}} alt=""/>
+                            <h4 style={{marginBottom:10+'px', paddingLeft:15+'px'}}>{datanum.loginname}</h4>
                             <ul className="detailul">
                                 <li>
                                     <p>{datanum.txNum}</p>
@@ -140,7 +137,6 @@ class Selldetail extends Component {
                             <ul className="priceul">
                                 <li>报价 : &#x3000;&#x3000;&#x3000;&#x3000;&#x3000;{data.price}CNY/BTC</li>
                                 <li>交易额度 : &#x3000;&#x3000;&#x3000;{data.minTxLimit}-{data.maxTxLimit} CNY</li>
-                                {/*<li>{(item) => this.handlePayway(item)}</li>*/}
                                 <li>付款方式 : &#x3000;&#x3000;&#x3000;{data.payType == 1 ?"现金":data.payType == 2 ?"转账":data.payType == 3 ?"支付宝":data.payType == 4 ? "微信":data.payType == 5 ? "Apple Pay":""}</li>
                                 <li>付款期限 : &#x3000;&#x3000;&#x3000;{time}分钟</li>
                             </ul>
@@ -184,7 +180,7 @@ class Selldetail extends Component {
                     <ModalFooter>
                         <button className='btn btn-default' onClick={this.hideModal}>
                             {/*<a href="/myadvert" >关闭</a>*/}
-                            <div className="close-modal" onClick={this.showOrderDetail.bind(this,this.props.data)}>关闭</div>
+                            <div className="close-modal" onClick={this.showOrderDetail.bind(this, this.props.data)}>关闭</div>
                             {/*<a className="close-modal" href="/orderprogress" >关闭</a>*/}
                         </button>
                     </ModalFooter>
@@ -203,4 +199,4 @@ function mapStateToProps(state) {
         all:state.advert.all        //广告详情页面加载时的数据
     };
 }
-export default connect(mapStateToProps,{fetctSellBtcDetail,fetctSellnow})(Selldetail);
+export default connect(mapStateToProps, {fetctSellBtcDetail, fetctSellnow})(Selldetail);

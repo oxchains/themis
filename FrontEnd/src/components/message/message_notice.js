@@ -36,4 +36,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps,{fetchUnreadMessage})(MessageUnread);
+export default connect(mapStateToProps, {fetchUnreadMessage})(MessageUnread);

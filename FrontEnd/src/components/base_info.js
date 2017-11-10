@@ -46,10 +46,10 @@ class Baseinfo extends Component {
 
     handleSave(){
        let formdata = new FormData();
-       formdata.append("loginname",localStorage.getItem("loginname"));
-       formdata.append("description",this.refs.description.value);
+       formdata.append("loginname", localStorage.getItem("loginname"));
+       formdata.append("description", this.refs.description.value);
         this.props.fetctBaseInfo({formdata}, err=>{
-            this.setState({ isModalOpen: true , error: err , actionResult: err||'保存成功!'});
+            this.setState({ isModalOpen: true, error: err, actionResult: err||'保存成功!'});
         })
     }
 
@@ -88,7 +88,7 @@ class Baseinfo extends Component {
                         </Upload>
                     </div>
                     <div className="display-info">
-                        <h5 style={{marginBottom:20+'px',marginTop:30 +'px'}}>{loginname}</h5>
+                        <h5 style={{marginBottom:20+'px', marginTop:30 +'px'}}>{loginname}</h5>
                     </div>
                 </div>
                 <div className="validateinfo">
@@ -138,4 +138,4 @@ function mapStateToProps(state) {
         all:state.advert.all
     };
 }
-export default connect(mapStateToProps,{fetctBaseInfo})(Baseinfo);
+export default connect(mapStateToProps, { fetctBaseInfo })(Baseinfo);

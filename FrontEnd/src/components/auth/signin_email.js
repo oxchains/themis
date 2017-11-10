@@ -18,7 +18,7 @@ class Emiallogin extends Component {
         const email= this.refs.email.value ;
         const password = this.refs.password.value ;
         if(email && password)
-            this.props.signinAction({ email, password },()=>{});
+            this.props.signinAction({ email, password }, ()=>{});
     }
     render(){
         return (
@@ -46,7 +46,7 @@ class Emiallogin extends Component {
                 </div>
             </div>);
     }
-};
+}
 
 
 function mapStateToProps(state) {
@@ -55,4 +55,4 @@ function mapStateToProps(state) {
         errorMessage: state.auth.error
     };
 }
-export default connect(mapStateToProps,{signinAction})(Emiallogin);
+export default connect(mapStateToProps, { signinAction })(Emiallogin);
