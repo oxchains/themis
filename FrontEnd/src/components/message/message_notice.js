@@ -26,13 +26,11 @@ class MessageUnread extends Component{
             </div>
         )
     }
-
 }
 function mapStateToProps(state) {
     return {
         errorMessage:state.auth.error,
         authenticated: state.auth.authenticated,
-
     };
 }
 

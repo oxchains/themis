@@ -65,14 +65,14 @@ class Buydetail extends Component {
             });
     }
     showOrderDetail(item){
-        console.log(item)
+        // console.log(item)
         const userId= localStorage.getItem('userId');
         const orderData={id:item.id, userId:userId, partnerId:item.sellerId == userId ?item.buyerId:item.sellerId}
         localStorage.setItem("partner", JSON.stringify(orderData));
         window.location.href='/orderprogress';
     }
     render() {
-        const userId=localStorage.getItem("userId");
+        // const userId=localStorage.getItem("userId");
         const messmoney = this.state.messmoney;
         const messnum = this.state.messnum;
         const data = this.props.all.notice || [];
@@ -82,10 +82,7 @@ class Buydetail extends Component {
             <div className="maincontent">
                 <div className="detail-title">
                     <div className="detailTitle" style={{padding:0}}>
-                        {/*<div className=" title-img">*/}
                             <img src="./public/img/touxiang.png" style={{width:100+'px', borderRadius:50 +'%'}} alt=""/>
-                        {/*</div>*/}
-                        {/*<div className=" title-img">*/}
                             <h4 style={{marginBottom:10+'px', paddingLeft:15+'px'}}>{datanum.loginname}</h4>
                             <ul className="detailul">
                                 <li>
@@ -105,7 +102,6 @@ class Buydetail extends Component {
                                     <p>历史成交数</p>
                                 </li>
                             </ul>
-                        {/*</div>*/}
                     </div>
                 </div>
                 <div className="price-detail clear">

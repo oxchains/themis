@@ -1,5 +1,6 @@
 package com.oxchains.themis.user.service;
 
+import com.oxchains.themis.common.auth.JwtService;
 import com.oxchains.themis.common.constant.Status;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.param.ParamType;
@@ -8,7 +9,6 @@ import com.oxchains.themis.common.util.ConstantUtils;
 import com.oxchains.themis.common.util.EncryptUtils;
 import com.oxchains.themis.repo.dao.*;
 import com.oxchains.themis.repo.entity.*;
-import com.oxchains.themis.user.auth.JwtService;
 import com.oxchains.themis.user.domain.UserTrust;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

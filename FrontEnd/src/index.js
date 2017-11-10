@@ -41,7 +41,7 @@ import ArbitrationBuyer from './components/arbitration_buyer';
 import ArbitrationManage from './components/arbitration_manage';
 import RefereeList from './components/referee_list';
 import Releaseadvert from './components/release_advert';
-
+import OtherInfodetail from './components/other_infodetail';
 
 const createStoreWithMiddleware = compose(
     applyMiddleware(reduxThunk),
@@ -83,6 +83,8 @@ ReactDOM.render(
                     <Route path="/forgetpsw" component={Forgetpsw}/>
                     <Route path="/resetpsw" component={Resetpsw}/>
                     <Route path="/emailforget" component={Emialforget}/>
+                    <Route path="/otherInfodetail" component={OtherInfodetail}/>
+
                     <Route path="/" component={Home}/>
                 </Switch>
                 <Footer/>
