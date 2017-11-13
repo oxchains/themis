@@ -78,6 +78,9 @@ public class UserController {
 
     @RequestMapping(value = "/info")
     public RestResp info(@ModelAttribute User user) throws Exception{
+        if(null == user){
+            return RestResp.fail("参数不能为空");
+        }
         MultipartFile file = user.getFile();
         if(null != file){
             String fileName = file.getOriginalFilename();
@@ -91,9 +94,6 @@ public class UserController {
             file.transferTo(new File(pathName));
             user.setImage(newFileName);
             return userService.updateUser(user,ParamType.UpdateUserInfoType.INFO);
-        }
-        if(null == user){
-            return RestResp.fail("参数不能为空");
         }
         String image = user.getLoginname()+".jpg";
         if(null != user.getImage() && !"undefined".equals(user.getImage())) {
@@ -168,6 +168,15 @@ public class UserController {
         return userService.forgetPwd(body);
     }
 
+    @GetMapping(value = "/arbitrations")
+    public RestResp getArbitrations(){
+        return userService.getArbitrations();
+    }
+
+    @GetMapping(value = "/findOne")
+    public RestResp getUser(Long id){
+        return userService.getUser(id);
+    }
 
 
 }

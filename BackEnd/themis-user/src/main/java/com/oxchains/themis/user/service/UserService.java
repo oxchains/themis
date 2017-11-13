@@ -2,6 +2,7 @@ package com.oxchains.themis.user.service;
 
 import com.oxchains.themis.common.auth.JwtService;
 import com.oxchains.themis.common.constant.Status;
+import com.oxchains.themis.common.constant.UserConstants;
 import com.oxchains.themis.common.mail.Email;
 import com.oxchains.themis.common.mail.MailService;
 import com.oxchains.themis.common.model.RestResp;
@@ -333,6 +334,24 @@ public class UserService extends BaseService {
             logger.error("操作失败: {}",e);
             return RestResp.fail("操作失败");
         }
+    }
+
+    public RestResp getArbitrations(){
+        List<User> list = userDao.findByRoleId(UserConstants.UserRole.ARBITRATION.getRoleId());
+        if(null != list && list.size()>0 ){
+            for(int i= 0; i < list.size(); i++){
+                list.get(i).setPassword(null);
+            }
+        }
+        return RestResp.success(list);
+    }
+
+    public RestResp getUser(Long id){
+        User user = userDao.findOne(id);
+        if(user != null){
+            user.setPassword(null);
+        }
+        return RestResp.success(user);
     }
 
 }
