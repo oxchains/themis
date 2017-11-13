@@ -36,7 +36,7 @@ public class MessageService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MessageService.class);
     private static Integer COUNT = 0;
-    private static Integer RESULT = 0;
+    // private static Integer RESULT = 0;
 
     @Resource private MessageDao messageDao;
     @Resource private MessageTextDao messageTextDao;
@@ -160,33 +160,29 @@ public class MessageService {
     public RestResp queryNoticeMsg(Long userId, Integer pageNum, Integer pageSize){
         try {
             Pageable pageable = new PageRequest(pageNum - 1, pageSize, new Sort(Sort.Direction.DESC, "id"));
-            // Page<Message> page = messageDao.findByReceiverIdAndMessageType(userId, MessageType.PUBLIC, pageable);
-             Page<Message> page = messageDao.findByReceiverIdAndMessageTypeOrReceiverId(userId, MessageType.PUBLIC, 0L, pageable);
+            Page<Message> page = messageDao.findByReceiverIdAndMessageType(userId, MessageType.PUBLIC, pageable);
             Iterator<Message> it = page.iterator();
             List<Message> mList = new ArrayList<>();
             while (it.hasNext()){
                 Message message = it.next();
                 MessageText messageText = messageTextDao.findByIdAndMessageType(message.getMessageTextId(), MessageType.PUBLIC);
                 message.setMessageText(messageText);
-
-                // 点击公告按钮，将所有返回数据的状态修改为已读，接受者id修改为自己的id
                 message.setReadStatus(MessageReadStatus.READ);
                 message.setReceiverId(userId);
                 messageDao.save(message);
+
                 mList.add(message);
             }
-
-            MessageDTO messageDTO = new MessageDTO<>();
+            MessageDTO messageDTO = new MessageDTO();
             messageDTO.setPageList(mList);
             messageDTO.setRowCount(page.getTotalElements());
-            messageDTO.setTotalPage(page.getTotalPages());
-            messageDTO.setPageNum(pageNum);
             messageDTO.setPageSize(pageSize);
-
+            messageDTO.setPageNum(pageNum);
+            messageDTO.setTotalPage(page.getTotalPages());
             return RestResp.success("操作成功", messageDTO);
         }catch (Exception e){
             e.printStackTrace();
-            LOG.error("站内信：获取未读公共信息失败");
+            LOG.error("站内信：获取公告信息异常", e.getMessage());
         }
         return RestResp.fail("操作失败");
     }
@@ -204,43 +200,43 @@ public class MessageService {
     }
 
     public Integer invokeDb(Long userId, Integer tip, Integer count) throws InterruptedException {
-
-        // 私信条数
-        List<Message> unPrivateMessageList = messageDao.findByReceiverIdAndReadStatusAndMessageType(userId, MessageReadStatus.UN_READ, MessageType.PRIVATE_LETTET);
-        // 系统信息
-        List<Message> unGlobalMessageList = messageDao.findByReceiverIdAndReadStatusAndMessageType(userId, MessageReadStatus.UN_READ, MessageType.GLOBAL);
-
-        // 公告信息
+        // 用户登录后，将所在用户组未读公告信息添加到message表中
         // 1，先找到roleid，然后得到角色userGroup，然后根据msgType和up得到id
         User user = userDao.findOne(userId);
         Long userGroup = user.getRoleId();
         List<MessageText> messageTextList = messageTextDao.findByMessageTypeAndUserGroup(MessageType.PUBLIC, userGroup);
-        Message message = new Message();
-        for (MessageText mt : messageTextList) {
-            Long mtId = mt.getId();
-            List<Message> newUnNoticeMessageList = messageDao.findByMessageTextIdAndReceiverId(mtId, 0L);
-            if (newUnNoticeMessageList.size() == 0){
-                // 将信息保存到message表中
-                message.setMessageTextId(mtId);
-                message.setReadStatus(MessageReadStatus.UN_READ);
-                message.setReceiverId(0L);
-                message.setMessageType(MessageType.PUBLIC);
-                messageDao.save(message);
-            }
+
+        // 所有公告
+        Set<Long> set = new HashSet<>();
+        for (MessageText mt: messageTextList) {
+            set.add(mt.getId());
         }
-        // 新的公告信息
-        List<Message> newUnNoticeMessageList = messageDao.findByReceiverIdAndReadStatusAndMessageType(0L, MessageReadStatus.UN_READ, MessageType.PUBLIC);
 
-        // 所有未读公告
-        RESULT = unPrivateMessageList.size() + unGlobalMessageList.size() + newUnNoticeMessageList.size();
+        // 移除已读公告的mtId
+        List<Message> allPublic = messageDao.findByReceiverIdAndMessageType(userId, MessageType.PUBLIC);
+        for (Message m : allPublic) {
+            set.remove(m.getMessageTextId());
+        }
 
-        List<Message> messageList = messageDao.findByReceiverIdAndReadStatus(userId, MessageReadStatus.UN_READ);
-        if (RESULT != 0){
+        // 添加剩余没有的公告
+        Iterator<Long> it = set.iterator();
+        Message message = new Message();
+        while (it.hasNext()){
+            message.setMessageTextId(it.next().longValue());
+            message.setReadStatus(MessageReadStatus.UN_READ);
+            message.setReceiverId(userId);
+            message.setMessageType(MessageType.PUBLIC);
+            messageDao.save(message);
+        }
+
+        // 所有未读信息
+        Integer unReadSize = messageDao.countByReceiverIdAndReadStatus(userId, MessageReadStatus.UN_READ);
+        if (unReadSize != 0){
             if (tip == 1){
-                COUNT = RESULT;
+                COUNT = unReadSize;
                 return COUNT;
             } else {
-                if (COUNT.equals(RESULT)){
+                if (COUNT.equals(unReadSize)){
                     Thread.sleep(2000);
                     // 前台请求15以上，返回的结果还是一样，就返回之前的数量，不走递归
                     if (count >= MessageConst.Constant.FIFTEEN.getValue()){
@@ -248,7 +244,7 @@ public class MessageService {
                     }
                     return invokeDb(userId, tip, ++count);
                 }else {
-                    COUNT = RESULT;
+                    COUNT = unReadSize;
                     return COUNT;
                 }
             }

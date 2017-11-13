@@ -17,10 +17,22 @@ import java.util.List;
 public interface MessageDao extends CrudRepository<Message, Long> {
 
     Page<Message> findByReceiverIdAndMessageType(Long receiverId, Integer messageType, Pageable pageable);
+    List<Message> findByReceiverIdAndMessageType(Long receiverId, Integer messageType);
+
+    // @Query(value = "select m from messaeg as m where m.receiverId in (:recId, :recId2) and m.messageType=:megType and m.messageTextId=:mtId")
+    Page<Message> findByReceiverIdAndMessageTypeAndMessageTextId(Long recId, Integer msgType, Long mtId, Pageable pageable);
+    List<Message> findByReceiverIdAndMessageTypeAndMessageTextId(Long recId, Integer msgType, Long mtId);
 
     Page<Message> findByReceiverIdAndMessageTypeOrReceiverId(Long receiverId, Integer messageType, Long receiverId2,Pageable pageable);
+    Page<Message> findByMessageTextIdAndMessageType(Long messagTextId, Integer messageType, Pageable pageable);
 
     List<Message> findByReceiverIdAndReadStatus(Long receiverId, Integer readStatus);
+    Integer countByReceiverIdAndReadStatus(Long receiverId, Integer readStatus);
     List<Message> findByReceiverIdAndReadStatusAndMessageType(Long receiverId, Integer readStatus, Integer messageType);
+
+    Integer countByReceiverIdAndReadStatusAndMessageType(Long receiverId, Integer readStatus, Integer messageType);
+
     List<Message> findByMessageTextIdAndReceiverId(Long messageTextId, Long receiverId);
+
+    List<Message> findByReceiverIdAndMessageTypeAndMessageTextIdAndReadStatus(Long recId, Integer msgType, Long mtId, Integer rs);
 }
