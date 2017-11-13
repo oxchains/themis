@@ -1,20 +1,18 @@
 package com.oxchains.themis.arbitrate.service;
 import com.alibaba.fastjson.JSONObject;
 import com.oxchains.themis.arbitrate.common.*;
-import com.oxchains.themis.arbitrate.entity.*;
+import com.oxchains.themis.arbitrate.entity.OrderArbitrate;
+import com.oxchains.themis.arbitrate.entity.OrderEvidence;
+import com.oxchains.themis.arbitrate.entity.Orders;
 import com.oxchains.themis.arbitrate.entity.vo.OrdersInfo;
 import com.oxchains.themis.arbitrate.repo.*;
-import com.oxchains.themis.common.model.OrdersKeyAmount;
 import com.oxchains.themis.common.model.RestResp;
-import com.oxchains.themis.common.util.DateUtil;
-import com.oxchains.themis.common.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -24,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,8 +43,6 @@ public class ArbitrateService {
     private NoticeRepo noticeRepo;
     @Resource
     private PaymentRepo paymentRepo;
-    @Resource
-    private UserRepo userRepo;
     @Resource
     private OrderEvidenceRepo orderEvidenceRepo;
     @Resource
@@ -72,8 +67,8 @@ public class ArbitrateService {
             ordersInfoList = new ArrayList<>();
             for (OrderArbitrate o: orderArbitratePage.getContent()) {
                 ordersInfo = this.findOrdersDetails(o.getOrderId());
-                ordersInfo.setBuyerUsername(userRepo.findOne(ordersInfo.getBuyerId()).getLoginname());
-                ordersInfo.setSellerUsername(userRepo.findOne(ordersInfo.getSellerId()).getLoginname());
+                ordersInfo.setBuyerUsername(this.getUserById(ordersInfo.getBuyerId()).getLoginname());
+                ordersInfo.setSellerUsername(this.getUserById(ordersInfo.getSellerId()).getLoginname());
                 this.setOrderStatusName(ordersInfo);
                 ordersInfo.setPageCount(orderArbitratePage.getTotalPages());
                 ordersInfo.setStatus(o.getStatus());
@@ -223,5 +218,25 @@ public class ArbitrateService {
     }
     public RestResp getEvidence(Pojo pojo){
         return RestResp.success(orderEvidenceRepo.findByOrderId(pojo.getId()));
+    }
+    public RestResp saveOrderAbritrate(OrderArbitrate orderArbitrate){
+        OrderArbitrate save = orderArbitrateRepo.save(orderArbitrate);
+        return save != null?RestResp.success():RestResp.fail();
+    }
+    private com.oxchains.themis.repo.entity.User getUserById(Long userId){
+        com.oxchains.themis.repo.entity.User user = null;
+        try {
+            JSONObject str = restTemplate.getForObject(com.oxchains.themis.common.constant.ThemisUserAddress.GET_USER+userId, JSONObject.class);
+            if(null != str){
+                Integer status = (Integer) str.get("status");
+                if(status == 1){
+                    user = (com.oxchains.themis.repo.entity.User) str.get("data");
+                }
+            }
+            return user;
+        } catch (Exception e) {
+            LOG.error("get user by id from themis-user faild : {}",e.getMessage(),e);
+        }
+        return null;
     }
 }

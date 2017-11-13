@@ -5,8 +5,6 @@ import com.oxchains.themis.common.util.DateUtil;
 import com.oxchains.themis.order.common.MessageCopywrit;
 import com.oxchains.themis.order.entity.Orders;
 import com.oxchains.themis.order.repo.NoticeRepo;
-import com.oxchains.themis.order.repo.OrderArbitrateRepo;
-import com.oxchains.themis.order.repo.UserRepo;
 import com.oxchains.themis.repo.dao.MessageRepo;
 import com.oxchains.themis.repo.dao.MessageTextRepo;
 import com.oxchains.themis.repo.entity.Message;
