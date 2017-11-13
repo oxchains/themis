@@ -9,6 +9,7 @@ import com.oxchains.themis.common.util.ImageBase64;
 import com.oxchains.themis.common.util.VerifyCodeUtils;
 
 import com.oxchains.themis.repo.entity.User;
+import com.oxchains.themis.repo.entity.UserRelation;
 import com.oxchains.themis.user.service.UserService;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -156,5 +157,17 @@ public class UserController {
             return userService.trustUsers(body, Status.TrustStatus.SHIELD);
         }
     }
+
+    @PostMapping(value = "/trust")
+    public RestResp relation(UserRelation relation){
+        return userService.relation(relation);
+    }
+
+    @PostMapping(value = "/forget")
+    public RestResp forgetPwd(com.oxchains.themis.common.param.RequestBody body){
+        return userService.forgetPwd(body);
+    }
+
+
 
 }
