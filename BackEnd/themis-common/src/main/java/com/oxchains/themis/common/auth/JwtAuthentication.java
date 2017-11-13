@@ -1,6 +1,6 @@
-package com.oxchains.themis.arbitrate.auth;
+package com.oxchains.themis.common.auth;
 
-import com.oxchains.themis.arbitrate.entity.User;
+import com.oxchains.themis.repo.entity.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -8,9 +8,10 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
+import static java.util.Collections.emptyList;
+
 /**
- * create by huohuo
- * @author huohuo
+ * @author aiet
  */
 public class JwtAuthentication implements Authentication {
 
@@ -24,13 +25,15 @@ public class JwtAuthentication implements Authentication {
         this.details = details;
     }
 
-    public Optional<User> user(){
+    public Optional<User> user() {
         return Optional.ofNullable(user);
     }
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-       return null;
+        // TODO
+        return emptyList();
     }
 
     @Override
@@ -43,19 +46,22 @@ public class JwtAuthentication implements Authentication {
         return details;
     }
 
+
     @Override
     public Object getPrincipal() {
         return user;
+        //return null;
     }
 
     @Override
     public boolean isAuthenticated() {
-        return true;
+        return user != null && (user.getLoginname() != null || user.getEmail() != null || user.getMobilephone() != null);
+        // return true;
     }
 
     @Override
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-        if (!isAuthenticated){
+        if (!isAuthenticated) {
             user = null;
         }
     }
@@ -65,16 +71,10 @@ public class JwtAuthentication implements Authentication {
         return user.getUsername();
     }
 
+
     @Override
     public String toString() {
         return token;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 }

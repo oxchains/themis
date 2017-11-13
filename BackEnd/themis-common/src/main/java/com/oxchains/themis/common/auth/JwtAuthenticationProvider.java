@@ -1,4 +1,4 @@
-package com.oxchains.themis.order.auth;
+package com.oxchains.themis.common.auth;
 
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -6,8 +6,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
 /**
- * create by huohuo
- * @author huohuo
+ * @author aiet
  */
 @Component
 public class JwtAuthenticationProvider implements AuthenticationProvider {

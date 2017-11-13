@@ -157,7 +157,7 @@ public class ArbitrateService {
                 orderEvidence.setOrderId(pojo.getId());
                 orderEvidence = orderEvidenceRepo.save(orderEvidence);
                 orders.setArbitrate(ParamType.ArbitrateStatus.ARBITRATEING.getStatus());
-                orderRepo.save(orders);
+                orders = orderRepo.save(orders);
                 //订单仲裁表中的 对应订单的三条仲裁状态改为1 表示 仲裁者仲裁中
                 List<OrderArbitrate> orderArbitrateList = orderArbitrateRepo.findByOrderId(orders.getId());
                 for (OrderArbitrate o:orderArbitrateList) {
@@ -175,6 +175,7 @@ public class ArbitrateService {
                 orderEvidence.setSellerContent(pojo.getContent());
             }
             orderEvidence = orderEvidenceRepo.save(orderEvidence);
+            messageService.postUploadEvidence(orders,pojo.getUserId());
         } catch (Exception e) {
             LOG.error("upload evidence faild : {}",e.getMessage(),e);
             return RestResp.fail("申请仲裁失败");

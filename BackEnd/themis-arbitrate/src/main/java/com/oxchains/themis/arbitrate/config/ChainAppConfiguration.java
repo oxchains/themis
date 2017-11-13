@@ -1,8 +1,8 @@
 package com.oxchains.themis.arbitrate.config;
 
-import com.oxchains.themis.arbitrate.auth.AuthError;
-import com.oxchains.themis.arbitrate.auth.JwtAuthenticationProvider;
-import com.oxchains.themis.arbitrate.auth.JwtTokenFilter;
+import com.oxchains.themis.common.auth.AuthError;
+import com.oxchains.themis.common.auth.JwtAuthenticationProvider;
+import com.oxchains.themis.common.auth.JwtTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,7 +1,6 @@
-package com.oxchains.themis.order.auth;
+package com.oxchains.themis.common.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oxchains.themis.common.model.RestResp;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -13,12 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.oxchains.themis.common.model.RestResp.fail;
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
- * create by huohuo
- * @author huohuo
+ * @author aiet
  */
 @Component
 public class AuthError implements AuthenticationEntryPoint, AccessDeniedHandler {
@@ -35,15 +34,15 @@ public class AuthError implements AuthenticationEntryPoint, AccessDeniedHandler 
         String message = "authentication error: ";
         if (exception.getCause() != null) {
             message += exception
-              .getCause()
-              .getMessage();
+                    .getCause()
+                    .getMessage();
         } else {
             message += exception.getMessage();
         }
-        byte[] body = new ObjectMapper().writeValueAsBytes(RestResp.fail(message));
+        byte[] body = new ObjectMapper().writeValueAsBytes(fail(message));
         response
-          .getOutputStream()
-          .write(body);
+                .getOutputStream()
+                .write(body);
 
     }
 

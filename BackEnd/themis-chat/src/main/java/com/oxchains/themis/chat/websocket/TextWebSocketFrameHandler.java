@@ -33,10 +33,10 @@ public class TextWebSocketFrameHandler extends
 		SimpleChannelInboundHandler<TextWebSocketFrame> {
 	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 	private KafkaService kafkaService;
-	@Resource
 	private MessageService messageService;
-	public TextWebSocketFrameHandler(KafkaService kafkaService){
+	public TextWebSocketFrameHandler(KafkaService kafkaService,MessageService messageService){
     this.kafkaService = kafkaService;
+    this.messageService = messageService;
 	}
 	public static ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 	@Override
@@ -49,7 +49,7 @@ public class TextWebSocketFrameHandler extends
 			chatContext.disposeInfo(chatContent);
 		}
 		if(chatContent.getMsgType() == MsgType.USER_CHAT){
-			chatContext = new ChatContext(new UserChat(kafkaService,ctx));
+			chatContext = new ChatContext(new UserChat(kafkaService,ctx,messageService));
 			chatContext.disposeInfo(chatContent);
 		}
 	}

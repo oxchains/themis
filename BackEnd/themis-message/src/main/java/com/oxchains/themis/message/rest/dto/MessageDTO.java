@@ -19,11 +19,6 @@ public class MessageDTO <T> {
     private List<T> PageList;
 
     /**
-     * 消息获取时间
-     */
-    private String time;
-
-    /**
      * 按照每页显示的数量返回的总页数
      */
     private Integer totalPage;

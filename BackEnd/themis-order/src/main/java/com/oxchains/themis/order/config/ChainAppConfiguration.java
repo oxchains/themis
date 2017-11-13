@@ -1,8 +1,8 @@
 package com.oxchains.themis.order.config;
 
-import com.oxchains.themis.order.auth.AuthError;
-import com.oxchains.themis.order.auth.JwtAuthenticationProvider;
-import com.oxchains.themis.order.auth.JwtTokenFilter;
+import com.oxchains.themis.common.auth.AuthError;
+import com.oxchains.themis.common.auth.JwtAuthenticationProvider;
+import com.oxchains.themis.common.auth.JwtTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

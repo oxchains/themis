@@ -1,6 +1,10 @@
 package com.oxchains.themis.user.service;
 
+import com.oxchains.themis.common.auth.JwtService;
 import com.oxchains.themis.common.constant.Status;
+import com.oxchains.themis.common.constant.UserConstants;
+import com.oxchains.themis.common.mail.Email;
+import com.oxchains.themis.common.mail.MailService;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.param.ParamType;
 import com.oxchains.themis.common.param.RequestBody;
@@ -8,7 +12,6 @@ import com.oxchains.themis.common.util.ConstantUtils;
 import com.oxchains.themis.common.util.EncryptUtils;
 import com.oxchains.themis.repo.dao.*;
 import com.oxchains.themis.repo.entity.*;
-import com.oxchains.themis.user.auth.JwtService;
 import com.oxchains.themis.user.domain.UserTrust;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.Executors;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -50,6 +54,9 @@ public class UserService extends BaseService {
 
     @Resource
     private UserRelationDao userRelationDao;
+
+    @Resource
+    MailService mailService;
 
 //    @Resource
 //    AccountService accountService;
@@ -298,6 +305,53 @@ public class UserService extends BaseService {
         userTxDetail.setSellAmount(sellAmount);
 
         return userTxDetail;
+    }
+
+    public RestResp relation(UserRelation relation){
+        UserRelation ur = userRelationDao.findByFromUserIdAndToUserId(relation.getFromUserId(),relation.getToUserId());
+        try{
+            if(null != ur){
+                ur.setStatus(relation.getStatus());
+                userRelationDao.save(ur);
+            }else {
+                userRelationDao.save(relation);
+            }
+            return RestResp.success("操作成功");
+        }catch (Exception e){
+            return RestResp.fail("操作失败");
+        }
+    }
+
+    public RestResp forgetPwd(RequestBody body){
+        User user = userDao.findByLoginname(body.getLoginname());
+        user.setPassword(EncryptUtils.encodeSHA256("123456"));
+        userDao.save(user);
+        try{
+            String[] to = {body.getEmail()};
+            mailService.send(new Email(to,"密码重置","密码重置为:123456,请尽快登录修改!"));
+            return RestResp.success("操作成功");
+        }catch (Exception e){
+            logger.error("操作失败: {}",e);
+            return RestResp.fail("操作失败");
+        }
+    }
+
+    public RestResp getArbitrations(){
+        List<User> list = userDao.findByRoleId(UserConstants.UserRole.ARBITRATION.getRoleId());
+        if(null != list && list.size()>0 ){
+            for(int i= 0; i < list.size(); i++){
+                list.get(i).setPassword(null);
+            }
+        }
+        return RestResp.success(list);
+    }
+
+    public RestResp getUser(Long id){
+        User user = userDao.findOne(id);
+        if(user != null){
+            user.setPassword(null);
+        }
+        return RestResp.success(user);
     }
 
 }

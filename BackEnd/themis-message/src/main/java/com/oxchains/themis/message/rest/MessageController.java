@@ -30,7 +30,7 @@ public class MessageController {
      * @param messageText
      * @return
      */
-    @PostMapping(value = "/send/globalMessage")
+    @PostMapping(value = "/send/noticeMsg")
     public RestResp sendGlobalMessage(@RequestBody MessageText messageText){
         return messageService.sendGlobalMessage(messageText);
 
@@ -72,7 +72,7 @@ public class MessageController {
      * @return
      */
     @GetMapping(value = "/query/unReadCount")
-    public RestResp unReadCount(@RequestParam Long userId){
-        return messageService.unReadCount(userId);
+    public RestResp unReadCount(@RequestParam Long userId, @RequestParam Integer tip){
+        return messageService.unReadCount(userId, tip);
     }
 }

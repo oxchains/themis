@@ -1,8 +1,6 @@
-package com.oxchains.themis.arbitrate.auth;
+package com.oxchains.themis.common.auth;
 
-import com.oxchains.themis.common.auth.AuthorizationConst;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -11,15 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
- * create by huohuo
- * @author huohuo
+ * @author aiet
  */
 @Component
 public class JwtTokenFilter implements Filter {
 
     private final JwtService jwtService;
-    @Value("${websocket.start.with}")
-    private String websocketStartWith;
 
     @Autowired
     public JwtTokenFilter(JwtService jwtService) {
@@ -34,18 +29,13 @@ public class JwtTokenFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest servletRequest = (HttpServletRequest) request;
         String authorization = servletRequest.getHeader(AuthorizationConst.AUTHORIZATION_HEADER);
+        System.out.println("auth-token=" + authorization);
         if (authorization != null && authorization.startsWith(AuthorizationConst.AUTHORIZATION_START)) {
-            JwtAuthentication jwtAuthentication = jwtService.parse(authorization.replaceAll("Bearer ", ""));
-            if(jwtAuthentication!=null){
-                SecurityContextHolder.getContext().setAuthentication(jwtAuthentication);
-            }
-        }
-        else if(((HttpServletRequest) request).getRequestURL().toString().startsWith(websocketStartWith)){
-            String authorizationss =  ((HttpServletRequest) request).getParameter("Authorization");
-            JwtAuthentication jwtAuthentication = jwtService.parse(authorization.replaceAll("Bearer ", ""));
-            if(jwtAuthentication!=null){
-                SecurityContextHolder.getContext().setAuthentication(jwtAuthentication);
-            }
+            jwtService
+                    .parse(authorization.replaceAll(AuthorizationConst.AUTHORIZATION_START, ""))
+                    .ifPresent(jwtAuthentication -> SecurityContextHolder
+                            .getContext()
+                            .setAuthentication(jwtAuthentication));
         }
         chain.doFilter(request, response);
     }

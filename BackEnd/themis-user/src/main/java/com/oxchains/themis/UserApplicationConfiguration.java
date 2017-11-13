@@ -28,31 +28,33 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 public class UserApplicationConfiguration extends WebSecurityConfigurerAdapter{
 
-    private final JwtAuthenticationProvider jwtAuthenticationProvider;
-    private final JwtTokenFilter jwtTokenFilter;
-    private AuthError authError;
-
-    public UserApplicationConfiguration(@Autowired JwtTokenFilter jwtTokenFilter, @Autowired JwtAuthenticationProvider jwtAuthenticationProvider, @Autowired AuthError authError) {
-        this.jwtTokenFilter = jwtTokenFilter;
-        this.jwtAuthenticationProvider = jwtAuthenticationProvider;
-        this.authError = authError;
-    }
+//    private final JwtAuthenticationProvider jwtAuthenticationProvider;
+//    private final JwtTokenFilter jwtTokenFilter;
+//    private AuthError authError;
+//
+//    public UserApplicationConfiguration(@Autowired JwtTokenFilter jwtTokenFilter, @Autowired JwtAuthenticationProvider jwtAuthenticationProvider, @Autowired AuthError authError) {
+//        this.jwtTokenFilter = jwtTokenFilter;
+//        this.jwtAuthenticationProvider = jwtAuthenticationProvider;
+//        this.authError = authError;
+//    }
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable().authorizeRequests().antMatchers("/user/*","/token","/account/*").permitAll()
-                //.antMatchers("/user/phone").authenticated()
-                 .antMatchers("/**/*")
-                .authenticated().and()
-                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling()
-                .authenticationEntryPoint(authError)
-                .accessDeniedHandler(authError);
+//        http.cors().and().csrf().disable().authorizeRequests().antMatchers("/user/*","/token","/account/*").permitAll()
+//                //.antMatchers("/user/phone").authenticated()
+//                .antMatchers("/**/*")
+//                .authenticated().and()
+//                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+//                .exceptionHandling()
+//                .authenticationEntryPoint(authError)
+//                .accessDeniedHandler(authError);
+
+        http.cors().and().csrf().disable().authorizeRequests().antMatchers("/**/*").permitAll();
     }
 
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(jwtAuthenticationProvider);
+        //auth.authenticationProvider(jwtAuthenticationProvider);
     }
 
     /**

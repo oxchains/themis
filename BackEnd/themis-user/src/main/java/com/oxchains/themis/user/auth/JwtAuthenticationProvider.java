@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author aiet
  */
-@Component
+
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     @Override

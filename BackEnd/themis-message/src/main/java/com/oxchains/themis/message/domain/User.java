@@ -1,13 +1,14 @@
 package com.oxchains.themis.message.domain;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Date;
 
 /**
  * @author ccl
  * @time 2017-10-12 17:13
- * @nameUser
+ * @name User
  * @desc:
  */
 
@@ -41,6 +42,17 @@ public class User {
     private String firstAddress;
 
     private Integer loginStatus;
+
+    private Date createTime;
+
+    @Column(length = 64)
+    private String image;
+
+    @Column(length = 256)
+    private String description;
+
+    @Column(length = 128)
+    private String fpassword;
 
     public Long getId() {
         return id;
@@ -107,19 +119,49 @@ public class User {
     }
 
     //@JsonIgnore
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<String> authorities = new HashSet<>();
+//    @ElementCollection(fetch = FetchType.EAGER)
+//    private Set<String> authorities = new HashSet<>();
+//
+//    public Set<String> getAuthorities() {
+//        return authorities;
+//    }
+//
+//    public void setAuthorities(Set<String> authorities) {
+//        this.authorities = authorities;
+//    }
 
-    public Set<String> getAuthorities() {
-        return authorities;
+    private Long roleId;
+
+    public Long getRoleId() {
+        return roleId;
     }
 
-    public void setAuthorities(Set<String> authorities) {
-        this.authorities = authorities;
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
     }
 
     @Transient
     private String token;
+
+    @Transient
+    private Role role;
+
+    @Transient
+    private UserTxDetail userTxDetail;
+
+    @Transient
+    private MultipartFile file;
+
+    @Transient
+    private String newPassword;
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
     public String getToken() {
         return token;
@@ -129,8 +171,65 @@ public class User {
         this.token = token;
     }
 
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public UserTxDetail getUserTxDetail() {
+        return userTxDetail;
+    }
+
+    public void setUserTxDetail(UserTxDetail userTxDetail) {
+        this.userTxDetail = userTxDetail;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getFpassword() {
+        return fpassword;
+    }
+
+    public void setFpassword(String fpassword) {
+        this.fpassword = fpassword;
+    }
+
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    public void setFile(MultipartFile file) {
+        this.file = file;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+
     public User(User user){
-        setAuthorities(user.getAuthorities());
+        setRole(user.getRole());
+        setRoleId(user.getRoleId());
         setEmail(user.getEmail());
         setLoginname(user.getLoginname());
         setUsername(user.getUsername());
@@ -138,5 +237,11 @@ public class User {
         setId(user.getId());
         setMobilephone(user.getMobilephone());
         setLoginStatus(user.getLoginStatus());
+        setCreateTime(user.getCreateTime());
+
+        setUserTxDetail(user.getUserTxDetail());
+
+        setImage(user.getImage());
+        setDescription(user.getDescription());
     }
 }

@@ -49,7 +49,7 @@ public class OrderService {
     @Resource
     private OrderAddresskeyRepo orderAddresskeyRepo;
     @Resource
-    private UserTxDetailRepo userTxDetailRepo;
+    private UserTxDetailRepo UserTxDetailRepo;
     @Resource
     private OrderTransactionRepo transactionRepo;
     @Resource
@@ -102,8 +102,8 @@ public class OrderService {
                     notice.getId(),
                     ParamType.ArbitrateStatus.NOARBITRATE.getStatus());
             orders =orderRepo.save(orders);
-            //发给发布公告的人的站内信
-            messageService.postOrderMessage(orders);
+            //发给发布公告的人和拍订单的人的站内信
+            messageService.postAddOrderMessage(orders,pojo.getUserId(),notice.getId());
             //生成买家用户的公私匙 存到 order_address_key table 每个订单对应一条
             AddressKeys addressKeys = this.getAddressKeys();
             //生成仲裁者用户的公私匙 存到 订单买家卖家仲裁者表里 order_address_key 每个订单对应一条
@@ -243,6 +243,7 @@ public class OrderService {
                 orders.setOrderStatus(ParamType.OrderStatus.CANCEL.getStatus());
                 orders.setFinishTime(DateUtil.getPresentDate());
                 noticeRepo.save(notice);
+                messageService.postCancelOrder(orders,userId);
             }
             if(orders.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_PAY.getStatus()){
                 //买家的私匙给卖家
@@ -258,13 +259,14 @@ public class OrderService {
                     orders.setOrderStatus(ParamType.OrderStatus.CANCEL.getStatus());
                     orders.setFinishTime(DateUtil.getPresentDate());
                     noticeRepo.save(notice);
+                    messageService.postCancelOrder(orders,userId);
                 }
             }
             if(orders.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_SEND.getStatus()){
                 orders.setOrderStatus(ParamType.OrderStatus.WAIT_REFUND.getStatus());
+                messageService.postRefund(orders,userId);
             }
             orders1 = orderRepo.save(orders);
-            messageService.postOrderMessage(orders1);
             ordersInfo = new OrdersInfo(orders1);
             this.setOrderStatusName(ordersInfo);
         } catch (Exception e) {
@@ -292,7 +294,7 @@ public class OrderService {
                             o = orderRepo.save(o);
                             ordersInfo = new OrdersInfo(o);
                             this.setOrderStatusName(ordersInfo);
-                            messageService.postOrderMessage(o);
+                            messageService.postConfirmOrder(o);
                             return RestResp.success(ordersInfo);
                         }
             }
@@ -364,6 +366,7 @@ public class OrderService {
                     orders.setOrderStatus(ParamType.OrderStatus.CANCEL.getStatus());
                     orders.setFinishTime(DateUtil.getPresentDate());
                     orders = orderRepo.save(orders);
+                    messageService.postRefoundMoney(orders,pojo.getUserId());
                 }
                 ordersInfo = new OrdersInfo(orders);
                 this.setOrderStatusName(ordersInfo);
@@ -404,6 +407,7 @@ public class OrderService {
                 LinkedHashMap data = (LinkedHashMap) jsonObject.get("data");
                 ordersInfo.setP2shAddress((String) data.get("address"));
                 ordersInfo.setUri((String)data.get("URI"));
+                messageService.postAddAddressKey(orders);
                 return ordersInfo!=null?RestResp.success(ordersInfo):RestResp.fail("请输入正确的公私匙");
             }
         } catch (Exception e) {
@@ -446,51 +450,52 @@ public class OrderService {
             LOG.error("set order status value faild : {}",e.getMessage(),e);
         }
     }
-    public UserTxDetail findUserTxDetailAndNotice(Pojo pojo){
-        UserTxDetail userTxDetail = null;
+    public UserTxDetails findUserTxDetailsAndNotice(Pojo pojo){
+        UserTxDetails UserTxDetails = null;
         try {
             Notice notice = noticeRepo.findOne(pojo.getNoticeId());
             pojo.setUserId(notice.getUserId());
-            userTxDetail = this.findUserTxDetail(pojo);
-            userTxDetail.setNotice(notice);
-            userTxDetail.setLoginname(userRepo.findOne(notice.getUserId()).getLoginname());
-            userTxDetail.setSuccessCount(orderRepo.countByBuyerIdAndOrderStatus(pojo.getUserId(),ParamType.OrderStatus.FINISH.getStatus())+orderRepo.countBySellerIdAndOrderStatus(pojo.getUserId(),ParamType.OrderStatus.FINISH.getStatus()));
+            UserTxDetails = this.findUserTxDetails(pojo);
+            UserTxDetails.setNotice(notice);
+            UserTxDetails.setLoginname(userRepo.findOne(notice.getUserId()).getLoginname());
+            UserTxDetails.setSuccessCount(orderRepo.countByBuyerIdAndOrderStatus(pojo.getUserId(),ParamType.OrderStatus.FINISH.getStatus())+orderRepo.countBySellerIdAndOrderStatus(pojo.getUserId(),ParamType.OrderStatus.FINISH.getStatus()));
         } catch (Exception e) {
             LOG.error("find user transaction and notice  faild : {}",e.getMessage(),e);
         }
-        return userTxDetail;
+        return UserTxDetails;
     }
-    public UserTxDetail findUserTxDetail(Pojo pojo){
-        UserTxDetail userTxDetail = null;
+    public UserTxDetails findUserTxDetails(Pojo pojo){
+        UserTxDetails UserTxDetails = null;
         try {
-            userTxDetail = userTxDetailRepo.findByUserId(pojo.getUserId());
+            UserTxDetails = UserTxDetailRepo.findByUserId(pojo.getUserId());
             DecimalFormat df   = new DecimalFormat("######0.00");
             String goodDegree = "";
-            if(userTxDetail.getGoodDesc()+userTxDetail.getBadDesc() == 0){
+            if(UserTxDetails.getGoodDesc()+UserTxDetails.getBadDesc() == 0){
                 goodDegree = "0.00%";
             }
             else{
-                goodDegree = df.format(((userTxDetail.getGoodDesc().doubleValue() / (userTxDetail.getGoodDesc().doubleValue()+userTxDetail.getBadDesc().doubleValue()))*100))+"%";
+                goodDegree = df.format(((UserTxDetails.getGoodDesc().doubleValue() / (UserTxDetails.getGoodDesc().doubleValue()+UserTxDetails.getBadDesc().doubleValue()))*100))+"%";
             }
             User user = userRepo.findOne(pojo.getUserId());
-            userTxDetail.setEmailVerify("未验证");
-            userTxDetail.setUsernameVerify("未验证");
-            userTxDetail.setMobilePhoneVerify("未验证");
-            userTxDetail.setCreateTime(user.getCreateTime());
-            userTxDetail.setGoodDegree(goodDegree);
+            UserTxDetails.setEmailVerify("未验证");
+            UserTxDetails.setUsernameVerify("未验证");
+            UserTxDetails.setMobilePhoneVerify("未验证");
+            UserTxDetails.setCreateTime(user.getCreateTime());
+            UserTxDetails.setGoodDegree(goodDegree);
+            UserTxDetails.setLoginname(userRepo.findOne(pojo.getUserId()).getLoginname());
             if(user.getEmail()!=null){
-                userTxDetail.setEmailVerify("已验证");
+                UserTxDetails.setEmailVerify("已验证");
             }
             if(user.getUsername()!=null){
-                userTxDetail.setUsernameVerify("已验证");
+                UserTxDetails.setUsernameVerify("已验证");
             }
             if(user.getMobilephone()!=null){
-                userTxDetail.setMobilePhoneVerify("已验证");
+                UserTxDetails.setMobilePhoneVerify("已验证");
             }
         } catch (Exception e) {
             LOG.error("find user transaction faild : {}",e.getMessage(),e);
         }
-        return userTxDetail;
+        return UserTxDetails;
     }
 
     private HttpHeaders getHttpHeader(){
@@ -516,6 +521,7 @@ public class OrderService {
             JSONObject jsonObject = restTemplate.postForObject(ThemisUserAddress.CHECK_BTC + pojo.getId(), formEntity, JSONObject.class);
             Integer status = (Integer) jsonObject.get("status");
             if(status == 1){
+                messageService.postUploadTxId(orderRepo.findOne(pojo.getId()));
                 return RestResp.success();
             }
         } catch (Exception e) {
@@ -535,7 +541,7 @@ public class OrderService {
                 orders.setOrderStatus(ParamType.OrderStatus.WAIT_SEND.getStatus());
                 orders = orderRepo.save(orders);
                 ordersInfo = new OrdersInfo(orders);
-                messageService.postOrderMessage(orders);
+                messageService.postConfirmSendMoney(orders);
                 return ordersInfo!=null?RestResp.success(ordersInfo):RestResp.fail();
             }
         } catch (Exception e) {
@@ -639,6 +645,7 @@ public class OrderService {
                 if(status == 1){
                     orders.setOrderStatus(ParamType.OrderStatus.WAIT_RECIVE.getStatus());
                     orders = orderRepo.save(orders);
+                    messageService.postReleaseBtc(orders);
                     return save!=null?RestResp.success(save):RestResp.fail("哎呦，网络有点差，请稍后重试");
                 }
                 else{
@@ -662,7 +669,7 @@ public class OrderService {
             if(orders.getBuyerId().longValue() == pojo.getUserId() && orders.getOrderStatus().longValue() ==ParamType.OrderStatus.WAIT_RECIVE.getStatus()){
                 orders.setOrderStatus(ParamType.OrderStatus.WAIT_COMMENT.getStatus());
                 orders = orderRepo.save(orders);
-                messageService.postOrderMessage(orders);
+                messageService.postConfirmReceive(orders);
             }
         } catch (RestClientException e) {
             LOG.error("confirm recive BTC faild : {} ",e.getMessage(),e);
@@ -681,6 +688,7 @@ public class OrderService {
                 orderComment1 = orderCommentRepo.save(orderComment1);
             }
             Orders o = orderRepo.findOne(pojo.getId());
+            messageService.postCommentMessage(o,pojo.getUserId());
             if(o.getBuyerId().longValue() == pojo.getUserId()){
                 orderComment1.setBuyerContent(pojo.getContent());
                 orderComment1.setBuyerStatus(pojo.getStatus());
@@ -691,6 +699,7 @@ public class OrderService {
                     Notice notice = noticeRepo.findOne(o.getNoticeId());
                     notice.setTxStatus(ParamType.NoticeTxStatus.TXEND.getStatus());
                     noticeRepo.save(notice);
+                    messageService.postFinishOrders(o);
                 }
             }
             if(o.getSellerId().longValue() == pojo.getUserId()){
@@ -703,9 +712,9 @@ public class OrderService {
                     Notice notice = noticeRepo.findOne(o.getNoticeId());
                     notice.setTxStatus(ParamType.NoticeTxStatus.TXEND.getStatus());
                     noticeRepo.save(notice);
+                    messageService.postFinishOrders(o);
                 }
             }
-            messageService.postCommentMessage(o,pojo);
         } catch (Exception e) {
             LOG.error("faild save comment : {}",e.getMessage(),e);
             return RestResp.fail("未知错误");
