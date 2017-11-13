@@ -1,34 +1,22 @@
 /**
  * Created by oxchain on 2017/11/10.
  */
-
 import React, { Component } from 'react';
 import { Modal, Button } from 'antd';
 import { connect } from 'react-redux';
 // import { } from '../actions/releaseadvert'
-
 class OtherInfodetail extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            index :0,
-            count :0,
             status:1,
-            isTrusted:1,
-            isShield:1,
-            trustmess:"",
-            shieldmess:"",
-            visible: false,
-            visibleshield:false
+            buttonStatus:0,
+            message:'',
+            visible: false
         }
         this.onlineBuy =  this.onlineBuy.bind(this)
         this.onlineSell =  this.onlineSell.bind(this)
-        this.JudgeisTrust =  this.JudgeisTrust.bind(this)
-        this.JudgeisShield =  this.JudgeisShield.bind(this)
-    }
-
-    componentWillMount(){
-
+        this.toggleButton =  this.toggleButton.bind(this)
     }
     onlineBuy(){
         this.setState({
@@ -40,70 +28,22 @@ class OtherInfodetail extends Component {
             status : 2
         })
     }
-    JudgeisTrust(){
-        let {index} = this.state;
-        index++;
-        this.setState({
-            index
-        })
-        if (index%2 == 1) {
-            if(this.state.isTrusted == 1){
-                this.setState({
-                    isTrusted : 2,
-                    isShield : 1,
-                    visible : true,
-                    trustmess:'您已信任TA'
-                })
-            }
-        }else if(index%2 == 0){
-            this.setState({
-                isTrusted : 1,
-                visible : true,
-                trustmess:'您已取消信任'
-            })
-        }
-
-        console.log('是否信任' + index)
-
-    }
-    JudgeisShield(){
-        let {index} = this.state;
-        index++;
-        this.setState({
-            index
-        })
-        if (index%2 == 0) {
-            if(this.state.isShield == 1){
-                this.setState({
-                    isShield : 2,
-                    isTrusted : 1,
-                    visibleshield : true,
-                    shieldmess:'您已屏蔽TA'
-                })
-            }
-        }else if(index%2 == 1){
-            this.setState({
-                isShield : 1,
-                visibleshield : true,
-                shieldmess:'您取消屏蔽TA'
-            })
-        }
-
-        console.log('是否屏蔽' + index)
+    toggleButton(buttonStatus) {
+        const lastStatus = this.state.buttonStatus;
+        const buttonText = buttonStatus === 1?'信任' :'屏蔽'
+        const name = 'TA' //从后端得到该用户名
+        lastStatus === buttonStatus
+            ? this.setState({ visible:true, buttonStatus: 0, message:`您已取消${buttonText}`})
+            : this.setState({ visible:true, buttonStatus, message:`您已${buttonText}${name}`})
     }
     handleOk = () => {
         this.setState({
             visible: false
         });
     }
-    handleOkShield = () => {
-        this.setState({
-            visibleshield: false
-        });
-    }
     render() {
         // const datanum = this.props.all || []
-        const { visible, visibleshield, loading, trustmess, shieldmess} = this.state;
+        const { visible, message} = this.state;
 
         return (
             <div className="maincontent">
@@ -135,30 +75,30 @@ class OtherInfodetail extends Component {
                             </li>
                         </ul>
                         <ul className="istrust clear">
-                            <li className={`${this.state.isTrusted == 2 ?"trusted" : "trust"}`} onClick={this.JudgeisTrust}>{this.state.isTrusted == 2 ?"已信任" :"信任"}</li>
-                            <li className={`${this.state.isShield == 2 ?"shielded" : "shield"}`} onClick={this.JudgeisShield}>{this.state.isShield == 2 ?"已屏蔽" :"屏蔽"}</li>
+                            <li className={`${this.state.buttonStatus == 1 ?"trusted" : "trust"}`} onClick={() => this.toggleButton(1)}>{this.state.buttonStatus == 1 ?"已信任" :"信任"}</li>
+                            <li className={`${this.state.buttonStatus == 2 ?"shielded" : "shield"}`} onClick={() => this.toggleButton(2)}>{this.state.buttonStatus == 2 ?"已屏蔽" :"屏蔽"}</li>
                         </ul>
                         <Modal className="modal-style"
                             visible={visible}
                             onOk={this.handleOk}
                             footer={[
-                                <Button className="confirmStyle" key="submit" type="primary" size="large" loading={loading} onClick={this.handleOk}>
+                                <Button className="confirmStyle" key="submit" type="primary" size="large" onClick={this.handleOk}>
                                     确认
                                 </Button>,
                             ]}
                         >
-                            <p>{trustmess}</p>
+                            <p>{message}</p>
                         </Modal>
                         <Modal className="modal-style"
-                               visible={visibleshield}
-                               onOk={this.handleOkShield}
+                               visible={visible}
+                               onOk={this.handleOk}
                                footer={[
-                                   <Button className="confirmStyle" key="submit" type="primary" size="large" loading={loading} onClick={this.handleOkShield}>
+                                   <Button className="confirmStyle" key="submit" type="primary" size="large" onClick={this.handleOk}>
                                        确认
                                    </Button>,
                                ]}
                         >
-                            <p>{shieldmess}</p>
+                            <p>{message}</p>
                         </Modal>
 
                     </div>
