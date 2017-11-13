@@ -9,6 +9,7 @@ import com.oxchains.themis.common.util.ImageBase64;
 import com.oxchains.themis.common.util.VerifyCodeUtils;
 
 import com.oxchains.themis.repo.entity.User;
+import com.oxchains.themis.repo.entity.UserRelation;
 import com.oxchains.themis.user.service.UserService;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -77,6 +78,9 @@ public class UserController {
 
     @RequestMapping(value = "/info")
     public RestResp info(@ModelAttribute User user) throws Exception{
+        if(null == user){
+            return RestResp.fail("参数不能为空");
+        }
         MultipartFile file = user.getFile();
         if(null != file){
             String fileName = file.getOriginalFilename();
@@ -90,9 +94,6 @@ public class UserController {
             file.transferTo(new File(pathName));
             user.setImage(newFileName);
             return userService.updateUser(user,ParamType.UpdateUserInfoType.INFO);
-        }
-        if(null == user){
-            return RestResp.fail("参数不能为空");
         }
         String image = user.getLoginname()+".jpg";
         if(null != user.getImage() && !"undefined".equals(user.getImage())) {
@@ -156,5 +157,26 @@ public class UserController {
             return userService.trustUsers(body, Status.TrustStatus.SHIELD);
         }
     }
+
+    @PostMapping(value = "/trust")
+    public RestResp relation(UserRelation relation){
+        return userService.relation(relation);
+    }
+
+    @PostMapping(value = "/forget")
+    public RestResp forgetPwd(com.oxchains.themis.common.param.RequestBody body){
+        return userService.forgetPwd(body);
+    }
+
+    @GetMapping(value = "/arbitrations")
+    public RestResp getArbitrations(){
+        return userService.getArbitrations();
+    }
+
+    @GetMapping(value = "/findOne")
+    public RestResp getUser(Long id){
+        return userService.getUser(id);
+    }
+
 
 }
