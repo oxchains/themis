@@ -5,24 +5,19 @@ import com.oxchains.themis.arbitrate.common.RegisterRequest;
 import com.oxchains.themis.arbitrate.service.ArbitrateService;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.util.JsonUtil;
-import org.apache.commons.collections.IteratorUtils;
+import com.oxchains.themis.repo.entity.OrderArbitrate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
 
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 /**
@@ -101,5 +96,9 @@ public class ArbitrateController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    @RequestMapping("/arbitrate/saveOrderAbritrate")
+    public String saveOrderAbritrate(OrderArbitrate orderArbitrate){
+        return JsonUtil.toJson(arbitrateService.saveOrderAbritrate(orderArbitrate));
     }
 }

@@ -83,13 +83,6 @@ public class OrderController {
         return orderService.confirmReceiveRefund(pojo);
     }
     /*
-    * 十三 ： 用户获取订单的 协商地址 自己的 公匙 私匙 卖家的公匙私匙 仲裁者的公匙私匙  交易的量
-    * */
-    @RequestMapping("/order/findOrderAddressKeys")
-    public RestResp findOrderAddressKeys(@RequestBody Pojo pojo){
-        return orderService.findOrderAddressKeys(pojo);
-    }
-    /*
     * 十四 ：提交评论
     * */
     @RequestMapping("/order/saveComment")
@@ -121,16 +114,6 @@ public class OrderController {
         this.checkPage(pojo);
         return orderService.findNoCompletedOrdersById(pojo);
     }
-
-
-    /*
-    * 查询自己发布的公告所生成的需要自己确认的订单
-    * */
-    @RequestMapping("/order/findNotConfirmOrders")
-    public RestResp findNotConfirmOrders(@RequestBody Pojo pojo){
-        return orderService.findNotConfirmOrders(pojo);
-    }
-
 
     /*
     * 获取卖家历史交易资料有 好评率 交易次数 第一次购买时间 用户创建时间 交易量 电子邮箱验证否 电话号码验证否 实名认证否 信任量

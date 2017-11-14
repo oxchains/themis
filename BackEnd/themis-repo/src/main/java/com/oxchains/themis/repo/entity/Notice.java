@@ -1,4 +1,4 @@
-package com.oxchains.themis.order.entity;
+package com.oxchains.themis.repo.entity;
 
 import lombok.Data;
 
@@ -6,19 +6,22 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 /**
- * Created by Luo_xuri on 2017/10/20.
- * @author huohuo
- */
+ * @author luoxuri
+ * @create 2017-10-24 19:06
+ **/
 @Entity
-@Table(name = "notice")
 @Data
+@Table(name = "notice")
 public class Notice {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    // user表的id
+
     @Column(name = "userid")
-    private Long userId;
+    private Long userId;       // user表的id
+
+    private String loginname;   // user表的loginname
 
     @Column(name = "noticetype")
     private Long noticeType;      // 购买BTC/出售BTC
@@ -47,14 +50,38 @@ public class Notice {
     private String noticeContent;   // 公告内容
 
     @Column(name = "validpaytime")
-    private Long validPayTime = 1800000L;      // 付款期限，默认30分钟的毫秒值1800000
+    private Long validPayTime = 1800000L;      // 付款期限，默认30分钟的毫秒值1800000，字段废弃
 
     @Transient
-    private Integer searchType;
+    private Long searchType;
 
     @Column(name = "txstatus")
     private Integer txStatus = 0;           // 交易状态，默认0:非交易,1:交易进行,2:交易完成
 
-    public Notice(){}
+    @Column(name = "createtime")
+    private String createTime;
 
+    // 以下是暂时展示的数据，实际数据在从对应的表中获取
+    @Transient
+    private Integer txNum;
+
+    @Transient
+    private Integer trustNum;
+
+    @Transient
+    private Integer trustPercent;
+
+    @Transient
+    private Integer goodPercent;
+
+    @Transient
+    private Integer pageNum;
+
+    @Transient
+    private String searchName;
+
+    @Transient
+    private String defaultHead;
+
+    public Notice(){}
 }

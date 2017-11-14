@@ -1,6 +1,6 @@
 package com.oxchains.themis.message.dao;
 
-import com.oxchains.themis.message.domain.MessageText;
+import com.oxchains.themis.repo.entity.MessageText;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;

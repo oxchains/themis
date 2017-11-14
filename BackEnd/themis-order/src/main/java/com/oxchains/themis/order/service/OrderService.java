@@ -1,6 +1,7 @@
 package com.oxchains.themis.order.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.oxchains.themis.common.constant.ThemisUserAddress;
 import com.oxchains.themis.common.model.AddressKeys;
 import com.oxchains.themis.common.model.OrdersKeyAmount;
 import com.oxchains.themis.common.model.RestResp;
@@ -10,6 +11,7 @@ import com.oxchains.themis.order.common.*;
 import com.oxchains.themis.order.entity.*;
 import com.oxchains.themis.order.entity.vo.OrdersInfo;
 import com.oxchains.themis.order.repo.*;
+import com.oxchains.themis.repo.entity.*;
 import org.apache.commons.collections.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,17 +43,9 @@ public class OrderService {
     @Resource
     private OrderRepo orderRepo;
     @Resource
-    private NoticeRepo noticeRepo;
-    @Resource
-    private UserRepo userRepo;
-    @Resource
-    private OrderArbitrateRepo orderArbitrateRepo;
-    @Resource
     private OrderAddresskeyRepo orderAddresskeyRepo;
     @Resource
-    private UserTxDetailRepo UserTxDetailRepo;
-    @Resource
-    private OrderTransactionRepo transactionRepo;
+    private UserTxDetailRepo userTxDetailRepo;
     @Resource
     private OrderCommentRepo orderCommentRepo;
     @Resource
@@ -88,7 +82,7 @@ public class OrderService {
     public RestResp addOrders(Pojo pojo){
         Orders orders = null;
         try {
-            Notice notice = noticeRepo.findOne(pojo.getNoticeId());
+            Notice notice = this.findNoticeById(pojo.getNoticeId());
             //生成一条订单信息 订单状态为1 是否仲裁为0
             orders = new Orders(DateUtil.getOrderId(),
                     pojo.getMoney(),
@@ -113,14 +107,12 @@ public class OrderService {
 
             //将仲裁者用户的私匙 分为三个密匙碎片分别分给三个人 存储在 订单仲裁表里面 每个订单对应三条信息
             String[] strArr = ShamirUtil.splitAuth(orderAddresskeys.getUserPriAuth());
-            List<User> userList = userRepo.findUserByRoleId(ParamType.RoleStatus.ABRITRATEER.getStatus());
+            List<User> userList = this.getArbitrateUser();
             for(int i = 0;i<strArr.length;i++){
                 OrderArbitrate orderArbitrate = new OrderArbitrate(orders.getId(),userList.get(i).getId(),ParamType.ArbitrateStatus.NOARBITRATE.getStatus(),strArr[i]);
-                orderArbitrateRepo.save(orderArbitrate);
+                this.saveOrderAbritrate(orderArbitrate);
             }
-            //将这个订单对应的公告状态设置为1 正在交易中
-            notice.setTxStatus(ParamType.NoticeTxStatus.TXING.getStatus());
-            noticeRepo.save(notice);
+            this.saveNotice(pojo.getNoticeId(),ParamType.NoticeTxStatus.TXING.getStatus());
         }catch (Exception e){
             LOG.error("add orders faild : {}",e.getMessage(),e);
             return RestResp.fail("请正确填写订单信息");
@@ -136,18 +128,18 @@ public class OrderService {
         try {
             o = orderRepo.findOne(pojo.getId());
             ordersInfo = new OrdersInfo(o);
-            ordersInfo.setNotice(noticeRepo.findOne(o.getNoticeId()));
+            ordersInfo.setNotice(this.findNoticeById(o.getNoticeId()));
             this.setOrderStatusName(ordersInfo);
             if(pojo.getUserId()==null){
              return ordersInfo;
             }
             if(ordersInfo.getBuyerId().longValue() == pojo.getUserId()){
                 ordersInfo.setOrderType("购买");
-                ordersInfo.setFriendUsername(userRepo.findOne(o.getSellerId()).getLoginname());
+                ordersInfo.setFriendUsername(this.getUserById(o.getSellerId()).getLoginname());
             }
             else{
                 ordersInfo.setOrderType("出售");
-                ordersInfo.setFriendUsername(userRepo.findOne(o.getBuyerId()).getLoginname());
+                ordersInfo.setFriendUsername(this.getUserById(o.getBuyerId()).getLoginname());
             }
             ordersInfo.setPayment(paymentRepo.findOne(ordersInfo.getPaymentId()));
         } catch (Exception e) {
@@ -171,16 +163,16 @@ public class OrderService {
             ordersInfoList = new ArrayList<>();
             for (Orders o:ordersPage.getContent()) {
                 ordersInfo = new OrdersInfo(o);
-                ordersInfo.setNotice(noticeRepo.findOne(o.getNoticeId()));
+                ordersInfo.setNotice(this.findNoticeById(o.getNoticeId()));
                 if(o.getBuyerId().longValue() == pojo.getUserId()){
                     ordersInfo.setOrderType("购买");
                     ordersInfo.setPageCount(ordersPage.getTotalPages());
-                    ordersInfo.setFriendUsername(userRepo.findOne(o.getSellerId()).getLoginname());
+                    ordersInfo.setFriendUsername(this.getUserById(o.getSellerId()).getLoginname());
                 }
                 else{
                     ordersInfo.setOrderType("出售");
                     ordersInfo.setPageCount(ordersPage.getTotalPages());
-                    ordersInfo.setFriendUsername(userRepo.findOne(o.getBuyerId()).getLoginname());
+                    ordersInfo.setFriendUsername(this.getUserById(o.getBuyerId()).getLoginname());
                 }
                 this.setOrderStatusName(ordersInfo);
                 ordersInfoList.add(ordersInfo);
@@ -207,17 +199,17 @@ public class OrderService {
             ordersInfoList = new ArrayList<>();
             for (Orders o:ordersPage.getContent()) {
                 ordersInfo = new OrdersInfo(o);
-                ordersInfo.setNotice(noticeRepo.findOne(o.getNoticeId()));
+                ordersInfo.setNotice(this.findNoticeById(o.getNoticeId()));
                 if(o.getBuyerId().longValue() == pojo.getUserId()){
                     ordersInfo.setOrderType("购买");
                     ordersInfo.setPageCount(ordersPage.getTotalPages());
-                    ordersInfo.setFriendUsername(userRepo.findOne(o.getSellerId()).getLoginname());
+                    ordersInfo.setFriendUsername(this.getUserById(o.getSellerId()).getLoginname());
 
                 }
                 else{
                     ordersInfo.setOrderType("出售");
                     ordersInfo.setPageCount(ordersPage.getTotalPages());
-                    ordersInfo.setFriendUsername(userRepo.findOne(o.getBuyerId()).getLoginname());
+                    ordersInfo.setFriendUsername(this.getUserById(o.getBuyerId()).getLoginname());
                 }
                 this.setOrderStatusName(ordersInfo);
                 ordersInfoList.add(ordersInfo);
@@ -236,13 +228,11 @@ public class OrderService {
         OrdersInfo ordersInfo = null;
         try {
             Orders orders = orderRepo.findOne(id);
-            Notice notice = noticeRepo.findOne(orders.getNoticeId());
-            notice.setTxStatus(ParamType.NoticeTxStatus.NOTX.getStatus());
             if(orders.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_CONFIRM.getStatus()){
                 //当订单状态为1 时 买家已拍下 但商家还未确认 可以直接取消订单 不采取任何操作
                 orders.setOrderStatus(ParamType.OrderStatus.CANCEL.getStatus());
                 orders.setFinishTime(DateUtil.getPresentDate());
-                noticeRepo.save(notice);
+                this.saveNotice(orders.getNoticeId(),ParamType.NoticeTxStatus.NOTX.getStatus());
                 messageService.postCancelOrder(orders,userId);
             }
             if(orders.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_PAY.getStatus()){
@@ -251,14 +241,14 @@ public class OrderService {
                 orderAddresskeys.setSellerBuyerPriAuth(orderAddresskeys.getBuyerPriAuth());
                 //将卖家的BTC从协商地址转回到 买家账户
                 String s = orderAddresskeys.getBuyerPriAuth()+","+orderAddresskeys.getSellerPriAuth();
-                OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orders.getId(),s,orders.getAmount().doubleValue(),userRepo.findOne(orders.getSellerId()).getFirstAddress());
+                OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orders.getId(),s,orders.getAmount().doubleValue(),this.getUserById(orders.getSellerId()).getFirstAddress());
                 HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), this.getHttpHeader());
                 JSONObject jsonObject = restTemplate.postForObject(ThemisUserAddress.MOVE_BTC,formEntity,JSONObject.class);
                 Integer status = (Integer) jsonObject.get("status");
                 if(status == 1){
                     orders.setOrderStatus(ParamType.OrderStatus.CANCEL.getStatus());
                     orders.setFinishTime(DateUtil.getPresentDate());
-                    noticeRepo.save(notice);
+                    this.saveNotice(orders.getNoticeId(),ParamType.NoticeTxStatus.NOTX.getStatus());
                     messageService.postCancelOrder(orders,userId);
                 }
             }
@@ -283,7 +273,7 @@ public class OrderService {
         OrdersInfo ordersInfo = null;
         try {
             Orders o = orderRepo.findOne(pojo.getId());
-            Notice notice = noticeRepo.findOne(o.getNoticeId());
+            Notice notice = this.findNoticeById(o.getNoticeId());
             //只有发布公告的人才可以确认订单
             if(notice.getUserId().longValue() == pojo.getUserId() && o.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_CONFIRM.getStatus()){
                 //查询BTC有没有到协商地址如果到了地址
@@ -305,44 +295,6 @@ public class OrderService {
         return RestResp.fail();
     }
     /*
-    * 查询发布公告的人的所有待确认的订单
-    * */
-    public RestResp findNotConfirmOrders(Pojo pojo){
-        Pageable pageable = new PageRequest(pojo.getPageNum()-1,pojo.getPageSize(),new Sort(Sort.Direction.DESC,"id"));
-        List<OrdersInfo> ordersInfoList = null;
-        OrdersInfo ordersInfo = null;
-        try {
-            //出售公告
-            Notice seller = noticeRepo.findNoticeByUserIdAndTxStatusIsNotAndNoticeType(pojo.getUserId(),2,1L);
-            //购买公告
-            Notice buyer = noticeRepo.findNoticeByUserIdAndTxStatusIsNotAndNoticeType(pojo.getUserId(),2,2L);
-
-            ordersInfoList = new ArrayList<>();
-            if(seller != null){
-                List<Orders> list1 = orderRepo.findOrdersByNoticeIdAndOrderStatus(seller.getId(),1L);
-                for (Orders o: list1) {
-                    ordersInfo = new OrdersInfo(o);
-                    ordersInfo.setOrderType("出售");
-                    this.setOrderStatusName(ordersInfo);
-                    ordersInfoList.add(ordersInfo);
-                }
-            }
-            if(buyer != null){
-                List<Orders> list1 = orderRepo.findOrdersByNoticeIdAndOrderStatus(buyer.getId(),1L);
-                for (Orders o: list1) {
-                    ordersInfo = new OrdersInfo(o);
-                    ordersInfo.setOrderType("购买");
-                    this.setOrderStatusName(ordersInfo);
-                    ordersInfoList.add(ordersInfo);
-                }
-            }
-        } catch (Exception e) {
-            LOG.error("query no confirm orders faild : {}",e.getMessage(),e);
-            return RestResp.fail("未知错误");
-        }
-        return RestResp.success(ordersInfoList);
-    }
-    /*
     * 买家确认收到退款   将买家的私匙给卖家 订单状态改为6
     * */
     public RestResp confirmReceiveRefund(Pojo pojo){
@@ -355,14 +307,12 @@ public class OrderService {
                 orderAddresskeyRepo.save(orderAddresskeys);
                 //将卖家的BTC从写上地址转回到 买家账户
                 String s = orderAddresskeys.getBuyerPriAuth()+","+orderAddresskeys.getSellerPriAuth();
-                OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orders.getId(),s,orders.getAmount().doubleValue(),userRepo.findOne(orders.getSellerId()).getFirstAddress());
+                OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orders.getId(),s,orders.getAmount().doubleValue(),this.getUserById(orders.getSellerId()).getFirstAddress());
                 HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), this.getHttpHeader());
                 JSONObject jsonObject = restTemplate.postForObject(ThemisUserAddress.MOVE_BTC,formEntity,JSONObject.class);
                 Integer status = (Integer) jsonObject.get("status");
                 if(status == 1){
-                    Notice notice = noticeRepo.findOne(orders.getNoticeId());
-                    notice.setTxStatus(ParamType.NoticeTxStatus.NOTX.getStatus());
-                    noticeRepo.save(notice);
+                    this.saveNotice(orders.getNoticeId(),ParamType.NoticeTxStatus.NOTX.getStatus());
                     orders.setOrderStatus(ParamType.OrderStatus.CANCEL.getStatus());
                     orders.setFinishTime(DateUtil.getPresentDate());
                     orders = orderRepo.save(orders);
@@ -421,7 +371,9 @@ public class OrderService {
     * 这是一个工具类方法  为了给要返回到前台的orders 附上订单状态值
     * */
     public void setOrderStatusName(OrdersInfo o){
-        try {
+        String orderStatusName = ParamType.OrderStatus.getName(o.getOrderStatus());
+        o.setOrderStatusName(orderStatusName);
+        /*try {
             if(o.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_CONFIRM.getStatus()){
                 o.setOrderStatusName("待确认");
             }
@@ -448,16 +400,16 @@ public class OrderService {
             }
         } catch (Exception e) {
             LOG.error("set order status value faild : {}",e.getMessage(),e);
-        }
+        }*/
     }
     public UserTxDetails findUserTxDetailsAndNotice(Pojo pojo){
         UserTxDetails UserTxDetails = null;
         try {
-            Notice notice = noticeRepo.findOne(pojo.getNoticeId());
+            Notice notice = this.findNoticeById(pojo.getNoticeId());
             pojo.setUserId(notice.getUserId());
             UserTxDetails = this.findUserTxDetails(pojo);
             UserTxDetails.setNotice(notice);
-            UserTxDetails.setLoginname(userRepo.findOne(notice.getUserId()).getLoginname());
+            UserTxDetails.setLoginname(this.getUserById(notice.getUserId()).getLoginname());
             UserTxDetails.setSuccessCount(orderRepo.countByBuyerIdAndOrderStatus(pojo.getUserId(),ParamType.OrderStatus.FINISH.getStatus())+orderRepo.countBySellerIdAndOrderStatus(pojo.getUserId(),ParamType.OrderStatus.FINISH.getStatus()));
         } catch (Exception e) {
             LOG.error("find user transaction and notice  faild : {}",e.getMessage(),e);
@@ -467,7 +419,7 @@ public class OrderService {
     public UserTxDetails findUserTxDetails(Pojo pojo){
         UserTxDetails UserTxDetails = null;
         try {
-            UserTxDetails = UserTxDetailRepo.findByUserId(pojo.getUserId());
+            UserTxDetails = userTxDetailRepo.findByUserId(pojo.getUserId());
             DecimalFormat df   = new DecimalFormat("######0.00");
             String goodDegree = "";
             if(UserTxDetails.getGoodDesc()+UserTxDetails.getBadDesc() == 0){
@@ -476,13 +428,13 @@ public class OrderService {
             else{
                 goodDegree = df.format(((UserTxDetails.getGoodDesc().doubleValue() / (UserTxDetails.getGoodDesc().doubleValue()+UserTxDetails.getBadDesc().doubleValue()))*100))+"%";
             }
-            User user = userRepo.findOne(pojo.getUserId());
+            User user = this.getUserById(pojo.getUserId());
             UserTxDetails.setEmailVerify("未验证");
             UserTxDetails.setUsernameVerify("未验证");
             UserTxDetails.setMobilePhoneVerify("未验证");
-            UserTxDetails.setCreateTime(user.getCreateTime());
+            UserTxDetails.setCreateTime(user.getCreateTime().toString());
             UserTxDetails.setGoodDegree(goodDegree);
-            UserTxDetails.setLoginname(userRepo.findOne(pojo.getUserId()).getLoginname());
+            UserTxDetails.setLoginname(this.getUserById(pojo.getUserId()).getLoginname());
             if(user.getEmail()!=null){
                 UserTxDetails.setEmailVerify("已验证");
             }
@@ -559,10 +511,10 @@ public class OrderService {
             OrderAddresskeys orderAddresskeys = orderAddresskeyRepo.findOrderAddresskeysByOrderId(pojo.getId());
             if(orderAddresskeys.getSellerPubAuth()!=null && orderAddresskeys.getSellerPriAuth()!=null){
                 Orders orders = orderRepo.findOne(pojo.getId());
-                OrderTransaction transaction = transactionRepo.findByOrderId(pojo.getId());
+                String address = this.getP2shAddressByOrderId(orders.getId());
                 ordersInfo = new OrdersInfo(orders);
-                ordersInfo.setP2shAddress(transaction.getP2shAddress());
-                String uri = "bitcoin:"+transaction.getP2shAddress()+"?amount="+orders.getAmount();
+                ordersInfo.setP2shAddress(address);
+                String uri = "bitcoin:"+address+"?amount="+orders.getAmount();
                 ordersInfo.setUri(uri);
                 return orders!=null?RestResp.success(ordersInfo):RestResp.fail();
             }
@@ -571,61 +523,6 @@ public class OrderService {
         }
         return RestResp.fail();
     };
-    public RestResp findOrderAddressKeys(Pojo pojo){
-        OrderAddresskeys orderAddresskeys = null;
-        try {
-            orderAddresskeys = new OrderAddresskeys();
-            OrderAddresskeys orderAddresskeys1 = orderAddresskeyRepo.findOrderAddresskeysByOrderId(pojo.getId());
-            Orders orders = orderRepo.findOne(pojo.getId());
-            orderAddresskeys.setOrderId(pojo.getId());
-            //如果订单没有经过仲裁 获取卖家买家两个人的私匙
-            if(orders.getArbitrate()==ParamType.ArbitrateStatus.NOARBITRATE.getStatus()){
-                if(orders.getBuyerId().longValue()  == pojo.getUserId()){
-                    orderAddresskeys.setBuyerPriAuth(orderAddresskeys1.getBuyerPriAuth());
-                    orderAddresskeys.setSellerPriAuth(orderAddresskeys1.getBuyerSellerPriAuth());
-                }
-                else{
-                    orderAddresskeys.setSellerPriAuth(orderAddresskeys1.getSellerPriAuth());
-                    orderAddresskeys.setBuyerPriAuth(orderAddresskeys1.getSellerBuyerPriAuth());
-                }
-                //经过仲裁 获取自己的私匙和仲裁者的私匙
-            }else{
-                List<OrderArbitrate> orderArbitrateList = orderArbitrateRepo.findOrderArbitrateByOrderId(pojo.getId());
-                //买家
-                if(orders.getBuyerId().longValue() == pojo.getUserId()){
-                    List<String> stringList = new ArrayList<>();
-                    for (OrderArbitrate o:orderArbitrateList) {
-                        if(o.getBuyerAuth()!=null){
-                            stringList.add(o.getBuyerAuth());
-                        }
-                    }
-                    if(stringList.size()>=ShamirUtil.K){
-                       String secure =  ShamirUtil.getAuth(stringList.toArray(new String[stringList.size()]));
-                       orderAddresskeys.setUserPriAuth(secure);
-                    }
-                    orderAddresskeys.setBuyerPriAuth(orderAddresskeys1.getBuyerPriAuth());
-                }
-                else{
-                    //卖家
-                    List<String> stringList = new ArrayList<>();
-                    for (OrderArbitrate o:orderArbitrateList) {
-                        if(o.getSellerAuth()!=null){
-                            stringList.add(o.getSellerAuth());
-                        }
-                    }
-                    if(stringList.size()>=ShamirUtil.K){
-                        String secure =  ShamirUtil.getAuth(stringList.toArray(new String[stringList.size()]));
-                        orderAddresskeys.setUserPriAuth(secure);
-                    }
-                    orderAddresskeys.setSellerPriAuth(orderAddresskeys1.getSellerPriAuth());
-                }
-            }
-        } catch (Exception e) {
-            LOG.error("get order addresskeys faild : {}",e.getMessage(),e);
-            return RestResp.fail("未知错误");
-        }
-        return orderAddresskeys!=null?RestResp.success(orderAddresskeys):RestResp.fail();
-    }
     public RestResp releaseBTC(Pojo pojo){
         OrderAddresskeys save = null;
         try {
@@ -638,7 +535,7 @@ public class OrderService {
                 save = orderAddresskeyRepo.save(orderAddresskeys);
                 //将卖家的BTC从协商地址转回到 买家账户
                 String s = save.getBuyerPriAuth()+","+save.getBuyerSellerPriAuth();
-                OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orders.getId(),s,orders.getAmount().doubleValue(),userRepo.findOne(orders.getBuyerId()).getFirstAddress());
+                OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orders.getId(),s,orders.getAmount().doubleValue(),this.getUserById(orders.getBuyerId()).getFirstAddress());
                 HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), this.getHttpHeader());
                 JSONObject jsonObject = restTemplate.postForObject(ThemisUserAddress.MOVE_BTC,formEntity,JSONObject.class);
                 Integer status = (Integer) jsonObject.get("status");
@@ -678,6 +575,7 @@ public class OrderService {
         ordersInfo = new OrdersInfo(orders);
         return orders!=null?RestResp.success(ordersInfo):RestResp.fail("未知错误");
     }
+
     public RestResp saveComment(Pojo pojo){
         OrderComment orderComment1 = null;
         try {
@@ -696,9 +594,7 @@ public class OrderService {
                 if(orderComment1.getSellerContent()!=null){
                     o.setOrderStatus(ParamType.OrderStatus.FINISH.getStatus());
                     o = orderRepo.save(o);
-                    Notice notice = noticeRepo.findOne(o.getNoticeId());
-                    notice.setTxStatus(ParamType.NoticeTxStatus.TXEND.getStatus());
-                    noticeRepo.save(notice);
+                    this.saveNotice(o.getNoticeId(),ParamType.NoticeTxStatus.TXEND.getStatus());
                     messageService.postFinishOrders(o);
                 }
             }
@@ -709,9 +605,7 @@ public class OrderService {
                 if(orderComment1.getBuyerContent()!=null){
                     o.setOrderStatus(ParamType.OrderStatus.FINISH.getStatus());
                     o = orderRepo.save(o);
-                    Notice notice = noticeRepo.findOne(o.getNoticeId());
-                    notice.setTxStatus(ParamType.NoticeTxStatus.TXEND.getStatus());
-                    noticeRepo.save(notice);
+                    this.saveNotice(o.getNoticeId(),ParamType.NoticeTxStatus.TXEND.getStatus());
                     messageService.postFinishOrders(o);
                 }
             }
@@ -727,19 +621,93 @@ public class OrderService {
             o = orderRepo.findOne(orderId);
             o.setOrderStatus(status);
             o = orderRepo.save(o);
-            if(status==1){
-                OrderTransaction orderTransaction = transactionRepo.findByOrderId(orderId);
-                if(orderTransaction!=null){
-                    transactionRepo.delete(orderTransaction);
-                    OrderAddresskeys orderAddresskeys = orderAddresskeyRepo.findOrderAddresskeysByOrderId(orderId);
-                    orderAddresskeys.setSellerPriAuth(null);
-                    orderAddresskeys.setSellerPubAuth(null);
-                    orderAddresskeyRepo.save(orderAddresskeys);
-                }
-            }
+
         } catch (Exception e) {
             LOG.error("update order status faild : {}",e.getMessage(),e);
         }
         return o;
+    }
+
+    public User getUserById(Long userId){
+        User user = null;
+        try {
+            JSONObject str = restTemplate.getForObject(ThemisUserAddress.GET_USER+userId, JSONObject.class);
+            if(null != str){
+                Integer status = (Integer) str.get("status");
+                if(status == 1){
+                    user = JsonUtil.jsonToEntity(JsonUtil.toJson(str.get("data")), User.class);
+                }
+            }
+            return user;
+        } catch (Exception e) {
+            LOG.error("get user by id from themis-user faild : {}",e.getMessage(),e);
+        }
+        return null;
+    }
+    public List<User> getArbitrateUser(){
+        List<User> list = null;
+        try {
+            JSONObject str = restTemplate.getForObject(ThemisUserAddress.GET_ARBITRATE_USER, JSONObject.class);
+            if(null != str){
+                Integer status = (Integer) str.get("status");
+                if(status == 1){
+                    list = JsonUtil.jsonToList(JsonUtil.toJson(str.get("data")), User.class);
+                }
+                return list;
+            }
+        } catch (RestClientException e) {
+            LOG.error("get arbitrate user from themis-user faild : {}",e.getMessage(),e);
+        }
+        return null;
+    }
+    private String getP2shAddressByOrderId(String id){
+        try {
+            JSONObject jsonObject = restTemplate.getForObject(ThemisUserAddress.GET_PTSHADDRESS, JSONObject.class);
+            if(jsonObject != null){
+                Integer status = (Integer) jsonObject.get("status");
+                if(status == 1){
+                    Transaction transaction = JsonUtil.jsonToEntity(JsonUtil.toJson(jsonObject.get("data")), Transaction.class);
+                    return transaction.getP2shAddress();
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("get transaction from themis-user faild : {}",e.getMessage(),e);
+        }
+        return null;
+    }
+    private void saveOrderAbritrate(OrderArbitrate orderArbitrate){
+        try {
+            HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(orderArbitrate), this.getHttpHeader());
+            JSONObject jsonObject = restTemplate.postForObject(ThemisUserAddress.SAVE_ARBITRATE, formEntity, JSONObject.class);
+        } catch (RestClientException e) {
+            LOG.error("save order arbitrate faild : {}",e.getMessage(),e);
+        }
+    }
+    private Notice saveNotice(Long id,Integer sta){
+        try {
+            JSONObject forObject = restTemplate.getForObject(ThemisUserAddress.SAVE_NOTICE + id + "/" + sta, JSONObject.class);
+            Integer status = (Integer) forObject.get("status");
+            if(status == 1){
+                Notice notice = JsonUtil.jsonToEntity(JsonUtil.toJson(forObject.get("data")),Notice.class);
+                return notice;
+            }
+        } catch (RestClientException e) {
+            LOG.error("update notice status faild:{}",e.getMessage(),e);
+        }
+        return null;
+
+    }
+    private Notice findNoticeById(Long id){
+        try {
+            JSONObject forObject = restTemplate.getForObject(ThemisUserAddress.GET_NOTICE + id, JSONObject.class);
+            Integer status = (Integer) forObject.get("status");
+            if(status == 1){
+                Notice notice = JsonUtil.jsonToEntity(JsonUtil.toJson(forObject.get("data")), Notice.class);
+                return notice;
+            }
+        } catch (RestClientException e) {
+            LOG.error("get notice faild : {}",e.getMessage(),e);
+        }
+        return null;
     }
 }

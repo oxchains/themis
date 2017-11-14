@@ -1,6 +1,6 @@
 package com.oxchains.themis.message.dao;
 
-import com.oxchains.themis.message.domain.Message;
+import com.oxchains.themis.repo.entity.Message;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -19,7 +19,6 @@ public interface MessageDao extends CrudRepository<Message, Long> {
     Page<Message> findByReceiverIdAndMessageType(Long receiverId, Integer messageType, Pageable pageable);
     List<Message> findByReceiverIdAndMessageType(Long receiverId, Integer messageType);
 
-    // @Query(value = "select m from messaeg as m where m.receiverId in (:recId, :recId2) and m.messageType=:megType and m.messageTextId=:mtId")
     Page<Message> findByReceiverIdAndMessageTypeAndMessageTextId(Long recId, Integer msgType, Long mtId, Pageable pageable);
     List<Message> findByReceiverIdAndMessageTypeAndMessageTextId(Long recId, Integer msgType, Long mtId);
 
