@@ -11,7 +11,6 @@ import com.oxchains.themis.repo.dao.OrderDao;
 import com.oxchains.themis.repo.dao.UserDao;
 import com.oxchains.themis.repo.entity.Message;
 import com.oxchains.themis.repo.entity.MessageText;
-import com.oxchains.themis.repo.entity.Order;
 import com.oxchains.themis.repo.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

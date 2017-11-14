@@ -1,6 +1,5 @@
 package com.oxchains.themis.repo.dao;
 
-import com.oxchains.themis.repo.entity.Order;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
