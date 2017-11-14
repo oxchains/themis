@@ -44,10 +44,7 @@ import ArbitrationBuyer from './components/arbitration_buyer';
 import ArbitrationManage from './components/arbitration_manage';
 import RefereeList from './components/referee_list';
 import Releaseadvert from './components/release_advert';
-<<<<<<< HEAD
-=======
 import OtherInfodetail from './components/other_infodetail';
->>>>>>> b99b4aa1a9ba945210cf38761df246aeb24ad164
 
 const createStoreWithMiddleware = compose(
     applyMiddleware(reduxThunk),
