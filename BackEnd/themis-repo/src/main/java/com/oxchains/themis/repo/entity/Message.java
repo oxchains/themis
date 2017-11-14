@@ -36,4 +36,7 @@ public class Message {
         this.readStatus = readStatus;
         this.messageType = messageType;
     }
+
+    public Message() {
+    }
 }
