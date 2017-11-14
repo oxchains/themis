@@ -38,6 +38,7 @@
 
         <maven.compiler.plugin.version>3.6.1</maven.compiler.plugin.version>
 
+        <docker.image.prefix>oxchains</docker.image.prefix>
     </properties>
 
     <dependencies>
