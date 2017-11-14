@@ -1,30 +1,32 @@
 package com.oxchains.themis.arbitrate.service;
 import com.alibaba.fastjson.JSONObject;
 import com.oxchains.themis.arbitrate.common.*;
-import com.oxchains.themis.arbitrate.entity.*;
+import com.oxchains.themis.arbitrate.entity.OrderEvidence;
+import com.oxchains.themis.arbitrate.entity.Orders;
 import com.oxchains.themis.arbitrate.entity.vo.OrdersInfo;
 import com.oxchains.themis.arbitrate.repo.*;
-import com.oxchains.themis.common.model.OrdersKeyAmount;
+import com.oxchains.themis.common.constant.*;
 import com.oxchains.themis.common.model.RestResp;
-import com.oxchains.themis.common.util.DateUtil;
 import com.oxchains.themis.common.util.JsonUtil;
+import com.oxchains.themis.repo.entity.Notice;
+import com.oxchains.themis.repo.entity.OrderArbitrate;
+import com.oxchains.themis.repo.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,11 +45,7 @@ public class ArbitrateService {
     @Resource
     private OrderArbitrateRepo orderArbitrateRepo;
     @Resource
-    private NoticeRepo noticeRepo;
-    @Resource
     private PaymentRepo paymentRepo;
-    @Resource
-    private UserRepo userRepo;
     @Resource
     private OrderEvidenceRepo orderEvidenceRepo;
     @Resource
@@ -72,8 +70,8 @@ public class ArbitrateService {
             ordersInfoList = new ArrayList<>();
             for (OrderArbitrate o: orderArbitratePage.getContent()) {
                 ordersInfo = this.findOrdersDetails(o.getOrderId());
-                ordersInfo.setBuyerUsername(userRepo.findOne(ordersInfo.getBuyerId()).getLoginname());
-                ordersInfo.setSellerUsername(userRepo.findOne(ordersInfo.getSellerId()).getLoginname());
+                ordersInfo.setBuyerUsername(this.getUserById(ordersInfo.getBuyerId()).getLoginname());
+                ordersInfo.setSellerUsername(this.getUserById(ordersInfo.getSellerId()).getLoginname());
                 this.setOrderStatusName(ordersInfo);
                 ordersInfo.setPageCount(orderArbitratePage.getTotalPages());
                 ordersInfo.setStatus(o.getStatus());
@@ -94,7 +92,7 @@ public class ArbitrateService {
         try {
             o = orderRepo.findOne(orderId);
             ordersInfo = new OrdersInfo(o);
-            ordersInfo.setNotice(noticeRepo.findOne(o.getNoticeId()));
+            ordersInfo.setNotice(this.findNoticeById(o.getNoticeId()));
             this.setOrderStatusName(ordersInfo);
             ordersInfo.setPayment(paymentRepo.findOne(ordersInfo.getPaymentId()));
             return ordersInfo;
@@ -157,7 +155,7 @@ public class ArbitrateService {
                 orderEvidence.setOrderId(pojo.getId());
                 orderEvidence = orderEvidenceRepo.save(orderEvidence);
                 orders.setArbitrate(ParamType.ArbitrateStatus.ARBITRATEING.getStatus());
-                orderRepo.save(orders);
+                orders = orderRepo.save(orders);
                 //订单仲裁表中的 对应订单的三条仲裁状态改为1 表示 仲裁者仲裁中
                 List<OrderArbitrate> orderArbitrateList = orderArbitrateRepo.findByOrderId(orders.getId());
                 for (OrderArbitrate o:orderArbitrateList) {
@@ -175,6 +173,7 @@ public class ArbitrateService {
                 orderEvidence.setSellerContent(pojo.getContent());
             }
             orderEvidence = orderEvidenceRepo.save(orderEvidence);
+            messageService.postUploadEvidence(orders,pojo.getUserId());
         } catch (Exception e) {
             LOG.error("upload evidence faild : {}",e.getMessage(),e);
             return RestResp.fail("申请仲裁失败");
@@ -222,5 +221,52 @@ public class ArbitrateService {
     }
     public RestResp getEvidence(Pojo pojo){
         return RestResp.success(orderEvidenceRepo.findByOrderId(pojo.getId()));
+    }
+    public RestResp saveOrderAbritrate(OrderArbitrate orderArbitrate){
+        OrderArbitrate save = orderArbitrateRepo.save(orderArbitrate);
+        return save != null?RestResp.success():RestResp.fail();
+    }
+    public User getUserById(Long userId){
+        User user = null;
+        try {
+            JSONObject str = restTemplate.getForObject(com.oxchains.themis.common.constant.ThemisUserAddress.GET_USER+userId, JSONObject.class);
+            if(null != str){
+                Integer status = (Integer) str.get("status");
+                if(status == 1){
+                    user = JsonUtil.jsonToEntity(JsonUtil.toJson(str.get("data")), User.class);
+                }
+            }
+            return user;
+        } catch (Exception e) {
+            LOG.error("get user by id from themis-user faild : {}",e.getMessage(),e);
+        }
+        return null;
+    }
+    public Notice saveNotice(Long id, Integer sta){
+        try {
+            JSONObject forObject = restTemplate.getForObject(com.oxchains.themis.common.constant.ThemisUserAddress.SAVE_NOTICE + id + "/" + sta, JSONObject.class);
+            Integer status = (Integer) forObject.get("status");
+            if(status == 1){
+                Notice notice = JsonUtil.jsonToEntity(JsonUtil.toJson(forObject.get("data")),Notice.class);
+                return notice;
+            }
+        } catch (RestClientException e) {
+            LOG.error("update notice status faild:{}",e.getMessage(),e);
+        }
+        return null;
+
+    }
+    public Notice findNoticeById(Long id){
+        try {
+            JSONObject forObject = restTemplate.getForObject(com.oxchains.themis.common.constant.ThemisUserAddress.GET_NOTICE + id, JSONObject.class);
+            Integer status = (Integer) forObject.get("status");
+            if(status == 1){
+                Notice notice = JsonUtil.jsonToEntity(JsonUtil.toJson(forObject.get("data")), Notice.class);
+                return notice;
+            }
+        } catch (RestClientException e) {
+            LOG.error("get notice faild : {}",e.getMessage(),e);
+        }
+        return null;
     }
 }

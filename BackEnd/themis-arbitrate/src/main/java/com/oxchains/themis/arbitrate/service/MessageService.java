@@ -1,20 +1,27 @@
 package com.oxchains.themis.arbitrate.service;
-
+import com.alibaba.fastjson.JSONObject;
+import com.oxchains.themis.arbitrate.common.MessageCopywrit;
 import com.oxchains.themis.arbitrate.common.ParamType;
-import com.oxchains.themis.arbitrate.entity.OrderArbitrate;
 import com.oxchains.themis.arbitrate.entity.Orders;
-import com.oxchains.themis.arbitrate.repo.NoticeRepo;
 import com.oxchains.themis.arbitrate.repo.OrderArbitrateRepo;
-import com.oxchains.themis.arbitrate.repo.UserRepo;
+import com.oxchains.themis.common.constant.ThemisUserAddress;
 import com.oxchains.themis.common.constant.message.MessageReadStatus;
 import com.oxchains.themis.common.constant.message.MessageType;
 import com.oxchains.themis.common.util.DateUtil;
+import com.oxchains.themis.common.util.JsonUtil;
 import com.oxchains.themis.repo.dao.MessageRepo;
 import com.oxchains.themis.repo.dao.MessageTextRepo;
 import com.oxchains.themis.repo.entity.Message;
 import com.oxchains.themis.repo.entity.MessageText;
+import com.oxchains.themis.repo.entity.OrderArbitrate;
+import com.oxchains.themis.repo.entity.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
 import javax.annotation.Resource;
+import java.text.MessageFormat;
 import java.util.List;
 
 /**
@@ -23,82 +30,135 @@ import java.util.List;
  */
 @Service
 public class MessageService {
+    private final Logger LOG = LoggerFactory.getLogger(this.getClass());
+    @Resource
+    private RestTemplate restTemplate;
     @Resource
     private MessageRepo messageRepo;
     @Resource
     private MessageTextRepo messageTextRepo;
     @Resource
-    private UserRepo userRepo;
-    @Resource
-    private NoticeRepo noticeRepo;
-    @Resource
     private OrderArbitrateRepo orderArbitrateRepo;
     public static final Integer BUYER_SUCCESS = 1;
     public static final Integer SELLER_SUCCESS = 2;
+    //仲裁投票后给双方的站内信
     public void postArbitrateMessage(Orders orders,Long userId,Integer successId){
-        String username = userRepo.findOne(userId).getLoginname();
-        Long successUserId = null;
-        Long faildUserId = null;
-        if(successId == BUYER_SUCCESS.intValue()){
-            successUserId = orders.getBuyerId();
-            faildUserId = orders.getSellerId();
+        try {
+            String username = this.getUserById(userId).getLoginname();
+            String successContent = MessageFormat.format(MessageCopywrit.ARBITRATE_SUCCESS,orders.getId(),username);
+            MessageText successMessageText = new MessageText(0L,successContent,MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
+            MessageText successSave = messageTextRepo.save(successMessageText);
+            Message message1 = new Message(successId.intValue() ==  BUYER_SUCCESS?orders.getBuyerId():orders.getSellerId(),successSave.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
+            messageRepo.save(message1);
+            String faildContent = MessageFormat.format(MessageCopywrit.ARBITRATE_FAILD,orders.getId(),username);
+            MessageText messageText2 = new MessageText(0L,faildContent,MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
+            MessageText faildSave = messageTextRepo.save(messageText2);
+            Message message2 = new Message(successId.intValue() ==  BUYER_SUCCESS?orders.getSellerId():orders.getBuyerId(),faildSave.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
+            messageRepo.save(message2);
+        } catch (Exception e) {
+            LOG.error("MESSAGE -- post a arbitrateUser arbitrate finish message : {}",e.getMessage(),e);
         }
-        else{
-            successUserId = orders.getSellerId();
-            faildUserId = orders.getBuyerId();
-        }
-        String successMessage = "恭喜，仲裁者【"+username+"】在订单【"+orders.getId()+"】中判断您为胜利方，获得密匙碎片一枚";
-        String faildMessage = "很遗憾，仲裁者【"+username+"】在订单【"+orders.getId()+"】中判断对方为胜利方,对方获得密匙碎片一枚";
-        MessageText successMessageText = new MessageText(0L,successMessage,MessageType.PRIVATE_LETTET,0L,DateUtil.getPresentDate(),orders.getId());
-        MessageText successSave = messageTextRepo.save(successMessageText);
-        Message message1 = new Message(successUserId,successSave.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
-        messageRepo.save(message1);
-
-        MessageText messageText2 = new MessageText(0L,faildMessage,MessageType.PRIVATE_LETTET,0L,DateUtil.getPresentDate(),orders.getId());
-        MessageText faildSave = messageTextRepo.save(messageText2);
-        Message message2 = new Message(faildUserId,faildSave.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
-        messageRepo.save(message2);
     }
+    //仲裁完成后给双方的站内信
     public void postArbitrateFinish(Orders orders){
-        Long successId = null;
-        Long falidId = null;
-        if(orders.getOrderStatus().longValue() == ParamType.OrderStatus.CANCEL.getStatus()){
-            successId = orders.getSellerId();
-            falidId = orders.getBuyerId();
-        }
-        if(orders.getOrderStatus().longValue() == ParamType.OrderStatus.FINISH.getStatus()){
-            successId = orders.getBuyerId();
-            falidId = orders.getSellerId();
-        }
-        String successMessage = "恭喜:订单编号【"+orders.getId()+"】你是这次仲裁的胜利方,BTC将会在5-30分钟内到达你的账户,请注意查收";
-        String faildMessage = "很遗憾,订单编号【"+orders.getId()+"】此次仲裁您未获胜，如有疑问请及时联系我们的客服人员";
+        try {
+            Long successId = null;
+            Long falidId = null;
+            if(orders.getOrderStatus().longValue() == ParamType.OrderStatus.CANCEL.getStatus()){
+                successId = orders.getSellerId();
+                falidId = orders.getBuyerId();
+            }
+            if(orders.getOrderStatus().longValue() == ParamType.OrderStatus.FINISH.getStatus()){
+                successId = orders.getBuyerId();
+                falidId = orders.getSellerId();
+            }
+            //胜利方的站内信
+            String successContent = MessageFormat.format(MessageCopywrit.ARBITRATE_FINISH_SUCCESS,orders.getId());
+            MessageText successMessageText = new MessageText(0L,successContent,MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
+            successMessageText = messageTextRepo.save(successMessageText);
+            Message message = new Message(successId,successMessageText.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
+            messageRepo.save(message);
 
-        MessageText successMessageText = new MessageText(0L,successMessage,MessageType.PRIVATE_LETTET,0L,DateUtil.getPresentDate(),orders.getId());
-        MessageText successSave = messageTextRepo.save(successMessageText);
-        Message message1 = new Message(successId,successSave.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
-        messageRepo.save(message1);
-
-        MessageText messageText2 = new MessageText(0L,faildMessage,MessageType.PRIVATE_LETTET,0L,DateUtil.getPresentDate(),orders.getId());
-        MessageText faildSave = messageTextRepo.save(messageText2);
-        Message message2 = new Message(falidId,faildSave.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
-        messageRepo.save(message2);
+            //失败方的站内信
+            String faildContent = MessageFormat.format(MessageCopywrit.ARBITRATE_FINISH_FAILD,orders.getId());
+            MessageText messageText2 = new MessageText(0L,faildContent,MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
+            messageText2 = messageTextRepo.save(messageText2);
+            Message message2 = new Message(falidId,messageText2.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
+            messageRepo.save(message2);
+        } catch (Exception e) {
+            LOG.error("MESSAGE -- post this order arbitrate finish message : {}",e.getMessage(),e);
+        }
     }
+    //发起仲裁时的给三方的站内信
     public void postEvidenceMessage(Orders orders,Long userId){
-        String orderType = orders.getBuyerId() == userId.longValue()?"买家":"卖家";
-        Long receiverId = orders.getBuyerId() == userId.longValue()?orders.getSellerId():orders.getBuyerId();
-        String username = userRepo.findOne(userId).getLoginname();
-        String message = "订单编号【"+orders.getId()+"】"+orderType+" 【"+username+"】于"+DateUtil.getPresentDate()+"对订单发起了仲裁,请及时处理";
-        MessageText messageText = new MessageText(0L,message,MessageType.PRIVATE_LETTET,0L,DateUtil.getPresentDate(),orders.getId());
-        MessageText successSave = messageTextRepo.save(messageText);
-        Message message1 = new Message(receiverId,successSave.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
-        messageRepo.save(message1);
+        try {
+            //发起提起仲裁的人的站内信
+            String messageContent1 = MessageFormat.format(MessageCopywrit.GENERATE_ABRITRATE,orders.getId());
+            MessageText messageText1 = new MessageText(0L,messageContent1,MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
+            MessageText save1 = messageTextRepo.save(messageText1);
+            Message message1 = new Message(userId,save1.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
+            messageRepo.save(message1);
 
-        List<OrderArbitrate> list = orderArbitrateRepo.findByOrderId(orders.getId());
-        for (OrderArbitrate o : list){
-            MessageText st = messageTextRepo.save(messageText);
-            Message abritrateMessage = new Message(o.getUserId(),st.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
-            messageRepo.save(abritrateMessage);
+            //被仲裁人的站内信
+            String messageContent2 = MessageFormat.format(MessageCopywrit.BY_GENERATE_ABRITRATE,orders.getId());
+            MessageText messageText2 = new MessageText(0L,messageContent2,MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
+            messageText2 = messageTextRepo.save(messageText2);
+            Message message2 = new Message(orders.getSellerId().longValue() == userId?orders.getBuyerId():orders.getSellerId(),messageText2.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
+            messageRepo.save(message2);
+
+            String username = this.getUserById(userId).getLoginname();
+            //通知仲裁人的站内信
+            List<OrderArbitrate> list = orderArbitrateRepo.findByOrderId(orders.getId());
+            String messageContent3 = MessageFormat.format(MessageCopywrit.ARBITRATE_USER_INFO,username,orders.getId());
+            MessageText messageText3 = new MessageText(0L,messageContent3,MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
+            messageText3= messageTextRepo.save(messageText3);
+            for (OrderArbitrate o : list){
+                Message abritrateMessage = new Message(o.getUserId(),messageText3.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
+                messageRepo.save(abritrateMessage);
+            }
+        } catch (Exception e) {
+            LOG.error("MESSAGE -- post the seller or buyer start arbitrate message : {}",e.getMessage(),e);
         }
+    }
+    //上传仲裁凭据的站内信
+    public void postUploadEvidence(Orders orders,Long userId){
+        try {
+            //上传交易凭据 附件的人的站内信
+            String messageContent = MessageFormat.format(MessageCopywrit.UPLOD_EVIDENCE,orders.getId());
+            MessageText messageText = new MessageText(0L,messageContent,MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
+            MessageText save = messageTextRepo.save(messageText);
+            Message message = new Message(userId,save.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
+            messageRepo.save(message);
+
+            //仲裁人的站内信
+            String messageContent1 = MessageFormat.format(MessageCopywrit.UPLOAD_EVIDENCE_ABRAITRATE,orders.getId(),this.getUserById(userId).getLoginname());
+            MessageText messageText1 = new MessageText(0L,messageContent1,MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
+            messageText1= messageTextRepo.save(messageText);
+            List<OrderArbitrate> list = orderArbitrateRepo.findByOrderId(orders.getId());
+            for (OrderArbitrate o : list){
+                Message abritrateMessage = new Message(o.getUserId(),messageText1.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
+                messageRepo.save(abritrateMessage);
+            }
+        } catch (Exception e) {
+            LOG.error("MESSAGE -- post upload arbitrate evidence message : {}",e.getMessage(),e);
+        }
+
+    }
+    public User getUserById(Long userId){
+        User user = null;
+        try {
+            JSONObject str = restTemplate.getForObject(ThemisUserAddress.GET_USER+userId, JSONObject.class);
+            if(null != str){
+                Integer status = (Integer) str.get("status");
+                if(status == 1){
+                    user = JsonUtil.jsonToEntity(JsonUtil.toJson(str.get("data")), User.class);
+                }
+            }
+            return user;
+        } catch (Exception e) {
+            LOG.error("get user by id from themis-user faild : {}",e.getMessage(),e);
+        }
+        return null;
     }
 
 }

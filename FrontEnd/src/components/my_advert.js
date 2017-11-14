@@ -26,67 +26,56 @@ class Myadvert extends Component {
             adstatus:1,
             pageSize:5, //每页显示的条数5条
             pageNum: 1, //默认的当前第一页
+            flag:false
         }
-        this.handleRowsbuy = this.handleRowsbuy.bind(this)
-        this.handleRowssell = this.handleRowssell.bind(this)
-        this.handleRowsadverting = this.handleRowsadverting.bind(this)
-        this.handleRowadverted = this.handleRowadverted.bind(this)
+        this.handleRowstype = this.handleRowstype.bind(this)
+        this.handleRowsadvert = this.handleRowsadvert.bind(this)
         this.handleRow = this.handleRow.bind(this)
     }
-
-    onPagination(pageNo) {
-        console.log( "当前页数"+ pageNo)
-        this.state.pageNum = pageNo
-
+    handleRowstype(status){
+        this.state.status = status
         const userId = localStorage.getItem("userId")
         const noticeType = this.state.status
         const txStatus = this.state.adstatus
         const pageNum = this.state.pageNum
-        this.props.fetctMyAdvert({userId, noticeType, txStatus, pageNum}, ()=>{});
+        if(!this.state.flag){
+            this.state.flag = true;
+            this.props.fetctMyAdvert({userId, noticeType, txStatus, pageNum}, err=>{
+               this.state.flag = false
+               console.log(this.state.flag)
+           });
+         }
     }
-
-    handleRowsbuy(){
-        this.state.status = 1
+    handleRowsadvert(adstatus){
+        this.state.adstatus = adstatus
         const userId = localStorage.getItem("userId")
         const noticeType = this.state.status
         const txStatus = this.state.adstatus
         const pageNum = this.state.pageNum
-        this.props.fetctMyAdvert({userId, noticeType, txStatus, pageNum}, ()=>{});
-    }
-    handleRowssell(){
-        this.state.status = 2
-        const userId = localStorage.getItem("userId")
-        const noticeType = this.state.status
-        const txStatus = this.state.adstatus
-        const pageNum = this.state.pageNum
-        this.props.fetctMyAdvert({userId, noticeType, txStatus, pageNum}, ()=>{});
-    }
-
-    handleRowsadverting(){
-        this.state.adstatus = 1
-        const userId = localStorage.getItem("userId")
-        const noticeType = this.state.status
-        const txStatus = this.state.adstatus
-        const pageNum = this.state.pageNum
-        this.props.fetctMyAdvert({userId, noticeType, txStatus, pageNum}, ()=>{});
-    }
-
-    handleRowadverted(){
-        this.state.adstatus = 2
-        const userId = localStorage.getItem("userId")
-        const noticeType = this.state.status
-        const txStatus = this.state.adstatus
-        const pageNum = this.state.pageNum
-        this.props.fetctMyAdvert({userId, noticeType, txStatus, pageNum}, ()=>{});
+        if(!this.state.flag){
+            this.state.flag = true;
+            this.props.fetctMyAdvert({userId, noticeType, txStatus, pageNum}, err=>{
+                this.state.flag = false
+                console.log(this.state.flag)
+            });
+        }
     }
     componentWillMount(){
         const userId = localStorage.getItem("userId")
         const noticeType = this.state.status
         const txStatus = this.state.adstatus
         const pageNum = this.state.pageNum
-        this.props.fetctMyAdvert({userId, noticeType, txStatus, pageNum}, ()=>{});
+        this.props.fetctMyAdvert({userId, noticeType, txStatus, pageNum});
     }
-
+    //分页展示
+    onPagination(pageNo) {
+        this.state.pageNum = pageNo
+        const userId = localStorage.getItem("userId")
+        const noticeType = this.state.status
+        const txStatus = this.state.adstatus
+        const pageNum = this.state.pageNum
+        this.props.fetctMyAdvert({userId, noticeType, txStatus, pageNum});
+    }
     handleRow(){
         const arraydata = this.props.all.pageList || []    //列表数组的数据
         return arraydata.map((item, index) => {
@@ -122,14 +111,14 @@ class Myadvert extends Component {
                     <div className="mainbar">
                         <div className="col-lg-2 col-md-2 col-xs-2">
                         <ul className=" adtypeul">
-                            <li className={` adtype ${this.state.status == 1 ? "tab-title-item active" :" tab-title-item"} `}   onClick={this.handleRowsbuy}><p>购买广告</p></li>
-                            <li className={` adtype ${this.state.status == 2 ? "tab-title-item active" :" tab-title-item "}`} onClick={this.handleRowssell}><p>出售广告</p></li>
+                            <li className={` adtype ${this.state.status == 1 ? "tab-title-item active" :" tab-title-item"} `}   onClick={()=>this.handleRowstype(1)}><p>购买广告</p></li>
+                            <li className={` adtype ${this.state.status == 2 ? "tab-title-item active" :" tab-title-item "}`} onClick={()=>this.handleRowstype(2)}><p>出售广告</p></li>
                         </ul>
                         </div>
                         <div className="col-lg-10 col-md-10 col-xs-10">
                             <ul className=" titleul">
-                                <li className={` title-border ${this.state.adstatus == 1 ? "ad-title-item active" :" ad-title-item"} `}   onClick={this.handleRowsadverting}>进行中的广告</li>
-                                <li className={` title-border ${this.state.adstatus == 2 ? "ad-title-item active" :" ad-title-item "}`} onClick={this.handleRowadverted}>已下架的广告</li>
+                                <li className={` title-border ${this.state.adstatus == 1 ? "ad-title-item active" :" ad-title-item"} `}   onClick={()=>this.handleRowsadvert(1)}>进行中的广告</li>
+                                <li className={` title-border ${this.state.adstatus == 2 ? "ad-title-item active" :" ad-title-item "}`} onClick={()=>this.handleRowsadvert(2)}>已下架的广告</li>
                             </ul>
 
                             <div>
@@ -155,9 +144,6 @@ class Myadvert extends Component {
                                 </div>
                             </div>
                         </div>
-
-
-
                         <Modal isOpen={this.state.isModalOpen} onRequestHide={this.hideModal}>
                             <ModalHeader>
                                 <ModalClose onClick={this.hideModal}/>

@@ -1,5 +1,7 @@
 package com.oxchains.themis.arbitrate.entity;
 
+import lombok.Data;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -10,24 +12,9 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "tbl_biz_payment")
+@Data
 public class Payment {
     @Id
     private Long id;
     private String paymentName;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getPaymentName() {
-        return paymentName;
-    }
-
-    public void setPaymentName(String paymentName) {
-        this.paymentName = paymentName;
-    }
 }

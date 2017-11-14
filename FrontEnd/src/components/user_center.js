@@ -19,13 +19,13 @@ class Usercenter extends Component {
               <div>
                   <TabsControl >
                       <Tab name="基本信息">
-                          <div className="baswinfo" ><Base/></div>
+                          <div><Base/></div>
                       </Tab>
                       <Tab name="安全设置">
-                          <div className="safeset"><Safe/></div>
+                          <div><Safe/></div>
                       </Tab>
                       <Tab name="受信任的">
-                          <div className="trust"><Trust/></div>
+                          <div><Trust/></div>
                       </Tab>
                   </TabsControl>
               </div>

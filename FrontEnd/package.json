@@ -24,7 +24,12 @@
     "axios": "^0.16.2",
     "babel-preset-stage-1": "^6.24.1",
     "bootstrap": "^3.3.7",
+<<<<<<< HEAD
     "demo2": "^1.0.0",
+=======
+    "demo3": "0.0.0",
+    "demo4": "^1.0.0",
+>>>>>>> b99b4aa1a9ba945210cf38761df246aeb24ad164
     "jquery": "^3.2.1",
     "moment": "^2.19.1",
     "qrcode.react": "^0.7.2",

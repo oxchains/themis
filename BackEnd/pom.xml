@@ -27,6 +27,7 @@
 
         <module>bitcoin-rpc-client</module>
         <module>themis-zuul</module>
+        <module>themis-eureka</module>
     </modules>
 
     <properties>
@@ -37,6 +38,7 @@
 
         <maven.compiler.plugin.version>3.6.1</maven.compiler.plugin.version>
 
+        <docker.image.prefix>oxchains</docker.image.prefix>
     </properties>
 
     <dependencies>
@@ -44,7 +46,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-        <dependency>
+   <!--     <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <exclusions>
@@ -53,7 +55,7 @@
                     <artifactId>spring-boot-starter-tomcat</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
+        </dependency>-->
         <!--    <dependency>
              <groupId>org.springframework.session</groupId>
              <artifactId>spring-session</artifactId>
@@ -157,6 +159,30 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-netflix-eureka-client</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.7.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/commons-httpclient/commons-httpclient -->
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>
@@ -170,6 +196,14 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>maven-snapshots</name>
+            <url>http://maven.oxchains.com/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <build>
         <plugins>
@@ -218,4 +252,6 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
+
+
 </project>

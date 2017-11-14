@@ -39,7 +39,7 @@ class Signup extends Component {
     handleFormSubmit({ loginname, mobilephone, email, password }) {
         if(loginname && password && mobilephone)
             this.props.signupUser({ loginname, mobilephone, email, password }, err => {
-                this.setState({ isModalOpen: true, error: err, actionResult: err||'注册成功!', spin:false });
+                this.setState({ isModalOpen: true, error: err, actionResult: '注册失败'||'注册成功!', spin:false });
             });
     }
 
@@ -105,7 +105,7 @@ class Signup extends Component {
             <div className={`form-style ${touched && error ? 'has-error' : ''}`}>
                 <input {...input} placeholder={label} type={type} className="form-control "/>
                 {/*<span className={`glyphicon glyphicon-${icon} form-control-feedback`}></span>*/}
-                {/*<div className="help-block ">{touched && error ? error : ''}</div>*/}
+                <div className="help-block ">{touched && error ? error : ''}</div>
             </div>
         )}
     render() {
@@ -117,6 +117,8 @@ class Signup extends Component {
         }
 
         var text = this.state.liked ? '发送验证码' : this.state.count + ' s 后重新发' ;
+        const url = this.state.error === '操作失败' ? "/signup":"/signin"
+
         return (
             <div>
                 <div className="login-box">
@@ -124,7 +126,7 @@ class Signup extends Component {
                         <div className=" login-box-msg" style={{fontSize: 24+'px'}}>手机注册</div>
                     </div>
 
-                    <div className="login-box-body form-style">
+                    <div className="login-box-body">
 
                         {this.renderAlert()}
                         <form className="form-signin" onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
@@ -135,11 +137,11 @@ class Signup extends Component {
                                 <span className={`send-testcode  ${this.state.liked?"" :"time-color"}`} onClick={this.handlesend}>{text}</span>
                             </div>
                             <Field name="password" component={this.renderField} type="password" label="请输入密码" icon="lock" />
-                            <div className="row ">
+                            <div className=" ">
                                 <div className="form-style checkbox-margin">
                                     <input type="checkbox"  defaultChecked className="checkbox-width"  onChange={this.handleChange.bind(this)}/><span> 我已阅读themis用户手册及相关法律</span>
                                 </div>
-                                <div className="form-style">
+                                <div className="">
                                     <button type="submit" className="btn   form-register"><i className={`fa fa-spinner fa-spin ${this.state.spin?'':'hidden'}`}></i> 注册</button>
                                 </div>
                                 <div className="form-group">
@@ -163,7 +165,7 @@ class Signup extends Component {
                     </ModalBody>
                     <ModalFooter>
                         <button className='btn btn-default' onClick={this.hideModal}>
-                            <a href="/signin" >关闭</a>
+                            <a  href={url}>关闭</a>
                         </button>
                     </ModalFooter>
                 </Modal>
@@ -171,26 +173,27 @@ class Signup extends Component {
         );
     }
 }
-// const validate = values => {
-//     const errors = {};
-//
-//     if(!values.mobilephone) {
-//         errors.loginname = '不能为空';
-//     }
-//
-//     if(!values.mobilephone) {
-//         errors.mobilephone = '不能为空';
-//     }
-//     if(!values.email) {
-//         errors.email = '不能为空';
-//     }
-//     if(!values.password) {
-//         errors.password = '不能为空';
-//     }
-//     return errors
-// };
+const validate = values => {
+    const errors = {};
+
+    if(!values.loginname) {
+        errors.loginname = ' *不能为空';
+    }
+
+    if(!values.mobilephone) {
+        errors.mobilephone = ' *不能为空';
+    }
+    if(!values.email) {
+        errors.email = ' *不能为空';
+    }
+    if(!values.password) {
+        errors.password = ' *不能为空';
+    }
+    return errors
+};
 
 function mapStateToProps(state) {
+    // console.log(state.auth.all)
     return {
         all:state.auth.all
     };
@@ -198,7 +201,7 @@ function mapStateToProps(state) {
 
 const reduxSignupForm = reduxForm({
     form: 'SignForm',
-    // validate
+    validate
 })(Signup);
 
 export default connect(mapStateToProps, { signupUser, GetverifyCode})(reduxSignupForm);

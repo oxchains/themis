@@ -1,13 +1,11 @@
 package com.oxchains.themis.chat.websocket;
 
-import com.oxchains.themis.chat.auth.JwtService;
 import com.oxchains.themis.chat.service.KafkaService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.oxchains.themis.chat.service.MessageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Service;
-import com.oxchains.themis.chat.websocket.WebSocketServer;
 
 import javax.annotation.Resource;
 
@@ -21,11 +19,13 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
     private Integer port;
     @Resource
     private KafkaService kafkaService;
+    @Resource
+    private MessageService messageService;
     public StartupListener(){
 
     }
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        new Thread(new WebSocketServer(kafkaService,port)).start();
+        new Thread(new WebSocketServer(kafkaService,port,messageService)).start();
     }
 }

@@ -65,11 +65,15 @@ class MessageNotice extends Component{
             </div>
         )
     }
-
 }
 function mapStateToProps(state) {
     return {
+<<<<<<< HEAD
         message_notice:state.message.message_notice
+=======
+        errorMessage:state.auth.error,
+        authenticated: state.auth.authenticated,
+>>>>>>> b99b4aa1a9ba945210cf38761df246aeb24ad164
     };
 }
 

@@ -8,9 +8,9 @@ import com.oxchains.themis.common.model.AddressKeys;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.model.ScriptHash;
 import com.oxchains.themis.common.util.ArithmeticUtils;
-import com.oxchains.themis.user.bitcoin.BitcoinConfig;
-import com.oxchains.themis.user.dao.TransactionDao;
-import com.oxchains.themis.user.domain.Transaction;
+import com.oxchains.themis.repo.dao.TransactionDao;
+
+import com.oxchains.themis.repo.entity.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -362,4 +362,8 @@ public class BitcoinService {
         }
     }
 
+    public RestResp getTransaction(String orderId){
+        Transaction transaction = transactionDao.findByOrderId(orderId);
+        return RestResp.success(transaction);
+    }
 }

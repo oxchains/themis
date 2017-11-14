@@ -1,7 +1,7 @@
 package com.oxchains.themis.chat.websocket;
 
-import com.oxchains.themis.chat.auth.JwtService;
 import com.oxchains.themis.chat.service.KafkaService;
+import com.oxchains.themis.chat.service.MessageService;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -19,8 +19,10 @@ public class WebsocketChatServerInitializer extends
         ChannelInitializer<SocketChannel> {
 	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 	private KafkaService kafkaService;
-	public WebsocketChatServerInitializer(KafkaService kafkaService){
+	private MessageService messageService;
+	public WebsocketChatServerInitializer(KafkaService kafkaService,MessageService messageService){
 		this.kafkaService = kafkaService;
+		this.messageService = messageService;
 	}
 	@Override
     public void initChannel(SocketChannel ch) throws Exception {
@@ -30,7 +32,7 @@ public class WebsocketChatServerInitializer extends
 		pipeline.addLast(new ChunkedWriteHandler());
 		pipeline.addLast(new HttpRequestHandler("/ws"));
 		pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
-		pipeline.addLast(new TextWebSocketFrameHandler(kafkaService));
+		pipeline.addLast(new TextWebSocketFrameHandler(kafkaService,messageService));
 
     }
 }

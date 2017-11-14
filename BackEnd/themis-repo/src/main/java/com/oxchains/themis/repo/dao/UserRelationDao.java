@@ -36,4 +36,6 @@ public interface UserRelationDao extends CrudRepository<UserRelation,Long> {
      * @return
      */
     Page<UserRelation> findByToUserIdAndStatus(Long id, Integer status,Pageable pager);
+
+    UserRelation findByFromUserIdAndToUserId(Long fromUserId, Long toUserId);
 }

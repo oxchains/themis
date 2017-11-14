@@ -77,6 +77,7 @@ export function signupUser({ loginname, mobilephone, email, password }, callback
                 if(response.data.status == 1) {
                     callback();
                 } else {
+                    console.log(response.data.message)
                     callback(response.data.message);
                 }
             })

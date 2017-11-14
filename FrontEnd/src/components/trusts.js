@@ -15,9 +15,7 @@ class Trust extends Component {
             pageSize:8, //每页显示的条数8条
             current: 1, //默认的当前第一页
         }
-        this.handleTrustYou = this.handleTrustYou.bind(this)
-        this.handleYouTrust = this.handleYouTrust.bind(this)
-        this.handleShielded = this.handleShielded.bind(this)
+        this.handleIsTrust = this.handleIsTrust.bind(this)
         this.handleRow = this.handleRow.bind(this)
     }
     componentWillMount() {
@@ -28,35 +26,15 @@ class Trust extends Component {
         this.props.fetctTrusted({userId, type, pageNo, pageSize}, ()=>{})
     }
     onPagination(pageNum) {
-        console.log( "当前页数"+ pageNum) //当前页数
-
         this.state.current = pageNum
-
         const userId = localStorage.getItem("userId")
         const type = this.state.isTrusted
         const pageNo = this.state.current
         const pageSize = this.state.pageSize
         this.props.fetctTrusted({userId, type, pageNo, pageSize}, ()=>{})
     }
-    handleTrustYou(){
-        this.state.isTrusted = 1
-        // this.setState({isTrusted:1})
-        const userId = localStorage.getItem("userId")
-        const type = this.state.isTrusted
-        const pageNo = this.state.current
-        const pageSize = this.state.pageSize
-        this.props.fetctTrusted({userId, type, pageNo, pageSize}, ()=>{})
-    }
-    handleYouTrust(){
-        this.state.isTrusted = 2
-        const userId = localStorage.getItem("userId")
-        const type = this.state.isTrusted
-        const pageNo = this.state.current
-        const pageSize = this.state.pageSize
-        this.props.fetctTrusted({userId, type, pageNo, pageSize}, ()=>{})
-    }
-    handleShielded(){
-        this.state.isTrusted = 3
+    handleIsTrust(isTrusted){
+        this.state.isTrusted = isTrusted
         const userId = localStorage.getItem("userId")
         const type = this.state.isTrusted
         const pageNo = this.state.current
@@ -87,9 +65,9 @@ class Trust extends Component {
         return (
             <div className="">
                 <ul className=" titleul">
-                    <li className={` title-border ${this.state.isTrusted == 1 ? "ad-title-item active" :" ad-title-item"} `}   onClick={this.handleTrustYou}>信任您的人</li>
-                    <li className={` title-border ${this.state.isTrusted == 2 ? "ad-title-item active" :" ad-title-item "}`} onClick={this.handleYouTrust}>您信任的人</li>
-                    <li className={` title-border ${this.state.isTrusted == 3 ? "ad-title-item active" :" ad-title-item "}`} onClick={this.handleShielded}>被屏蔽的人</li>
+                    <li className={` title-border ${this.state.isTrusted == 1 ? "ad-title-item active" :" ad-title-item"} `}   onClick={() => this.handleIsTrust(1)}>信任您的人</li>
+                    <li className={` title-border ${this.state.isTrusted == 2 ? "ad-title-item active" :" ad-title-item "}`} onClick={() => this.handleIsTrust(2)}>您信任的人</li>
+                    <li className={` title-border ${this.state.isTrusted == 3 ? "ad-title-item active" :" ad-title-item "}`} onClick={() => this.handleIsTrust(3)}>被屏蔽的人</li>
                 </ul>
               <div>
                   <table className=" tableborderTrust">

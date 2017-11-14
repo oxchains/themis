@@ -1,9 +1,10 @@
 package com.oxchains.themis.notice.rest;
 
 import com.oxchains.themis.common.model.RestResp;
+import com.oxchains.themis.common.util.JsonUtil;
 import com.oxchains.themis.notice.common.NoticeConst;
-import com.oxchains.themis.notice.domain.Notice;
 import com.oxchains.themis.notice.service.NoticeService;
+import com.oxchains.themis.repo.entity.Notice;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -45,9 +46,6 @@ public class NoticeController {
 
     /**
      * 根据交易状态查询自己的公告
-     * @param userId    登录id
-     * @param noticeType    公告类型
-     * @param txStatus  交易状态
      */
     @GetMapping(value = "/query/me2")
     public RestResp queryMeAllNotice(@RequestParam Long userId, @RequestParam Integer pageNum, @RequestParam Long noticeType, @RequestParam Integer txStatus){
@@ -81,7 +79,7 @@ public class NoticeController {
     /**
      * 搜索购买公告
      */
-    @PostMapping(value = "search/page/buy")
+    @PostMapping(value = "/search/page/buy")
     public RestResp searchBuyPage(@RequestBody Notice notice){
         if (null == notice.getSearchType()) {
             notice.setSearchType(NoticeConst.SearchType.ONE.getStatus());
@@ -112,11 +110,26 @@ public class NoticeController {
 
     /**
      * 下架公告
-     * @param id    公告id
      */
     @GetMapping(value = "/stop")
     public RestResp stopNotice(@RequestParam Long id){
         return noticeService.stopNotice(id);
+    }
+
+    /**
+     * 根据Id查找广告
+     */
+    @GetMapping(value = "/query/noticeId/{id}")
+    public String queryNoticeOne(@PathVariable Long id){
+        return JsonUtil.toJson(noticeService.queryNoticeOne(id));
+    }
+
+    /**
+     * 修改广告交易状态
+     */
+    @GetMapping(value = "/update/txStatus/{id}/{txStatus}")
+    public String updateTxStatus(@PathVariable Long id, @PathVariable Integer txStatus){
+        return JsonUtil.toJson(noticeService.updateTxStatus(id, txStatus));
     }
 
     /**

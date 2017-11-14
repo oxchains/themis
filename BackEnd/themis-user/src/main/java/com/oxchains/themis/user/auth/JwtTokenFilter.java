@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  * @author aiet
  */
-@Component
+
 public class JwtTokenFilter implements Filter {
 
     private final JwtService jwtService;

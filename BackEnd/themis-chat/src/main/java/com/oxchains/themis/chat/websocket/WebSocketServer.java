@@ -1,4 +1,5 @@
 package com.oxchains.themis.chat.websocket;
+import com.oxchains.themis.chat.service.MessageService;
 import com.oxchains.themis.common.util.CustomThreadFactory;
 import com.oxchains.themis.chat.service.KafkaService;
 import io.netty.bootstrap.ServerBootstrap;
@@ -21,10 +22,12 @@ import static java.util.concurrent.Executors.newScheduledThreadPool;
 public class WebSocketServer implements Runnable{
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
     private KafkaService kafkaService;
+    private MessageService messageService;
     private Integer port;
-    public WebSocketServer(KafkaService kafkaService,Integer port){
+    public WebSocketServer(KafkaService kafkaService,Integer port, MessageService messageService){
         this.kafkaService = kafkaService;
         this.port = port;
+        this.messageService = messageService;
     }
     public WebSocketServer(KafkaService kafkaService){
         this.kafkaService = kafkaService;
@@ -46,7 +49,7 @@ public class WebSocketServer implements Runnable{
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
-                    .childHandler(new WebsocketChatServerInitializer(kafkaService))
+                    .childHandler(new WebsocketChatServerInitializer(kafkaService,messageService))
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
             ChannelFuture f = b.bind(port).sync();
