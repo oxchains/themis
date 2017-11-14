@@ -5,7 +5,6 @@ import com.oxchains.themis.arbitrate.entity.OrderArbitrate;
 import com.oxchains.themis.arbitrate.entity.Orders;
 import com.oxchains.themis.arbitrate.repo.NoticeRepo;
 import com.oxchains.themis.arbitrate.repo.OrderArbitrateRepo;
-import com.oxchains.themis.arbitrate.repo.UserRepo;
 import com.oxchains.themis.common.constant.message.MessageReadStatus;
 import com.oxchains.themis.common.constant.message.MessageType;
 import com.oxchains.themis.common.util.DateUtil;

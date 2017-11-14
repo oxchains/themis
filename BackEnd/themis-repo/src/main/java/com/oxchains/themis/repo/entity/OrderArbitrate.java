@@ -1,4 +1,4 @@
-package com.oxchains.themis.order.entity;
+package com.oxchains.themis.repo.entity;
 import lombok.Data;
 
 import javax.persistence.*;

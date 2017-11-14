@@ -1,4 +1,6 @@
 package com.oxchains.themis.arbitrate.entity;
+import lombok.Data;
+
 import javax.persistence.*;
 
 /**
@@ -7,6 +9,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "order_arbitrate")
+@Data
 public class OrderArbitrate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,62 +28,6 @@ public class OrderArbitrate {
         this.orderId = orderId;
         this.userId = userId;
         this.status = status;
-        this.userAuth = userAuth;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public String getBuyerAuth() {
-        return buyerAuth;
-    }
-
-    public void setBuyerAuth(String buyerAuth) {
-        this.buyerAuth = buyerAuth;
-    }
-
-    public String getSellerAuth() {
-        return sellerAuth;
-    }
-
-    public void setSellerAuth(String sellerAuth) {
-        this.sellerAuth = sellerAuth;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getUserAuth() {
-        return userAuth;
-    }
-
-    public void setUserAuth(String userAuth) {
         this.userAuth = userAuth;
     }
 }

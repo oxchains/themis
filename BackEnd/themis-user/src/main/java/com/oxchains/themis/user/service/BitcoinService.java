@@ -362,4 +362,8 @@ public class BitcoinService {
         }
     }
 
+    public RestResp getTransaction(String orderId){
+        Transaction transaction = transactionDao.findByOrderId(orderId);
+        return RestResp.success(transaction);
+    }
 }

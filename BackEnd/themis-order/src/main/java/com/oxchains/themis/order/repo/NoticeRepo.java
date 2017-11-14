@@ -12,6 +12,5 @@ import java.util.List;
  */
 @Repository
 public interface NoticeRepo extends CrudRepository<Notice,Long> {
-    List<Notice> findNoticeByUserIdAndTxStatusIsNot(Long id, Integer status);
     Notice findNoticeByUserIdAndTxStatusIsNotAndNoticeType(Long userid,Integer status,Long typeid);
 }

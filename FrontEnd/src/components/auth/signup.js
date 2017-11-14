@@ -117,6 +117,8 @@ class Signup extends Component {
         }
 
         var text = this.state.liked ? '发送验证码' : this.state.count + ' s 后重新发' ;
+        const url = this.state.error === '操作失败' ? "/signup":"/signin"
+
         return (
             <div>
                 <div className="login-box">
@@ -163,7 +165,7 @@ class Signup extends Component {
                     </ModalBody>
                     <ModalFooter>
                         <button className='btn btn-default' onClick={this.hideModal}>
-                            <a href="/signin" >关闭</a>
+                            <a  href={url}>关闭</a>
                         </button>
                     </ModalFooter>
                 </Modal>
@@ -191,6 +193,7 @@ class Signup extends Component {
 // };
 
 function mapStateToProps(state) {
+    // console.log(state.auth.all)
     return {
         all:state.auth.all
     };
