@@ -5,7 +5,6 @@ import com.oxchains.themis.arbitrate.entity.OrderEvidence;
 import com.oxchains.themis.arbitrate.entity.Orders;
 import com.oxchains.themis.arbitrate.entity.vo.OrdersInfo;
 import com.oxchains.themis.arbitrate.repo.*;
-import com.oxchains.themis.common.constant.*;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.util.JsonUtil;
 import com.oxchains.themis.repo.entity.Notice;
@@ -31,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-
 /**
  * Created by huohuo on 2017/10/25.
  * @author huohuo
