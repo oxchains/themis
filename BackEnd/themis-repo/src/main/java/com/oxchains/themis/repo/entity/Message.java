@@ -29,4 +29,11 @@ public class Message {
 
     @Transient
     private MessageText messageText;
+
+    public Message(Long receiverId, Long messageTextId, Integer readStatus, Integer messageType) {
+        this.receiverId = receiverId;
+        this.messageTextId = messageTextId;
+        this.readStatus = readStatus;
+        this.messageType = messageType;
+    }
 }

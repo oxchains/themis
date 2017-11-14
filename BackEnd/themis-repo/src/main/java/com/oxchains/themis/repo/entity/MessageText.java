@@ -37,15 +37,13 @@ public class MessageText {
     @Transient
     private String friendUsername;
 
-    public MessageText(Long senderId, String message, Integer messageType, Long userGroup, String postDate, String orderId, Long partnerId, String friendUsername) {
+    public MessageText(Long senderId, String message, Integer messageType, Long userGroup, String postDate, String orderId) {
         this.senderId = senderId;
         this.message = message;
         this.messageType = messageType;
         this.userGroup = userGroup;
         this.postDate = postDate;
         this.orderId = orderId;
-        this.partnerId = partnerId;
-        this.friendUsername = friendUsername;
     }
 
     public MessageText() {
