@@ -58,14 +58,34 @@ public interface ParamType {
     }
     enum OrderStatus {
         //订单状态
-        WAIT_CONFIRM(1L),WAIT_PAY(2L),WAIT_SEND(3L),WAIT_RECIVE(4L),WAIT_COMMENT(5L),FINISH(6L),CANCEL(7L),WAIT_REFUND(8L);
+        WAIT_CONFIRM(1L, "待确认"),
+        WAIT_PAY(2L, "待付款"),
+        WAIT_SEND(3L, "待收货"),
+        WAIT_RECIVE(4L, "待收货"),
+        WAIT_COMMENT(5L, "待评价"),
+        FINISH(6L, "已完成"),
+        CANCEL(7L, "已取消"),
+        WAIT_REFUND(8L, "退款中");
         private Long status;
-        OrderStatus(Long value) {
+        private String name;
+        OrderStatus(Long value, String name) {
             this.status = value;
+            this.name = name;
         }
         public Long getStatus(){
             return this.status;
-        };
+        }
+
+        public static String getName(Long status) {
+            if (status != null) {
+                for (OrderStatus item : OrderStatus.values()) {
+                    if (item.status == status.longValue()) {
+                        return item.name;
+                    }
+                }
+            }
+            return "";
+        }
     }
     enum RoleStatus {
         //角色

@@ -173,12 +173,16 @@ div {
     background: linear-gradient(to right,#27D7E9,#16F6EA);
     border:1px solid #16F6EA;
     box-shadow: 0 0 5px #16F6EA;
-
+}
+.help-block
+{
+    width: 80px!important;
+    margin-top:10px!important;
 }
 .form-login
 {
     display:block;
-    width:95%!important;
+    width:85%!important;
     height: 36px;
     margin-bottom: 15px;
     border-radius:3px;
@@ -264,7 +268,7 @@ div {
 .loginul
 {
     list-style: none;
-    width: 100%;
+    width: 90%;
     padding-left: 0;
     text-align: center;
 }
@@ -357,6 +361,7 @@ div {
 }
 .forgetpwd
 {
+    width: 85%;
     color: #444444;
     display: flex;
     justify-content: flex-end;
@@ -584,8 +589,8 @@ div {
 }
 .slectoption
 {
-  width: 20%;
-    height: 40px;
+    width: 22%;
+    height: 36px;
     background-color: #fff;
     color: grey;
     font-size: 14px;
@@ -724,6 +729,10 @@ div {
     text-align: center;
     font-weight: 400;
     font-size: 12px;
+}
+.tabletitle a,.tabletitle a:active,.tabletitle a:hover
+{
+    color: black;
 }
 .tablebuy
 {
@@ -972,6 +981,10 @@ div {
     display: inline-block;
     margin-right: 20px!important;
 }
+/*.loginlia:hover,.loginlia:active,.registerlia:hover,.loginlia:active*/
+/*{*/
+    /*background-color: #fff;*/
+/*}*/
 .pagecomponent
 {
     display: flex;
@@ -1214,8 +1227,6 @@ html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
 }
 .navbar-custom-menu,.main-header .navbar-right{
     float:right;
-    /*position: relative;*/
-    /*top:-45px;*/
 }
 .over-flow{
     overflow: auto; zoom: 1;
@@ -1283,6 +1294,7 @@ html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
 }
 .order-style>a:hover
 {
+    color: black!important;
     background-color: #fff!important;
 }
 .ordermenu-style

@@ -3,9 +3,7 @@
  */
 
 import React, { Component } from 'react';
-
 import { connect } from 'react-redux';
-import Header from  './common/header';
 import { fetctHome } from '../actions/releaseadvert'
 class Home extends Component {
     constructor(props) {
@@ -14,16 +12,11 @@ class Home extends Component {
         this.renderRows = this.renderRows.bind(this)
         this.renderArray = this.renderArray.bind(this)
     }
-
     componentWillMount(){
      this.props.fetctHome({})
     }
-
-
     renderRows(){
         const arraydata = this.props.all || []    //列表数组的数据
-
-        console.log(arraydata)
         return arraydata.map((item, index) => {
         return(
                 <div  key={index} className="list-border">
@@ -68,10 +61,7 @@ class Home extends Component {
             </div>
         )
     }
-
-
     render() {
-
         const ArrayLinks = [
             { src:"./public/img/买卖-.png", title:"快速买卖", content:"themis是一个不涉及第三方的P2P交易平台，交易过程方便快捷"},
             { src:"./public/img/安全.png", title:"安全交易", content:"冷存储、SSL、多重加密等银行级别安全技术，十年金融安全经验安全团队"},
@@ -105,8 +95,6 @@ class Home extends Component {
         );
     }
 }
-
-
 
 function mapStateToProps(state) {
     return {

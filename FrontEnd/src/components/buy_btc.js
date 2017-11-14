@@ -34,15 +34,9 @@ class Buybtc extends Component {
 
         this.props.fetctArray({}, ()=>{}); //选择框里的数据
     }
-
-
     onPagination(pageNum) {
-        // console.log( "当前页数"+ pageNum) //当前页数
-
         this.props.fetcAdvertSeach({pageNum}, ()=>{});
     }
-
-
     handleSeach(){
         const pageNum =  this.state.current
         const searchType = this.state.searchtype
@@ -57,7 +51,7 @@ class Buybtc extends Component {
             return(
                 <tr key={index} className="contentborder">
 
-                    <td className="tabletitle"><a href={`/otherInfodetail:${item.id}`}>{item.loginname}</a></td>
+                    <td className="tabletitle"><a href={`/otherInfodetail`}>{item.loginname}</a></td>
                     <td className="tabletitle">交易 {item.txNum} | 好评度 {item.goodPercent} | 信任 {item.trustNum}</td>
                     <td className="tabletitle"> {item.payType == 1 ?"现金":item.payType == 2 ?"转账":item.payType == 3 ?"支付宝":item.payType == 4 ? "微信":item.payType == 5 ? "Apple Pay":""} </td>
                     <td className="tabletitle"> {item.minTxLimit} - {item.maxTxLimit} CNY</td>

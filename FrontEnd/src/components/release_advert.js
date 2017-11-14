@@ -3,6 +3,7 @@
  */
 
 import React, { Component } from 'react';
+import { Field, reduxForm } from 'redux-form';
 import { Select } from 'antd';
 import { connect } from 'react-redux';
 import { releaseAdvert, fetctArray } from '../actions/releaseadvert'
@@ -58,12 +59,14 @@ class Releaseadvert extends Component {
             e.preventDefault()
             const userId= localStorage.getItem("userId")
             const loginname = localStorage.getItem("loginname")
+
             const premium = this.refs.premium.value;
             const price = this.refs.price.value;
             const minPrice = this.refs.minPrice.value;
             const minTxLimit = this.refs.minTxLimit.value;
             const maxTxLimit = this.refs.maxTxLimit.value;
             const noticeContent = this.refs.noticeContent.value;
+
             const noticeType = this.state.status;
             const location = this.state.country;
             const currency = this.state.currency;
@@ -117,12 +120,22 @@ class Releaseadvert extends Component {
             })
     }
 
+    // renderField({ input, label, type, icon, meta: { touched, error } }) {
+    //     return (
+    //         <div className={` ${touched && error ? 'has-error' : ''}`}>
+    //             <input {...input} placeholder={label} type={type} className="display slectoption "/>
+    //             {/*<span className={`glyphicon glyphicon-${icon} form-control-feedback`}></span>*/}
+    //             <div className="help-block ">{touched && error ? error : ''}</div>
+    //         </div>
+    //     )}
+
     render() {
+
+        // const { handleSubmit} = this.props;
 
         const premium = this.state.premium;
         const money = this.props.array.cnyDetailList || {};
         const price =  parseFloat(this.state.price || money.buy).toFixed(2)
-
         return (
             <div className="maincontent">
                 <h2 className="h2title">发布一个比特币交易广告</h2>
@@ -135,7 +148,7 @@ class Releaseadvert extends Component {
                     <p>您必须在交易广告或交易聊天中提供您的付款详细信息，发起交易后，价格会锁定，除非定价有明显错误。</p>
                     <p>所有交流必须在THEMIS上进行，请注意高风险有欺诈的付款方式。</p>
                 </div>
-                <form action="" method="post" onSubmit={this.handleFormSubmit}>
+                <form action="" method="post" onSubmit={this.handleFormSubmit.bind(this)}>
                     <h4 className="h4title">交易类型</h4>
                     <h5 className="h3title">*选择广告类型</h5>
                     <span className="tipspan"> &nbsp;&nbsp;您想要创建什么样的交易广告？如果您希望出售比特币,请确保您在THEMIS的钱包中有比特币。</span>
@@ -158,25 +171,34 @@ class Releaseadvert extends Component {
                     </Select>
                     <h5 className="h3title clear">*溢价: </h5>
                     <span  className="tipspan">基于市场价的溢出比例,市场价是根据部分大型交易所实时价格得出的,确保您的报价趋于一个相对合理的范围,比如当前价格为7000,溢价比例为10%,那么价格为7700。</span>
+
                     <input type="text" placeholder="%" className="display slectoption" onChange={this.handelChange} value={premium} ref="premium" />
+                    {/*<Field name="premium" component={this.renderField} onChange={this.handelChange} value={premium}  type="text"  label="%"  />*/}
 
                     <h5 className="h3title clear">*价格: </h5>
                     <span  className="tipspan">基于溢价比例得出的报价,10分钟更新一次。</span>
+
                     <input type="text" placeholder="CNY" className="display slectoption" onChange={this.handelChange} value= {price} disabled ref="price" />
+                    {/*<Field name="price" component={this.renderField} onChange={this.handelChange} value={price}  type="text"  label="CNY"  />*/}
 
                     <h5 className="h3title clear">*最低价: (选填)</h5>
                     <span  className="tipspan">最低可成交的价格,可帮助您在价格剧烈波动时保持稳定的盈利,比如最低价为12000,市场价处于12000以下时,您的广告将依旧以12000的价格展示出来。</span>
 
                     <input type="text" placeholder="CNY" className="display slectoption" ref="minPrice" />
+                    {/*<Field name="minPrice" component={this.renderField} type="text"  label="CNY"  />*/}
 
                     <h5 className="h3title clear">*最小限额: </h5>
                     <span  className="tipspan">一次交易的最低交易限制。</span>
 
                     <input type="text" placeholder="请输入最小限额 CNY" className="display slectoption" ref="minTxLimit" />
+                    {/*<Field name="minTxLimit" component={this.renderField} type="text"  label="请输入最小限额 CNY"  />*/}
 
                     <h5 className="h3title clear">*最大限额: </h5>
                     <span  className="tipspan">一次交易中的最大交易限制,您的钱包余额也会影响最大量的设置。</span>
+
                     <input type="text" placeholder="请输入最大限额 CNY" className="display slectoption" ref="maxTxLimit" />
+                    {/*<Field name="maxTxLimit" component={this.renderField} type="text"  label="请输入最大限额 CNY"  />*/}
+
 
                     <h5 className="h3title clear">*收款方式:</h5>
                     <span  className="tipspan"> 您希望交易付款的货币类型。</span>
@@ -209,8 +231,29 @@ class Releaseadvert extends Component {
     }
 }
 
+// const validate = values => {
+//     const errors = {};
+//
+//     if(!values.premium) {
+//         errors.premium = ' *不能为空';
+//     }
+//
+//     if(!values.price) {
+//         errors.price = ' *不能为空';
+//     }
+//
+//     if(!values.minTxLimit) {
+//         errors.minTxLimit = ' *不能为空';
+//     }
+//     if(!values.maxTxLimit) {
+//         errors.maxTxLimit = ' *不能为空';
+//     }
+//
+//     return errors
+// };
 
 function mapStateToProps(state) {
+    // console.log(state.advert.array)
     return {
         authenticated: state.auth.authenticated,
         errorMessage: state.auth.error,
@@ -218,5 +261,10 @@ function mapStateToProps(state) {
         array:state.advert.array
     };
 }
+
+const reduxSignupForm = reduxForm({
+    form: 'SignForm',
+    // validate
+})(Releaseadvert);
 
 export default connect(mapStateToProps, {releaseAdvert, fetctArray})(Releaseadvert);
