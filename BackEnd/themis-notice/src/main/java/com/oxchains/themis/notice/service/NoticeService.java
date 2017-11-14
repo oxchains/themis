@@ -1,5 +1,7 @@
 package com.oxchains.themis.notice.service;
 
+import com.oxchains.themis.common.constant.notice.NoticeConstants;
+import com.oxchains.themis.common.constant.notice.NoticeTxStatus;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.util.ArithmeticUtils;
 import com.oxchains.themis.notice.common.NoticeConst;
@@ -60,14 +62,14 @@ public class NoticeService {
 
             // 选填项(最低价)判断-11.1中国又禁止一部分btc相关平台，此价格获取失败
             List<BTCTicker> btcTickerList = btcTickerDao.findBySymbol("btccny");
-            if (btcTickerList.size() != NoticeConst.ListSize.ZERO.getValue()){
+            if (btcTickerList.size() != 0){
                 for (BTCTicker btcTicker : btcTickerList) {
                     Double low = btcTicker.getLow().doubleValue();
                     Double minPrice = notice.getMinPrice().doubleValue();
                     if (null == notice.getMinPrice()){
                         notice.setMinPrice(btcTicker.getLow());
                     }else { // 市场价低于定义的最低价，那么价格就是自己定义的最低价
-                        if (ArithmeticUtils.minus(low, minPrice) < NoticeConst.Constant.ZERO.getValue()) {
+                        if (ArithmeticUtils.minus(low, minPrice) < 0) {
                             notice.setPrice(notice.getMinPrice());
                         }
                     }
@@ -81,7 +83,7 @@ public class NoticeService {
                     }else {
                         Double low = Double.valueOf(cnyDetail.getLast());
                         Double minPrice = notice.getMinPrice().doubleValue();
-                        if (ArithmeticUtils.minus(low, minPrice) < NoticeConst.Constant.ZERO.getValue()){
+                        if (ArithmeticUtils.minus(low, minPrice) < 0){
                             notice.setPrice(notice.getMinPrice());
                         }
                     }
@@ -91,17 +93,17 @@ public class NoticeService {
             }
 
             // 溢价判断
-            if (notice.getPremium() < NoticeConst.Constant.ZERO.getValue() && notice.getPremium() > NoticeConst.Constant.TEN.getValue()) {
+            if (notice.getPremium() < 0 && notice.getPremium() > NoticeConstants.TEN) {
                 return RestResp.fail("请按规定输入溢价（0~10）");
             }
 
             // 两种不能发布公告得判断
-            List<Notice> noticeListUnDone = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(notice.getUserId(), notice.getNoticeType(), NoticeConst.TxStatus.ZERO.getStatus());
-            if (noticeListUnDone.size() != NoticeConst.ListSize.ZERO.getValue()){
+            List<Notice> noticeListUnDone = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(notice.getUserId(), notice.getNoticeType(), NoticeTxStatus.UNDONE_TX);
+            if (noticeListUnDone.size() != 0){
                 return RestResp.fail("已经有一条此类型公告");
             }
-            List<Notice> noticeListDoing = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(notice.getUserId(), notice.getNoticeType(), NoticeConst.TxStatus.ONE.getStatus());
-            if (noticeListDoing.size() != NoticeConst.ListSize.ZERO.getValue()){
+            List<Notice> noticeListDoing = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(notice.getUserId(), notice.getNoticeType(), NoticeTxStatus.DOING_TX);
+            if (noticeListDoing.size() != 0){
                 return RestResp.fail("已经有一条此类型公告且正在交易");
             }
 
@@ -119,38 +121,38 @@ public class NoticeService {
     public RestResp queryRandomNotice(){
         try {
             List<Notice> partList = new ArrayList<>();
-            List<Notice> buyNoticeList = noticeDao.findByNoticeTypeAndTxStatus(NoticeConst.NoticeType.BUY.getStatus(), NoticeConst.TxStatus.ZERO.getStatus());
-            List<Notice> sellNoticeList = noticeDao.findByNoticeTypeAndTxStatus(NoticeConst.NoticeType.SELL.getStatus(), NoticeConst.TxStatus.ZERO.getStatus());
+            List<Notice> buyNoticeList = noticeDao.findByNoticeTypeAndTxStatus(NoticeConst.NoticeType.BUY.getStatus(), NoticeTxStatus.UNDONE_TX);
+            List<Notice> sellNoticeList = noticeDao.findByNoticeTypeAndTxStatus(NoticeConst.NoticeType.SELL.getStatus(), NoticeTxStatus.UNDONE_TX);
 
-            if (buyNoticeList.size() == NoticeConst.ListSize.ZERO.getValue() && sellNoticeList.size() == NoticeConst.ListSize.ZERO.getValue()){
+            if (buyNoticeList.size() == 0 && sellNoticeList.size() == 0){
                 return RestResp.success("没有数据", new ArrayList<>());
             }
-            if (buyNoticeList.size() > NoticeConst.ListSize.TWO.getValue() && sellNoticeList.size() > NoticeConst.ListSize.TWO.getValue()){
+            if (buyNoticeList.size() > NoticeConstants.TWO && sellNoticeList.size() > NoticeConstants.TWO){
                 int buySize = getRandom(buyNoticeList);
                 int sellSize = getRandom(sellNoticeList);
                 List<Notice> subBuyList = getSubList(buyNoticeList, buySize);
                 List<Notice> subSellList = getSubList(sellNoticeList, sellSize);
-                for (int i = NoticeConst.Constant.ZERO.getValue(); i < subBuyList.size(); i++){ setUserTxDetail(subBuyList, i);}
-                for (int i = NoticeConst.Constant.ZERO.getValue(); i < subSellList.size(); i++){setUserTxDetail(subSellList, i);}
+                for (int i = 0; i < subBuyList.size(); i++){ setUserTxDetail(subBuyList, i);}
+                for (int i = 0; i < subSellList.size(); i++){setUserTxDetail(subSellList, i);}
                 partList.addAll(subBuyList);
                 partList.addAll(subSellList);
-            }else if (buyNoticeList.size() <= NoticeConst.ListSize.TWO.getValue() && sellNoticeList.size() > NoticeConst.ListSize.TWO.getValue()){
+            }else if (buyNoticeList.size() <= NoticeConstants.TWO && sellNoticeList.size() > NoticeConstants.TWO){
                 int sellSize = getRandom(sellNoticeList);
                 List<Notice> subSellList = getSubList(sellNoticeList, sellSize);
-                for (int i = NoticeConst.Constant.ZERO.getValue(); i < buyNoticeList.size(); i++){setUserTxDetail(buyNoticeList, i);}
-                for (int i = NoticeConst.Constant.ZERO.getValue(); i < subSellList.size(); i++){setUserTxDetail(subSellList, i);}
+                for (int i = 0; i < buyNoticeList.size(); i++){setUserTxDetail(buyNoticeList, i);}
+                for (int i = 0; i < subSellList.size(); i++){setUserTxDetail(subSellList, i);}
                 partList.addAll(buyNoticeList);
                 partList.addAll(subSellList);
-            }else if (buyNoticeList.size() > NoticeConst.ListSize.TWO.getValue() && sellNoticeList.size() <= NoticeConst.ListSize.TWO.getValue()){
+            }else if (buyNoticeList.size() > NoticeConstants.TWO && sellNoticeList.size() <= NoticeConstants.TWO){
                 int buySize = getRandom(buyNoticeList);
                 List<Notice> subBuyList = getSubList(buyNoticeList, buySize);
-                for (int i = NoticeConst.Constant.ZERO.getValue(); i < subBuyList.size(); i++){setUserTxDetail(subBuyList, i);}
-                for (int i = NoticeConst.Constant.ZERO.getValue(); i < sellNoticeList.size(); i++){setUserTxDetail(sellNoticeList, i);}
+                for (int i = 0; i < subBuyList.size(); i++){setUserTxDetail(subBuyList, i);}
+                for (int i = 0; i < sellNoticeList.size(); i++){setUserTxDetail(sellNoticeList, i);}
                 partList.addAll(subBuyList);
                 partList.addAll(sellNoticeList);
             }else {
-                for (int i = NoticeConst.Constant.ZERO.getValue(); i < buyNoticeList.size(); i++){setUserTxDetail(buyNoticeList, i);}
-                for (int i = NoticeConst.Constant.ZERO.getValue(); i < sellNoticeList.size(); i++){setUserTxDetail(sellNoticeList, i);}
+                for (int i = 0; i < buyNoticeList.size(); i++){setUserTxDetail(buyNoticeList, i);}
+                for (int i = 0; i < sellNoticeList.size(); i++){setUserTxDetail(sellNoticeList, i);}
                 partList.addAll(buyNoticeList);
                 partList.addAll(sellNoticeList);
             }
@@ -181,30 +183,30 @@ public class NoticeService {
     public RestResp queryMeAllNotice(Long userId, Integer pageNum, Long noticeType, Integer txStatus){
         try {
             List<Notice> resultList = new ArrayList<>();
-            Pageable pageable = buildPageRequest(pageNum, NoticeConst.Constant.FIVE.getValue(), "auto");
+            Pageable pageable = new PageRequest(pageNum - 1, 5, new Sort(Sort.Direction.ASC, "createTime"));
             Page<Notice> page = null;
-            if (txStatus.equals(NoticeConst.TxStatus.TWO.getStatus())){
-                page = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(userId, noticeType, NoticeConst.TxStatus.TWO.getStatus(), pageable);
+            if (txStatus.equals(NoticeTxStatus.DONE_TX)){
+                page = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(userId, noticeType, NoticeTxStatus.DONE_TX, pageable);
                 Iterator<Notice> it = page.iterator();
                 while (it.hasNext()){
                     resultList.add(it.next());
                 }
             }else {
-                List<Notice> unDoneNoticeList = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(userId, noticeType, NoticeConst.TxStatus.ZERO.getStatus());
-                List<Notice> doingNoticeList = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(userId, noticeType, NoticeConst.TxStatus.ONE.getStatus());
+                List<Notice> unDoneNoticeList = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(userId, noticeType, NoticeTxStatus.UNDONE_TX);
+                List<Notice> doingNoticeList = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(userId, noticeType, NoticeTxStatus.DOING_TX);
                 resultList.addAll(unDoneNoticeList);
                 resultList.addAll(doingNoticeList);
             }
             PageDTO<Notice> pageDTO = new PageDTO<>();
             if (page == null){
-                pageDTO.setCurrentPage(NoticeConst.Constant.ONE.getValue());
-                pageDTO.setPageSize(NoticeConst.Constant.FIVE.getValue());
+                pageDTO.setCurrentPage(1);
+                pageDTO.setPageSize(5);
                 pageDTO.setRowCount((long)resultList.size());
-                pageDTO.setTotalPage(NoticeConst.Constant.ONE.getValue());
+                pageDTO.setTotalPage(1);
                 pageDTO.setPageList(resultList);
             }else {
                 pageDTO.setCurrentPage(pageNum);
-                pageDTO.setPageSize(NoticeConst.Constant.FIVE.getValue());
+                pageDTO.setPageSize(5);
                 pageDTO.setRowCount(page.getTotalElements());
                 pageDTO.setTotalPage(page.getTotalPages());
                 pageDTO.setPageList(resultList);
@@ -248,13 +250,13 @@ public class NoticeService {
             BTCResult btcResult = null;
             BTCMarket btcMarket = null;
             BTCTicker btcTicker = null;
-            for (int i = NoticeConst.Constant.ZERO.getValue(); i < btcResultList.size(); i++){
+            for (int i = 0; i < btcResultList.size(); i++){
                 btcResult = btcResultList.get(i);
             }
-            for (int i = NoticeConst.Constant.ZERO.getValue(); i < btcMarketList.size(); i++){
+            for (int i = 0; i < btcMarketList.size(); i++){
                 btcMarket = btcMarketList.get(i);
             }
-            for (int i = NoticeConst.Constant.ZERO.getValue(); i < btcTickerList.size(); i++){
+            for (int i = 0; i < btcTickerList.size(); i++){
                 btcTicker = btcTickerList.get(i);
             }
             btcMarket.setTicker(btcTicker);
@@ -290,26 +292,26 @@ public class NoticeService {
             Long noticeType = NoticeConst.NoticeType.SELL.getStatus();
             Integer pageNum = notice.getPageNum();
 
-            Pageable pageable = buildPageRequest(pageNum, NoticeConst.Constant.FIVE.getValue(), "auto");
+            Pageable pageable = new PageRequest(pageNum - 1, 5, new Sort(Sort.Direction.ASC, "createTime"));
 
             // 对所在地，货币类型，支付方式判断，可为null
             Page<Notice> page = null;
             if (null != location && null != currency && null != payType) {
-                page = noticeDao.findByLocationAndCurrencyAndPayTypeAndNoticeTypeAndTxStatus(location, currency, payType, noticeType, NoticeConst.TxStatus.ZERO.getStatus(), pageable);
+                page = noticeDao.findByLocationAndCurrencyAndPayTypeAndNoticeTypeAndTxStatus(location, currency, payType, noticeType, NoticeTxStatus.UNDONE_TX, pageable);
             }else if (null != location && null != currency && null == payType) {
-                page = noticeDao.findByLocationAndCurrencyAndNoticeTypeAndTxStatus(location, currency, noticeType, NoticeConst.TxStatus.ZERO.getStatus(), pageable);
+                page = noticeDao.findByLocationAndCurrencyAndNoticeTypeAndTxStatus(location, currency, noticeType, NoticeTxStatus.UNDONE_TX, pageable);
             } else if (null != location && null == currency && null != payType) {
-                page = noticeDao.findByLocationAndPayTypeAndNoticeTypeAndTxStatus(location, payType, noticeType, NoticeConst.TxStatus.ZERO.getStatus(), pageable);
+                page = noticeDao.findByLocationAndPayTypeAndNoticeTypeAndTxStatus(location, payType, noticeType, NoticeTxStatus.UNDONE_TX, pageable);
             } else if (null == location && null != currency && null != payType) {
-                page = noticeDao.findByCurrencyAndPayTypeAndNoticeTypeAndTxStatus(currency, payType, noticeType, NoticeConst.TxStatus.ZERO.getStatus(), pageable);
+                page = noticeDao.findByCurrencyAndPayTypeAndNoticeTypeAndTxStatus(currency, payType, noticeType, NoticeTxStatus.UNDONE_TX, pageable);
             } else if (null != location && null == currency && null == payType) {
-                page = noticeDao.findByLocationAndNoticeTypeAndTxStatus(location, noticeType, NoticeConst.TxStatus.ZERO.getStatus(), pageable);
+                page = noticeDao.findByLocationAndNoticeTypeAndTxStatus(location, noticeType, NoticeTxStatus.UNDONE_TX, pageable);
             } else if (null == location && null == currency && null != payType) {
-                page = noticeDao.findByPayTypeAndNoticeTypeAndTxStatus(payType, noticeType, NoticeConst.TxStatus.ZERO.getStatus(), pageable);
+                page = noticeDao.findByPayTypeAndNoticeTypeAndTxStatus(payType, noticeType, NoticeTxStatus.UNDONE_TX, pageable);
             } else if (null == location && null != currency && null != payType) {
-                page = noticeDao.findByCurrencyAndNoticeTypeAndTxStatus(currency, noticeType, NoticeConst.TxStatus.ZERO.getStatus(), pageable);
+                page = noticeDao.findByCurrencyAndNoticeTypeAndTxStatus(currency, noticeType, NoticeTxStatus.UNDONE_TX, pageable);
             } else if (null == location && null == currency && null == payType) {
-                page = noticeDao.findByNoticeTypeAndTxStatus(noticeType, NoticeConst.TxStatus.ZERO.getStatus(), pageable);
+                page = noticeDao.findByNoticeTypeAndTxStatus(noticeType, NoticeTxStatus.UNDONE_TX, pageable);
             }else {
                 return RestResp.fail("操作失败");
             }
@@ -321,19 +323,19 @@ public class NoticeService {
             }
 
             // 将好评度等值添加到list中返回
-            for (int i = NoticeConst.Constant.ZERO.getValue(); i < resultList.size(); i++){
+            for (int i = 0; i < resultList.size(); i++){
                 Long userId = resultList.get(i).getUserId();
                 UserTxDetail utdInfo = userTxDetailDao.findOne(userId);
                 if (utdInfo == null){
-                    resultList.get(i).setTxNum(NoticeConst.Constant.ZERO.getValue());
-                    resultList.get(i).setTrustNum(NoticeConst.Constant.ZERO.getValue());
-                    resultList.get(i).setGoodPercent(NoticeConst.Constant.ZERO.getValue());
+                    resultList.get(i).setTxNum(0);
+                    resultList.get(i).setTrustNum(0);
+                    resultList.get(i).setGoodPercent(0);
                 }else {
                     resultList.get(i).setTxNum(utdInfo.getTxNum());
                     resultList.get(i).setTrustNum(utdInfo.getBelieveNum());
                     double descTotal = ArithmeticUtils.plus(utdInfo.getGoodDesc(), utdInfo.getBadDesc());
-                    double goodP = ArithmeticUtils.divide(utdInfo.getGoodDesc(), descTotal, NoticeConst.Constant.TWO.getValue());
-                    resultList.get(i).setGoodPercent((int)(goodP * NoticeConst.Constant.HUNDRED.getValue()));
+                    double goodP = ArithmeticUtils.divide(utdInfo.getGoodDesc(), descTotal, 2);
+                    resultList.get(i).setGoodPercent((int)(goodP * 100));
                 }
 
             }
@@ -341,7 +343,7 @@ public class NoticeService {
             // 将page相关参数设置到DTO中返回
             PageDTO<Notice> pageDTO = new PageDTO<>();
             pageDTO.setCurrentPage(pageNum);
-            pageDTO.setPageSize(NoticeConst.Constant.FIVE.getValue());
+            pageDTO.setPageSize(5);
             pageDTO.setRowCount(page.getTotalElements());
             pageDTO.setTotalPage(page.getTotalPages());
             pageDTO.setPageList(resultList);
@@ -361,25 +363,25 @@ public class NoticeService {
             Long noticeType = NoticeConst.NoticeType.BUY.getStatus();
             Integer pageNum = notice.getPageNum();
 
-            Pageable pageable = buildPageRequest(pageNum, NoticeConst.Constant.FIVE.getValue(), "createTime");
+            Pageable pageable = new PageRequest(pageNum - 1, 5, new Sort(Sort.Direction.ASC, "createTime"));
 
             Page<Notice> page = null;
             if (null != location && null != currency && null != payType) {
-                page = noticeDao.findByLocationAndCurrencyAndPayTypeAndNoticeTypeAndTxStatus(location, currency, payType, noticeType, NoticeConst.TxStatus.ZERO.getStatus(), pageable);
+                page = noticeDao.findByLocationAndCurrencyAndPayTypeAndNoticeTypeAndTxStatus(location, currency, payType, noticeType, NoticeTxStatus.UNDONE_TX, pageable);
             }else if (null != location && null != currency && null == payType) {
-                page = noticeDao.findByLocationAndCurrencyAndNoticeTypeAndTxStatus(location, currency, noticeType, NoticeConst.TxStatus.ZERO.getStatus(), pageable);
+                page = noticeDao.findByLocationAndCurrencyAndNoticeTypeAndTxStatus(location, currency, noticeType, NoticeTxStatus.UNDONE_TX, pageable);
             } else if (null != location && null == currency && null != payType) {
-                page = noticeDao.findByLocationAndPayTypeAndNoticeTypeAndTxStatus(location, payType, noticeType, NoticeConst.TxStatus.ZERO.getStatus(), pageable);
+                page = noticeDao.findByLocationAndPayTypeAndNoticeTypeAndTxStatus(location, payType, noticeType, NoticeTxStatus.UNDONE_TX, pageable);
             } else if (null == location && null != currency && null != payType) {
-                page = noticeDao.findByCurrencyAndPayTypeAndNoticeTypeAndTxStatus(currency, payType, noticeType, NoticeConst.TxStatus.ZERO.getStatus(), pageable);
+                page = noticeDao.findByCurrencyAndPayTypeAndNoticeTypeAndTxStatus(currency, payType, noticeType, NoticeTxStatus.UNDONE_TX, pageable);
             } else if (null != location && null == currency && null == payType) {
-                page = noticeDao.findByLocationAndNoticeTypeAndTxStatus(location, noticeType, NoticeConst.TxStatus.ZERO.getStatus(), pageable);
+                page = noticeDao.findByLocationAndNoticeTypeAndTxStatus(location, noticeType, NoticeTxStatus.UNDONE_TX, pageable);
             } else if (null == location && null == currency && null != payType) {
-                page = noticeDao.findByPayTypeAndNoticeTypeAndTxStatus(payType, noticeType, NoticeConst.TxStatus.ZERO.getStatus(), pageable);
+                page = noticeDao.findByPayTypeAndNoticeTypeAndTxStatus(payType, noticeType, NoticeTxStatus.UNDONE_TX, pageable);
             } else if (null == location && null != currency && null != payType) {
-                page = noticeDao.findByCurrencyAndNoticeTypeAndTxStatus(currency, noticeType, NoticeConst.TxStatus.ZERO.getStatus(), pageable);
+                page = noticeDao.findByCurrencyAndNoticeTypeAndTxStatus(currency, noticeType, NoticeTxStatus.UNDONE_TX, pageable);
             } else if (null == location && null == currency && null == payType) {
-                page = noticeDao.findByNoticeTypeAndTxStatus(noticeType, NoticeConst.TxStatus.ZERO.getStatus(), pageable);
+                page = noticeDao.findByNoticeTypeAndTxStatus(noticeType, NoticeTxStatus.UNDONE_TX, pageable);
             }else {
                 return RestResp.fail("操作失败");
             }
@@ -391,26 +393,26 @@ public class NoticeService {
             }
 
             // 将好评度等值添加到list中返回
-            for (int i = NoticeConst.ListSize.ZERO.getValue(); i < resultList.size(); i++){
+            for (int i = 0; i < resultList.size(); i++){
                 Long userId = resultList.get(i).getUserId();
                 UserTxDetail utdInfo = userTxDetailDao.findOne(userId);
                 if (null == utdInfo){
-                    resultList.get(i).setTxNum(NoticeConst.Constant.ZERO.getValue());
-                    resultList.get(i).setTrustNum(NoticeConst.Constant.ZERO.getValue());
-                    resultList.get(i).setGoodPercent(NoticeConst.Constant.ZERO.getValue());
+                    resultList.get(i).setTxNum(0);
+                    resultList.get(i).setTrustNum(0);
+                    resultList.get(i).setGoodPercent(0);
                 }else {
                     resultList.get(i).setTxNum(utdInfo.getTxNum());
                     resultList.get(i).setTrustNum(utdInfo.getBelieveNum());
                     double descTotal = ArithmeticUtils.plus(utdInfo.getGoodDesc(), utdInfo.getBadDesc());
-                    double goodP = ArithmeticUtils.divide(utdInfo.getGoodDesc(), descTotal,NoticeConst.Constant.TWO.getValue());
-                    resultList.get(i).setGoodPercent((int)(goodP * NoticeConst.Constant.HUNDRED.getValue()));
+                    double goodP = ArithmeticUtils.divide(utdInfo.getGoodDesc(), descTotal, 2);
+                    resultList.get(i).setGoodPercent((int)(goodP * 100));
                 }
 
             }
 
             PageDTO<Notice> pageDTO = new PageDTO<>();
             pageDTO.setCurrentPage(pageNum);
-            pageDTO.setPageSize(NoticeConst.Constant.FIVE.getValue());
+            pageDTO.setPageSize(5);
             pageDTO.setRowCount(page.getTotalElements());
             pageDTO.setTotalPage(page.getTotalPages());
             pageDTO.setPageList(resultList);
@@ -428,18 +430,18 @@ public class NoticeService {
             if (null == noticeInfo) {
                 return RestResp.fail("操作失败");
             }
-            if (noticeInfo.getTxStatus().equals(NoticeConst.TxStatus.TWO.getStatus())) {
+            if (noticeInfo.getTxStatus().equals(NoticeTxStatus.DONE_TX)) {
                 return RestResp.fail("公告已下架");
             }
-            if (noticeInfo.getTxStatus().equals(NoticeConst.TxStatus.ONE.getStatus())) {
+            if (noticeInfo.getTxStatus().equals(NoticeTxStatus.DOING_TX)) {
                 return RestResp.fail("交易中公告，禁止下架");
             }
             List<Notice> noticeList = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(noticeInfo.getUserId(), noticeInfo.getNoticeType(), noticeInfo.getTxStatus());
-            if (noticeList.size() == NoticeConst.ListSize.ZERO.getValue()){
+            if (noticeList.size() == 0){
                 return RestResp.fail("操作失败");
             }
             for (Notice n : noticeList) {
-                n.setTxStatus(NoticeConst.TxStatus.TWO.getStatus());
+                n.setTxStatus(NoticeTxStatus.DONE_TX);
                 noticeDao.save(n);
             }
             return RestResp.success("操作成功");
@@ -508,14 +510,14 @@ public class NoticeService {
      * 根据list大小-2获取一个随机数
      */
     private int getRandom(List list){
-        return new Random().nextInt(list.size() - NoticeConst.ListSize.TWO.getValue());
+        return new Random().nextInt(list.size() - 2);
     }
 
     /**
      * 对list截取，获取size为2的新list
      */
     private List getSubList(List list, int size){
-        return list.subList(size, size + NoticeConst.ListSize.TWO.getValue());
+        return list.subList(size, size + 2);
     }
 
     /**
@@ -525,29 +527,18 @@ public class NoticeService {
         Long userId = subList.get(i).getUserId();
         UserTxDetail userTxDetail = userTxDetailDao.findOne(userId);
         if (null == userTxDetail){
-            subList.get(i).setTxNum(NoticeConst.Constant.ZERO.getValue());
-            subList.get(i).setTrustNum(NoticeConst.Constant.ZERO.getValue());
-            subList.get(i).setTrustPercent(NoticeConst.Constant.ZERO.getValue());
+            subList.get(i).setTxNum(0);
+            subList.get(i).setTrustNum(0);
+            subList.get(i).setTrustPercent(0);
         }else {
             subList.get(i).setTxNum(userTxDetail.getTxNum());
             subList.get(i).setTrustNum(userTxDetail.getBelieveNum());
-            double trustP = ArithmeticUtils.divide(userTxDetail.getBelieveNum(), userTxDetail.getTxNum(), NoticeConst.Constant.TWO.getValue());
-            subList.get(i).setTrustPercent((int) ArithmeticUtils.multiply(trustP, NoticeConst.Constant.HUNDRED.getValue(), NoticeConst.Constant.ZERO.getValue()));
+            double trustP = ArithmeticUtils.divide(userTxDetail.getBelieveNum(), userTxDetail.getTxNum(), 2);
+            subList.get(i).setTrustPercent((int) ArithmeticUtils.multiply(trustP, 100, 0));
         }
 
     }
 
-    /**
-     * 创建分页请求
-     */
-    private PageRequest buildPageRequest(Integer pageNum, Integer pageSize, String sortType){
-        Sort sort = null;
-        if("auto".equals(sortType)){
-            sort = new Sort(Sort.Direction.DESC, "id");
-        } else if ("createTime".equals(sortType)){
-            sort = new Sort(Sort.Direction.ASC, "createTime");
-        }
-        return new PageRequest(pageNum - NoticeConst.Constant.ONE.getValue(), pageSize, sort);
-    }
+
 
 }

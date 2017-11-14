@@ -27,60 +27,6 @@ public interface NoticeConst {
     }
 
     /**
-     * 集合大小
-     */
-    enum ListSize{
-        ZERO(0, "0"), ONE(1, "1"), TWO(2, "2");
-        private Integer value;
-        private String name;
-        ListSize(Integer value, String name) {
-            this.value = value;
-            this.name = name;
-        }
-        public String getName() {
-            return name;
-        }
-        public Integer getValue() {
-            return value;
-        }
-    }
-
-    /**
-     * 交易状态
-     */
-    enum TxStatus{
-        ZERO(0, "未交易"), ONE(1, "交易中"), TWO(2, "交易完成");
-        private Integer status;
-        private String name;
-        TxStatus(Integer status, String name) {
-            this.status = status;
-            this.name = name;
-        }
-        public Integer getStatus() {
-            return status;
-        }
-        public String getName() {
-            return name;
-        }
-    }
-
-    /**
-     * 用于判断的常量
-     */
-    enum Constant{
-        ZERO(0), ONE(1), TWO(2), FIVE(5), TEN(10), HUNDRED(100);
-        private Integer value;
-
-        Constant(Integer value) {
-            this.value = value;
-        }
-
-        public Integer getValue() {
-            return value;
-        }
-    }
-
-    /**
      * 搜索类型
      */
     enum SearchType{
