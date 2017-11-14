@@ -404,7 +404,7 @@ div {
 }
 .orderType ul li .orderTypeBar{
     display: inline-block;
-    border-bottom:1px solid gainsboro;
+    border-bottom:1px solid #2ad0e9;
     color: black;
 }
 .signinWay ul li .signinTypeBar{
@@ -937,7 +937,6 @@ div {
     margin-top: 50px;
 }
 html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
-<<<<<<< HEAD
 /*table样式*/
 .table-bordered {  border: 1px solid #ddd; }
 .table { width: 100%;  font-size: 14px ;margin-bottom:0;}
@@ -956,8 +955,6 @@ table { border-spacing: 0;  border-collapse: collapse; }
 .paginationDiv .num:hover {background-color: #ddd; border-color: #ddd; color: #1a1a1a }
 .paginationDiv .ellipsis {width: 42px; height: 30px; color: #707070; line-height: 30px }
 .paginationDiv input {width: 44px; height: 24px; border: 1px solid #eee; text-align: center }
-=======
->>>>>>> ab2b8895190234d5d079ff7dd9dc8b7ac23b390b
 
 .maininfo
 {
@@ -1458,12 +1455,9 @@ table { border-spacing: 0;  border-collapse: collapse; }
 {
     border:none!important;
 }
-<<<<<<< HEAD
-=======
 .ant-btn-lg{
     /*line-height: 30px !important;*/
 }
->>>>>>> ab2b8895190234d5d079ff7dd9dc8b7ac23b390b
 .ant-modal-body
 {
     width: 90%;
@@ -1522,7 +1516,6 @@ td {
 .ant-btn-lg
 {
     padding: 6px 15px!important;
-<<<<<<< HEAD
 }
 /*消息中心*/
 .message-tip{
@@ -1530,6 +1523,8 @@ td {
     width: 20px;
     border-radius: 10px;
     background-color: red;
+    display: inline-block;
+    color: white;
 }
 .message-box{
     width: 100%;
@@ -1540,17 +1535,41 @@ td {
     border:1px solid grey;
 }
 .message-list li{
-    padding: 20px 20px;
+    padding: 20px;
+    padding-bottom: 0;
 }
 .message-list li a{
     padding:10px 0;
-    border-bottom: 2px solid #2ad0e9;
+    border-bottom: 2px solid transparent;
     display: inline-block;
     width: 100px;
+    font-size: 16px;
     color: black;
 }
-=======
-
+.message-list li .active{
+    border-bottom: 2px solid #2ad0e9;
+}
+.photo{
+    height: 50px;
+    width: 50px;
+    background: black;
+    border-radius: 25px;
+}
+.message-item-list:nth-child(1){
+    border-top: 1px solid lightgray;
+}
+.message-item-list{
+    padding: 20px 0;
+    margin:0 30px;
+    border-bottom: 1px solid lightgray;
+}
+.message-item-tip{
+    color: #C9C9C9;
+    padding-left: 20px;
+    font-weight: 400;
+}
+.message-item-detail{
+    padding: 20px;
 }
 .ant-pagination-item, .ant-pagination-item-link, .ant-pagination-item-link
 {
@@ -1579,4 +1598,4 @@ td {
 {
     border:1px solid #D9D9D9!important;
 }
->>>>>>> ab2b8895190234d5d079ff7dd9dc8b7ac23b390b
+

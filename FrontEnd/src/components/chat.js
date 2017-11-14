@@ -15,7 +15,6 @@ class Chat extends Component{
         const senderName=localStorage.getItem("loginname"); //当前用户名
         let receiverId = partner.partnerId;// 当前接收者id
         let receiverName=partner.friendUsername ;//   当前接收者name
-        console.log(partner)
         let ws = new WebSocket("ws://192.168.1.125:9999/ws?"+partner.userId +"_"+receiverId+"_"+partner.id); //链接websocket
         let flag=true;
         let reconnect = new Date().getTime(), time;
@@ -31,6 +30,7 @@ class Chat extends Component{
                         request.setRequestHeader("Authorization", 'Bearer '+token);
                     },
                     success:function(data){
+                        console.log(data);
                         if(data.data!=null){
                             var list=data.data;
                             $.each(list, function(index){
@@ -156,11 +156,9 @@ class Chat extends Component{
         }
     }
     render() {
-        const orders_details = this.props.orders_details;
-        const friendUsername = orders_details && orders_details.friendUsername;
         return (
             <div className="chat">
-                <span className="chat-head col-sm-12 h5 text-center">{friendUsername}</span>
+                <span className="chat-head col-sm-12 h5 text-center"></span>
                 <div className="chat-body g-mb-10">
                     <ul className="chat-message clearfix">
                         <li className="text-center"><a href="javascript:(0);" className="gray g-pt-10 g-pb-10 getMore">获取更多聊天记录</a></li>

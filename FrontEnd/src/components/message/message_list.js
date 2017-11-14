@@ -10,21 +10,24 @@ import {fetchUnreadMessage} from "../../actions/message"
 class MessageList extends Component{
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            messageType:2
+        }
     }
     render(){
+        console.log(this.props.message_letter)
         const username= localStorage.getItem('username');
         return (
             <div className="col-xs-12 message-list">
                 <ul>
                     <li className="col-xs-4 text-right">
-                        <a className="text-center" href="">公告</a>
+                        <a className={`text-center ${this.props.message_notice ? "active" : ""}`} href="/messagenotice">公告</a>
                     </li>
                     <li className="col-xs-4 text-center">
-                        <a href="">系统</a>
+                        <a className={`${this.props.message_system ? "active" : ""}`} href="/messagesystem">系统</a>
                     </li>
                     <li className="col-xs-4 text-left">
-                        <a className="text-center" href="">私信</a>
+                        <a className={`text-center ${this.props.message_letter ? "active" : ""}`} href="/messageletter">私信</a>
                     </li>
                 </ul>
             </div>
@@ -33,8 +36,9 @@ class MessageList extends Component{
 }
 function mapStateToProps(state) {
     return {
-        errorMessage: state.auth.error,
-        authenticated: state.auth.authenticated
+        message_letter:state.message.message_letter,
+        message_notice:state.message.message_notice,
+        message_system:state.message.message_system
     };
 }
 export default connect(mapStateToProps, {fetchUnreadMessage})(MessageList);

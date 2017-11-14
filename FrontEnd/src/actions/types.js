@@ -7,7 +7,7 @@ export const ROOT_URLL = 'http://192.168.1.170:8083';
 export const ROOT_ORDER= 'http://192.168.1.125:8882';
 export const ROOT_URLZ = 'http://192.168.1.125:8882';
 export const ROOT_ARBITRATE = 'http://192.168.1.125:8883'
-export const ROOT_MESSAGE = 'http://192.168.1.170:9491'
+export const ROOT_MESSAGE = 'http://192.168.1.172:9491'
 
 export const AUTH_USER = 'auth_user';                               //登录
 export const UNAUTH_USER = 'unauth_user';                           //退出登录
@@ -15,7 +15,7 @@ export const AUTH_ERROR = 'auth_error';                             //登录失�
 export const REQUEST_SUCCESS = 'request_success';                   //http请求正确
 export const REQUEST_ERROR = 'request_error';                       //http请求返回错误
 export const FETCH_VERIFY_CODE = 'request_verifycode';              //注册获取验证码
-export const FETCH_VERIFY_CODE_PHONE = 'request_verifycode_phone';              //修改手机获取验证码
+export const FETCH_VERIFY_CODE_PHONE = 'request_verifycode_phone';  //修改手机获取验证码
 
 
 export const FETCH_ADVERT = 'FETCH_ADVERT'                          //发布广告
@@ -55,8 +55,10 @@ export const FETCH_BASE_INFO = 'fetch_base_info'                         //用�
 export const FETCH_TRUSTED = 'fetch_trusted'                             //用户中心受信任的
 export const FETCH_PHONE = 'fetch_phone'                                 //用户中心修改手机号
 export const FETCH_PASSWORD = 'fetch_password'                           //用户中心修改密码
-export const FETCH_UNREAD_MESSAGES = 'fetch_unread_messages'             //获取未读消息
-export const FETCH_READ_MESSAGES = 'fetch_read_messages'                 //获取已读消息
+export const FETCH_MESSAGES_NUMBER = 'fetch_messages_number'             //获取未读消息
+export const FETCH_MESSAGES_NOTICE = 'fetch_messages_notice'              //获取公告消息
+export const FETCH_MESSAGE_SYSTEM = 'fetch_message_system'               //获取系统消息
+export const FETCH_MESSAGE_LETTER = 'fetch_message_letter'                //获取私信消息
 
 
 export function getAuthorizedHeader() {

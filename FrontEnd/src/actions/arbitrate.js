@@ -43,12 +43,13 @@ export function fetchArbitrateList({userIdDate}) {
 
 
 export function uploadEvidence({formData}, callback) {
+    console.log(formData)
     return function(dispatch) {
         axios({
             method:'post',
             url:`${ROOT_ARBITRATE}/arbitrate/uploadEvidence`,
             data:formData,
-            headers: {'content-type': 'multipart/form-data', getAuthorizedHeader},
+            headers: {'content-type': 'multipart/form-data', 'authorization': localStorage.getItem('token')},
             withCredentials: true
         }).then((res) => {
             console.log(res)
