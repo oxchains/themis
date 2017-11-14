@@ -1,6 +1,6 @@
 package com.oxchains.themis.notice.dao;
 
-import com.oxchains.themis.notice.domain.Notice;
+import com.oxchains.themis.repo.entity.Notice;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
