@@ -115,16 +115,6 @@ public class OrderController {
         return orderService.findNoCompletedOrdersById(pojo);
     }
 
-
-    /*
-    * 查询自己发布的公告所生成的需要自己确认的订单
-    * */
-    @RequestMapping("/order/findNotConfirmOrders")
-    public RestResp findNotConfirmOrders(@RequestBody Pojo pojo){
-        return orderService.findNotConfirmOrders(pojo);
-    }
-
-
     /*
     * 获取卖家历史交易资料有 好评率 交易次数 第一次购买时间 用户创建时间 交易量 电子邮箱验证否 电话号码验证否 实名认证否 信任量
     * */

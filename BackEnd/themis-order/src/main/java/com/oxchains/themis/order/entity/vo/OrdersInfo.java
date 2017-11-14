@@ -1,7 +1,7 @@
 package com.oxchains.themis.order.entity.vo;
-import com.oxchains.themis.order.entity.Notice;
 import com.oxchains.themis.order.entity.Orders;
 import com.oxchains.themis.order.entity.Payment;
+import com.oxchains.themis.repo.entity.Notice;
 import lombok.Data;
 
 import java.math.BigDecimal;

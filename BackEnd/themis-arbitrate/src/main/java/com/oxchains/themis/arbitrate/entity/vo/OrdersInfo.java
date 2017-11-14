@@ -1,7 +1,7 @@
 package com.oxchains.themis.arbitrate.entity.vo;
-import com.oxchains.themis.arbitrate.entity.Notice;
 import com.oxchains.themis.arbitrate.entity.Orders;
 import com.oxchains.themis.arbitrate.entity.Payment;
+import com.oxchains.themis.repo.entity.Notice;
 import lombok.Data;
 
 import java.math.BigDecimal;

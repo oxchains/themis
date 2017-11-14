@@ -1,6 +1,6 @@
 package com.oxchains.themis.order.entity;
+import com.oxchains.themis.repo.entity.Notice;
 import lombok.Data;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;

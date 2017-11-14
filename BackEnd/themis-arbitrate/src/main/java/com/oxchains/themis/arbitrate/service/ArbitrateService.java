@@ -1,12 +1,16 @@
 package com.oxchains.themis.arbitrate.service;
 import com.alibaba.fastjson.JSONObject;
 import com.oxchains.themis.arbitrate.common.*;
-import com.oxchains.themis.arbitrate.entity.OrderArbitrate;
 import com.oxchains.themis.arbitrate.entity.OrderEvidence;
 import com.oxchains.themis.arbitrate.entity.Orders;
 import com.oxchains.themis.arbitrate.entity.vo.OrdersInfo;
 import com.oxchains.themis.arbitrate.repo.*;
+import com.oxchains.themis.common.constant.*;
 import com.oxchains.themis.common.model.RestResp;
+import com.oxchains.themis.common.util.JsonUtil;
+import com.oxchains.themis.repo.entity.Notice;
+import com.oxchains.themis.repo.entity.OrderArbitrate;
+import com.oxchains.themis.repo.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -17,6 +21,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,8 +44,6 @@ public class ArbitrateService {
     private OrderRepo orderRepo;
     @Resource
     private OrderArbitrateRepo orderArbitrateRepo;
-    @Resource
-    private NoticeRepo noticeRepo;
     @Resource
     private PaymentRepo paymentRepo;
     @Resource
@@ -89,7 +92,7 @@ public class ArbitrateService {
         try {
             o = orderRepo.findOne(orderId);
             ordersInfo = new OrdersInfo(o);
-            ordersInfo.setNotice(noticeRepo.findOne(o.getNoticeId()));
+            ordersInfo.setNotice(this.findNoticeById(o.getNoticeId()));
             this.setOrderStatusName(ordersInfo);
             ordersInfo.setPayment(paymentRepo.findOne(ordersInfo.getPaymentId()));
             return ordersInfo;
@@ -223,19 +226,46 @@ public class ArbitrateService {
         OrderArbitrate save = orderArbitrateRepo.save(orderArbitrate);
         return save != null?RestResp.success():RestResp.fail();
     }
-    private com.oxchains.themis.repo.entity.User getUserById(Long userId){
-        com.oxchains.themis.repo.entity.User user = null;
+    public User getUserById(Long userId){
+        User user = null;
         try {
             JSONObject str = restTemplate.getForObject(com.oxchains.themis.common.constant.ThemisUserAddress.GET_USER+userId, JSONObject.class);
             if(null != str){
                 Integer status = (Integer) str.get("status");
                 if(status == 1){
-                    user = (com.oxchains.themis.repo.entity.User) str.get("data");
+                    user = JsonUtil.jsonToEntity(JsonUtil.toJson(str.get("data")), User.class);
                 }
             }
             return user;
         } catch (Exception e) {
             LOG.error("get user by id from themis-user faild : {}",e.getMessage(),e);
+        }
+        return null;
+    }
+    public Notice saveNotice(Long id, Integer sta){
+        try {
+            JSONObject forObject = restTemplate.getForObject(com.oxchains.themis.common.constant.ThemisUserAddress.SAVE_NOTICE + id + "/" + sta, JSONObject.class);
+            Integer status = (Integer) forObject.get("status");
+            if(status == 1){
+                Notice notice = JsonUtil.jsonToEntity(JsonUtil.toJson(forObject.get("data")),Notice.class);
+                return notice;
+            }
+        } catch (RestClientException e) {
+            LOG.error("update notice status faild:{}",e.getMessage(),e);
+        }
+        return null;
+
+    }
+    public Notice findNoticeById(Long id){
+        try {
+            JSONObject forObject = restTemplate.getForObject(com.oxchains.themis.common.constant.ThemisUserAddress.GET_NOTICE + id, JSONObject.class);
+            Integer status = (Integer) forObject.get("status");
+            if(status == 1){
+                Notice notice = JsonUtil.jsonToEntity(JsonUtil.toJson(forObject.get("data")), Notice.class);
+                return notice;
+            }
+        } catch (RestClientException e) {
+            LOG.error("get notice faild : {}",e.getMessage(),e);
         }
         return null;
     }

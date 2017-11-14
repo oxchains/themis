@@ -3,17 +3,18 @@ package com.oxchains.themis.arbitrate.config;
 import com.alibaba.fastjson.JSONObject;
 import com.oxchains.themis.arbitrate.common.ParamType;
 import com.oxchains.themis.arbitrate.common.ShamirUtil;
-import com.oxchains.themis.arbitrate.common.ThemisUserAddress;
-import com.oxchains.themis.arbitrate.entity.Notice;
 import com.oxchains.themis.arbitrate.entity.OrderAddresskeys;
-import com.oxchains.themis.arbitrate.entity.OrderArbitrate;
 import com.oxchains.themis.arbitrate.entity.Orders;
-import com.oxchains.themis.arbitrate.repo.*;
+import com.oxchains.themis.arbitrate.repo.OrderAddresskeyRepo;
+import com.oxchains.themis.arbitrate.repo.OrderArbitrateRepo;
+import com.oxchains.themis.arbitrate.repo.OrderRepo;
+import com.oxchains.themis.arbitrate.service.ArbitrateService;
 import com.oxchains.themis.arbitrate.service.MessageService;
+import com.oxchains.themis.common.constant.ThemisUserAddress;
 import com.oxchains.themis.common.model.OrdersKeyAmount;
-import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.util.DateUtil;
 import com.oxchains.themis.common.util.JsonUtil;
+import com.oxchains.themis.repo.entity.OrderArbitrate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -42,9 +43,7 @@ public class OrderArbitrateListener {
     @Resource
     private OrderAddresskeyRepo addresskeyRepo;
     @Resource
-    private UserRepo userRepo;
-    @Resource
-    private NoticeRepo noticeRepo;
+    private ArbitrateService arbitrateService;
     @Resource
     private MessageService messageService;
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
@@ -68,18 +67,15 @@ public class OrderArbitrateListener {
                     OrderAddresskeys odk = addresskeyRepo.findOrderAddresskeysByOrderId(orders.getId());
 
                     String auth =buyerList.size()>=ShamirUtil.K?ShamirUtil.getAuth(buyerList.toArray(new String[buyerList.size()]))+","+odk.getBuyerPriAuth():ShamirUtil.getAuth(sellerList.toArray(new String[sellerList.size()]))+","+odk.getSellerPriAuth();
-                    String address = buyerList.size()>=ShamirUtil.K?userRepo.findOne(orders.getBuyerId()).getFirstAddress():userRepo.findOne(orders.getSellerId()).getFirstAddress();
+                    String address = buyerList.size()>=ShamirUtil.K?messageService.getUserById(orders.getBuyerId()).getFirstAddress():messageService.getUserById(orders.getSellerId()).getFirstAddress();
                     orders.setOrderStatus(buyerList.size()>=ShamirUtil.K?ParamType.OrderStatus.FINISH.getStatus():ParamType.OrderStatus.CANCEL.getStatus());
 
                     OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orders.getId(),auth,orders.getAmount().doubleValue(),address);
-                    HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), this.getHttpHeader());
+                    HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount),this.getHttpHeader());
                     JSONObject jsonObject = restTemplate.postForObject(ThemisUserAddress.MOVE_BTC,formEntity,JSONObject.class);
                     Integer status = (Integer) jsonObject.get("status");
                     if(status==1){
-                        Notice notice = noticeRepo.findOne(orders.getNoticeId());
-                        notice.setTxStatus(buyerList.size()>=ShamirUtil.K?ParamType.NoticeTxStatus.TXEND.getStatus():ParamType.NoticeTxStatus.NOTX.getStatus());
-                        noticeRepo.save(notice);
-
+                        arbitrateService.saveNotice(orders.getNoticeId(),buyerList.size()>=ShamirUtil.K?ParamType.NoticeTxStatus.TXEND.getStatus():ParamType.NoticeTxStatus.NOTX.getStatus());
                         orders.setArbitrate(ParamType.ArbitrateStatus.ARBITRATEEND.getStatus());
                         orders.setFinishTime(DateUtil.getPresentDate());
                         Orders save = orderRepo.save(orders);

@@ -13,6 +13,9 @@ public class ThemisUserAddress {
     public static final String GET_USER = "http://themis-user/user/findOne?id=";  //获取仲裁者用户
     public static final String GET_PTSHADDRESS = "http://themis-user/account/transtacion/";  //根据订单id获取协商地址
     public static final String SAVE_ARBITRATE = "http://themis-arbitrate/arbitrate/saveOrderAbritrate";  //根据订单id获取协商地址
+    public static final String SAVE_NOTICE = "http://themis-notice/notice/update/txStatus/";  //根据订单id获取协商地址
+    public static final String GET_NOTICE = "http://themis-notice/notice/query/noticeId/";  //根据订单id获取协商地址
+
 
 
 

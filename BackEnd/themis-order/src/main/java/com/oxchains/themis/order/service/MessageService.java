@@ -4,7 +4,6 @@ import com.oxchains.themis.common.constant.message.MessageType;
 import com.oxchains.themis.common.util.DateUtil;
 import com.oxchains.themis.order.common.MessageCopywrit;
 import com.oxchains.themis.order.entity.Orders;
-import com.oxchains.themis.order.repo.NoticeRepo;
 import com.oxchains.themis.repo.dao.MessageRepo;
 import com.oxchains.themis.repo.dao.MessageTextRepo;
 import com.oxchains.themis.repo.entity.Message;
@@ -13,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import java.text.MessageFormat;
@@ -25,19 +25,17 @@ import java.text.MessageFormat;
 public class MessageService {
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
     @Resource
+    private RestTemplate restTemplate;
+    @Resource
     private MessageRepo messageRepo;
     @Resource
     private MessageTextRepo messageTextRepo;
     @Resource
-    private UserRepo userRepo;
-    @Resource
-    private NoticeRepo noticeRepo;
-    @Resource
-    private OrderArbitrateRepo orderArbitrateRepo;
+    private OrderService orderService;
     //添加订单的站内信
     public void postAddOrderMessage(Orders orders,Long userId,Long noticeUserId){
         try {
-            String username = userRepo.findOne(userId).getLoginname();
+            String username = orderService.getUserById(userId).getLoginname();
             String noticeMessage = MessageFormat.format(MessageCopywrit.ADD_ORDERS_NOTICE,username,orders.getId());
             String placeMessage = MessageFormat.format(MessageCopywrit.ADD_ORDERS_PLACE,orders.getId());
             //发布公告人的通知
