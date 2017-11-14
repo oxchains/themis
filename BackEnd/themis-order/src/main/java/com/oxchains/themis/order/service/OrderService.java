@@ -371,7 +371,9 @@ public class OrderService {
     * 这是一个工具类方法  为了给要返回到前台的orders 附上订单状态值
     * */
     public void setOrderStatusName(OrdersInfo o){
-        try {
+        String orderStatusName = ParamType.OrderStatus.getName(o.getOrderStatus());
+        o.setOrderStatusName(orderStatusName);
+        /*try {
             if(o.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_CONFIRM.getStatus()){
                 o.setOrderStatusName("待确认");
             }
@@ -398,7 +400,7 @@ public class OrderService {
             }
         } catch (Exception e) {
             LOG.error("set order status value faild : {}",e.getMessage(),e);
-        }
+        }*/
     }
     public UserTxDetails findUserTxDetailsAndNotice(Pojo pojo){
         UserTxDetails UserTxDetails = null;

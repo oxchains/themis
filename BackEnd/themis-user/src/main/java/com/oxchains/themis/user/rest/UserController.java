@@ -6,6 +6,7 @@ import com.oxchains.themis.common.constant.Status;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.param.ParamType;
 import com.oxchains.themis.common.util.ImageBase64;
+import com.oxchains.themis.common.util.JsonUtil;
 import com.oxchains.themis.common.util.VerifyCodeUtils;
 
 import com.oxchains.themis.repo.entity.User;
@@ -169,13 +170,13 @@ public class UserController {
     }
 
     @GetMapping(value = "/arbitrations")
-    public RestResp getArbitrations(){
-        return userService.getArbitrations();
+    public String getArbitrations(){
+        return JsonUtil.toJson(userService.getArbitrations());
     }
 
     @GetMapping(value = "/findOne")
-    public RestResp getUser(Long id){
-        return userService.getUser(id);
+    public String getUser(Long id){
+        return JsonUtil.toJson(userService.getUser(id));
     }
 
 
