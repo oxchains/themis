@@ -66,10 +66,15 @@ class Header extends Component{
                            <li ><a href="/buybtc"  >购买比特币</a></li>
                            <li ><a href="/sellbtc" >出售比特币</a></li>
                            <li ><a href="/releaseadvert" >发布广告</a></li>
-                           <li className={`registerlia ${this.props.authenticated?"hidden":""}`} ><a href="/signup" >注册</a></li>
-                           <li className={`loginlia ${this.props.authenticated?"hidden":""}`}><a href="/signin"  >登录</a></li>
+
                        </ul>
                    </div>
+                    <div className={`navbar-custom-menu ${this.props.authenticated?"hidden":""}`}>
+                        <ul className="nav navbar-nav">
+                            <li className={`registerlia order-style `} ><a href="/signup" >注册</a></li>
+                            <li className={`loginlia order-style `}><a href="/signin"  >登录</a></li>
+                        </ul>
+                    </div>
                     {this.renderUserInfo()}
                 </nav>
             </div>

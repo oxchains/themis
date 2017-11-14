@@ -198,12 +198,17 @@ export function fetctArray(callback) {
 // 我的广告
 
 export function fetctMyAdvert({userId, noticeType, txStatus, pageNum}, callback) {
-    console.log(` 我的广告: ${userId},${noticeType},${txStatus},${pageNum}`)
+    // console.log(` 我的广告: ${userId},${noticeType},${txStatus},${pageNum}`)
     return function(dispatch) {
         axios.get(`${ROOT_URLL}/notice/query/me2?userId=${userId}&pageNum=${pageNum}&noticeType=${noticeType}&txStatus=${txStatus}`, { headers: getAuthorizedHeader() })
             .then(response => {
-                console.log(response)
+                // console.log(response)
                 dispatch({type: FETCH_MY_ADVERT, payload: response})
+                if(response.data.status == 1) {
+                    callback();
+                } else {
+                    callback(response.data.message);
+                }
             })
             .catch(err =>{
                 dispatch(requestError(err.message))
