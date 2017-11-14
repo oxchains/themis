@@ -6,13 +6,13 @@ import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.message.common.MessageConst;
 import com.oxchains.themis.message.dao.MessageDao;
 import com.oxchains.themis.message.dao.MessageTextDao;
-import com.oxchains.themis.message.dao.OrderDao;
-import com.oxchains.themis.message.dao.UserDao;
-import com.oxchains.themis.message.domain.Message;
-import com.oxchains.themis.message.domain.MessageText;
-import com.oxchains.themis.message.domain.Orders;
-import com.oxchains.themis.message.domain.User;
 import com.oxchains.themis.message.rest.dto.MessageDTO;
+import com.oxchains.themis.repo.dao.OrderDao;
+import com.oxchains.themis.repo.dao.UserDao;
+import com.oxchains.themis.repo.entity.Message;
+import com.oxchains.themis.repo.entity.MessageText;
+import com.oxchains.themis.repo.entity.Order;
+import com.oxchains.themis.repo.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -36,7 +36,6 @@ public class MessageService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MessageService.class);
     private static Integer COUNT = 0;
-    // private static Integer RESULT = 0;
 
     @Resource private MessageDao messageDao;
     @Resource private MessageTextDao messageTextDao;
@@ -49,10 +48,14 @@ public class MessageService {
      * @return
      */
     @Deprecated
-    public RestResp sendGlobalMessage(MessageText messageText){
+    public RestResp sendNoticeMessage(MessageText messageText){
         try {
-            if (messageText.getMessage() == null && messageText.getMessageType() == null && messageText.getUserGroup() == null){
-                return RestResp.fail("必填项不能为空");
+            if (messageText.getMessage() == null){
+                return RestResp.fail("请填写内容");
+            }
+            if (messageText.getUserGroup() == null){
+                // 默认将公告发送给所有人
+                messageText.setUserGroup(4L);
             }
 
             // 保存messageText
@@ -60,7 +63,7 @@ public class MessageService {
             messageText.setPostDate(currentTime);
             messageText.setSenderId(0L);
             messageText.setMessageType(MessageType.PUBLIC);
-            messageText.setUserGroup(4L);
+            messageText.setUserGroup(messageText.getUserGroup());
             MessageText mt = messageTextDao.save(messageText);
 
             return RestResp.success("操作成功", mt);
@@ -75,10 +78,8 @@ public class MessageService {
         try {
             Pageable pageable = new PageRequest(pageNum - 1, pageSize, new Sort(Sort.Direction.DESC, "id"));
             Page<Message> page = messageDao.findByReceiverIdAndMessageType(userId, MessageType.GLOBAL, pageable);
-            Iterator<Message> it = page.iterator();
             List<Message> mList = new ArrayList<>();
-            while (it.hasNext()){
-                Message message = it.next();
+            for (Message message : page.getContent()) {
                 MessageText messageText = messageTextDao.findByIdAndMessageType(message.getMessageTextId(), MessageType.GLOBAL);
                 message.setMessageText(messageText);
 
@@ -121,7 +122,7 @@ public class MessageService {
 
                 // 获取订单相关信息
                 String orderId = messageText.getOrderId();
-                Orders orders = orderDao.findOne(orderId);
+                Order orders = orderDao.findById(orderId);
                 Long buyerId = orders.getBuyerId();
                 Long sellerId = orders.getSellerId();
                 if (userId.equals(buyerId)){
@@ -159,6 +160,9 @@ public class MessageService {
 
     public RestResp queryNoticeMsg(Long userId, Integer pageNum, Integer pageSize){
         try {
+            // 获取自己所在用户组
+            User user = userDao.findOne(userId);
+            Long userGroup = user.getRoleId();
             Pageable pageable = new PageRequest(pageNum - 1, pageSize, new Sort(Sort.Direction.DESC, "id"));
             Page<Message> page = messageDao.findByReceiverIdAndMessageType(userId, MessageType.PUBLIC, pageable);
             Iterator<Message> it = page.iterator();
@@ -166,6 +170,8 @@ public class MessageService {
             while (it.hasNext()){
                 Message message = it.next();
                 MessageText messageText = messageTextDao.findByIdAndMessageType(message.getMessageTextId(), MessageType.PUBLIC);
+                messageText.setUserGroup(userGroup);
+                messageTextDao.save(messageText);
                 message.setMessageText(messageText);
                 message.setReadStatus(MessageReadStatus.READ);
                 message.setReceiverId(userId);

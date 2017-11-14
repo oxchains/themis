@@ -1,8 +1,8 @@
 package com.oxchains.themis.notice;
 
-import com.oxchains.themis.notice.auth.AuthError;
-import com.oxchains.themis.notice.auth.JwtAuthenticationProvider;
-import com.oxchains.themis.notice.auth.JwtTokenFilter;
+import com.oxchains.themis.common.auth.AuthError;
+import com.oxchains.themis.common.auth.JwtAuthenticationProvider;
+import com.oxchains.themis.common.auth.JwtTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

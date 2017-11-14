@@ -8,7 +8,10 @@ import com.oxchains.themis.notice.domain.*;
 import com.oxchains.themis.notice.domain.Currency;
 import com.oxchains.themis.notice.rest.dto.PageDTO;
 import com.oxchains.themis.notice.rest.dto.StatusDTO;
-import org.omg.CORBA.INTERNAL;
+import com.oxchains.themis.repo.dao.UserDao;
+import com.oxchains.themis.repo.dao.UserTxDetailDao;
+import com.oxchains.themis.repo.entity.*;
+import com.oxchains.themis.repo.entity.UserTxDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -443,6 +446,30 @@ public class NoticeService {
         }catch (Exception e){
             e.printStackTrace();
             LOG.error("下架公告异常", e.getMessage());
+        }
+        return RestResp.fail("操作失败");
+    }
+
+    public RestResp queryNoticeOne(Long id){
+        try {
+            Notice notice = noticeDao.findOne(id);
+            return RestResp.success("操作成功", notice);
+        }catch (Exception e){
+            e.printStackTrace();
+            LOG.error("根据公告ID查找异常", e.getMessage());
+        }
+        return RestResp.fail("操作失败");
+    }
+
+    public RestResp updateTxStatus(Long id, Integer txStatus){
+        try {
+            Notice notice = noticeDao.findOne(id);
+            notice.setTxStatus(txStatus);
+            Notice n = noticeDao.save(notice);
+            return RestResp.success("操作成功", n);
+        }catch (Exception e){
+            e.printStackTrace();
+            LOG.error("修改公告交易状态异常", e.getMessage());
         }
         return RestResp.fail("操作失败");
     }
