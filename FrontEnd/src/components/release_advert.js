@@ -24,12 +24,11 @@ class Releaseadvert extends Component {
             error: null,
             actionResult: '',
             currentIndex:0,
-            status:'1',
+            status:1,
             premium:'',
             price:''
         }
-        this.handleRowsbuy = this.handleRowsbuy.bind(this)
-        this.handleRowssell = this.handleRowssell.bind(this)
+        this.handleRowstype = this.handleRowstype.bind(this)
         this.renderRowscountry = this.renderRowscountry.bind(this)
         this.renderRowscurrency = this.renderRowscurrency.bind(this)
         this.renderRowspayway = this.renderRowspayway.bind(this)
@@ -42,26 +41,24 @@ class Releaseadvert extends Component {
         });
     };
     componentWillMount(){
-        this.props.fetctArray({}, ()=>{});
+        this.props.fetctArray();
     }
-    handleRowsbuy(){
+    handleRowstype(status){
         this.setState({
-            status:'1'
+            status:status
         })
     }
-    handleRowssell(){
-        this.setState({
-            status:'2'
-        })
-    }
-
     handleFormSubmit(e){
             e.preventDefault()
             const userId= localStorage.getItem("userId")
             const loginname = localStorage.getItem("loginname")
 
-            const premium = this.refs.premium.value;
-            const price = this.refs.price.value;
+            // const premium = this.refs.premium.value;
+            // const price = this.refs.price.value;
+
+            const premium = this.state.premium;
+            const price = this.state.price;
+
             const minPrice = this.refs.minPrice.value;
             const minTxLimit = this.refs.minTxLimit.value;
             const maxTxLimit = this.refs.maxTxLimit.value;
@@ -83,7 +80,7 @@ class Releaseadvert extends Component {
     renderRowscountry() {
         const locationList = this.props.array.locationList || [];
         return locationList.map(({id, name}) => {
-            var ID = id.toString();
+            const ID = id.toString();
             const Option = Select.Option;
             return (
                 <Option key={id} label={name} value={ID}>{name}</Option>
@@ -94,7 +91,7 @@ class Releaseadvert extends Component {
         const currencyList = this.props.array.currencyList || [];
         return currencyList.map(({id, currency_name}) => {
             const Option = Select.Option;
-            var ID = id.toString();
+            const ID = id.toString();
             return (
                 <Option key={id} label={currency_name} value={ID}>{currency_name}</Option>
             );
@@ -104,7 +101,7 @@ class Releaseadvert extends Component {
         const paymentList = this.props.array.paymentList || [];
         return paymentList.map(({id, payment_name}) => {
             const Option = Select.Option;
-            var ID = id.toString();
+            const ID = id.toString();
             return (
                 <Option key={id} label={payment_name} value={ID}>{payment_name}</Option>
             );
@@ -120,7 +117,7 @@ class Releaseadvert extends Component {
             })
     }
 
-    // renderField({ input, label, type, icon, meta: { touched, error } }) {
+    // renderField({ input, label, type, meta: { touched, error } }) {
     //     return (
     //         <div className={` ${touched && error ? 'has-error' : ''}`}>
     //             <input {...input} placeholder={label} type={type} className="display slectoption "/>
@@ -130,12 +127,14 @@ class Releaseadvert extends Component {
     //     )}
 
     render() {
-
-        // const { handleSubmit} = this.props;
+        // const { handleSubmit } = this.props;
 
         const premium = this.state.premium;
         const money = this.props.array.cnyDetailList || {};
         const price =  parseFloat(this.state.price || money.buy).toFixed(2)
+
+        // console.log(this.props)
+
         return (
             <div className="maincontent">
                 <h2 className="h2title">发布一个比特币交易广告</h2>
@@ -153,16 +152,16 @@ class Releaseadvert extends Component {
                     <h5 className="h3title">*选择广告类型</h5>
                     <span className="tipspan"> &nbsp;&nbsp;您想要创建什么样的交易广告？如果您希望出售比特币,请确保您在THEMIS的钱包中有比特币。</span>
                     <ul className=" buytype">
-                        <li className={` ${this.state.status == 1 ? "tab-way-item active" :" tab-way-item"} `}   onClick={this.handleRowsbuy}>在线购买比特币</li>
-                        <li className={`${this.state.status == 2 ? "tab-way-item active" :" tab-way-item "}`} onClick={this.handleRowssell}>在线出售比特币</li>
+                        <li className={` ${this.state.status == 1 ? "tab-way-item active" :" tab-way-item"} `}   onClick={()=>this.handleRowstype(1)}>在线购买比特币</li>
+                        <li className={`${this.state.status == 2 ? "tab-way-item active" :" tab-way-item "}`} onClick={()=>this.handleRowstype(2)}>在线出售比特币</li>
                     </ul>
-                    <div className="clear display"></div>
+                    <div className="clear display">
                     <h5 className="h3title clear">*所在地</h5>
                     <span  className="tipspan"> 请选择你要发布广告的国家。</span>
                     <Select defaultValue="选择国家" style={{ width: 240 }}  onChange={(value) => this.state.country = value}>
                         {this.renderRowscountry()}
                     </Select>
-
+                    </div>
                     <h4 className="h4title">更多信息</h4>
                     <h5 className="h3title clear">*货币:</h5>
                     <span  className="tipspan"> 您希望交易付款的货币类型。</span>
@@ -205,7 +204,7 @@ class Releaseadvert extends Component {
                     <Select defaultValue="支付方式" style={{ width: 240 }} onChange={(value) => this.state.payway = value}>
                         {this.renderRowspayway()}
                     </Select>
-                    <h5 className="h3title clear">*广告内容:</h5>
+                    <h5 className="h3title clear">*广告内容:(选填)</h5>
                     <textarea name="" id="" cols="150" rows="6" className="display text-content" ref="noticeContent" placeholder="请说明有关您交易的相关条款或备注您的支付方式，如微信号，支付宝号等，以便对方可以快速和您交易。(下单前后都可见)" ></textarea>
                     <button type="submit" className="  form-apply">申请发布</button>
                 </form>
@@ -248,7 +247,6 @@ class Releaseadvert extends Component {
 //     if(!values.maxTxLimit) {
 //         errors.maxTxLimit = ' *不能为空';
 //     }
-//
 //     return errors
 // };
 
@@ -257,14 +255,14 @@ function mapStateToProps(state) {
     return {
         authenticated: state.auth.authenticated,
         errorMessage: state.auth.error,
-        all:state.advert.all,
+        // all:state.advert.all,
         array:state.advert.array
     };
 }
 
-const reduxSignupForm = reduxForm({
-    form: 'SignForm',
-    // validate
-})(Releaseadvert);
+// const reduxSignupForm = reduxForm({
+//     form: 'SignForm',
+//      validate
+// })(Releaseadvert);
 
 export default connect(mapStateToProps, {releaseAdvert, fetctArray})(Releaseadvert);

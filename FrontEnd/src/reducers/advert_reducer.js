@@ -39,6 +39,7 @@ export default function(state = INITIAL_STATE, action) {
         case FETCH_SELL_BTC_DETAIL:
             return { ...state, all:action.payload.data.data};
         case FETCH_ARRAY:
+            // console.log(action.payload.data.data)
             return { ...state, array:action.payload.data.data};
         case FETCH_HOME:
             return { ...state, all:action.payload.data.data};
