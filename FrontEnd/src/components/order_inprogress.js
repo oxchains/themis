@@ -3,8 +3,8 @@
  */
 import React, { Component }from 'react';
 import {connect} from 'react-redux';
-import {Pagination, Upload, Button, Icon} from 'antd';
-import {Alert, Modal} from 'react-bootstrap';
+import {Pagination, Alert, Upload, Button, Icon, Modal} from 'antd';
+// import {Alert, Upload, Button, Icon, Modal} from 'antd';
 import {uploadEvidence} from '../actions/arbitrate';
 import {fetchNoCompletedOrders} from '../actions/order';
 
@@ -12,9 +12,10 @@ class OrderInProgress extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            show:false,
+            visible: false,
             evidenceOFile: [],
             id:1,
+            alertVisible:false,
             isEvidenceFileDone:false,
             pageSize:8, //每页显示的条数8条
             fileList: [],
@@ -32,10 +33,9 @@ class OrderInProgress extends Component {
         this.props.fetchNoCompletedOrders({formData});
     }
     handleEvidence(item){
-        console.log(item)
         this.setState({
             id:item,
-            show:!this.state.show
+            visible: true,
         })
     }
     handleEvidenceSubmit(){
@@ -55,6 +55,7 @@ class OrderInProgress extends Component {
                 uploading: true,
             });
             this.props.uploadEvidence({formData}, (msg)=>{
+                console.log(msg)
                 if(msg.status==1){
                     this.setState({
                         fileList: [],
@@ -63,7 +64,9 @@ class OrderInProgress extends Component {
                     window.location.href='/orderinprogress'
                 }
                 else{
+
                     this.setState({
+                        alertVisible:true,
                         uploading: false,
                     });
                 }
@@ -104,11 +107,11 @@ class OrderInProgress extends Component {
     }
     render() {
         let close = () => {
-            this.setState({show:false})
+            this.setState({visible:false})
         };
         const not_completed_orders = this.props.not_completed_orders;
-        const totalNum = not_completed_orders && not_completed_orders[0].pageCount
-        const { uploading } = this.state;
+        const totalNum = not_completed_orders && not_completed_orders[0].pageCount;
+        const { uploading, visible} = this.state;
         const props = {
             action: 'http://192.168.1.125:8883/arbitrate/uploadEvidence',
             onRemove: (file) => {
@@ -159,36 +162,26 @@ class OrderInProgress extends Component {
                                 </tbody>
                             </table>
                         </div>
-                        <div className="pagecomponent">
-                            <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.handlePagination(e)}/>
-                        </div>
                     </div>
-                    <Modal show={this.state.show} onHide={close} container={this} aria-labelledby="contained-modal-title">
-                        <Modal.Header closeButton>
-                            <Modal.Title id="contained-modal-title text-center">证据存根</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <div className="clearfix">
-                                <Upload {...props}>
-                                    <Button>
-                                        <Icon type="upload" /> 聊天截图
-                                    </Button>
-                                </Upload>
-                            </div>
-                            <textarea className="form-control" name="" id="" cols="30" rows="10" placeholder="请输入此次仲裁重要部分证据和备注" ref="voucherDes"></textarea>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button
-                                className="upload-demo-start"
-                                type="primary"
-                                onClick={this.handleEvidenceSubmit.bind(this)}
-                                disabled={this.state.fileList.length === 0}
-                                loading={uploading}
-                            >
+                    <div className="pagecomponent">
+                        <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.handlePagination(e)}/>
+                    </div>
+                    {/*<Pagination defaultPageSize={1} total = {200}/>*/}
+                    <Modal visible={visible} title="证据存根" onOk={this.handleEvidenceSubmit} onCancel={close}
+                        footer={[<Button key="back" size="large" onClick={close}>取消</Button>,
+                            <Button key="submit" size="large" className="upload-demo-start" type="primary" onClick={this.handleEvidenceSubmit.bind(this)} disabled={this.state.fileList.length === 0} loading={uploading}>
                                 {uploading ? '上传中' : '确定' }
                             </Button>
-                            <Button onClick={close}>取消</Button>
-                        </Modal.Footer>
+                        ]}>
+                        <div className="clearfix">
+                            <Upload {...props}>
+                                <Button>
+                                    <Icon type="upload" /> 聊天截图
+                                </Button>
+                            </Upload>
+                        </div>
+                        <textarea className="form-control" name="" id="" cols="30" rows="10" placeholder="请输入此次仲裁重要部分证据和备注" ref="voucherDes"></textarea>
+                        {this.state.alertVisible ? <Alert message="Error" type="error" showIcon /> :""}
                     </Modal>
                 </div>
             </div>

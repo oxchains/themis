@@ -2,19 +2,25 @@
  * Created by zhangxiaojing on 2017/11/8.
  */
 import {
-    FETCH_UNREAD_MESSAGES,
-    FETCH_READ_MESSAGES,
+    FETCH_MESSAGES_NUMBER,
+    FETCH_MESSAGES_NOTICE,
+    FETCH_MESSAGE_SYSTEM,
+    FETCH_MESSAGE_LETTER
 } from '../actions/types';
 
 
-const INITIAL_STATE = {FETCH_UNREAD_MESSAGES: null, FETCH_READ_MESSAGES:null};
+const INITIAL_STATE = {message_number: null, message_notice:null, message_system:null, message_letter:null};
 
 export default function (state = INITIAL_STATE, action) {
     switch (action.type) {
-        case FETCH_UNREAD_MESSAGES:
-            return {...state, unread_message: action.payload};
-        case FETCH_READ_MESSAGES:
-            return {...state, read_message: action.payload};
+        case FETCH_MESSAGES_NUMBER:
+            return {...state, message_number: action.payload};
+        case FETCH_MESSAGES_NOTICE:
+            return {...state, message_notice: action.payload};
+        case FETCH_MESSAGE_SYSTEM:
+            return {...state, message_system: action.payload};
+        case FETCH_MESSAGE_LETTER:
+            return {...state, message_letter: action.payload};
     }
     return state;
 }

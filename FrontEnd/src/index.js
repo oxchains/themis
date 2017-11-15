@@ -1,6 +1,7 @@
 /**
  * Created by oxchain on 2017/10/17.
  */
+
 import {
     AUTH_USER
 } from './actions/types';
@@ -33,7 +34,9 @@ import Buydetail from './components/buy_detail';
 import Myadvert from './components/my_advert';
 import Home from './components/home';
 
-import MessageNotice from './components/message/message_notice'
+import MessageNotice from './components/message/message_notice';
+import MessageSystem from './components/message/message_system';
+import MessageLetter from './components/message/message_letter';
 import OrderInProgress from './components/order_inprogress';
 import OrderCompleted from './components/order_completed';
 import OrderProgress from './components/order_process';
@@ -80,6 +83,8 @@ ReactDOM.render(
                     <Route path="/buydetail:id" component={Buydetail}/>
                     <Route path="/myadvert" component={Myadvert}/>
                     <Route path="/messagenotice" component={MessageNotice}/>
+                    <Route path="/messagesystem" component={MessageSystem}/>
+                    <Route path="/messageletter" component={MessageLetter}/>
                     <Route path="/forgetpsw" component={Forgetpsw}/>
                     <Route path="/resetpsw" component={Resetpsw}/>
                     <Route path="/emailforget" component={Emialforget}/>
