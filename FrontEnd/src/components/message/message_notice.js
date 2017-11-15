@@ -4,22 +4,61 @@
 
 import React, { Component } from 'react';
 import { Link } from 'react-router';
+import {Pagination} from 'antd';
 import { connect } from 'react-redux';
-import {fetchUnreadMessage} from "../../actions/message";
+import {fetchMessageNotice} from "../../actions/message";
 import  MessageList from './message_list'
-class MessageUnread extends Component{
+class MessageNotice extends Component{
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            pageNum:1,
+            pageSize:8
+        }
+    }
+    componentWillMount(){
+        const userId=localStorage.getItem("userId")
+        const pageNum=this.state.pageNum;
+        const pageSize=this.state.pageSize;
+        this.props.fetchMessageNotice({userId, pageNum, pageSize})
+    }
+    handlePagination(pageNum) {
+        const userId=localStorage.getItem("userId")
+        const pageSize=this.state.pageSize;
+        this.props.fetchMessageNotice({userId, pageNum, pageSize})
+    }
+    renderList(){
+        return this.props.message_notice.pageList.map((item, index)=>{
+            return(
+                <li className="message-item-list clearfix" key={index}>
+                    <div className="col-xs-2">
+                        <div className="photo pull-right"></div>
+                    </div>
+                    <div className="col-xs-10 message-item-content">
+                        <div className="message-item-tip"><span>{item.messageType == 2 ? "公告" :""}</span><span>{item.messageText.postDate}</span></div>
+                        <div className="message-item-detail">{item.messageText.message}</div>
+                    </div>
+                </li>
+            )
+        })
     }
     render(){
+        const totalNum = this.props.message_notice && this.props.message_notice.rowCount
+        console.log(this.props.message_notice)
         return (
             <div className="message-box">
                 <div className="container">
                     <div className="row">
                         <MessageList/>
-                        <div className="col-xs-12 message-content">
-                            系统消息
+                        <div className="col-xs-12 message-item-content">
+                           <ul>
+                               {this.props.message_notice == null ? <div className="text-center h4">暂无消息</div> : this.renderList()}
+                           </ul>
+                        </div>
+                        <div className="col-xs-12">
+                            <div className="pagecomponent">
+                                <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.handlePagination(e)}/>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -29,9 +68,8 @@ class MessageUnread extends Component{
 }
 function mapStateToProps(state) {
     return {
-        errorMessage:state.auth.error,
-        authenticated: state.auth.authenticated,
+        message_notice:state.message.message_notice,
     };
 }
 
-export default connect(mapStateToProps, {fetchUnreadMessage})(MessageUnread);
+export default connect(mapStateToProps, {fetchMessageNotice})(MessageNotice);

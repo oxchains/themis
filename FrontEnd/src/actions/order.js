@@ -81,13 +81,13 @@ export function fetchOrdersDetails({data}, callback) {
             data: data,
             headers: getAuthorizedHeader()
         }).then((res) => {
+            console.log(res)
             if (res.data.status == 1) {
                 callback(res.data.data);
                 dispatch({
                     type: FETCH_ORDERS_DETAILS,
                     payload: res.data.data
                 })
-
             }
         }).catch(err => dispatch(requestError(err.message)));
     }
@@ -97,7 +97,6 @@ export function fetchOrdersDetails({data}, callback) {
  * @returns {Function}
  */
 export function fetchTradePartnerMessage({partner}) {
-    console.log(partner)
     return function (dispatch) {
         axios({
             method: 'post',
@@ -105,7 +104,6 @@ export function fetchTradePartnerMessage({partner}) {
             data: partner,
             headers: getAuthorizedHeader()
         }).then((res) => {
-            console.log(res)
             if (res.data.status == 1) {
                 dispatch({
                     type: FETCH_TRADE_PARTNER_MESSAGE,

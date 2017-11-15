@@ -8,6 +8,7 @@ import { Pagination } from 'antd';
 import 'antd/dist/antd.css';
 import { connect } from 'react-redux';
 import { fetcAdvertSeach, fetctArray} from '../actions/releaseadvert'
+import {sayHello} from 'demo2'
 
 class Buybtc extends Component {
     constructor(props) {
@@ -26,6 +27,7 @@ class Buybtc extends Component {
         this.renderRowspayway = this.renderRowspayway.bind(this)
         this.handleSeach = this.handleSeach.bind(this)
         this.onPagination = this.onPagination.bind(this)
+        sayHello()
     }
     componentWillMount(){
         const pageNum = this.state.current

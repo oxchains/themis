@@ -4,18 +4,21 @@
 
 import React, { Component } from 'react';
 import { Link } from 'react-router';
-import { Icon } from 'antd';
+import { Badge } from 'antd';
 import { connect } from 'react-redux';
-import {fetchUnreadMessage} from "../../actions/message"
+import {fetchMessageNumber} from "../../actions/message"
 class Header extends Component{
     constructor(props) {
         super(props);
         this.state = {};
         this.renderUserInfo = this.renderUserInfo.bind(this);
     }
+    componentWillMount() {
+        const userId=localStorage.getItem("userId")
+        this.props.fetchMessageNumber({userId})
+    }
     renderUserInfo() {
         const role=localStorage.getItem('role')
-        console.log(this.props.unread_message)
         if(this.props.authenticated) {
             const loginname= localStorage.getItem('loginname');
             return (
@@ -24,7 +27,7 @@ class Header extends Component{
                         {role == 3 ?  <li className="order-style" style={{width:"135px"}}><a href="/refereelist">消息列表</a></li> : "" }
                         <li className="order-style">
                             <a href="/messagenotice">
-                                消息{this.props.unread_message !=undefined ? <span className="message-tip">{this.props.unread_message.pageList.length}</span> :"" }
+                                消息{this.props.message_number !=undefined && this.props.message_number>0 ? <Badge count={this.props.message_number} /> :"" }
                             </a>
                         </li>
                         <li className="order-style"><a href="/orderinprogress">订单</a></li>
@@ -78,16 +81,15 @@ class Header extends Component{
                     {this.renderUserInfo()}
                 </nav>
             </div>
-    )
+        )
     }
-
 }
 function mapStateToProps(state) {
     return {
         errorMessage:state.auth.error,
         authenticated: state.auth.authenticated,
-        unread_message:state.message.unread_message
+        message_number:state.message.message_number
     };
 }
 
-export default connect(mapStateToProps, {fetchUnreadMessage})(Header);
+export default connect(mapStateToProps, {fetchMessageNumber})(Header);

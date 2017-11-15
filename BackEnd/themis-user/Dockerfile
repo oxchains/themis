@@ -1,5 +1,5 @@
 FROM java:8
 MAINTAINER oxchains
-ADD ./target/themis-user-1.0.1-SNAPSHOT.jar
+ADD ./target/themis-user-1.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8081
-ENTRYPOINT ["/usr/bin/java","-jar","themis-user-1.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["/usr/bin/java","-jar","app.jar"]

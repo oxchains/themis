@@ -3,15 +3,14 @@
  */
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Alert, Modal, Form, FormGroup, Col, ControlLabel} from 'react-bootstrap';
+import {Alert} from 'react-bootstrap';
 import Chat from './chat';
-import { Upload, Button, Icon} from 'antd';
+import QRCode from 'qrcode.react'
+import { Upload, Button, Icon, Modal} from 'antd';
 import TabsControl from "./react_tab";
+import {ROOT_ARBITRATE} from '../actions/types'
 import {uploadEvidence} from '../actions/arbitrate';
 import {fetchOrdersDetails, fetchTradePartnerMessage, addPaymentInfo, addTransactionId, fetchKey, confirmOrder, confirmSendMoney, releaseBtc, confirmGoods, saveComment, cancelOrders} from '../actions/order';
-import $ from 'jquery';
-var QRCode;
-
 class OrderProgress extends Component {
     constructor(props) {
         super(props);
@@ -35,6 +34,8 @@ class OrderProgress extends Component {
             status:"",
             fileList: [],
             uploading: false,
+            loading:false,
+            uri:""
         };
         this.renderDangerAlert = this.renderDangerAlert.bind(this);
         this.renderOrderMessageDetails=this.renderOrderMessageDetails.bind(this);
@@ -46,6 +47,7 @@ class OrderProgress extends Component {
         const partnerName=message.friendUsername
         this.setState({partnerName:partnerName});
         this.props.fetchOrdersDetails({data}, (msg)=>{
+            console.log(msg);
             this.setState({orderStatus:msg.orderStatus});
             this.setState({orderId:msg.id});
             switch(this.state.orderStatus){
@@ -265,18 +267,7 @@ class OrderProgress extends Component {
         }
         this.props.fetchKey({orderId}, (msg)=>{
              if(msg.status == 1){
-                 $(function(){
-                      var qrcode = new QRCode('qrcode', {
-                          text: msg.data.uri ? msg.data.uri :"loadding",
-                          width: 150,
-                          height: 150,
-                          colorDark : '#000000',
-                          colorLight : '#ffffff',
-                          correctLevel : QRCode.CorrectLevel.H
-                      })
-
-                 });                                           
-                 this.setState({p2shAddress:msg.data.p2shAddress, amount:msg.data.amount, shownext: true})
+                 this.setState({uri:msg.data.uri, p2shAddress:msg.data.p2shAddress, amount:msg.data.amount, shownext: true})
              }
              else {
                  this.setState({show: true})
@@ -287,6 +278,7 @@ class OrderProgress extends Component {
         const sellerPubAuth=this.refs.sellerPubAuth.value;
         const sellerPriAuth=this.refs.sellerPriAuth.value;
         const orderId=this.state.orderId;
+        console.log(sellerPubAuth)
         if(sellerPubAuth && sellerPriAuth){
              const paymentInfo={
                  sellerPubAuth:sellerPubAuth,
@@ -296,17 +288,7 @@ class OrderProgress extends Component {
              this.props.addPaymentInfo({paymentInfo}, (msg)=>{
                  console.log(msg)
                  if(msg.status == 1){
-                     this.setState({error:false, p2shAddress:msg.data.p2shAddress, amount:msg.data.amount, show:false, shownext:true})
-                     $(function(){
-                         var qrcode = new QRCode('qrcode', {
-                             text: msg.data.uri,
-                             width: 150,
-                             height: 150,
-                             colorDark : '#000000',
-                             colorLight : '#ffffff',
-                             correctLevel : QRCode.CorrectLevel.H
-                         })
-                     });
+                     this.setState({uri:msg.data.uri, error:false, p2shAddress:msg.data.p2shAddress, amount:msg.data.amount, show:false, shownext:true});
                  }
                  else{
                     this.setState({
@@ -329,7 +311,6 @@ class OrderProgress extends Component {
              this.props.addTransactionId({txIdInfo}, (msg)=>{
                  console.log(msg)
                  if(regex.test(txId)){
-                     alert(1);
                      this.setState({error:false, show:false, shownext:false, confirm:false})
                  }
                  else{
@@ -439,7 +420,7 @@ class OrderProgress extends Component {
     }
     handleEvidence(){
         this.setState({
-            evidence:!this.state.evidence
+            evidence:true,
         })
     }
     handleEvidenceSubmit(){
@@ -481,7 +462,7 @@ class OrderProgress extends Component {
             this.setState({show:false, shownext:false, evidence:false, error:false})
         };
         if(this.props.orders_details===null){
-            return <div>loading....</div>
+            return <div className="text-center h3">loading....</div>
         }
         const orders_details = this.props.orders_details;
         const orderType = orders_details && orders_details.orderType;
@@ -489,9 +470,10 @@ class OrderProgress extends Component {
         const money=orders_details && orders_details.money;
         const price=orders_details && orders_details.notice.price;
         const partner=this.props.partner;
-        const { uploading } = this.state;
+        console.log(this.props.orders_details)
+        const { uploading, evidence, show, shownext, loading} = this.state;
         const props = {
-            action: 'http://192.168.1.125:8883/arbitrate/uploadEvidence',
+            action: `${ROOT_ARBITRATE}/arbitrate/uploadEvidence`,
             onRemove: (file) => {
                 this.setState(({ fileList }) => {
                     const index = fileList.indexOf(file);
@@ -686,95 +668,46 @@ class OrderProgress extends Component {
                         </div>
                     </div>
                 </div>
-                <Modal show={this.state.show} onHide={close} container={this} aria-labelledby="contained-modal-title">
-                    <Modal.Header closeButton>
-                        <Modal.Title id="contained-modal-title text-center">付款信息</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form horizontal>
-                            <FormGroup controlId="formHorizontalEmail">
-                                <Col componentClass={ControlLabel} sm={2}>
-                                    托管公钥
-                                </Col>
-                                <Col sm={10}>
-                                    <input className="form-control" type="text" placeholder="请输入公钥地址"  ref="sellerPubAuth"/>
-                                </Col>
-                            </FormGroup>
-
-                            <FormGroup controlId="formHorizontalPassword">
-                                <Col componentClass={ControlLabel} sm={2}>
-                                    托管私钥
-                                </Col>
-                                <Col sm={10}>
-                                    <input className="form-control" type="text" placeholder="请输入私钥地址" ref="sellerPriAuth"/>
-                                </Col>
-                                {this.renderAlert()}
-                            </FormGroup>
-
-                        </Form>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button onClick={this.handleNext.bind(this)}>下一步</Button>
-                        <Button onClick={close}>取消</Button>
-                    </Modal.Footer>
+                <Modal visible={show} title="付款信息" onOk={this.handleNext.bind(this)} onCancel={close}
+                       footer={[<Button key="back" size="large" onClick={close}>取消</Button>,
+                           <Button key="submit" type="primary" size="large" loading={loading} onClick={this.handleNext.bind(this)}>确定</Button>,
+                       ]}>
+                    托管公钥
+                    <input className="form-control" type="text" placeholder="请输入公钥地址"  ref="sellerPubAuth"/>
+                    托管私钥
+                    <input className="form-control" type="text" placeholder="请输入私钥地址" ref="sellerPriAuth"/>
+                    {this.renderAlert()}
                 </Modal>
-                <Modal show={this.state.shownext} onHide={close} container={this} aria-labelledby="contained-modal-title">
-                    <Modal.Header closeButton>
-                        <Modal.Title id="contained-modal-title text-center">付款信息</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form horizontal>
-                            <FormGroup controlId="formHorizontalEmail">
-                                <div id="qrcode"></div>
-                                <div className="text-center"> 扫码支付</div>
-                            </FormGroup>
-                            <FormGroup controlId="formHorizontalPassword">
-                                    <div className="col-sm-2">付款金额 </div>
-                                    <div className="col-sm-10">{this.state.amount}</div>
-                                 <div className="col-sm-2">付款地址 </div>
-                                 <div className="col-sm-10">{this.state.p2shAddress}</div>
-
-                                <Col componentClass={ControlLabel} sm={2}>
-                                    交易ID
-                                </Col>
-                                <Col sm={10}>
-                                    <input className="form-control" type="text" placeholder="请输入交易id" ref="txId"/>
-                                </Col>
-                                {this.renderAlert()}
-                            </FormGroup>
-                        </Form>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button onClick={this.handleTransactionId.bind(this)}>确定</Button>
-                        <Button onClick={close}>取消</Button>
-                    </Modal.Footer>
+                <Modal visible={shownext} title="付款信息" onOk={this.handleTransactionId.bind(this)} onCancel={close}
+                       footer={[<Button key="back" size="large" onClick={close}>取消</Button>,
+                           <Button key="submit" type="primary" size="large" loading={loading} onClick={this.handleTransactionId.bind(this)}>确定</Button>,
+                       ]}>
+                    <div className="qrcode text-center"> <QRCode  value={this.state.uri} level="H" /></div>
+                    <div className="text-center"> 扫码支付</div>
+                    <div className="col-sm-3">付款金额 </div>
+                    <div className="col-sm-9">{this.state.amount}</div>
+                    <div className="col-sm-3">付款地址 </div>
+                    <div className="col-sm-9">{this.state.p2shAddress}</div>
+                    <div className="col-sm-3">交易ID </div>
+                    <div className="col-sm-9">
+                        <input className="form-control" type="text" placeholder="请输入交易id" ref="txId"/>
+                    </div>
+                    {this.renderAlert()}
                 </Modal>
-                <Modal show={this.state.evidence} onHide={close} container={this} aria-labelledby="contained-modal-title">
-                    <Modal.Header closeButton>
-                        <Modal.Title id="contained-modal-title text-center">证据存根</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <div className="clearfix">
-                            <Upload {...props}>
-                                <Button>
-                                    <Icon type="upload" /> 聊天截图
-                                </Button>
-                            </Upload>
-                        </div>
-                        <textarea className="form-control" name="" id="" cols="30" rows="10" placeholder="请输入此次仲裁重要部分证据和备注" ref="voucherDes"></textarea>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button
-                            className="upload-demo-start"
-                            type="primary"
-                            onClick={this.handleEvidenceSubmit.bind(this)}
-                            disabled={this.state.fileList.length === 0}
-                            loading={uploading}
-                        >
-                            {uploading ? '上传中' : '确定' }
-                        </Button>
-                        <Button onClick={close}>取消</Button>
-                    </Modal.Footer>
+                <Modal visible={evidence} title="证据存根" onOk={this.handleEvidenceSubmit.bind(this)} onCancel={close}
+                       footer={[<Button key="back" size="large" onClick={close}>取消</Button>,
+                           <Button key="submit" size="large" className="upload-demo-start" type="primary" onClick={this.handleEvidenceSubmit.bind(this)} disabled={this.state.fileList.length === 0} loading={uploading}>
+                               {uploading ? '上传中' : '确定' }
+                           </Button>
+                       ]}>
+                    <div className="clearfix">
+                        <Upload {...props}>
+                            <Button>
+                                <Icon type="upload" /> 聊天截图
+                            </Button>
+                        </Upload>
+                    </div>
+                    <textarea className="form-control" name="" id="" cols="30" rows="10" placeholder="请输入此次仲裁重要部分证据和备注" ref="voucherDes"></textarea>
                 </Modal>
             </div>
         )
