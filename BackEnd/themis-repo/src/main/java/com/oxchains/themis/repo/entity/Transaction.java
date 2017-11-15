@@ -36,6 +36,10 @@ public class Transaction {
 
     private Double amount;
 
+    private Double txFee;
+
+    private Double minerFee;
+
     public Long getId() {
         return id;
     }
@@ -116,5 +120,21 @@ public class Transaction {
 
     public void setAmount(Double amount) {
         this.amount = amount;
+    }
+
+    public Double getTxFee() {
+        return txFee;
+    }
+
+    public void setTxFee(Double txFee) {
+        this.txFee = txFee;
+    }
+
+    public Double getMinerFee() {
+        return minerFee;
+    }
+
+    public void setMinerFee(Double minerFee) {
+        this.minerFee = minerFee;
     }
 }
