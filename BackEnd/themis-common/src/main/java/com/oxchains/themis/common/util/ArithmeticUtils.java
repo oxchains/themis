@@ -27,6 +27,15 @@ public class ArithmeticUtils {
         return b1.add(b2).doubleValue();
     }
 
+    public static double multiPlus(double ... v) {
+        BigDecimal b = new BigDecimal(0);
+        for(double d : v){
+            BigDecimal b1 = new BigDecimal(Double.toString(d));
+            b = b.add(b1);
+        }
+        return b.doubleValue();
+    }
+
     /**
      * 提供精确的加法运算
      *

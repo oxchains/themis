@@ -181,7 +181,7 @@ export function fetctSellSeach({searchType, location, currency, payType, pageNum
 }
 // 选择框数据
 
-export function fetctArray(callback) {
+export function fetctArray() {
     return function(dispatch) {
         axios.get(`${ROOT_URLL}/notice/query/statusKV`, { headers: getAuthorizedHeader() })
             .then(response => {
