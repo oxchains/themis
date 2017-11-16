@@ -64,7 +64,6 @@ class OrderInProgress extends Component {
                     window.location.href='/orderinprogress'
                 }
                 else{
-
                     this.setState({
                         alertVisible:true,
                         uploading: false,
@@ -178,6 +177,7 @@ class OrderInProgress extends Component {
                                 <Button>
                                     <Icon type="upload" /> 聊天截图
                                 </Button>
+                                <div>最多可上传5张图片</div>
                             </Upload>
                         </div>
                         <textarea className="form-control" name="" id="" cols="30" rows="10" placeholder="请输入此次仲裁重要部分证据和备注" ref="voucherDes"></textarea>
