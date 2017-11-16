@@ -209,30 +209,34 @@ public class MessageService {
         // 用户登录后，将所在用户组未读公告信息添加到message表中
         // 1，先找到roleid，然后得到角色userGroup，然后根据msgType和up得到id
         User user = userDao.findOne(userId);
-        Long userGroup = user.getRoleId();
-        List<MessageText> messageTextList = messageTextDao.findByMessageTypeAndUserGroup(MessageType.PUBLIC, userGroup);
+        if (user != null){
+            Long userGroup = user.getRoleId();
+            List<MessageText> messageTextList = messageTextDao.findByMessageTypeAndUserGroup(MessageType.PUBLIC, userGroup);
 
-        // 所有公告
-        Set<Long> set = new HashSet<>();
-        for (MessageText mt: messageTextList) {
-            set.add(mt.getId());
-        }
+            if (messageTextList.size() != 0){
+                // 所有公告
+                Set<Long> set = new HashSet<>();
+                for (MessageText mt: messageTextList) {
+                    set.add(mt.getId());
+                }
 
-        // 移除已读公告的mtId
-        List<Message> allPublic = messageDao.findByReceiverIdAndMessageType(userId, MessageType.PUBLIC);
-        for (Message m : allPublic) {
-            set.remove(m.getMessageTextId());
-        }
+                // 移除已读公告的mtId
+                List<Message> allPublic = messageDao.findByReceiverIdAndMessageType(userId, MessageType.PUBLIC);
+                for (Message m : allPublic) {
+                    set.remove(m.getMessageTextId());
+                }
 
-        // 添加剩余没有的公告
-        Iterator<Long> it = set.iterator();
-        Message message = new Message();
-        while (it.hasNext()){
-            message.setMessageTextId(it.next().longValue());
-            message.setReadStatus(MessageReadStatus.UN_READ);
-            message.setReceiverId(userId);
-            message.setMessageType(MessageType.PUBLIC);
-            messageDao.save(message);
+                // 添加剩余没有的公告
+                Iterator<Long> it = set.iterator();
+                Message message = new Message();
+                while (it.hasNext()){
+                    message.setMessageTextId(it.next().longValue());
+                    message.setReadStatus(MessageReadStatus.UN_READ);
+                    message.setReceiverId(userId);
+                    message.setMessageType(MessageType.PUBLIC);
+                    messageDao.save(message);
+                }
+            }
         }
 
         // 所有未读信息
