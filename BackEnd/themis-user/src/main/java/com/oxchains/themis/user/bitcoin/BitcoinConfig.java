@@ -1,5 +1,6 @@
 package com.oxchains.themis.user.bitcoin;
 
+import com.oxchains.themis.common.util.ArithmeticUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +24,7 @@ public class BitcoinConfig extends AbstractConfig{
 
     private static String feeRate;
     private static String maxFee;
+    private static String minFee;
 
     static {
         Properties pro = new Properties();
@@ -34,6 +36,7 @@ public class BitcoinConfig extends AbstractConfig{
             password = pro.getProperty("bitcoin.service.password");
             feeRate = pro.getProperty("bitcoin.fee.rate");
             maxFee = pro.getProperty("bitcoin.max.fee");
+            minFee = pro.getProperty("bitcoin.min.fee");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -51,4 +54,34 @@ public class BitcoinConfig extends AbstractConfig{
         return Double.valueOf(maxFee);
     }
 
+    public static double getMinFee(){
+        return Double.valueOf(minFee);
+    }
+
+    public static double getMinerFee(Double amount){
+        if(amount == null ){
+            return 0d;
+        }
+        if(amount < 0.01){
+            return 0.00005D;
+        }else if(amount >= 0.01 && amount <1){
+            return 0.00008D;
+        }else {
+            return 0.0001D;
+        }
+    }
+
+    public static double getTxFee(Double amount){
+        if(amount == null){
+            return 0D;
+        }
+        double fee = ArithmeticUtils.multiply(amount,getFeeRate(),8);
+        if(fee <= getMinFee()){
+            return getMinFee();
+        }else if (fee >= getMaxFee()){
+            return getMaxFee();
+        }else {
+            return fee;
+        }
+    }
 }
