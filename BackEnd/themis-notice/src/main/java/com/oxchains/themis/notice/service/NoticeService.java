@@ -334,7 +334,13 @@ public class NoticeService {
                     resultList.get(i).setTxNum(utdInfo.getTxNum());
                     resultList.get(i).setTrustNum(utdInfo.getBelieveNum());
                     double descTotal = ArithmeticUtils.plus(utdInfo.getGoodDesc(), utdInfo.getBadDesc());
-                    double goodP = ArithmeticUtils.divide(utdInfo.getGoodDesc(), descTotal, 2);
+                    double goodP;
+                    if (descTotal == 0){
+                        goodP = 0;
+                    }else {
+                        goodP = ArithmeticUtils.divide(utdInfo.getGoodDesc(), descTotal, 2);
+                    }
+
                     resultList.get(i).setGoodPercent((int)(goodP * 100));
                 }
 
@@ -404,10 +410,14 @@ public class NoticeService {
                     resultList.get(i).setTxNum(utdInfo.getTxNum());
                     resultList.get(i).setTrustNum(utdInfo.getBelieveNum());
                     double descTotal = ArithmeticUtils.plus(utdInfo.getGoodDesc(), utdInfo.getBadDesc());
-                    double goodP = ArithmeticUtils.divide(utdInfo.getGoodDesc(), descTotal, 2);
+                    double goodP;
+                    if (descTotal == 0){
+                        goodP = 0;
+                    }else {
+                        goodP = ArithmeticUtils.divide(utdInfo.getGoodDesc(), descTotal, 2);
+                    }
                     resultList.get(i).setGoodPercent((int)(goodP * 100));
                 }
-
             }
 
             PageDTO<Notice> pageDTO = new PageDTO<>();
@@ -533,7 +543,12 @@ public class NoticeService {
         }else {
             subList.get(i).setTxNum(userTxDetail.getTxNum());
             subList.get(i).setTrustNum(userTxDetail.getBelieveNum());
-            double trustP = ArithmeticUtils.divide(userTxDetail.getBelieveNum(), userTxDetail.getTxNum(), 2);
+            double trustP;
+            if (userTxDetail.getTxNum() == 0){
+                trustP = 0;
+            }else {
+                trustP = ArithmeticUtils.divide(userTxDetail.getBelieveNum(), userTxDetail.getTxNum(), 2);
+            }
             subList.get(i).setTrustPercent((int) ArithmeticUtils.multiply(trustP, 100, 0));
         }
 
