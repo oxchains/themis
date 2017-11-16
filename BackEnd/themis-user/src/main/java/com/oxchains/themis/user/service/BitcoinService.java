@@ -36,7 +36,9 @@ public class BitcoinService {
 
     static {
         try {
-            URL url = new URL("http://admin1:123@192.168.1.195:18332/");
+            String urlStr = BitcoinConfig.getUrlString();
+            //"http://admin1:123@192.168.1.195:18332/"
+            URL url = new URL(urlStr);
             client = new BitcoinJSONRPCClient(url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
