@@ -9,6 +9,7 @@ import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.param.ParamType;
 import com.oxchains.themis.common.param.RequestBody;
 import com.oxchains.themis.common.util.ConstantUtils;
+import com.oxchains.themis.common.util.DateUtil;
 import com.oxchains.themis.common.util.EncryptUtils;
 import com.oxchains.themis.repo.dao.*;
 import com.oxchains.themis.repo.entity.*;
@@ -68,10 +69,13 @@ public class UserService extends BaseService {
             return RestResp.fail("操作失败");
         }
         if(null == user.getCreateTime()){
-            user.setCreateTime(new Date());
+            user.setCreateTime(DateUtil.getPresentDate());
         }
         if(null == user.getRoleId()){
             user.setRoleId(4L);
+        }
+        if (null == user.getLoginStatus()){
+            user.setLoginStatus(0);
         }
         user = userDao.save(user);
         if (user == null) {
