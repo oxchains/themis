@@ -42,7 +42,6 @@ class Myadvert extends Component {
             this.state.flag = true;
             this.props.fetctMyAdvert({userId, noticeType, txStatus, pageNum}, err=>{
                this.state.flag = false
-               console.log(this.state.flag)
            });
          }
     }
@@ -56,7 +55,6 @@ class Myadvert extends Component {
             this.state.flag = true;
             this.props.fetctMyAdvert({userId, noticeType, txStatus, pageNum}, err=>{
                 this.state.flag = false
-                console.log(this.state.flag)
             });
         }
     }

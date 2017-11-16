@@ -228,6 +228,10 @@ div {
     border:1px solid #ccc;
     padding: 10px;
 }
+.form-test .help-block
+{
+    display: none!important;
+}
 
 .form-style-test
 {
@@ -238,7 +242,7 @@ div {
 .send-testcode
 {
     margin-top: 10px;
-    margin-left: 5px;
+    /*margin-left: 5px;*/
     cursor: pointer;
     color: #2ad0e9;
 }
@@ -248,7 +252,7 @@ div {
 }
 .time-color
 {
-    margin-left: 10px;
+    /*margin-left: 10px;*/
     color: #BDBEBD;
     transition: color 2s;
 }

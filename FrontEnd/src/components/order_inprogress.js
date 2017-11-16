@@ -84,7 +84,7 @@ class OrderInProgress extends Component {
     renderrow(){
         return this.props.not_completed_orders.map((item, index) =>{
             return(
-                <tr key={index}>
+                <tr key={index} >
                     <td>{item.friendUsername}</td>
                     <td>{item.id}</td>
                     <td>{item.orderType}</td>

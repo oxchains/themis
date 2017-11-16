@@ -51,8 +51,7 @@ class Buybtc extends Component {
         return arraydata.map((item, index) => {
             return(
                 <tr key={index} className="contentborder">
-
-                    <td className="tabletitle"><a href={`/otherInfodetail`}>{item.loginname}</a></td>
+                    <td className="tabletitle"><a href={`/otherInfodetail:${item.id}`}>{item.loginname}</a></td>
                     <td className="tabletitle">交易 {item.txNum} | 好评度 {item.goodPercent} | 信任 {item.trustNum}</td>
                     <td className="tabletitle"> {item.payType == 1 ?"现金":item.payType == 2 ?"转账":item.payType == 3 ?"支付宝":item.payType == 4 ? "微信":item.payType == 5 ? "Apple Pay":""} </td>
                     <td className="tabletitle"> {item.minTxLimit} - {item.maxTxLimit} CNY</td>
