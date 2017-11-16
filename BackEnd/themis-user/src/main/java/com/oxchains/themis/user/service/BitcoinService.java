@@ -11,6 +11,7 @@ import com.oxchains.themis.common.util.ArithmeticUtils;
 import com.oxchains.themis.repo.dao.TransactionDao;
 
 import com.oxchains.themis.repo.entity.Transaction;
+import com.oxchains.themis.user.bitcoin.BitcoinConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -79,7 +80,15 @@ public class BitcoinService {
             order.setP2shAddress(p2shAddress);
             order.setP2shRedeemScript(redeemScript);
             order.setAmount(amount);
+            //计算矿工费
+            double minerFee = BitcoinConfig.getMinerFee(amount);
+            //计算交易费
+            double txFee = BitcoinConfig.getTxFee(amount);
+            order.setTxFee(txFee);
+            order.setMinerFee(minerFee);
+
             order = transactionDao.save(order);
+            amount = ArithmeticUtils.multiPlus(amount,minerFee,txFee);
             logger.info("*** 订单{}, 生成协商地址: {}" ,orderId, p2shAddress);
             return RestResp.success(new ScriptHash(p2shAddress,redeemScript,"bitcoin:"+p2shAddress+"?amount="+amount));
 
@@ -125,9 +134,10 @@ public class BitcoinService {
                 for(BitcoindRpcClient.RawTransaction.Out out : rawTransaction.vOut()){
                     if(VoutHashType.SCRIPT_HASH.getName().equals(out.scriptPubKey().type())){
                         double amount = out.value();
-                        double diff = ArithmeticUtils.minus(amount,order.getAmount());
+                        double total = ArithmeticUtils.multiPlus(order.getAmount(),order.getMinerFee(),order.getTxFee());
+                        double diff = ArithmeticUtils.minus(amount,total);//ArithmeticUtils.minus(amount,order.getAmount());
                         //卖家或承担中继费
-                        if (diff == BitcoinConst.OXCHAINS_DEFAULT_TX_FEE || diff == 0){
+                        if (diff == 0){//       order = transactionDao.save(order);
                         }else {
                             return RestResp.fail("交易比特币数量有误,无法继续交易");
                         }
@@ -228,12 +238,12 @@ public class BitcoinService {
                     amount = ArithmeticUtils.minus(out.value(),BitcoinConst.OXCHAINS_DEFAULT_TX_FEE);
 
                     //支付到卖家账户 减去矿工费
-                    BitcoindRpcClient.TxOutput txOutput1 = new BitcoindRpcClient.BasicTxOutput(recvAddress, ArithmeticUtils.minus(amount, BitcoinConst.OXCHAINS_DEFAULT_MINER_FEE));
+                    BitcoindRpcClient.TxOutput txOutput1 = new BitcoindRpcClient.BasicTxOutput(recvAddress, order.getAmount());//ArithmeticUtils.minus(amount, BitcoinConst.OXCHAINS_DEFAULT_MINER_FEE)
                     txOutputs.add(txOutput1);
 
                     String feeAddress = getOxchainFeeAddress();
                     //支付中介费到oxchains账户
-                    BitcoindRpcClient.TxOutput txOutput2 = new BitcoindRpcClient.BasicTxOutput(feeAddress, BitcoinConst.OXCHAINS_DEFAULT_TX_FEE);
+                    BitcoindRpcClient.TxOutput txOutput2 = new BitcoindRpcClient.BasicTxOutput(feeAddress, order.getTxFee());//BitcoinConst.OXCHAINS_DEFAULT_TX_FEE
                     txOutputs.add(txOutput2);
 
                     String rawTx = client.createRawTransaction(txInputs, txOutputs);

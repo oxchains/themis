@@ -992,6 +992,7 @@ div {
     margin-top: 50px;
 }
 html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
+<<<<<<< HEAD
 /*table样式*/
 .table-bordered {  border: 1px solid #ddd; }
 .table { width: 100%;  font-size: 14px ;margin-bottom:0;}
@@ -1010,7 +1011,9 @@ table { border-spacing: 0;  border-collapse: collapse; }
 .paginationDiv .num:hover {background-color: #ddd; border-color: #ddd; color: #1a1a1a }
 .paginationDiv .ellipsis {width: 42px; height: 30px; color: #707070; line-height: 30px }
 .paginationDiv input {width: 44px; height: 24px; border: 1px solid #eee; text-align: center }
+=======
 
+>>>>>>> b99b4aa1a9ba945210cf38761df246aeb24ad164
 
 .maininfo
 {
@@ -1510,6 +1513,17 @@ table { border-spacing: 0;  border-collapse: collapse; }
 {
     border:none!important;
 }
+<<<<<<< HEAD
+.ant-btn-lg{
+    /*line-height: 30px !important;*/
+}
+=======
+
+.ant-btn-lg{
+    /*line-height: 30px !important;*/
+}
+
+>>>>>>> b99b4aa1a9ba945210cf38761df246aeb24ad164
 .ant-modal-body
 {
     width: 90%;
@@ -1570,8 +1584,13 @@ td {
     word-break: keep-all; /* 不换行 */
     white-space: nowrap;
 }
-.ant-btn-lg {
-    padding: 6px 15px !important;
+.ant-btn-lg
+{
+    padding: 6px 15px!important;
+<<<<<<< HEAD
+=======
+
+>>>>>>> b99b4aa1a9ba945210cf38761df246aeb24ad164
 }
 /*消息中心*/
 .message-tip{
@@ -1602,6 +1621,7 @@ td {
     font-size: 16px;
     color: black;
 }
+<<<<<<< HEAD
 .message-list li .active{
     border-bottom: 2px solid #2ad0e9;
 }
@@ -1627,6 +1647,8 @@ td {
 .message-item-detail{
     padding: 20px;
 }
+=======
+>>>>>>> b99b4aa1a9ba945210cf38761df246aeb24ad164
 .ant-pagination-item, .ant-pagination-item-link, .ant-pagination-item-link
 {
     border-radius: 50%!important;
@@ -1654,7 +1676,9 @@ td {
 {
     border:1px solid #D9D9D9!important;
 }
+<<<<<<< HEAD
 
+=======
 .otherdetail-content
 {
     width:75%;
@@ -1702,3 +1726,4 @@ td {
     content: ' '!important;
     display: none;
 }
+>>>>>>> b99b4aa1a9ba945210cf38761df246aeb24ad164
