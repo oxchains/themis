@@ -30,7 +30,6 @@ class Selldetail extends Component {
         this.handleSubmit = this.handleSubmit.bind(this)
         // this.handlePayway = this.handlePayway.bind(this)
 
-
     }
     handelChange(e){
         const data = this.props.all.notice || [];

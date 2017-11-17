@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import {Alert} from 'react-bootstrap';
 import Chat from './chat';
 import QRCode from 'qrcode.react'
-import { Upload, Button, Icon, Modal} from 'antd';
+import {Upload, Button, Icon, Modal} from 'antd';
 import TabsControl from "./react_tab";
 import {ROOT_ARBITRATE} from '../actions/types'
 import {uploadEvidence} from '../actions/arbitrate';
@@ -672,9 +672,9 @@ class OrderProgress extends Component {
                        footer={[<Button key="back" size="large" onClick={close}>取消</Button>,
                            <Button key="submit" type="primary" size="large" loading={loading} onClick={this.handleNext.bind(this)}>确定</Button>,
                        ]}>
-                    托管公钥
+                    <span className="pull-left">托管公钥</span>
                     <input className="form-control" type="text" placeholder="请输入公钥地址"  ref="sellerPubAuth"/>
-                    托管私钥
+                    <span className="pull-left">托管私钥</span>
                     <input className="form-control" type="text" placeholder="请输入私钥地址" ref="sellerPriAuth"/>
                     {this.renderAlert()}
                 </Modal>
@@ -682,17 +682,30 @@ class OrderProgress extends Component {
                        footer={[<Button key="back" size="large" onClick={close}>取消</Button>,
                            <Button key="submit" type="primary" size="large" loading={loading} onClick={this.handleTransactionId.bind(this)}>确定</Button>,
                        ]}>
-                    <div className="qrcode text-center"> <QRCode  value={this.state.uri} level="H" /></div>
-                    <div className="text-center"> 扫码支付</div>
-                    <div className="col-sm-3">付款金额 </div>
-                    <div className="col-sm-9">{this.state.amount}</div>
-                    <div className="col-sm-3">付款地址 </div>
-                    <div className="col-sm-9">{this.state.p2shAddress}</div>
-                    <div className="col-sm-3">交易ID </div>
-                    <div className="col-sm-9">
-                        <input className="form-control" type="text" placeholder="请输入交易id" ref="txId"/>
+                    <div className="container-flow">
+                        <div className="row">
+                            <div className="col-sm-12">
+                                <div className="qrcode text-center"> <QRCode  value={this.state.uri} level="H" /></div>
+                                <div className="text-center"> 扫码支付</div>
+                            </div>
+                            <div className="col-sm-12">
+                                <div className="col-sm-3">付款金额 </div>
+                                <div className="col-sm-9">{this.state.amount}</div>
+                            </div>
+                            <div className="col-sm-12">
+                                <div className="col-sm-3">付款地址 </div>
+                                <div className="col-sm-9">{this.state.p2shAddress}</div>
+                            </div>
+                            <div className="col-sm-12">
+                                <div className="col-sm-3">交易ID </div>
+                                <div className="col-sm-9">
+                                    <input className="form-control" type="text" placeholder="请输入交易id" ref="txId"/>
+                                </div>
+                            </div>
+                            {this.renderAlert()}
+                        </div>
                     </div>
-                    {this.renderAlert()}
+
                 </Modal>
                 <Modal visible={evidence} title="证据存根" onOk={this.handleEvidenceSubmit.bind(this)} onCancel={close}
                        footer={[<Button key="back" size="large" onClick={close}>取消</Button>,
