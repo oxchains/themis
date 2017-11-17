@@ -10,22 +10,22 @@
 // export const ROOT_ARBITRATE = 'http://192.168.1.125:8883'
 // export const ROOT_MESSAGE = 'http://192.168.1.172:9491'
 
-export const ROOT_URLC = 'http://192.168.1.111:8081';
-export const ROOT_URLL = 'http://192.168.1.172:8083';
+// export const ROOT_URLC = 'http://192.168.1.111:8081';
+// export const ROOT_URLL = 'http://192.168.1.172:8083';
+//
+// export const ROOT_ORDER= 'http://192.168.1.112:8882';
+// export const ROOT_URLZ = 'http://192.168.1.112:8882';
+// export const ROOT_ARBITRATE = 'http://192.168.1.112:8883'
+// export const ROOT_MESSAGE = 'http://192.168.1.172:9491'
 
-export const ROOT_ORDER= 'http://192.168.1.112:8882';
-export const ROOT_URLZ = 'http://192.168.1.112:8882';
-export const ROOT_ARBITRATE = 'http://192.168.1.112:8883'
-export const ROOT_MESSAGE = 'http://192.168.1.172:9491'
 
 
-
-// export const ROOT_URLC = 'http://47.93.163.113:8081';
-// export const ROOT_URLL = 'http://47.93.163.113:8083';
-// export const ROOT_ORDER= 'http://47.93.163.113:8882';
-// export const ROOT_URLZ = 'http://47.93.163.113:8882';
-// export const ROOT_ARBITRATE = 'http://47.93.163.113:8883'
-// export const ROOT_MESSAGE = 'http://47.93.163.113:9491'
+export const ROOT_URLC = 'http://47.93.163.113:8081';
+export const ROOT_URLL = 'http://47.93.163.113:8083';
+export const ROOT_ORDER= 'http://47.93.163.113:8882';
+export const ROOT_URLZ = 'http://47.93.163.113:8882';
+export const ROOT_ARBITRATE = 'http://47.93.163.113:8883'
+export const ROOT_MESSAGE = 'http://47.93.163.113:9491'
 
 
 export const AUTH_USER = 'auth_user';                               //登录
