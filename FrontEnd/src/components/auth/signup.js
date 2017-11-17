@@ -1,3 +1,4 @@
+
 /**
  * Created by oxchain on 2017/10/18.
  */
@@ -116,7 +117,7 @@ class Signup extends Component {
             return alert("验证码是")
         }
 
-        var text = this.state.liked ? '发送验证码' : this.state.count + ' s 后重新发' ;
+        var text = this.state.liked ? '发送验证码' : this.state.count + ' s后重新发' ;
         const url = this.state.error === '操作失败' ? "/signup":"/signin"
 
         return (
@@ -138,7 +139,7 @@ class Signup extends Component {
                             </div>
                             <Field name="password" component={this.renderField} type="password" label="请输入密码" icon="lock" />
                             <div className=" ">
-                                <div className="form-style checkbox-margin">
+                                <div className=" checkbox-margin">
                                     <input type="checkbox"  defaultChecked className="checkbox-width"  onChange={this.handleChange.bind(this)}/><span> 我已阅读themis用户手册及相关法律</span>
                                 </div>
                                 <div className="">

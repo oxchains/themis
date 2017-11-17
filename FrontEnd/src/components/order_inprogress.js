@@ -5,6 +5,7 @@ import React, { Component }from 'react';
 import {connect} from 'react-redux';
 import {Pagination, Alert, Upload, Button, Icon, Modal} from 'antd';
 // import {Alert, Upload, Button, Icon, Modal} from 'antd';
+import {ROOT_ARBITRATE} from '../actions/types'
 import {uploadEvidence} from '../actions/arbitrate';
 import {fetchNoCompletedOrders} from '../actions/order';
 
@@ -84,7 +85,7 @@ class OrderInProgress extends Component {
     renderrow(){
         return this.props.not_completed_orders.map((item, index) =>{
             return(
-                <tr key={index}>
+                <tr key={index} >
                     <td>{item.friendUsername}</td>
                     <td>{item.id}</td>
                     <td>{item.orderType}</td>
@@ -112,7 +113,7 @@ class OrderInProgress extends Component {
         const totalNum = not_completed_orders && not_completed_orders[0].pageCount;
         const { uploading, visible} = this.state;
         const props = {
-            action: 'http://192.168.1.125:8883/arbitrate/uploadEvidence',
+            action:`${ROOT_ARBITRATE}/arbitrate/uploadEvidence`,
             onRemove: (file) => {
                 this.setState(({ fileList }) => {
                     const index = fileList.indexOf(file);
@@ -137,7 +138,7 @@ class OrderInProgress extends Component {
                     <div className="orderType text-center g-pt-50 g-pb-50">
                         <ul className="row">
                             <li className="col-xs-6"> <a className="orderTypeBar g-pb-3" href="/orderinprogress">进行中的交易</a></li>
-                            <li className="col-xs-6"><a href="/ordercompleted">已完成的交易</a></li>
+                            <li className="col-xs-6"><a className="g-pb-3" href="/ordercompleted">已完成的交易</a></li>
                         </ul>
                     </div>
                     <div className="table-responsive">
@@ -185,7 +186,6 @@ class OrderInProgress extends Component {
                     </Modal>
                 </div>
             </div>
-
         )
     }
 }

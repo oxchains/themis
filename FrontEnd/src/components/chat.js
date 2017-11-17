@@ -4,6 +4,7 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import {ROOT_CHAT, ROOT_SOCKET} from '../actions/types'
 import $ from 'jquery';
 import {fetchTradePartnerMessage} from '../actions/order';
 
@@ -15,7 +16,7 @@ class Chat extends Component{
         const senderName=localStorage.getItem("loginname"); //当前用户名
         let receiverId = partner.partnerId;// 当前接收者id
         let receiverName=partner.friendUsername ;//   当前接收者name
-        let ws = new WebSocket("ws://192.168.1.125:9999/ws?"+partner.userId +"_"+receiverId+"_"+partner.id); //链接websocket
+        let ws = new WebSocket(`${ROOT_SOCKET}/ws?`+partner.userId +"_"+receiverId+"_"+partner.id); //链接websocket
         let flag=true;
         let reconnect = new Date().getTime(), time;
         let timeFlag=true;
@@ -24,7 +25,7 @@ class Chat extends Component{
                 //获取聊天记录
                 $.ajax({
                     type :"POST",
-                    url :'http://192.168.1.125:8881/chat/getChatHistroy',
+                    url :`${ROOT_CHAT}/chat/getChatHistroy`,
                     data:{senderId:senderId, receiverId:receiverId, orderId:partner.id},
                     beforeSend: function(request) {
                         request.setRequestHeader("Authorization", 'Bearer '+token);

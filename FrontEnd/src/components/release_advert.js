@@ -261,7 +261,7 @@ function mapStateToProps(state) {
 }
 
 // const reduxSignupForm = reduxForm({
-//     form: 'SignForm',
+//     form: 'form',
 //      validate
 // })(Releaseadvert);
 

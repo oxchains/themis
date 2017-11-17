@@ -68,7 +68,10 @@ public class JwtAuthentication implements Authentication {
 
     @Override
     public String getName() {
-        return user.getUsername();
+        if (user != null) {
+            return user.getUsername();
+        }
+        return null;
     }
 
 

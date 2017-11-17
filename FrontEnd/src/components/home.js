@@ -13,7 +13,7 @@ class Home extends Component {
         this.renderArray = this.renderArray.bind(this)
     }
     componentWillMount(){
-     this.props.fetctHome({})
+     this.props.fetctHome()
     }
     renderRows(){
         const arraydata = this.props.all || []    //列表数组的数据
@@ -21,7 +21,7 @@ class Home extends Component {
         return(
                 <div  key={index} className="list-border">
                     <div className="title-bgc">
-                        <img src={item.src ? item.src : "/public/img/default.png"} alt=""/>
+                        <img src={item.src ? item.src : "/public/img/touxiang.png"} alt=""/>
                         <p>{item.loginname}</p>
                     </div>
                     <div className="col-lg-4">
