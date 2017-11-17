@@ -43,7 +43,7 @@ public class User {
 
     private Integer loginStatus;
 
-    private Date createTime;
+    private String createTime;
 
     @Column(length = 64)
     private String image;
@@ -171,11 +171,11 @@ public class User {
         this.token = token;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 

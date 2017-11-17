@@ -40,7 +40,7 @@ class Signup extends Component {
     handleFormSubmit({ loginname, mobilephone, email, password }) {
         if(loginname && password && mobilephone)
             this.props.signupUser({ loginname, mobilephone, email, password }, err => {
-                this.setState({ isModalOpen: true, error: err, actionResult: '注册失败'||'注册成功!', spin:false });
+                this.setState({ isModalOpen: true, error: err, actionResult: err||'注册成功!', spin:false });
             });
     }
 
