@@ -88,9 +88,9 @@ class OrderCompleted extends Component {
                             </tbody>
                         </table>
                     </div>
-                    <div className="pagecomponent">
-                        <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.handlePagination(e)}/>
-                    </div>
+                </div>
+                <div className="pagecomponent">
+                    <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.handlePagination(e)}/>
                 </div>
             </div>
         )

@@ -124,9 +124,9 @@ class RefereeList extends Component {
                                 </tbody>
                             </table>
                         </div>
-                        <div className="pagecomponent">
-                            <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.handlePagination(e)}/>
-                        </div>
+                    </div>
+                    <div className="pagecomponent">
+                        <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.handlePagination(e)}/>
                     </div>
                 </div>
                 <Modal show={this.state.show} onHide={close} container={this} aria-labelledby="contained-modal-title">

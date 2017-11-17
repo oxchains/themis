@@ -15,7 +15,9 @@ class Header extends Component{
     }
     componentWillMount() {
         const userId=localStorage.getItem("userId")
-        this.props.fetchMessageNumber({userId})
+        if(this.props.authenticated){
+            this.props.fetchMessageNumber({userId})
+        }
     }
     renderUserInfo() {
         const role=localStorage.getItem('role')

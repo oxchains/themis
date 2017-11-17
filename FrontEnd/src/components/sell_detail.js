@@ -28,9 +28,7 @@ class Selldetail extends Component {
         }
         this.handelChange = this.handelChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
-        this.handlePayway = this.handlePayway.bind(this)
-
-
+        // this.handlePayway = this.handlePayway.bind(this)
     }
     handelChange(e){
         const data = this.props.all.notice || [];
@@ -193,7 +191,6 @@ class Selldetail extends Component {
 
 
 function mapStateToProps(state) {
-    console.log(state)
     return {
         data:state.advert.data,     //点击出售返回的data
         all:state.advert.all        //广告详情页面加载时的数据
