@@ -3,9 +3,10 @@
  */
 import React, { Component }from 'react';
 import {connect} from 'react-redux';
+import { Link } from 'react-router-dom';
 import {Pagination, Alert, Upload, Button, Icon, Modal} from 'antd';
 // import {Alert, Upload, Button, Icon, Modal} from 'antd';
-import {ROOT_ARBITRATE} from '../actions/types'
+import {ROOT_ARBITRATE} from '../actions/types';
 import {uploadEvidence} from '../actions/arbitrate';
 import {fetchNoCompletedOrders} from '../actions/order';
 
@@ -21,7 +22,7 @@ class OrderInProgress extends Component {
             pageSize:8, //每页显示的条数8条
             fileList: [],
             uploading: false,
-        }
+        };
         this.renderrow = this.renderrow.bind(this);
     }
     componentWillMount() {
@@ -30,21 +31,21 @@ class OrderInProgress extends Component {
             userId:userId,
             pageNum:1,
             pageSize:this.state.pageSize, //每页显示的条数8条
-        }
+        };
         this.props.fetchNoCompletedOrders({formData});
     }
     handleEvidence(item){
         this.setState({
             id:item,
             visible: true,
-        })
+        });
     }
     handleEvidenceSubmit(){
         const evidenceDes=this.refs.voucherDes.value;
-        if(evidenceDes){
+        const {fileList} = this.state;
+        if(evidenceDes||fileList){
             const userId= localStorage.getItem('userId');
             const id=this.state.id;
-            const {fileList} = this.state;
             const formData = new FormData();
             fileList.forEach((file) => {
                 formData.append('files', file);
@@ -56,13 +57,13 @@ class OrderInProgress extends Component {
                 uploading: true,
             });
             this.props.uploadEvidence({formData}, (msg)=>{
-                console.log(msg)
-                if(msg.status==1){
+                console.log(msg);
+                if(msg.status == 1){
                     this.setState({
                         fileList: [],
                         uploading: false,
                     });
-                    window.location.href='/orderinprogress'
+                    window.location.href='/orderinprogress';
                 }
                 else{
                     this.setState({
@@ -70,7 +71,7 @@ class OrderInProgress extends Component {
                         uploading: false,
                     });
                 }
-            })
+            });
         }
     }
     handlePagination(pageNum) {
@@ -79,7 +80,7 @@ class OrderInProgress extends Component {
             userId:userId,
             pageNum:pageNum,
             pageSize:this.state.pageSize
-        }
+        };
         this.props.fetchNoCompletedOrders({formData}, ()=>{});
     }
     renderrow(){
@@ -96,18 +97,18 @@ class OrderInProgress extends Component {
                     <td><button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleOrderDetail.bind(this, item)}>详情</button></td>
                     <td>{item.orderStatus == 3 || item.orderStatus == 8 ? <button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleEvidence.bind(this, item.id)}>仲裁</button> : <div></div>}</td>
                 </tr>
-                )
-        })
+                );
+        });
     }
     handleOrderDetail(item){
         const userId= localStorage.getItem('userId');
-        const orderData={id:item.id, userId:userId, partnerId:item.sellerId == userId ? item.buyerId : item.sellerId, friendUsername:item.friendUsername}
+        const orderData={id:item.id, userId:userId, partnerId:item.sellerId == userId ? item.buyerId : item.sellerId, friendUsername:item.friendUsername};
         localStorage.setItem("partner", JSON.stringify(orderData));
         window.location.href='/orderprogress';
     }
     render() {
         let close = () => {
-            this.setState({visible:false})
+            this.setState({visible:false});
         };
         const not_completed_orders = this.props.not_completed_orders;
         const totalNum = not_completed_orders && not_completed_orders[0].pageCount;
@@ -137,8 +138,8 @@ class OrderInProgress extends Component {
                 <div className="container g-pb-150">
                     <div className="orderType text-center g-pt-50 g-pb-50">
                         <ul className="row">
-                            <li className="col-xs-6"> <a className="orderTypeBar g-pb-3" href="/orderinprogress">进行中的交易</a></li>
-                            <li className="col-xs-6"><a className="g-pb-3" href="/ordercompleted">已完成的交易</a></li>
+                            <li className="col-xs-6"> <Link className="orderTypeBar g-pb-3" to="/orderinprogress">进行中的交易</Link></li>
+                            <li className="col-xs-6"><Link className="g-pb-3" to="/ordercompleted">已完成的交易</Link></li>
                         </ul>
                     </div>
                     <div className="table-responsive">
@@ -182,11 +183,11 @@ class OrderInProgress extends Component {
                             </Upload>
                         </div>
                         <textarea className="form-control" name="" id="" cols="30" rows="10" placeholder="请输入此次仲裁重要部分证据和备注" ref="voucherDes"></textarea>
-                        {this.state.alertVisible ? <Alert message="Error" type="error" showIcon /> :""}
+                        {this.state.alertVisible ? <Alert message="上传图片超出限制" type="error" showIcon /> :""}
                     </Modal>
                 </div>
             </div>
-        )
+        );
     }
 }
 function mapStateToProps(state) {

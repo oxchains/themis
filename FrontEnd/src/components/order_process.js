@@ -5,10 +5,10 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Alert} from 'react-bootstrap';
 import Chat from './chat';
-import QRCode from 'qrcode.react'
-import {Upload, Button, Icon, Modal} from 'antd';
+import QRCode from 'qrcode.react';
+import {Upload, Button, Icon, Modal, message} from 'antd';
 import TabsControl from "./react_tab";
-import {ROOT_ARBITRATE} from '../actions/types'
+import {ROOT_ARBITRATE} from '../actions/types';
 import {uploadEvidence} from '../actions/arbitrate';
 import {fetchOrdersDetails, fetchTradePartnerMessage, addPaymentInfo, addTransactionId, fetchKey, confirmOrder, confirmSendMoney, releaseBtc, confirmGoods, saveComment, cancelOrders} from '../actions/order';
 class OrderProgress extends Component {
@@ -42,9 +42,9 @@ class OrderProgress extends Component {
     }
     componentWillMount() {
         const message=JSON.parse(localStorage.getItem("partner"));
-        const userId=localStorage.getItem("userId")
-        const data={id:message.id, userId:userId}
-        const partnerName=message.friendUsername
+        const userId=localStorage.getItem("userId");
+        const data={id:message.id, userId:userId};
+        const partnerName=message.friendUsername;
         this.setState({partnerName:partnerName});
         this.props.fetchOrdersDetails({data}, (msg)=>{
             console.log(msg);
@@ -77,11 +77,11 @@ class OrderProgress extends Component {
                     break;
             }
         });
-        const partner={userId:message.partnerId}
+        const partner={userId:message.partnerId};
         this.props.fetchTradePartnerMessage({partner});
         const orderId={
             id:this.state.orderId
-        }
+        };
     }
     renderOrderStatus1() {
         return (
@@ -157,7 +157,7 @@ class OrderProgress extends Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
     renderOrderStatus2(){
         return(
@@ -167,11 +167,11 @@ class OrderProgress extends Component {
                       <button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleEvidence.bind(this)}>THEMIS仲裁</button>
                   </div>
               </div>
-            )
+            );
     }
     renderPartnerMessage(partner){
         if(partner==null){
-            return <div>loading...</div>
+            return <div>loading...</div>;
         }
         return(
             <div className="container-fluid" style={{"height":"381.42px"}}>
@@ -208,13 +208,13 @@ class OrderProgress extends Component {
                     </li>
                 </ul>
             </div>
-        )
+        );
     }
     renderOrderMessageDetails(msg){
         if(msg==null){
             return(
                 <div>loading...</div>
-            )
+            );
         }
         return(
             <div>
@@ -230,19 +230,19 @@ class OrderProgress extends Component {
                     </ul>
                 </div>
             </div>
-        )
+        );
     }
     renderAlert(){
         return(
             <div>
                 {this.state.error == true ? <div className="col-xs-12 alert alert-danger alert-dismissable text-center">{this.state.errorMessage}</div> : ""}
             </div>
-        )
+        );
     }
     renderDangerAlert(){
         return (
             <Alert bsStyle="success" onDismiss={() => {
-                this.setState({alertVisible: false})
+                this.setState({alertVisible: false});
             }}>
                 <h5>确定已付款给卖家？</h5>
                 <div>
@@ -254,39 +254,39 @@ class OrderProgress extends Component {
                     </button>
                 </div>
             </Alert>
-        )
+        );
     }
     handleAlert(){
         this.setState({
             alertVisible: !this.state.alertVisible,
-        })
+        });
     }
     handlePaymentInfo(){
         const orderId={
             id:this.state.orderId
-        }
+        };
         this.props.fetchKey({orderId}, (msg)=>{
              if(msg.status == 1){
-                 this.setState({uri:msg.data.uri, p2shAddress:msg.data.p2shAddress, amount:msg.data.amount, shownext: true})
+                 this.setState({uri:msg.data.uri, p2shAddress:msg.data.p2shAddress, amount:msg.data.amount, shownext: true});
              }
              else {
-                 this.setState({show: true})
+                 this.setState({show: true});
              }
-        })
+        });
     }
     handleNext(){
         const sellerPubAuth=this.refs.sellerPubAuth.value;
         const sellerPriAuth=this.refs.sellerPriAuth.value;
         const orderId=this.state.orderId;
-        console.log(sellerPubAuth)
+        console.log(sellerPubAuth);
         if(sellerPubAuth && sellerPriAuth){
              const paymentInfo={
                  sellerPubAuth:sellerPubAuth,
                  sellerPriAuth:sellerPriAuth,
                  orderId:orderId
-             }
+             };
              this.props.addPaymentInfo({paymentInfo}, (msg)=>{
-                 console.log(msg)
+                 console.log(msg);
                  if(msg.status == 1){
                      this.setState({uri:msg.data.uri, error:false, p2shAddress:msg.data.p2shAddress, amount:msg.data.amount, show:false, shownext:true});
                  }
@@ -294,9 +294,9 @@ class OrderProgress extends Component {
                     this.setState({
                         error:true,
                         errorMessage:msg.message
-                    })
+                    });
                  }
-             })
+             });
 
         }
     }
@@ -305,130 +305,130 @@ class OrderProgress extends Component {
         const txIdInfo={
              txId:txId,
              id:this.state.orderId
-        }
-        const regex=/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{64}$/
+        };
+        const regex=/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{64}$/;
         if(txId){
              this.props.addTransactionId({txIdInfo}, (msg)=>{
-                 console.log(msg)
+                 console.log(msg);
                  if(regex.test(txId)){
-                     this.setState({error:false, show:false, shownext:false, confirm:false})
+                     this.setState({error:false, show:false, shownext:false, confirm:false});
                  }
                  else{
                      this.setState({
                          error:true,
                          errorMessage:"请输入正确的交易ID"
-                     })
+                     });
                  }
-             })
+             });
         }
     }
     handleConfirmOrder(){
-        const userId=localStorage.getItem('userId')
+        const userId=localStorage.getItem('userId');
         const orderId={
             userId:userId,
             id:this.state.orderId
-        }
+        };
         this.props.confirmOrder({orderId}, (msg)=>{
-            console.log(msg)
+            console.log(msg);
              if(msg.status == 1){
-                  this.setState({ orderStatus:this.state.orderStatus+1})
+                  this.setState({ orderStatus:this.state.orderStatus+1});
              }
              else{
-                 alert("比特币进入themis托管地址需要一定时间，请耐心等待。。。")
+                 message("比特币进入themis托管地址需要一定时间，请耐心等待。。。");
              }
        });
     }
     handleSendMoney(){
         const orderId={
             id:this.state.orderId
-        }
+        };
         this.props.confirmSendMoney({orderId}, (msg)=>{
               if(msg.status == 1){
-                  this.setState({ orderStatus:this.state.orderStatus+1})
+                  this.setState({ orderStatus:this.state.orderStatus+1});
               }
-        })
+        });
     }
     handlereleaseBtc(){
-        const userId=localStorage.getItem('userId')
+        const userId=localStorage.getItem('userId');
         const releaseData={
             id:this.state.orderId,
             userId:userId
-        }
+        };
         this.props.releaseBtc({releaseData}, (msg) => {
-            console.log(msg)
+            console.log(msg);
             if(msg.status == 1){
-                this.setState({orderStatus:this.state.orderStatus+1})
+                this.setState({orderStatus:this.state.orderStatus+1});
             }
             else{
                 this.setState({
                     error:true,
                     errorMessage:msg.message
-                })
+                });
             }
-        })
+        });
 
     }
     handleConfirmGoods(){
-        const userId=localStorage.getItem('userId')
+        const userId=localStorage.getItem('userId');
         const confirmGoodsData={
             id:this.state.orderId,
             userId:userId
-        }
+        };
         this.props.confirmGoods({confirmGoodsData}, (msg)=>{
-            console.log(msg)
+            console.log(msg);
               if(msg.status==1){
-                   this.setState({ orderStatus:this.state.orderStatus+1})
+                   this.setState({ orderStatus:this.state.orderStatus+1});
               }
-        })
+        });
     }
     handleRadioValue(e){
-        this.setState({comment:e.target.value})
+        this.setState({comment:e.target.value});
     }
     handleComment(){
-         const userId=localStorage.getItem('userId')
+         const userId=localStorage.getItem('userId');
          const commentData={
              id:this.state.orderId,
              status:this.state.comment,
              content:this.refs.comment.value,
              userId:userId
-         }
+         };
 
          this.props.saveComment({commentData}, (msg)=>{
              if(msg.status==1){
-               this.setState({ orderStatus:this.state.orderStatus+1})
+               this.setState({ orderStatus:this.state.orderStatus+1});
              }
-         })
+         });
     }
     handleCancleOrders(){
-        const userId=localStorage.getItem('userId')   
+        const userId=localStorage.getItem('userId');
         const cancelData={
             id:this.state.orderId,                    
             userId:userId                             
-        }
+        };
         if(this.state.orderStatus ==3){
             this.props.cancelOrders({cancelData}, (msg)=>{
                 if(msg.status==1){
-                    this.setState({ orderStatus:8})
+                    this.setState({ orderStatus:8});
                 }
-            })
+            });
         }
         this.props.cancelOrders({cancelData}, (msg)=>{
              if(msg.status==1){
-                 this.setState({ orderStatus:7})
+                 this.setState({ orderStatus:7});
              }
-        })
+        });
     }
     handleEvidence(){
         this.setState({
             evidence:true,
-        })
+        });
     }
     handleEvidenceSubmit(){
         const evidenceDes=this.refs.voucherDes.value;
-        if(evidenceDes){
+        const {fileList} = this.state;
+        if(evidenceDes || fileList){
             const userId= localStorage.getItem('userId');
             const id=this.state.orderId;
-            const {fileList} = this.state;
             const formData = new FormData();
             fileList.forEach((file) => {
                 formData.append('files', file);
@@ -446,23 +446,24 @@ class OrderProgress extends Component {
                         fileList: [],
                         uploading: false,
                     });
-                    window.location.href='/orderinprogress'
+                    window.location.href='/orderinprogress';
                 }
                 else{
                     this.setState({
                         uploading: false,
                     });
+                    alert("上传图片数量超出限制");
                 }
-            })
+            });
         }
     }
     render(){
-        console.log('status: ' + this.state.orderStatus)
+        console.log('status: ' + this.state.orderStatus);
         let close = () => {
-            this.setState({show:false, shownext:false, evidence:false, error:false})
+            this.setState({show:false, shownext:false, evidence:false, error:false});
         };
         if(this.props.orders_details===null){
-            return <div className="text-center h3">loading....</div>
+            return <div className="text-center h3">loading....</div>;
         }
         const orders_details = this.props.orders_details;
         const orderType = orders_details && orders_details.orderType;
@@ -470,7 +471,7 @@ class OrderProgress extends Component {
         const money=orders_details && orders_details.money;
         const price=orders_details && orders_details.notice.price;
         const partner=this.props.partner;
-        console.log(this.props.orders_details)
+        console.log(this.props.orders_details);
         const { uploading, evidence, show, shownext, loading} = this.state;
         const props = {
             action: `${ROOT_ARBITRATE}/arbitrate/uploadEvidence`,
@@ -718,12 +719,13 @@ class OrderProgress extends Component {
                             <Button>
                                 <Icon type="upload" /> 聊天截图
                             </Button>
+                            <div>最多可上传5张图片</div>
                         </Upload>
                     </div>
                     <textarea className="form-control" name="" id="" cols="30" rows="10" placeholder="请输入此次仲裁重要部分证据和备注" ref="voucherDes"></textarea>
                 </Modal>
             </div>
-        )
+        );
     }
 }
 
@@ -732,7 +734,7 @@ function mapStateToProps(state) {
         orders_details: state.order.orders_details,
         partner:state.order.partner_message,
         payment_info:state.order.payment_info
-    }
+    };
 }
 export default connect(mapStateToProps, {fetchOrdersDetails, fetchTradePartnerMessage, addPaymentInfo, addTransactionId, fetchKey, confirmOrder, confirmSendMoney, releaseBtc, confirmGoods, saveComment, cancelOrders, uploadEvidence })(OrderProgress);
 

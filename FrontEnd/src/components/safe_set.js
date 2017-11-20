@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 import { Modal, Button } from 'antd';
-import { GetverifyCodePhone, ChangePhoneSave, ChangePasswordSave} from '../actions/auth'
+import { GetverifyCodePhone, ChangePhoneSave, ChangePasswordSave} from '../actions/auth';
 class Safeset extends Component {
     constructor(props) {
         super(props);
@@ -16,8 +16,8 @@ class Safeset extends Component {
             visiblepsw: false,
             count: 60,
             liked: true,
-        }
-        this.handlesend = this.handlesend.bind(this)
+        };
+        this.handlesend = this.handlesend.bind(this);
     }
     showModal = () => {
         this.setState({
@@ -30,35 +30,35 @@ class Safeset extends Component {
         });
     }
     handleOk = () => {
-        const loginname = localStorage.getItem("loginname")
-        const mobilephone = localStorage.getItem("phonenum")
+        const loginname = localStorage.getItem("loginname");
+        const mobilephone = localStorage.getItem("phonenum");
 
         this.props.ChangePhoneSave({loginname, mobilephone}, err=>{
             this.setState({ loading: true });
             setTimeout(() => {
                 this.setState({ loading: false, visible: false });
             }, 3000);
-        })
-    }
+        });
+    };
     handleOkPSW = () => {
-        const loginname = localStorage.getItem("loginname")
-        const password = this.refs.password.value
-        const newPassword = this.refs.newPassword.value
+        const loginname = localStorage.getItem("loginname");
+        const password = this.refs.password.value;
+        const newPassword = this.refs.newPassword.value;
 
         this.props.ChangePasswordSave({loginname, password, newPassword}, err=>{
             this.setState({ loadingpsw: true });
             setTimeout(() => {
                 this.setState({ loadingpsw: false, visiblepsw: false });
             }, 3000);
-        })
-    }
+        });
+    };
     handleCancel = () => {
         this.setState({ visible: false });
-    }
+    };
 
     handleCancelPSW = () => {
         this.setState({ visiblepsw: false });
-    }
+    };
     handlesend(){
         if(this.state.liked){
             this.timer = setInterval(function () {
@@ -79,15 +79,15 @@ class Safeset extends Component {
         }
 
 
-        const loginname = localStorage.getItem("loginname")
-        const phonenum = localStorage.getItem("phonenum")
+        const loginname = localStorage.getItem("loginname");
+        const phonenum = localStorage.getItem("phonenum");
 
-        this.props.GetverifyCodePhone({loginname, phonenum}, ()=>{})
+        this.props.GetverifyCodePhone({loginname, phonenum}, ()=>{});
     }
     phoneChange(e){
-        console.log(e.target.value)
-        const phonenum = localStorage.setItem("phonenum", e.target.value)
-        var regex = /^1[3|4|5|7|8][0-9]\d{4,8}$/
+        console.log(e.target.value);
+        const phonenum = localStorage.setItem("phonenum", e.target.value);
+        var regex = /^1[3|4|5|7|8][0-9]\d{4,8}$/;
         if (regex.test(e.target.value) ) {
 
         } else{

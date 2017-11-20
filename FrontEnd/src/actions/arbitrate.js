@@ -17,7 +17,7 @@ import {
  */
 
 export function fetchArbitrateList({userIdDate}) {
-    console.log(userIdDate);
+
     return function(dispatch) {
         axios({
             method:'post',
@@ -25,7 +25,6 @@ export function fetchArbitrateList({userIdDate}) {
             data:userIdDate,
             headers: getAuthorizedHeader()
         }).then((res) => {
-            console.log(res);
             if (res.data.status == 1) {
                 dispatch({
                     type: FETCH_ARBITRATE_LIST,
@@ -57,9 +56,10 @@ export function uploadEvidence({formData}, callback) {
                 dispatch({
                     type: UPLOAD_EVIDENCE,
                     payload: res.data.data
+
                 });
-                callback(res.data);
             }
+            callback(res.data);
         }).catch( err => dispatch(requestError(err.message)) );
     };
 }

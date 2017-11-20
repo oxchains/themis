@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { Badge } from 'antd';
 import { connect } from 'react-redux';
 import {fetchMessageNumber} from "../../actions/message";
@@ -26,14 +26,14 @@ class Header extends Component{
             return (
                 <div className="navbar-custom-menu">
                     <ul className="nav navbar-nav">
-                        {role == 3 ?  <li className="order-style" style={{width:"135px"}}><a href="/refereelist">消息列表</a></li> : "" }
+                        {role == 3 ?  <li className="order-style" style={{width:"135px"}}><Link to="/refereelist">仲裁列表</Link></li> : "" }
                         <li className="order-style">
-                            <a href="/messagenotice">
+                            <Link to="/messagenotice">
                                 消息{this.props.message_number !=undefined && this.props.message_number>0 ? <Badge count={this.props.message_number} /> :"" }
-                            </a>
+                            </Link>
                         </li>
-                        <li className="order-style"><a href="/orderinprogress">订单</a></li>
-                        <li className="order-style"><a href="/orderinprogress">钱包</a></li>
+                        <li className="order-style"><Link to="/orderinprogress">订单</Link></li>
+                        <li className="order-style"><Link to="/orderinprogress">钱包</Link></li>
                         <li className="ordermenu-style dropdown user user-menu">
                             <a href="#" className="dropdown-toggle" data-toggle="dropdown">
                                 <span className="hidden-xs">{loginname}</span>

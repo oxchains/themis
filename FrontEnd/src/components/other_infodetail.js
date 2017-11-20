@@ -13,28 +13,28 @@ class OtherInfodetail extends Component {
             buttonStatus:0,
             message:'',
             visible: false
-        }
-        this.onlineBuy =  this.onlineBuy.bind(this)
-        this.onlineSell =  this.onlineSell.bind(this)
-        this.toggleButton =  this.toggleButton.bind(this)
+        };
+        this.onlineBuy =  this.onlineBuy.bind(this);
+        this.onlineSell =  this.onlineSell.bind(this);
+        this.toggleButton =  this.toggleButton.bind(this);
     }
     onlineBuy(){
         this.setState({
             status : 1
-        })
+        });
     }
     onlineSell(){
         this.setState({
             status : 2
-        })
+        });
     }
     toggleButton(buttonStatus) {
         const lastStatus = this.state.buttonStatus;
-        const buttonText = buttonStatus === 1?'信任' :'屏蔽'
-        const name = 'TA' //从后端得到该用户名
+        const buttonText = buttonStatus === 1?'信任' :'屏蔽';
+        const name = 'TA' ;//从后端得到该用户名
         lastStatus === buttonStatus
             ? this.setState({ visible:true, buttonStatus: 0, message:`您已取消${buttonText}`})
-            : this.setState({ visible:true, buttonStatus, message:`您已${buttonText}${name}`})
+            : this.setState({ visible:true, buttonStatus, message:`您已${buttonText}${name}`});
     }
     handleOk = () => {
         this.setState({

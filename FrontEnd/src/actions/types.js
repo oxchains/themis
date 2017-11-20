@@ -22,7 +22,6 @@ export const ROOT_MESSAGE = 'http://47.93.163.113:9491';
 
 
 
-
 export const AUTH_USER = 'auth_user';                               //登录
 export const UNAUTH_USER = 'unauth_user';                           //退出登录
 export const AUTH_ERROR = 'auth_error';                             //登录失败

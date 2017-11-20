@@ -111,8 +111,9 @@ class Chat extends Component{
                 ws.close();
                 $(".chat-head").html("连接断开");
             } else {
+
                 $(".chat-head").html("重新连接中...");
-                let ws = new WebSocket("ws://192.168.1.125:9999/ws?"+partner.userId +"_"+receiverId+"_"+partner.id); //链接websocket
+                let ws = new WebSocket(`${ROOT_SOCKET}/ws?`+partner.userId +"_"+receiverId+"_"+partner.id); //链接websocket
                 $(".chat-head").html(receiverName);
                 ws.onopen = tempWs.onopen;
                 ws.onmessage = tempWs.onmessage;
@@ -125,11 +126,6 @@ class Chat extends Component{
             //发送一个文本消息
             var chatContent = $(".message").val();
             if(chatContent){
-                var message = JSON.stringify({msgType:1, senderId: senderId, senderName: senderName, receiverId: receiverId, chatContent: chatContent, orderId:partner.id});
-                sendMessage(senderName, chatContent);
-                ws.send(message);
-                $(".message").val('');
-                scrollTop();
                 if(timeFlag){
                     showTime();
                     scrollTop();
@@ -138,6 +134,11 @@ class Chat extends Component{
                         timeFlag=true;
                     }, 600000);
                 }
+                var message = JSON.stringify({msgType:1, senderId: senderId, senderName: senderName, receiverId: receiverId, chatContent: chatContent, orderId:partner.id});
+                sendMessage(senderName, chatContent);
+                ws.send(message);
+                $(".message").val('');
+                scrollTop();
             }
         };
         //发送消息
