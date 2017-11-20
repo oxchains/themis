@@ -1312,7 +1312,7 @@ html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
     /*margin-right: 20px;*/
     color: black;
 }
-.order-style>a:hover
+.order-style>a:hover,.order-style>a:active
 {
     color: black!important;
     background-color: #fff!important;
