@@ -7,7 +7,7 @@ import { Select } from 'antd';
 import { Pagination } from 'antd';
 import 'antd/dist/antd.css';
 import { connect } from 'react-redux';
-import { fetcAdvertSeach, fetctArray} from '../actions/releaseadvert'
+import { fetcAdvertSeach, fetctArray} from '../actions/releaseadvert';
 
 
 class Buybtc extends Component {
@@ -20,16 +20,16 @@ class Buybtc extends Component {
             country: '',
             currency:'',
             payway:''
-        }
-        this.handleRow = this.handleRow.bind(this)
-        this.renderRowscountry = this.renderRowscountry.bind(this)
-        this.renderRowscurrency = this.renderRowscurrency.bind(this)
-        this.renderRowspayway = this.renderRowspayway.bind(this)
-        this.handleSeach = this.handleSeach.bind(this)
-        this.onPagination = this.onPagination.bind(this)
+        };
+        this.handleRow = this.handleRow.bind(this);
+        this.renderRowscountry = this.renderRowscountry.bind(this);
+        this.renderRowscurrency = this.renderRowscurrency.bind(this);
+        this.renderRowspayway = this.renderRowspayway.bind(this);
+        this.handleSeach = this.handleSeach.bind(this);
+        this.onPagination = this.onPagination.bind(this);
     }
     componentWillMount(){
-        const pageNum = this.state.current
+        const pageNum = this.state.current;
         // const searchType = this.state.searchtype
         this.props.fetcAdvertSeach({pageNum}, ()=>{ });
 
@@ -39,15 +39,15 @@ class Buybtc extends Component {
         this.props.fetcAdvertSeach({pageNum}, ()=>{});
     }
     handleSeach(){
-        const pageNum =  this.state.current
-        const searchType = this.state.searchtype
-        const location = this.state.country
-        const currency = this.state.currency
-        const payType = this.state.payway
+        const pageNum =  this.state.current;
+        const searchType = this.state.searchtype;
+        const location = this.state.country;
+        const currency = this.state.currency;
+        const payType = this.state.payway;
         this.props.fetcAdvertSeach({searchType, location, currency, payType, pageNum}, ()=>{});
     }
     handleRow(){
-        const arraydata = this.props.all.pageList || []    //列表数组的数据
+        const arraydata = this.props.all.pageList || [];    //列表数组的数据
         return arraydata.map((item, index) => {
             return(
                 <tr key={index} className="contentborder">
@@ -60,8 +60,8 @@ class Buybtc extends Component {
                         <button className="tablebuy" ><a href={`/buydetail:${item.id}`}>购买</a></button>
                     </td>
                 </tr>
-            )
-        })
+            );
+        });
     }
     renderRowstype() {
         const searchTypeList = this.props.array.searchTypeList || [];
@@ -104,7 +104,7 @@ class Buybtc extends Component {
         });
     }
     render() {
-        const totalNum = this.props.all.rowCount
+        const totalNum = this.props.all.rowCount;
 
 
         return (

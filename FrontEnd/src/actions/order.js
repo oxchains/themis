@@ -27,7 +27,7 @@ import {
  */
 
 export function fetchNoCompletedOrders({formData}) {
-    console.log(formData)
+    console.log(formData);
     return function(dispatch) {
         axios({
             method:'post',
@@ -39,10 +39,10 @@ export function fetchNoCompletedOrders({formData}) {
                 dispatch({
                     type: FETCH_NOT_COMPLETED_ORDERS,
                     payload: res.data.data
-                })
+                });
             }
         }).catch( err => dispatch(requestError(err.message)) );
-    }
+    };
 }
 
 /**
@@ -58,15 +58,15 @@ export function fetchCompletedOrders({userId}) {
             data:userId,
             headers: getAuthorizedHeader()
         }).then((res) => {
-            console.log(res)
+            console.log(res);
             if (res.data.status == 1) {
                 dispatch({
                     type: FETCH_COMPLETED_ORDERS,
                     payload: res.data.data
-                })
+                });
             }
         }).catch( err => dispatch(requestError(err.message)) );
-    }
+    };
 }
 
 /**
@@ -81,16 +81,16 @@ export function fetchOrdersDetails({data}, callback) {
             data: data,
             headers: getAuthorizedHeader()
         }).then((res) => {
-            console.log(res)
+            console.log(res);
             if (res.data.status == 1) {
                 callback(res.data.data);
                 dispatch({
                     type: FETCH_ORDERS_DETAILS,
                     payload: res.data.data
-                })
+                });
             }
         }).catch(err => dispatch(requestError(err.message)));
-    }
+    };
 }
 /**
  * 获取交易伙伴详情
@@ -108,12 +108,12 @@ export function fetchTradePartnerMessage({partner}) {
                 dispatch({
                     type: FETCH_TRADE_PARTNER_MESSAGE,
                     payload: res.data.data
-                })
+                });
             }
         }).catch(err =>{
-                dispatch(requestError(err.message))
+                dispatch(requestError(err.message));
             });
-    }
+    };
 }
 
 /**
@@ -131,12 +131,12 @@ export function fetchKey({orderId}, callback) {
                 dispatch({
                     type: FETCH_KEYS,
                     payload: res.data.data
-                })
+                });
                 callback(res.data);
         }).catch(err =>{
-            dispatch(requestError(err.message))
+            dispatch(requestError(err.message));
         });
-    }
+    };
 }
 
 
@@ -146,7 +146,7 @@ export function fetchKey({orderId}, callback) {
  * @returns {Function}
  */
 export function addPaymentInfo({paymentInfo}, callback) {
-    console.log(paymentInfo)
+    console.log(paymentInfo);
     return function (dispatch) {
         axios({
             method: 'post',
@@ -158,13 +158,13 @@ export function addPaymentInfo({paymentInfo}, callback) {
                 dispatch({
                     type: ADD_PAYMENT_INFO,
                     payload: res.data.data
-                })
+                });
             }
             callback(res.data);
         }).catch(err =>{
-            dispatch(requestError(err.message))
+            dispatch(requestError(err.message));
         });
-    }
+    };
 }
 
 /**
@@ -172,7 +172,7 @@ export function addPaymentInfo({paymentInfo}, callback) {
  * @returns {Function}
  */
 export function addTransactionId({txIdInfo}, callback) {
-    console.log(txIdInfo)
+    console.log(txIdInfo);
     return function (dispatch) {
         axios({
             method: 'post',
@@ -184,13 +184,13 @@ export function addTransactionId({txIdInfo}, callback) {
                 dispatch({
                     type: ADD_TRANSACTION_ID,
                     payload: res.data.data
-                })
+                });
             }
             callback(res.data);
         }).catch(err =>{
-            dispatch(requestError(err.message))
+            dispatch(requestError(err.message));
         });
-    }
+    };
 }
 
 /**
@@ -198,7 +198,7 @@ export function addTransactionId({txIdInfo}, callback) {
  * @returns {Function}
  */
 export function confirmOrder({orderId}, callback) {
-    console.log(orderId)
+    console.log(orderId);
     return function (dispatch) {
         axios({
             method: 'post',
@@ -209,12 +209,12 @@ export function confirmOrder({orderId}, callback) {
             dispatch({
                 type: CONFIRM_ORDER,
                 payload: res.data.data
-            })
+            });
             callback(res.data);
         }).catch(err =>{
-            dispatch(requestError(err.message))
+            dispatch(requestError(err.message));
         });
-    }
+    };
 }
 
 /**
@@ -232,12 +232,12 @@ export function confirmSendMoney({orderId}, callback) {
             dispatch({
                 type: CONFIRM_SEND_MONEY,
                 payload: res.data.data
-            })
+            });
             callback(res.data);
         }).catch(err =>{
-            dispatch(requestError(err.message))
+            dispatch(requestError(err.message));
         });
-    }
+    };
 }
 
 /**
@@ -255,12 +255,12 @@ export function releaseBtc({releaseData}, callback) {
             dispatch({
                 type: RELEASE_BTC,
                 payload: res.data
-            })
+            });
             callback(res.data);
         }).catch(err =>{
-            dispatch(requestError(err.message))
+            dispatch(requestError(err.message));
         });
-    }
+    };
 }
 
 /**
@@ -279,13 +279,13 @@ export function confirmGoods({confirmGoodsData}, callback) {
                 dispatch({
                     type: CONFIRM_GOODS,
                     payload: res.data.data
-                })
+                });
                 callback(res.data);
             }
         }).catch(err =>{
-            dispatch(requestError(err.message))
+            dispatch(requestError(err.message));
         });
-    }
+    };
 }
 
 /**
@@ -300,18 +300,18 @@ export function saveComment({commentData}, callback) {
             data: commentData,
             headers: getAuthorizedHeader()
         }).then((res) => {
-            console.log(res)
+            console.log(res);
             if (res.data.status == 1) {
                 dispatch({
                     type: SAVE_COMMENT,
                     payload: res.data.data
-                })
+                });
                 callback(res.data);
             }
         }).catch(err =>{
-            dispatch(requestError(err.message))
+            dispatch(requestError(err.message));
         });
-    }
+    };
 }
 
 
@@ -322,7 +322,7 @@ export function saveComment({commentData}, callback) {
  * @returns {Function}
  */
 export function cancelOrders({cancelData}, callback) {
-    console.log(cancelData)
+    console.log(cancelData);
     return function (dispatch) {
         axios({
             method: 'post',
@@ -330,17 +330,17 @@ export function cancelOrders({cancelData}, callback) {
             data: cancelData,
             headers: getAuthorizedHeader()
         }).then((res) => {
-            console.log(res)
+            console.log(res);
             if (res.data.status == 1) {
                 dispatch({
                     type: CANCEL_ORDERS,
                     payload: res.data.data
-                })
+                });
                 callback(res.data);
             }
         }).catch(err =>{
-            dispatch(requestError(err.message))
+            dispatch(requestError(err.message));
         });
-    }
+    };
 }
 

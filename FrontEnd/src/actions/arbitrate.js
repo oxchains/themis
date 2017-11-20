@@ -17,7 +17,7 @@ import {
  */
 
 export function fetchArbitrateList({userIdDate}) {
-    console.log(userIdDate)
+    console.log(userIdDate);
     return function(dispatch) {
         axios({
             method:'post',
@@ -25,15 +25,15 @@ export function fetchArbitrateList({userIdDate}) {
             data:userIdDate,
             headers: getAuthorizedHeader()
         }).then((res) => {
-            console.log(res)
+            console.log(res);
             if (res.data.status == 1) {
                 dispatch({
                     type: FETCH_ARBITRATE_LIST,
                     payload: res.data.data
-                })
+                });
             }
         }).catch( err => dispatch(requestError(err.message)) );
-    }
+    };
 }
 
 /**
@@ -43,7 +43,7 @@ export function fetchArbitrateList({userIdDate}) {
 
 
 export function uploadEvidence({formData}, callback) {
-    console.log(formData)
+    console.log(formData);
     return function(dispatch) {
         axios({
             method:'post',
@@ -52,16 +52,16 @@ export function uploadEvidence({formData}, callback) {
             headers: {'content-type': 'multipart/form-data', 'authorization': localStorage.getItem('token')},
             withCredentials: true
         }).then((res) => {
-            console.log(res)
+            console.log(res);
             if (res.data.status == 1) {
                 dispatch({
                     type: UPLOAD_EVIDENCE,
                     payload: res.data.data
-                })
+                });
                 callback(res.data);
             }
         }).catch( err => dispatch(requestError(err.message)) );
-    }
+    };
 }
 
 /**
@@ -70,7 +70,7 @@ export function uploadEvidence({formData}, callback) {
  */
 
 export function fetchEvidence({orderId}) {
-    console.log(orderId)
+    console.log(orderId);
     return function(dispatch) {
         axios({
             method:'post',
@@ -78,15 +78,15 @@ export function fetchEvidence({orderId}) {
             data:orderId,
             headers: getAuthorizedHeader()
         }).then((res) => {
-            console.log(res)
+            console.log(res);
             if (res.data.status == 1) {
                 dispatch({
                     type: FETCH_EVIDENCE,
                     payload: res.data.data
-                })
+                });
             }
         }).catch( err => dispatch(requestError(err.message)) );
-    }
+    };
 }
 
 /**
@@ -95,7 +95,7 @@ export function fetchEvidence({orderId}) {
  */
 
 export function arbitrateResult({resultData}) {
-    console.log(resultData)
+    console.log(resultData);
     return function(dispatch) {
         axios({
             method:'post',
@@ -103,13 +103,13 @@ export function arbitrateResult({resultData}) {
             data:resultData,
             headers: getAuthorizedHeader()
         }).then((res) => {
-            console.log(res)
+            console.log(res);
             if (res.data.status == 1) {
                 dispatch({
                     type: ARBITRATE_RESULT,
                     payload: res.data.data
-                })
+                });
             }
         }).catch( err => dispatch(requestError(err.message)) );
-    }
+    };
 }

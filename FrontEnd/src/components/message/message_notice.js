@@ -7,25 +7,25 @@ import { Link } from 'react-router';
 import {Pagination} from 'antd';
 import { connect } from 'react-redux';
 import {fetchMessageNotice} from "../../actions/message";
-import  MessageList from './message_list'
+import  MessageList from './message_list';
 class MessageNotice extends Component{
     constructor(props) {
         super(props);
         this.state = {
             pageNum:1,
             pageSize:8
-        }
+        };
     }
     componentWillMount(){
-        const userId=localStorage.getItem("userId")
+        const userId=localStorage.getItem("userId");
         const pageNum=this.state.pageNum;
         const pageSize=this.state.pageSize;
-        this.props.fetchMessageNotice({userId, pageNum, pageSize})
+        this.props.fetchMessageNotice({userId, pageNum, pageSize});
     }
     handlePagination(pageNum) {
-        const userId=localStorage.getItem("userId")
+        const userId=localStorage.getItem("userId");
         const pageSize=this.state.pageSize;
-        this.props.fetchMessageNotice({userId, pageNum, pageSize})
+        this.props.fetchMessageNotice({userId, pageNum, pageSize});
     }
     renderList(){
         return this.props.message_notice.pageList.map((item, index)=>{
@@ -39,12 +39,12 @@ class MessageNotice extends Component{
                         <div className="message-item-detail">{item.messageText.message}</div>
                     </div>
                 </li>
-            )
-        })
+            );
+        });
     }
     render(){
-        const totalNum = this.props.message_notice && this.props.message_notice.rowCount
-        console.log(this.props.message_notice)
+        const totalNum = this.props.message_notice && this.props.message_notice.rowCount;
+        console.log(this.props.message_notice);
         return (
             <div className="message-box">
                 <div className="container">
@@ -63,7 +63,7 @@ class MessageNotice extends Component{
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 function mapStateToProps(state) {

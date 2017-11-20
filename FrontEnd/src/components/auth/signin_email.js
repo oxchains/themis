@@ -6,7 +6,7 @@
 import React, { Component } from 'react';
 import { Field } from 'redux-form';
 import { connect } from 'react-redux';
-import { signinAction } from '../../actions/auth'
+import { signinAction } from '../../actions/auth';
 
 
 

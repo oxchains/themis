@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Upload } from 'antd';
-import { fetctBaseInfo } from '../actions/releaseadvert'
+import { fetctBaseInfo } from '../actions/releaseadvert';
 import {
     Modal,
     ModalHeader,
@@ -27,9 +27,9 @@ class Baseinfo extends Component {
             isModalOpen: false,
             error: null,
             actionResult: '',
-        }
-        this.handleSave = this.handleSave.bind(this)
-        this.handleChange = this.handleChange.bind(this)
+        };
+        this.handleSave = this.handleSave.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     }
 
     hideModal = () => {
@@ -50,7 +50,7 @@ class Baseinfo extends Component {
        formdata.append("description", this.refs.description.value);
         this.props.fetctBaseInfo({formdata}, err=>{
             this.setState({ isModalOpen: true, error: err, actionResult: err||'保存成功!'});
-        })
+        });
     }
 
     render() {
@@ -58,13 +58,13 @@ class Baseinfo extends Component {
         const mobilephone = localStorage.getItem('mobilephone');//手机号
         const createTime = localStorage.getItem('createTime');//注册时间
         const email =  localStorage.getItem('email');//邮箱
-        const firstBuyTime = localStorage.getItem('firstBuyTime') //第一次交易时间
-        const  txNum = localStorage.getItem('txNum') //交易次数
-        const  believeNum = localStorage.getItem('believeNum') //信任人数
-        const  sellAmount = localStorage.getItem('sellAmount') //出售的累计交易数量
-        const  buyAmount = localStorage.getItem('buyAmount') //购买的累计交易数量
+        const firstBuyTime = localStorage.getItem('firstBuyTime'); //第一次交易时间
+        const  txNum = localStorage.getItem('txNum'); //交易次数
+        const  believeNum = localStorage.getItem('believeNum'); //信任人数
+        const  sellAmount = localStorage.getItem('sellAmount'); //出售的累计交易数量
+        const  buyAmount = localStorage.getItem('buyAmount'); //购买的累计交易数量
         const imageUrl = this.state.imageUrl;
-       const actionUrl = "http://47.93.163.113:8081/user/info?loginname=" +loginname
+       const actionUrl = "http://47.93.163.113:8081/user/info?loginname=" +loginname;
         return (
             <div>
                 <div className="maininfo">

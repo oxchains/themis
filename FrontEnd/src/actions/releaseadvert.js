@@ -34,12 +34,12 @@ export function fetctHome() {
             .then(response => {
                 // console.log("首页")
                 // console.log(response)
-                dispatch({type: FETCH_HOME, payload: response})
+                dispatch({type: FETCH_HOME, payload: response});
             })
             .catch(err =>{
-                dispatch(requestError(err.message))
+                dispatch(requestError(err.message));
             });
-    }
+    };
 }
 
 
@@ -58,9 +58,9 @@ export function releaseAdvert({ userId, loginname, noticeType, location, currenc
                 // dispatch({type: FETCH_ADVERT, payload: response})
             })
             .catch(err =>{
-                dispatch(requestError(err.message))
+                dispatch(requestError(err.message));
             });
-    }
+    };
 }
 // 购买比特币搜索
 // 搜索广告
@@ -70,13 +70,13 @@ export function fetcAdvertSeach({searchType, location, currency, payType, pageNu
     return function(dispatch) {
         axios.post(`${ROOT_URLL}/notice/search/page/buy`, {searchType, location, currency, payType, pageNum }, { headers: getAuthorizedHeader() })
             .then(response => {
-                console.log(response)
-                dispatch({type: FETCH_BUY_SECAT, payload: response})
+                console.log(response);
+                dispatch({type: FETCH_BUY_SECAT, payload: response});
             })
             .catch(err =>{
-                dispatch(requestError(err.message))
+                dispatch(requestError(err.message));
             });
-    }
+    };
 }
 
 
@@ -89,12 +89,12 @@ export function fetctBuyBtcDetail({noticeId}, callback) {
         axios.post(`${ROOT_URLZ}/order/findUserTxDetailAndNotice`, {noticeId}, { headers: getAuthorizedHeader() })
             .then(response => {
                 // console.log(response)
-                dispatch({type: FETCH_BUY_BTC_DETAIL, payload: response})
+                dispatch({type: FETCH_BUY_BTC_DETAIL, payload: response});
             })
             .catch(err =>{
-                dispatch(requestError(err.message))
+                dispatch(requestError(err.message));
             });
-    }
+    };
 }
 
 // 购买比特币详情下单
@@ -111,7 +111,7 @@ export function fetctBuynow({formdata}, callback) {
             headers: getAuthorizedHeader()
         }).then(response => {
                 // console.log(response)
-                dispatch({type: FETCH_BUY_NOW, payload: response})
+                dispatch({type: FETCH_BUY_NOW, payload: response});
                 if(response.data.status == 1) {
                     callback();
                 } else {
@@ -119,9 +119,9 @@ export function fetctBuynow({formdata}, callback) {
                 }
             })
             .catch(err =>{
-                dispatch(requestError(err.message))
+                dispatch(requestError(err.message));
             });
-    }
+    };
 }
 
 // 出售比特币详情下单
@@ -136,7 +136,7 @@ export function fetctSellnow({formdata}, callback) {
             headers: getAuthorizedHeader()
         }).then(response => {
                 // console.log(response)
-                dispatch({type: FETCH_SELL_NOW, payload: response})
+                dispatch({type: FETCH_SELL_NOW, payload: response});
                 if(response.data.status == 1) {
                     callback();
                 } else {
@@ -144,9 +144,9 @@ export function fetctSellnow({formdata}, callback) {
                 }
             })
             .catch(err =>{
-                dispatch(requestError(err.message))
+                dispatch(requestError(err.message));
             });
-    }
+    };
 }
 
 // 出售比特币广告详情
@@ -157,12 +157,12 @@ export function fetctSellBtcDetail({noticeId}, callback) {
         axios.post(`${ROOT_URLZ}/order/findUserTxDetailAndNotice`, {noticeId}, { headers: getAuthorizedHeader() })
             .then(response => {
                 // console.log(response)
-                dispatch({type: FETCH_SELL_BTC_DETAIL, payload: response})
+                dispatch({type: FETCH_SELL_BTC_DETAIL, payload: response});
             })
             .catch(err =>{
-                dispatch(requestError(err.message))
+                dispatch(requestError(err.message));
             });
-    }
+    };
 }
 
 // 出售比特币搜索
@@ -171,13 +171,13 @@ export function fetctSellSeach({searchType, location, currency, payType, pageNum
     return function(dispatch) {
         axios.post(`${ROOT_URLL}/notice/search/page/sell`, {searchType, location, currency, payType, pageNum }, { headers: getAuthorizedHeader() })
             .then(response => {
-                console.log(response)
-                dispatch({type: FETCH_SELL_SECAT, payload: response})
+                console.log(response);
+                dispatch({type: FETCH_SELL_SECAT, payload: response});
             })
             .catch(err =>{
-                dispatch(requestError(err.message))
+                dispatch(requestError(err.message));
             });
-    }
+    };
 }
 // 选择框数据
 
@@ -187,12 +187,12 @@ export function fetctArray() {
             .then(response => {
                 // console.log(`选择框返回的数据: `);
                 // console.log(response)
-                dispatch({type: FETCH_ARRAY, payload: response})
+                dispatch({type: FETCH_ARRAY, payload: response});
             })
             .catch(err =>{
-                dispatch(requestError(err.message))
+                dispatch(requestError(err.message));
             });
-    }
+    };
 }
 
 // 我的广告
@@ -203,7 +203,7 @@ export function fetctMyAdvert({userId, noticeType, txStatus, pageNum}, callback)
         axios.get(`${ROOT_URLL}/notice/query/me2?userId=${userId}&pageNum=${pageNum}&noticeType=${noticeType}&txStatus=${txStatus}`, { headers: getAuthorizedHeader() })
             .then(response => {
                 // console.log(response)
-                dispatch({type: FETCH_MY_ADVERT, payload: response})
+                dispatch({type: FETCH_MY_ADVERT, payload: response});
                 if(response.data.status == 1) {
                     callback();
                 } else {
@@ -211,9 +211,9 @@ export function fetctMyAdvert({userId, noticeType, txStatus, pageNum}, callback)
                 }
             })
             .catch(err =>{
-                dispatch(requestError(err.message))
+                dispatch(requestError(err.message));
             });
-    }
+    };
 }
 
 // 下架我的广告
@@ -232,9 +232,9 @@ export function fetctOffMyAd({id}, callback) {
                 }
             })
             .catch(err =>{
-                dispatch(requestError(err.message))
+                dispatch(requestError(err.message));
             });
-    }
+    };
 }
 
 //用户基本信息
@@ -251,7 +251,7 @@ export function fetctBaseInfo({formdata}, callback) {
             headers: { 'content-type': 'multipart/form-data', getAuthorizedHeader},
             withCredentials: true
         }).then(response => {
-                console.log(response)
+                console.log(response);
                 // dispatch({type: FETCH_BASE_INFO, payload: response})
                 if(response.data.status == 1) {
                     callback();
@@ -260,9 +260,9 @@ export function fetctBaseInfo({formdata}, callback) {
                 }
             })
             .catch(err =>{
-                dispatch(requestError(err.message))
+                dispatch(requestError(err.message));
             });
-    }
+    };
 }
 //用户中心受信任的
 
@@ -271,12 +271,12 @@ export function fetctTrusted({userId, type, pageNo, pageSize}, callback) {
     return function(dispatch) {
         axios.get(`${ROOT_URLC}/user/trust?userId=${userId}&pageNo=${pageNo}&pageSize=${pageSize}&type=${type}`,
             { headers: getAuthorizedHeader() }).then(response => {
-                console.log(response)
-                dispatch({type: FETCH_TRUSTED, payload: response})
+                console.log(response);
+                dispatch({type: FETCH_TRUSTED, payload: response});
 
             })
             .catch(err =>{
-                dispatch(requestError(err.message))
+                dispatch(requestError(err.message));
             });
-    }
+    };
 }

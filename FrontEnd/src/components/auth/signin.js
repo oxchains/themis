@@ -2,14 +2,14 @@
  * Created by oxchain on 2017/10/18.
  */
 import React, { Component } from 'react';
-import { Route, Redirect } from 'react-router-dom'
+import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { signinAction } from '../../actions/auth'
+import { signinAction } from '../../actions/auth';
 
 class Signin extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {};
     }
     handlePhoneSubmit() {
         const mobilephone= this.refs.loginname.value ;
@@ -21,7 +21,7 @@ class Signin extends Component {
     renderAlert() {
         const { from } = this.props.location.state || { from: { pathname: '/' } };
         if (this.props.loggedIn) {
-            location.reload()
+            location.reload();
             return (
                 <Redirect to={from}/>
             );

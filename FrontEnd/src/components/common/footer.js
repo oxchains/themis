@@ -8,7 +8,7 @@ import { Link } from 'react-router';
 class Footer extends Component{
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {};
     }
 
 
@@ -18,7 +18,7 @@ class Footer extends Component{
             <div className="footer">
                <p className="footer-content">themis 香港牛链科技</p>
             </div>
-        )
+        );
     }
 
 }

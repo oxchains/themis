@@ -2,9 +2,9 @@
  * Created by oxchain on 2017/11/09.
  */
 import React, { Component } from 'react';
-import { Route, Redirect } from 'react-router-dom'
+import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { signinAction, GetverifyCode} from '../../actions/auth'
+import { signinAction, GetverifyCode} from '../../actions/auth';
 
 class Forgetpsw extends Component {
     constructor(props) {
@@ -12,8 +12,8 @@ class Forgetpsw extends Component {
         this.state = {
             count: 60,
             liked: true,
-        }
-        this.handlesend = this.handlesend.bind(this)
+        };
+        this.handlesend = this.handlesend.bind(this);
     }
 
     handlePhoneSubmit() {
@@ -41,14 +41,14 @@ class Forgetpsw extends Component {
                 });
             }.bind(this), 1000);
         }
-        const phonenum = localStorage.getItem("phonenum")
-        this.props.GetverifyCode({phonenum}, ()=>{})
+        const phonenum = localStorage.getItem("phonenum");
+        this.props.GetverifyCode({phonenum}, ()=>{});
     }
     phoneChange(e){
-        console.log(e.target.value)
-        const phonenum = localStorage.setItem("phonenum", e.target.value)
+        console.log(e.target.value);
+        const phonenum = localStorage.setItem("phonenum", e.target.value);
 
-        var regex = /^1[3|4|5|7|8][0-9]\d{4,8}$/
+        var regex = /^1[3|4|5|7|8][0-9]\d{4,8}$/;
         if (regex.test(e.target.value) ) {
 
         } else{

@@ -6,16 +6,16 @@ import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { Icon } from 'antd';
 import { connect } from 'react-redux';
-import {fetchUnreadMessage} from "../../actions/message"
+import {fetchUnreadMessage} from "../../actions/message";
 class MessageList extends Component{
     constructor(props) {
         super(props);
         this.state = {
             messageType:2
-        }
+        };
     }
     render(){
-        console.log(this.props.message_letter)
+        console.log(this.props.message_letter);
         const username= localStorage.getItem('username');
         return (
             <div className="col-xs-12 message-list">
@@ -31,7 +31,7 @@ class MessageList extends Component{
                     </li>
                 </ul>
             </div>
-        )
+        );
     }
 }
 function mapStateToProps(state) {

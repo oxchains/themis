@@ -7,30 +7,30 @@ import { Link } from 'react-router';
 import {Pagination} from 'antd';
 import { connect } from 'react-redux';
 import {fetchMessageLetter} from "../../actions/message";
-import  MessageList from './message_list'
+import  MessageList from './message_list';
 class MessageLetter extends Component{
     constructor(props) {
         super(props);
         this.state = {
             pageNum:1,
             pageSize:8
-        }
+        };
     }
     componentWillMount(){
-        const userId=localStorage.getItem("userId")
+        const userId=localStorage.getItem("userId");
         const pageNum=this.state.pageNum;
         const pageSize=this.state.pageSize;
-        this.props.fetchMessageLetter({userId, pageNum, pageSize})
+        this.props.fetchMessageLetter({userId, pageNum, pageSize});
     }
     handlePagination(pageNum) {
-        const userId=localStorage.getItem("userId")
+        const userId=localStorage.getItem("userId");
         const pageSize=this.state.pageSize;
-        this.props.fetchMessageLetter({userId, pageNum, pageSize})
+        this.props.fetchMessageLetter({userId, pageNum, pageSize});
     }
     handleOrder(val){
-        console.log(val)
+        console.log(val);
         const userId= localStorage.getItem('userId');
-        const orderData={id:val.orderId, userId:userId, partnerId:val.partnerId, friendUsername:val.friendUsername}
+        const orderData={id:val.orderId, userId:userId, partnerId:val.partnerId, friendUsername:val.friendUsername};
         localStorage.setItem("partner", JSON.stringify(orderData));
         window.location.href='/orderprogress';
     }
@@ -46,12 +46,12 @@ class MessageLetter extends Component{
                         <div className="message-item-detail">{item.messageText.message}</div>
                     </div>
                 </li>
-            )
-        })
+            );
+        });
     }
     render(){
-        const totalNum = this.props.message_letter && this.props.message_letter.rowCount
-        console.log(this.props.message_letter)
+        const totalNum = this.props.message_letter && this.props.message_letter.rowCount;
+        console.log(this.props.message_letter);
         return (
             <div className="message-box">
                 <div className="container">
@@ -70,7 +70,7 @@ class MessageLetter extends Component{
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 
 }

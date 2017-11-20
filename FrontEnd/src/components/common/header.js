@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { Badge } from 'antd';
 import { connect } from 'react-redux';
-import {fetchMessageNumber} from "../../actions/message"
+import {fetchMessageNumber} from "../../actions/message";
 class Header extends Component{
     constructor(props) {
         super(props);
@@ -14,13 +14,13 @@ class Header extends Component{
         this.renderUserInfo = this.renderUserInfo.bind(this);
     }
     componentWillMount() {
-        const userId=localStorage.getItem("userId")
+        const userId=localStorage.getItem("userId");
         if(this.props.authenticated){
-            this.props.fetchMessageNumber({userId})
+            this.props.fetchMessageNumber({userId});
         }
     }
     renderUserInfo() {
-        const role=localStorage.getItem('role')
+        const role=localStorage.getItem('role');
         if(this.props.authenticated) {
             const loginname= localStorage.getItem('loginname');
             return (
@@ -83,7 +83,7 @@ class Header extends Component{
                     {this.renderUserInfo()}
                 </nav>
             </div>
-        )
+        );
     }
 }
 function mapStateToProps(state) {

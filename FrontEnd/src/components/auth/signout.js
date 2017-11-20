@@ -22,7 +22,7 @@ class Signout extends Component {
                     <Signin location="{this.props.location}"  />
                 </div>
             </div>
-        )
+        );
     }
 }
 

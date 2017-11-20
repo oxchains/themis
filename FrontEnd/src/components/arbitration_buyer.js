@@ -4,7 +4,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import Chat from './chat';
-import {fetchOrdersDetails } from '../actions/order'
+import {fetchOrdersDetails } from '../actions/order';
 
 class ArbitrationBuyer extends Component{
     constructor(props) {
@@ -12,16 +12,16 @@ class ArbitrationBuyer extends Component{
         this.orderMessageDetails=this.orderMessageDetails.bind(this);
     }
     componentWillMount() {
-        const partnerName = localStorage.getItem("friendUsername")
-        const userId = localStorage.getItem("userId")
+        const partnerName = localStorage.getItem("friendUsername");
+        const userId = localStorage.getItem("userId");
         const message = this.props.location.state;
-        const data = {id: message.id, userId: userId}
+        const data = {id: message.id, userId: userId};
         this.setState({partnerName: partnerName});
-        console.log(data)
-        this.props.fetchOrdersDetails({data})
+        console.log(data);
+        this.props.fetchOrdersDetails({data});
     }
     goBack(){
-        history.back()
+        history.back();
     }
     orderMessageDetails(msg){
         return(
@@ -38,10 +38,10 @@ class ArbitrationBuyer extends Component{
                     </ul>
                 </div>
             </div>
-        )
+        );
     }
     render(){
-        const msg= {price:121, quantity:23, amount:232, number:3748937208457038, way:"支付宝", info:"100%信誉，在线10分钟迅速发货。"}
+        const msg= {price:121, quantity:23, amount:232, number:3748937208457038, way:"支付宝", info:"100%信誉，在线10分钟迅速发货。"};
         return(
             <div className=" container g-pt-100 g-pb-100">
                 <div className="row arbitration-buyer">
@@ -60,14 +60,14 @@ class ArbitrationBuyer extends Component{
                 </div>
             </div>
 
-        )
+        );
     }
 }
 
 function mapStateToProps(state) {
     return {
         orders_details: state.order.orders_details
-    }
+    };
 }
 
 export default connect(mapStateToProps, {fetchOrdersDetails})(ArbitrationBuyer);

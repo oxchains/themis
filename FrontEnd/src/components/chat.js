@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {ROOT_CHAT, ROOT_SOCKET} from '../actions/types'
+import {ROOT_CHAT, ROOT_SOCKET} from '../actions/types';
 import $ from 'jquery';
 import {fetchTradePartnerMessage} from '../actions/order';
 
@@ -41,7 +41,7 @@ class Chat extends Component{
                                 else{
                                     receiveMessage(list[index].senderName, list[index].chatContent);
                                 }
-                            })
+                            });
                         }
                     },
                     complete:function(){
@@ -51,7 +51,7 @@ class Chat extends Component{
                     error:function(XMLHttpRequest, textStatus, errorThrown){
                         console.log(textStatus);
                     },
-                })
+                });
             }
             $(this).hide();
         });
@@ -63,13 +63,13 @@ class Chat extends Component{
                 ws.keepAliveTimer=setInterval(function(){
                     var heart=JSON.stringify({msgType: 2, senderId: senderId, receiverId: receiverId});
                     ws.send(heart);
-                }, 2000)
+                }, 2000);
             }
             document.onkeydown = (e) => {
                 if (e && e.keyCode == 13) {
-                    sendMessageBtn(partner)
+                    sendMessageBtn(partner);
                 }
-            }
+            };
         };
         //监听 messages
         ws.onmessage = (e) => {
@@ -90,18 +90,18 @@ class Chat extends Component{
                     ws.receiveMessageTimer = setTimeout(() => {
                         reconnect=new Date().getTime();
                         ws.close();
-                        $(".chat-head").html("连接断开")
+                        $(".chat-head").html("连接断开");
                     }, 30000); // 30s没收到信息，代表服务器出问题了，关闭连接。
                     break;
                 case 3:
                     //系统消息
                     break;
             }
-        }
+        };
         //监听errors
         ws.onerror = () => {
-            console.log('onerror')
-        }
+            console.log('onerror');
+        };
         ws.onclose = () => {
             clearTimeout(ws.receiveMessageTimer);
             clearInterval(ws.keepAliveTimer);
@@ -109,9 +109,9 @@ class Chat extends Component{
             const partner=JSON.parse(localStorage.getItem("partner"));
             if(new Date().getTime() - reconnect >= 10000) { // 10秒中重连，连不上就不连了
                 ws.close();
-                $(".chat-head").html("连接断开")
+                $(".chat-head").html("连接断开");
             } else {
-                $(".chat-head").html("重新连接中...")
+                $(".chat-head").html("重新连接中...");
                 let ws = new WebSocket("ws://192.168.1.125:9999/ws?"+partner.userId +"_"+receiverId+"_"+partner.id); //链接websocket
                 $(".chat-head").html(receiverName);
                 ws.onopen = tempWs.onopen;
@@ -119,7 +119,7 @@ class Chat extends Component{
                 ws.onerror = tempWs.onerror;
                 ws.onclose = tempWs.onclose;
             }
-        }
+        };
         const sendMessageBtn = (partner)=>{
             clearTimeout(time);
             //发送一个文本消息
@@ -136,25 +136,25 @@ class Chat extends Component{
                     timeFlag = false;
                     time=setTimeout(function(){
                         timeFlag=true;
-                    }, 600000)
+                    }, 600000);
                 }
             }
-        }
+        };
         //发送消息
         const sendMessage = (senderName, chatContent) =>{
             $(".chat-message").append('<li class="send-message rightd"><div class="sender rightd_h"><span>'+senderName+'</span></div><div class="content speech right">'+chatContent+'</div></li>');
-        }
+        };
         //接收消息
         const receiveMessage = (receiverName, chatContent) => {
             $(".chat-message").append('<li class="receive-message leftd"><div class="sender leftd_h"><span>'+receiverName+'</span></div><div class="speech left">'+chatContent+'</div></li>');
-        }
+        };
         const scrollTop = () => {
             $('.chat-body').scrollTop($('.chat-message').height());
-        }
+        };
         const showTime = () => {
             let time = new Date().toLocaleString();
             $(".chat-message").append('<li class="time"><div class="">'+time+'</div></li>');
-        }
+        };
     }
     render() {
         return (
@@ -175,7 +175,7 @@ class Chat extends Component{
 function mapStateToProps(state) {
     return {
         orders_details: state.order.orders_details,
-    }
+    };
 }
 
 export default connect(mapStateToProps, {fetchTradePartnerMessage})(Chat);

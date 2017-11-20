@@ -20,11 +20,11 @@ import {
  * 登录
  */
 export function signinAction({mobilephone, password}) {
-    console.log(`点击登录按钮传过来的数据是 ${mobilephone},${password}`)
+    console.log(`点击登录按钮传过来的数据是 ${mobilephone},${password}`);
     return function(dispatch) {
         axios.post(`${ROOT_URLC}/user/login`, { mobilephone, password})
             .then(response => {
-                console.log(response)
+                console.log(response);
                 if(response.data.status == 1) {
                     localStorage.setItem('token', response.data.data.token);
                     localStorage.setItem('role', response.data.data.role.id);
@@ -33,11 +33,11 @@ export function signinAction({mobilephone, password}) {
                     localStorage.setItem('mobilephone', response.data.data.mobilephone);//手机号
                     localStorage.setItem('createTime', response.data.data.createTime);//注册时间
                     localStorage.setItem('email', response.data.data.email);//邮箱
-                    localStorage.setItem('firstBuyTime', response.data.data.userTxDetail.firstBuyTime) //第一次交易时间
-                    localStorage.setItem('txNum', response.data.data.userTxDetail.txNum) //交易次数
-                    localStorage.setItem('believeNum', response.data.data.userTxDetail.believeNum) //信任人数
-                    localStorage.setItem('sellAmount', response.data.data.userTxDetail.sellAmount) //出售的累计交易数量
-                    localStorage.setItem('buyAmount', response.data.data.userTxDetail.buyAmount) //购买的累计交易数量
+                    localStorage.setItem('firstBuyTime', response.data.data.userTxDetail.firstBuyTime); //第一次交易时间
+                    localStorage.setItem('txNum', response.data.data.userTxDetail.txNum); //交易次数
+                    localStorage.setItem('believeNum', response.data.data.userTxDetail.believeNum);//信任人数
+                    localStorage.setItem('sellAmount', response.data.data.userTxDetail.sellAmount); //出售的累计交易数量
+                    localStorage.setItem('buyAmount', response.data.data.userTxDetail.buyAmount); //购买的累计交易数量
 
                     dispatch({type: AUTH_USER});
                     // browserHistory.push('/');
@@ -46,7 +46,7 @@ export function signinAction({mobilephone, password}) {
                 }
             })
             .catch( (err) => dispatch(authError(err.message)) );
-    }
+    };
 }
 
 export function authError(error) {
@@ -73,16 +73,16 @@ export function signupUser({ loginname, mobilephone, email, password }, callback
     return function(dispatch) {
         axios.post(`${ROOT_URLC}/user/register`, { loginname, mobilephone, email, password })
             .then(response => {
-                console.log(response)
+                console.log(response);
                 if(response.data.status == 1) {
                     callback();
                 } else {
-                    console.log(response.data.message)
+                    console.log(response.data.message);
                     callback(response.data.message);
                 }
             })
             .catch(err => callback(err.message));
-    }
+    };
 }
 
 /**
@@ -90,17 +90,17 @@ export function signupUser({ loginname, mobilephone, email, password }, callback
  */
 
 export function GetverifyCode({phonenum}) {
-    console.log("点击发送验证码带过来的手机号" + phonenum)
+    console.log("点击发送验证码带过来的手机号" + phonenum);
     return function(dispatch) {
         axios.get(`${ROOT_URLC}/verifyCode`, {phonenum})
             .then(response => {
-                console.log("获取验证码的接口通了")
-                console.log(response)
-                dispatch({ type: FETCH_VERIFY_CODE, payload:response })
+                console.log("获取验证码的接口通了");
+                console.log(response);
+                dispatch({ type: FETCH_VERIFY_CODE, payload:response });
 
             })
             .catch(err => (err.message));
-    }
+    };
 }
 
 
@@ -111,17 +111,17 @@ export function GetverifyCode({phonenum}) {
  */
 
 export function GetverifyCodePhone({loginname, phonenum}) {
-    console.log("修改手机号" + phonenum, loginname)
+    console.log("修改手机号" + phonenum, loginname);
     return function(dispatch) {
         axios.get(`${ROOT_URLC}/user/verifyCode`, {loginname, phonenum}, { headers: getAuthorizedHeader() })
             .then(response => {
-                console.log("修改手机号获取验证码的接口通了")
-                console.log(response)
-                dispatch({ type: FETCH_VERIFY_CODE_PHONE, payload:response })
+                console.log("修改手机号获取验证码的接口通了");
+                console.log(response);
+                dispatch({ type: FETCH_VERIFY_CODE_PHONE, payload:response });
 
             })
             .catch(err => (err.message));
-    }
+    };
 }
 
 
@@ -130,12 +130,12 @@ export function GetverifyCodePhone({loginname, phonenum}) {
  */
 
 export function ChangePhoneSave({loginname, mobilephone}, callback) {
-    console.log("修改手机号" + mobilephone, loginname)
+    console.log("修改手机号" + mobilephone, loginname);
     return function(dispatch) {
         axios.post(`${ROOT_URLC}/user/phone`, {loginname, mobilephone}, { headers: getAuthorizedHeader() })
             .then(response => {
-                console.log(response)
-                dispatch({ type: FETCH_PHONE, payload:response })
+                console.log(response);
+                dispatch({ type: FETCH_PHONE, payload:response });
                 if(response.data.status == 1) {
                     callback();
                 } else {
@@ -144,7 +144,7 @@ export function ChangePhoneSave({loginname, mobilephone}, callback) {
 
             })
             .catch(err => (err.message));
-    }
+    };
 }
 
 /**
@@ -152,12 +152,12 @@ export function ChangePhoneSave({loginname, mobilephone}, callback) {
  */
 
 export function ChangePasswordSave({loginname, password, newPassword}, callback) {
-    console.log("修改密码" + loginname, password, newPassword)
+    console.log("修改密码" + loginname, password, newPassword);
     return function(dispatch) {
         axios.post(`${ROOT_URLC}/user/password`, {loginname, password, newPassword}, { headers: getAuthorizedHeader() })
             .then(response => {
-                console.log(response)
-                dispatch({ type: FETCH_PASSWORD, payload:response })
+                console.log(response);
+                dispatch({ type: FETCH_PASSWORD, payload:response });
                 if(response.data.status == 1) {
                     callback();
                 } else {
@@ -166,5 +166,5 @@ export function ChangePasswordSave({loginname, password, newPassword}, callback)
 
             })
             .catch(err => (err.message));
-    }
+    };
 }

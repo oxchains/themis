@@ -17,7 +17,7 @@ class ArbitrationManage extends Component{
             show: false,
             currentIndex:0,
             isApplyFileDone: false,
-        }
+        };
         this.orderMessageDetails=this.orderMessageDetails.bind(this);
     }
     orderMessageDetails(msg){
@@ -35,31 +35,31 @@ class ArbitrationManage extends Component{
                     </ul>
                 </div>
             </div>
-        )
+        );
     }
     applyFile(files) {
         console.log('files', files);
         this.setState({
             applyOFile: files
-        })
+        });
     }
     renderRows(userList) {
         return userList.map((msg, index) => {
-            return <li key={index} onClick={()=> { this.setState({ currentIndex : index }) } } className={ this.check_title_index( index ) }>
+            return <li key={index} onClick={()=> { this.setState({ currentIndex : index }); } } className={ this.check_title_index( index ) }>
                 {msg.name}{msg.msg>0 ? <span className="msg-tip">{msg.msg}</span>:""}</li>;
         });
     }
     check_title_index(index){
 
-        return index === this.state.currentIndex ? "active" : " "
+        return index === this.state.currentIndex ? "active" : " ";
     }
 
     render(){
         let close = () => this.setState({ show: false});
         const userList=[
             {name:1, msg:0}, {name:4, msg:2}, {name:"THEMIS", msg:3}
-        ]
-        const msg= {price:121, quantity:23, amount:232, number:3748937208457038, way:"支付宝", info:"100%信誉，在线10分钟迅速发货。"}
+        ];
+        const msg= {price:121, quantity:23, amount:232, number:3748937208457038, way:"支付宝", info:"100%信誉，在线10分钟迅速发货。"};
         return(
             <div className=" container g-pt-100 g-pb-100">
                 <h3 className="h3 text-center">仲裁后台</h3>
@@ -109,7 +109,7 @@ class ArbitrationManage extends Component{
                                                             }}>{acceptedFiles.length > 0 ? acceptedFiles[0].name : '未选择任何文件'}</p>
                                                         </div>
                                                     </div>
-                                                )
+                                                );
                                             }}
                                         </Dropzone>
                                         <FormGroup controlId="formControlsTextarea">
@@ -126,7 +126,7 @@ class ArbitrationManage extends Component{
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 export default  ArbitrationManage;

@@ -6,7 +6,7 @@
 import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
-import { signupUser, GetverifyCode} from '../../actions/auth'
+import { signupUser, GetverifyCode} from '../../actions/auth';
 import {
     Modal,
     ModalHeader,
@@ -29,7 +29,7 @@ class Signup extends Component {
             index:2,
             choosenum:''
         };
-        this.handlesend = this.handlesend.bind(this)
+        this.handlesend = this.handlesend.bind(this);
     }
 
     hideModal = () => {
@@ -72,8 +72,8 @@ class Signup extends Component {
                 });
             }.bind(this), 1000);
         }
-        const phonenum = localStorage.getItem("phonenum")
-        this.props.GetverifyCode({phonenum}, ()=>{})
+        const phonenum = localStorage.getItem("phonenum");
+        this.props.GetverifyCode({phonenum}, ()=>{});
     }
     handleChange(e) {
         let {index} = this.state;
@@ -85,14 +85,14 @@ class Signup extends Component {
         }
         this.setState({
             index
-        })
-        console.log("选中状态" + this.state.index)
+        });
+        console.log("选中状态" + this.state.index);
     }
     phoneChange(e){
-        console.log(e.target.value)
-        const phonenum = localStorage.setItem("phonenum", e.target.value)
+        console.log(e.target.value);
+        const phonenum = localStorage.setItem("phonenum", e.target.value);
 
-        var regex = /^1[3|4|5|7|8][0-9]\d{4,8}$/
+        var regex = /^1[3|4|5|7|8][0-9]\d{4,8}$/;
         if (regex.test(e.target.value) ) {
 
         } else{
@@ -108,17 +108,18 @@ class Signup extends Component {
                 {/*<span className={`glyphicon glyphicon-${icon} form-control-feedback`}></span>*/}
                 <div className="help-block ">{touched && error ? error : ''}</div>
             </div>
-        )}
+        );
+    }
     render() {
         const { handleSubmit} = this.props;
 
         if(this.props.all)
         {
-            return alert("验证码是")
+            return alert("验证码是");
         }
 
         var text = this.state.liked ? '发送验证码' : this.state.count + ' s后重新发' ;
-        const url = this.state.error === '操作失败' ? "/signup":"/signin"
+        const url = this.state.error === '操作失败' ? "/signup":"/signin";
 
         return (
             <div>
@@ -190,7 +191,7 @@ const validate = values => {
     if(!values.password) {
         errors.password = ' *不能为空';
     }
-    return errors
+    return errors;
 };
 
 function mapStateToProps(state) {
