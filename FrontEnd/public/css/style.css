@@ -992,7 +992,6 @@ div {
     margin-top: 50px;
 }
 html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
-<<<<<<< HEAD
 
 /*table样式*/
 /*.table-bordered {  border: 1px solid #ddd; }*/
@@ -1012,7 +1011,6 @@ html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
 /*.paginationDiv .num:hover {background-color: #ddd; border-color: #ddd; color: #1a1a1a }*/
 /*.paginationDiv .ellipsis {width: 42px; height: 30px; color: #707070; line-height: 30px }*/
 /*.paginationDiv input {width: 44px; height: 24px; border: 1px solid #eee; text-align: center }*/
-=======
 /*table样式*/
 .table-bordered {  border: 1px solid #ddd; }
 .table { width: 100%;  font-size: 14px ;margin-bottom:0;}
@@ -1592,14 +1590,8 @@ td {
     word-break: keep-all; /* 不换行 */
     white-space: nowrap;
 }
-<<<<<<< HEAD
-.ant-btn-lg
-{
-    padding: 6px 15px!important;
-=======
 .ant-btn-lg {
     padding: 6px 15px !important;
->>>>>>> bd0418b3ebff6eb2b6873bd220f51e635c9a61a1
 }
 /*消息中心*/
 .message-tip{
@@ -1682,10 +1674,6 @@ td {
 {
     border:1px solid #D9D9D9!important;
 }
-<<<<<<< HEAD
-=======
-
->>>>>>> bd0418b3ebff6eb2b6873bd220f51e635c9a61a1
 .otherdetail-content
 {
     width:75%;

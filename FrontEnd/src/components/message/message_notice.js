@@ -3,11 +3,10 @@
  */
 
 import React, { Component } from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import {Pagination} from 'antd';
 import { connect } from 'react-redux';
 import {fetchMessageNotice} from "../../actions/message";
-import  MessageList from './message_list'
 class MessageNotice extends Component{
     constructor(props) {
         super(props);
@@ -49,7 +48,19 @@ class MessageNotice extends Component{
             <div className="message-box">
                 <div className="container">
                     <div className="row">
-                        <MessageList/>
+                        <div className="col-xs-12 message-list">
+                            <ul>
+                                <li className="col-xs-4 text-right">
+                                    <Link className="text-center active" to="/messagenotice">公告</Link>
+                                </li>
+                                <li className="col-xs-4 text-center">
+                                    <Link className="text-center" to="/messagesystem">系统</Link>
+                                </li>
+                                <li className="col-xs-4 text-left">
+                                    <Link className="text-center" to="/messageletter">私信</Link>
+                                </li>
+                            </ul>
+                        </div>
                         <div className="col-xs-12 message-item-content">
                            <ul>
                                {this.props.message_notice == null ? <div className="text-center h4">暂无消息</div> : this.renderList()}

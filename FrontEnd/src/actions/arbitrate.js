@@ -58,8 +58,8 @@ export function uploadEvidence({formData}, callback) {
                     type: UPLOAD_EVIDENCE,
                     payload: res.data.data
                 })
-                callback(res.data);
             }
+            callback(res.data);
         }).catch( err => dispatch(requestError(err.message)) );
     }
 }

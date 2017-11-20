@@ -3,6 +3,7 @@
  */
 import React, { Component }from 'react';
 import {connect} from 'react-redux';
+import { Link } from 'react-router-dom';
 import {Pagination, Alert, Upload, Button, Icon, Modal} from 'antd';
 // import {Alert, Upload, Button, Icon, Modal} from 'antd';
 import {ROOT_ARBITRATE} from '../actions/types'
@@ -41,10 +42,10 @@ class OrderInProgress extends Component {
     }
     handleEvidenceSubmit(){
         const evidenceDes=this.refs.voucherDes.value;
-        if(evidenceDes){
+        const {fileList} = this.state;
+        if(evidenceDes||fileList){
             const userId= localStorage.getItem('userId');
             const id=this.state.id;
-            const {fileList} = this.state;
             const formData = new FormData();
             fileList.forEach((file) => {
                 formData.append('files', file);
@@ -57,7 +58,7 @@ class OrderInProgress extends Component {
             });
             this.props.uploadEvidence({formData}, (msg)=>{
                 console.log(msg)
-                if(msg.status==1){
+                if(msg.status == 1){
                     this.setState({
                         fileList: [],
                         uploading: false,
@@ -137,8 +138,8 @@ class OrderInProgress extends Component {
                 <div className="container g-pb-150">
                     <div className="orderType text-center g-pt-50 g-pb-50">
                         <ul className="row">
-                            <li className="col-xs-6"> <a className="orderTypeBar g-pb-3" href="/orderinprogress">进行中的交易</a></li>
-                            <li className="col-xs-6"><a className="g-pb-3" href="/ordercompleted">已完成的交易</a></li>
+                            <li className="col-xs-6"> <Link className="orderTypeBar g-pb-3" to="/orderinprogress">进行中的交易</Link></li>
+                            <li className="col-xs-6"><Link className="g-pb-3" to="/ordercompleted">已完成的交易</Link></li>
                         </ul>
                     </div>
                     <div className="table-responsive">
@@ -182,7 +183,7 @@ class OrderInProgress extends Component {
                             </Upload>
                         </div>
                         <textarea className="form-control" name="" id="" cols="30" rows="10" placeholder="请输入此次仲裁重要部分证据和备注" ref="voucherDes"></textarea>
-                        {this.state.alertVisible ? <Alert message="Error" type="error" showIcon /> :""}
+                        {this.state.alertVisible ? <Alert message="上传图片超出限制" type="error" showIcon /> :""}
                     </Modal>
                 </div>
             </div>

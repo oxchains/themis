@@ -64,8 +64,8 @@ class OrderCompleted extends Component {
             <div className="container g-pb-150">
                 <div className="orderType text-center g-pt-50 g-pb-50">
                     <ul className="row">
-                        <li className="col-xs-6"> <a className="g-pb-3" href="/orderinprogress">进行中的交易</a></li>
-                        <li className="col-xs-6"><a className="orderTypeBar g-pb-3" href="/ordercompleted">已完成的交易</a></li>
+                        <li className="col-xs-6"> <Link className="g-pb-3" to="/orderinprogress">进行中的交易</Link></li>
+                        <li className="col-xs-6"><Link className="orderTypeBar g-pb-3" to="/ordercompleted">已完成的交易</Link></li>
                     </ul>
                 </div>
                 <div className="table-responsive">

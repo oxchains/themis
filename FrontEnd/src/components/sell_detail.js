@@ -29,11 +29,6 @@ class Selldetail extends Component {
         this.handelChange = this.handelChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
         // this.handlePayway = this.handlePayway.bind(this)
-<<<<<<< HEAD
-=======
-
-
->>>>>>> bd0418b3ebff6eb2b6873bd220f51e635c9a61a1
     }
     handelChange(e){
         const data = this.props.all.notice || [];

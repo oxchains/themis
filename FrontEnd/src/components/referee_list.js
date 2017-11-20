@@ -3,10 +3,11 @@
  */
 import React, { Component }from 'react';
 import {connect} from 'react-redux';
-import { Pagination } from 'antd';
-import {Alert, Modal, Button} from 'react-bootstrap';
+import { Pagination, Radio, Modal, Button} from 'antd';
+// import {Alert, Modal, Button} from 'react-bootstrap';
 import {fetchArbitrateList, fetchEvidence, arbitrateResult} from '../actions/arbitrate';
-import {ROOT_ARBITRATE} from '../actions/types'
+import {ROOT_ARBITRATE} from '../actions/types';
+const RadioGroup = Radio.Group;
 
 
 class RefereeList extends Component {
@@ -15,7 +16,8 @@ class RefereeList extends Component {
         this.state={
             show:false,
             pageSize:8, //每页显示的条数8条
-            result:1
+            result:1,
+            loading:false,
         }
         this.renderrow = this.renderrow.bind(this);
     }
@@ -73,7 +75,7 @@ class RefereeList extends Component {
     }
     renderDownload(val, index){
         return(
-            <a className="ant-btn ant-btn-primary ant-btn-lg" style={{color: "gray"}} key={index}
+            <a className="ant-btn ant-btn-primary ant-btn-lg" key={index}
                   href={`${ROOT_ARBITRATE}/arbitrate/${val}/downloadfile`}
                   download="download">点击下载</a>
         )
@@ -91,6 +93,7 @@ class RefereeList extends Component {
         this.props.fetchArbitrateList({userIdDate});
     }
     render() {
+        const { show, loading } = this.state;
         let close = () => {
             this.setState({show:false})
         };
@@ -129,45 +132,88 @@ class RefereeList extends Component {
                         <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.handlePagination(e)}/>
                     </div>
                 </div>
-                <Modal show={this.state.show} onHide={close} container={this} aria-labelledby="contained-modal-title">
-                    <Modal.Header closeButton>
-                        <Modal.Title id="contained-modal-title text-center">证据存根</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <div className="row  margin-b-15 ">
-                            <label className="col-sm-4 control-label text-right"><strong>买家附件</strong></label>
-                            <div className="col-sm-8 g-pb-10 ">
-                                {buyerFiles ? buyerFiles.split(',').map(this.renderDownload): "暂无数据" }
-                            </div>
-                            <label className="col-sm-4 control-label text-right"><strong>卖家附件</strong></label>
-                            <div className="col-sm-8 g-pb-10 ">
-                                {sellerFiles ? sellerFiles.split(',').map(this.renderDownload): "暂无数据" }
-                            </div>
-                            <label className="col-sm-4 control-label text-right"><strong>买家备注</strong></label>
-                            <div className="col-sm-8 g-pb-10">
-                                <span>{buyerContent ? buyerContent:"暂无数据"}</span>
-                            </div>
-                            <label className="col-sm-4 control-label text-right"><strong>卖家备注</strong></label>
-                            <div className="col-sm-8 g-pb-10">
-                                <span>{sellerContent ? sellerContent :"暂无数据"}</span>
-                            </div>
-                            <div className="col-sm-12 text-center g-pb-20">
-                                <span className="h4">仲裁胜利方</span>
-                            </div>
 
-                            <div className="col-sm-6 text-right">
-                                <label htmlFor="arbitrate1"><input type="radio" id="arbitrate1" name="arbitrate" value='1' defaultChecked onClick={this.handleRadioValue.bind(this)}/>买家</label>
-                            </div>
-                            <div className="col-sm-6">
-                                <label htmlFor="arbitrate2"> <input type="radio" id="arbitrate2" name="arbitrate" value='2' onClick={this.handleRadioValue.bind(this)}/>卖家</label>
-                            </div>
+
+                <Modal
+                    visible={show}
+                    title="证据存根"
+                    onOk={this.handleArbitrate.bind(this)}
+                    onCancel={close}
+                    footer={[
+                        <Button key="back" size="large" onClick={close}>取消</Button>,
+                        <Button key="submit" type="primary" size="large" loading={loading} onClick={this.handleArbitrate.bind(this)}>
+                            确定
+                        </Button>,
+                    ]}
+                >
+                    <div className="row  margin-b-15 ">
+                        <label className="col-sm-4 control-label text-right"><strong>买家附件</strong></label>
+                        <div className="col-sm-8 g-pb-10 ">
+                            {buyerFiles ? buyerFiles.split(',').map(this.renderDownload): "暂无数据" }
                         </div>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button onClick={this.handleArbitrate.bind(this)}>确定</Button>
-                        <Button onClick={close}>取消</Button>
-                    </Modal.Footer>
+                        <label className="col-sm-4 control-label text-right"><strong>卖家附件</strong></label>
+                        <div className="col-sm-8 g-pb-10 ">
+                            {sellerFiles ? sellerFiles.split(',').map(this.renderDownload): "暂无数据" }
+                        </div>
+                        <label className="col-sm-4 control-label text-right"><strong>买家备注</strong></label>
+                        <div className="col-sm-8 g-pb-10">
+                            <span>{buyerContent ? buyerContent:"暂无数据"}</span>
+                        </div>
+                        <label className="col-sm-4 control-label text-right"><strong>卖家备注</strong></label>
+                        <div className="col-sm-8 g-pb-10">
+                            <span>{sellerContent ? sellerContent :"暂无数据"}</span>
+                        </div>
+                        <div className="col-sm-12 text-center g-pb-20">
+                            <span className="h4">仲裁胜利方</span>
+                        </div>
+                        <div className="col-sm-12 text-center">
+                            <RadioGroup onChange={this.handleRadioValue.bind(this)} value={this.state.result}>
+                                <Radio value={1}>买家</Radio>
+                                <Radio value={2}>卖家</Radio>
+                            </RadioGroup>
+                        </div>
+                    </div>
+
                 </Modal>
+
+                {/*<Modal show={this.state.show} onHide={close} container={this} aria-labelledby="contained-modal-title">*/}
+                    {/*<Modal.Header closeButton>*/}
+                        {/*<Modal.Title id="contained-modal-title text-center">证据存根</Modal.Title>*/}
+                    {/*</Modal.Header>*/}
+                    {/*<Modal.Body>*/}
+                        {/*<div className="row  margin-b-15 ">*/}
+                            {/*<label className="col-sm-4 control-label text-right"><strong>买家附件</strong></label>*/}
+                            {/*<div className="col-sm-8 g-pb-10 ">*/}
+                                {/*{buyerFiles ? buyerFiles.split(',').map(this.renderDownload): "暂无数据" }*/}
+                            {/*</div>*/}
+                            {/*<label className="col-sm-4 control-label text-right"><strong>卖家附件</strong></label>*/}
+                            {/*<div className="col-sm-8 g-pb-10 ">*/}
+                                {/*{sellerFiles ? sellerFiles.split(',').map(this.renderDownload): "暂无数据" }*/}
+                            {/*</div>*/}
+                            {/*<label className="col-sm-4 control-label text-right"><strong>买家备注</strong></label>*/}
+                            {/*<div className="col-sm-8 g-pb-10">*/}
+                                {/*<span>{buyerContent ? buyerContent:"暂无数据"}</span>*/}
+                            {/*</div>*/}
+                            {/*<label className="col-sm-4 control-label text-right"><strong>卖家备注</strong></label>*/}
+                            {/*<div className="col-sm-8 g-pb-10">*/}
+                                {/*<span>{sellerContent ? sellerContent :"暂无数据"}</span>*/}
+                            {/*</div>*/}
+                            {/*<div className="col-sm-12 text-center g-pb-20">*/}
+                                {/*<span className="h4">仲裁胜利方</span>*/}
+                            {/*</div>*/}
+                            {/*<div className="col-sm-12 text-center">*/}
+                                {/*<RadioGroup onChange={this.handleRadioValue.bind(this)} value={this.state.result}>*/}
+                                    {/*<Radio value={1}>买家</Radio>*/}
+                                    {/*<Radio value={2}>卖家</Radio>*/}
+                                {/*</RadioGroup>*/}
+                            {/*</div>*/}
+                        {/*</div>*/}
+                    {/*</Modal.Body>*/}
+                    {/*<Modal.Footer>*/}
+                        {/*<Button onClick={this.handleArbitrate.bind(this)}>确定</Button>*/}
+                        {/*<Button onClick={close}>取消</Button>*/}
+                    {/*</Modal.Footer>*/}
+                {/*</Modal>*/}
             </div>
         )
     }

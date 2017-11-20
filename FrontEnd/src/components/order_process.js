@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import {Alert} from 'react-bootstrap';
 import Chat from './chat';
 import QRCode from 'qrcode.react'
-import {Upload, Button, Icon, Modal} from 'antd';
+import {Upload, Button, Icon, Modal, message} from 'antd';
 import TabsControl from "./react_tab";
 import {ROOT_ARBITRATE} from '../actions/types'
 import {uploadEvidence} from '../actions/arbitrate';
@@ -334,7 +334,7 @@ class OrderProgress extends Component {
                   this.setState({ orderStatus:this.state.orderStatus+1})
              }
              else{
-                 alert("比特币进入themis托管地址需要一定时间，请耐心等待。。。")
+                 message("比特币进入themis托管地址需要一定时间，请耐心等待。。。")
              }
        });
     }
@@ -425,10 +425,10 @@ class OrderProgress extends Component {
     }
     handleEvidenceSubmit(){
         const evidenceDes=this.refs.voucherDes.value;
-        if(evidenceDes){
+        const {fileList} = this.state;
+        if(evidenceDes || fileList){
             const userId= localStorage.getItem('userId');
             const id=this.state.orderId;
-            const {fileList} = this.state;
             const formData = new FormData();
             fileList.forEach((file) => {
                 formData.append('files', file);
@@ -452,6 +452,7 @@ class OrderProgress extends Component {
                     this.setState({
                         uploading: false,
                     });
+                    alert("上传图片数量超出限制")
                 }
             })
         }
@@ -718,6 +719,7 @@ class OrderProgress extends Component {
                             <Button>
                                 <Icon type="upload" /> 聊天截图
                             </Button>
+                            <div>最多可上传5张图片</div>
                         </Upload>
                     </div>
                     <textarea className="form-control" name="" id="" cols="30" rows="10" placeholder="请输入此次仲裁重要部分证据和备注" ref="voucherDes"></textarea>
