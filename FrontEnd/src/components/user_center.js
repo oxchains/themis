@@ -3,15 +3,15 @@
  */
 import React, { Component } from 'react';
 
-import Base  from './base_info'
-import Safe  from './safe_set'
-import Trust from './trusts'
+import Base  from './base_info';
+import Safe  from './safe_set';
+import Trust from './trusts';
 class Usercenter extends Component {
     constructor(props) {
         super(props);
         this.state = {
             status:'1',
-        }
+        };
     }
     render() {
         return (
@@ -35,7 +35,7 @@ class Usercenter extends Component {
 }
 let TabsControl = React.createClass({
     getInitialState: function(){
-        return {currentIndex: 0}
+        return {currentIndex: 0};
     },
     getTitleItemCssClasses: function(index){
         return index === this.state.currentIndex ? "tab-title-item active" : "tab-title-item";
@@ -51,18 +51,18 @@ let TabsControl = React.createClass({
                <div className="col-lg-2 col-xs-3">
                    <ul className="sildbar ">
                        {React.Children.map(this.props.children, (element, index) => {
-                           return (<li className={`liheight ${that.getTitleItemCssClasses(index)}`} onClick={() => {this.setState({currentIndex: index})}}>
-                               <p>{element.props.name}</p></li>)
-                       })}
+                           return (<li className={`liheight ${that.getTitleItemCssClasses(index)}`} onClick={() => {this.setState({currentIndex: index});}}>
+                               <p>{element.props.name}</p></li>);
+                       })};
                    </ul>
                </div>
                 <div className="col-lg-9  col-xs-9">
                     {React.Children.map(this.props.children, (element, index) => {
-                        return (<div className={that.getContentItemCssClasses(index)}>{element}</div>)
+                        return (<div className={that.getContentItemCssClasses(index)}>{element}</div>);
                     })}
                 </div>
             </div>
-        )
+        );
     }
 });
 let Tab = React.createClass({
@@ -70,4 +70,4 @@ let Tab = React.createClass({
         return (<div>{this.props.children}</div>);
     }
 });
-export default Usercenter
+export default Usercenter;

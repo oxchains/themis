@@ -17,7 +17,6 @@ import {
  */
 
 export function fetchArbitrateList({userIdDate}) {
-    console.log(userIdDate)
     return function(dispatch) {
         axios({
             method:'post',
@@ -25,7 +24,6 @@ export function fetchArbitrateList({userIdDate}) {
             data:userIdDate,
             headers: getAuthorizedHeader()
         }).then((res) => {
-            console.log(res)
             if (res.data.status == 1) {
                 dispatch({
                     type: FETCH_ARBITRATE_LIST,

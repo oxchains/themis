@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import { Field } from 'redux-form';
 import { connect } from 'react-redux';
-import { fetctSellBtcDetail, fetctSellnow} from '../actions/releaseadvert'
+import { fetctSellBtcDetail, fetctSellnow} from '../actions/releaseadvert';
 import {
     Modal,
     ModalHeader,
@@ -25,9 +25,9 @@ class Selldetail extends Component {
             actionResult: '',
             messmoney:'',
             messnum:'',
-        }
-        this.handelChange = this.handelChange.bind(this)
-        this.handleSubmit = this.handleSubmit.bind(this)
+        };
+        this.handelChange = this.handelChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
         // this.handlePayway = this.handlePayway.bind(this)
     }
     handelChange(e){
@@ -37,12 +37,12 @@ class Selldetail extends Component {
             this.setState({
                 messmoney: e.target.value,
                 messnum: (e.target.value) / data.price
-            })
+            });
         } else if (type == "btc") {
             this.setState({
                 messmoney: (e.target.value) * data.price,
                 messnum: e.target.value
-            })
+            });
         }
     }
     hideModal = () => {
@@ -51,8 +51,8 @@ class Selldetail extends Component {
         });
     };
     componentWillMount(){
-        const noticeId = this.props.match.params.id.slice(1)
-        console.log( this.props.match.params.id.slice(1))
+        const noticeId = this.props.match.params.id.slice(1);
+        console.log( this.props.match.params.id.slice(1));
         this.props.fetctSellBtcDetail({noticeId});
     }
 
@@ -62,10 +62,10 @@ class Selldetail extends Component {
             noticeId : this.props.match.params.id.slice(1),
             money : this.state.messmoney,
             amount : this.state.messnum
-        }
+        };
         // if(this.props.authenticated){
             this.props.fetctSellnow({formdata}, err=>{
-                this.setState({ isModalOpen: true, error: err, actionResult: err||'下单成功!'})
+                this.setState({ isModalOpen: true, error: err, actionResult: err||'下单成功!'});
             });
         // }else {
         //     alert("请先登录哦～")
@@ -89,7 +89,7 @@ class Selldetail extends Component {
     showOrderDetail(item){
         // console.log(item)
         const userId= localStorage.getItem('userId');
-        const orderData={id:item.id, userId:userId, partnerId:item.sellerId == userId ?item.buyerId:item.sellerId}
+        const orderData={id:item.id, userId:userId, partnerId:item.sellerId == userId ?item.buyerId:item.sellerId};
         localStorage.setItem("partner", JSON.stringify(orderData));
         window.location.href='/orderprogress';
     }

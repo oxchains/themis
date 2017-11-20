@@ -45,7 +45,7 @@ public class MessageService {
             messageRepo.save(message1);
             //下订单人的通知
             MessageText messageText1 = new MessageText(0L,placeMessage, MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
-            MessageText save1 = messageTextRepo.save(messageText);
+            MessageText save1 = messageTextRepo.save(messageText1);
             Message message2 = new Message(userId,save1.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message2);
         } catch (Exception e) {
@@ -107,7 +107,7 @@ public class MessageService {
             messageRepo.save(message);
 
             Message message1 = new Message(orders.getBuyerId(),save.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
-            messageRepo.save(message);
+            messageRepo.save(message1);
         } catch (Exception e) {
             LOG.error("MESSAGE -- post buyer confirm pay faild : {}",e.getMessage(),e);
         }
@@ -127,7 +127,7 @@ public class MessageService {
             messageRepo.save(message);
 
             Message message1 = new Message(orders.getBuyerId(),save.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
-            messageRepo.save(message);
+            messageRepo.save(message1);
         } catch (Exception e) {
             LOG.error("MESSAGE -- post seller release BTC faild : {}",e.getMessage(),e);
         }
@@ -147,7 +147,7 @@ public class MessageService {
             messageRepo.save(message);
 
             Message message1 = new Message(orders.getBuyerId(),save.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
-            messageRepo.save(message);
+            messageRepo.save(message1);
         } catch (Exception e) {
             LOG.error("MESSAGE -- post confirm receiver faild : {}",e.getMessage(),e);
         }
@@ -167,7 +167,7 @@ public class MessageService {
 
 
             String messageContent = MessageFormat.format(MessageCopywrit.CANCEL_ORDERS,orders.getId());
-            MessageText messageText = new MessageText(0L,byMessageContent, MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
+            MessageText messageText = new MessageText(0L,messageContent, MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
             MessageText save = messageTextRepo.save(messageText);
             Message message = new Message(userId,save.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message);
@@ -188,7 +188,7 @@ public class MessageService {
             messageRepo.save(byMessage);
 
             String messageContent = MessageFormat.format(MessageCopywrit.CANCEL_WAIT_REFUND,orders.getId());
-            MessageText messageText = new MessageText(0L,byMessageContent, MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
+            MessageText messageText = new MessageText(0L,messageContent, MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
             MessageText save = messageTextRepo.save(messageText);
             Message message = new Message(userId,save.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message);
@@ -208,7 +208,7 @@ public class MessageService {
 
 
             String messageContent = MessageFormat.format(MessageCopywrit.REFUND_MONEY,orders.getId());
-            MessageText messageText = new MessageText(0L,byMessageContent, MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
+            MessageText messageText = new MessageText(0L,messageContent, MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
             MessageText save = messageTextRepo.save(messageText);
             Message message = new Message(userId,save.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message);
@@ -226,7 +226,7 @@ public class MessageService {
             messageRepo.save(byMessage);
 
             String messageContent = MessageFormat.format(MessageCopywrit.COMMENT_ORDERS,orders.getId());
-            MessageText messageText = new MessageText(0L,byMessageContent, MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
+            MessageText messageText = new MessageText(0L,messageContent, MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
             MessageText save = messageTextRepo.save(messageText);
             Message message = new Message(userId,save.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message);

@@ -70,7 +70,7 @@ export function fetcAdvertSeach({searchType, location, currency, payType, pageNu
     return function(dispatch) {
         axios.post(`${ROOT_URLL}/notice/search/page/buy`, {searchType, location, currency, payType, pageNum }, { headers: getAuthorizedHeader() })
             .then(response => {
-                // console.log(response)
+                console.log(response)
                 dispatch({type: FETCH_BUY_SECAT, payload: response})
             })
             .catch(err =>{
@@ -171,7 +171,7 @@ export function fetctSellSeach({searchType, location, currency, payType, pageNum
     return function(dispatch) {
         axios.post(`${ROOT_URLL}/notice/search/page/sell`, {searchType, location, currency, payType, pageNum }, { headers: getAuthorizedHeader() })
             .then(response => {
-                // console.log(response)
+                console.log(response)
                 dispatch({type: FETCH_SELL_SECAT, payload: response})
             })
             .catch(err =>{

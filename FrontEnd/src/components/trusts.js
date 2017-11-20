@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Pagination } from 'antd';
 import 'antd/dist/antd.css';
-import { fetctTrusted } from '../actions/releaseadvert'
+import { fetctTrusted } from '../actions/releaseadvert';
 class Trust extends Component {
     constructor(props) {
         super(props);
@@ -14,35 +14,35 @@ class Trust extends Component {
             isTrusted:1,
             pageSize:8, //每页显示的条数8条
             current: 1, //默认的当前第一页
-        }
-        this.handleIsTrust = this.handleIsTrust.bind(this)
-        this.handleRow = this.handleRow.bind(this)
+        };
+        this.handleIsTrust = this.handleIsTrust.bind(this);
+        this.handleRow = this.handleRow.bind(this);
     }
     componentWillMount() {
-        const userId = localStorage.getItem("userId")
-        const type = this.state.isTrusted
-        const pageNo = this.state.current
-        const pageSize = this.state.pageSize
-        this.props.fetctTrusted({userId, type, pageNo, pageSize}, ()=>{})
+        const userId = localStorage.getItem("userId");
+        const type = this.state.isTrusted;
+        const pageNo = this.state.current;
+        const pageSize = this.state.pageSize;
+        this.props.fetctTrusted({userId, type, pageNo, pageSize}, ()=>{});
     }
     onPagination(pageNum) {
-        this.state.current = pageNum
-        const userId = localStorage.getItem("userId")
-        const type = this.state.isTrusted
-        const pageNo = this.state.current
-        const pageSize = this.state.pageSize
-        this.props.fetctTrusted({userId, type, pageNo, pageSize}, ()=>{})
+        this.state.current = pageNum;
+        const userId = localStorage.getItem("userId");
+        const type = this.state.isTrusted;
+        const pageNo = this.state.current;
+        const pageSize = this.state.pageSize;
+        this.props.fetctTrusted({userId, type, pageNo, pageSize}, ()=>{});
     }
     handleIsTrust(isTrusted){
-        this.state.isTrusted = isTrusted
-        const userId = localStorage.getItem("userId")
-        const type = this.state.isTrusted
-        const pageNo = this.state.current
-        const pageSize = this.state.pageSize
-        this.props.fetctTrusted({userId, type, pageNo, pageSize}, ()=>{})
+        this.state.isTrusted = isTrusted;
+        const userId = localStorage.getItem("userId");
+        const type = this.state.isTrusted;
+        const pageNo = this.state.current;
+        const pageSize = this.state.pageSize;
+        this.props.fetctTrusted({userId, type, pageNo, pageSize}, ()=>{});
     }
     handleRow( ){
-        const arraydata = this.props.all || []    //列表数组的数据
+        const arraydata = this.props.all || [];   //列表数组的数据
         return arraydata.map((item, index) => {
         return(
             <tr key={index} className="contenttrust">
@@ -56,12 +56,12 @@ class Trust extends Component {
                 <td>历史交易 {item.buy } - {item.sell } BTC</td>
                 <td>响应时间 {item.txToNum} 分钟</td>
                 <td>跟他交易过{item.txToNum } 次</td>
-            </tr>)
-        })
+            </tr>);
+        });
     }
     render() {
         const arrayList = this.props.all || [];
-        const totalNum = arrayList.length
+        const totalNum = arrayList.length;
         return (
             <div className="">
                 <ul className=" titleul">

@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { Select } from 'antd';
 import { connect } from 'react-redux';
-import { releaseAdvert, fetctArray } from '../actions/releaseadvert'
+import { releaseAdvert, fetctArray } from '../actions/releaseadvert';
 import {
     Modal,
     ModalHeader,
@@ -27,13 +27,13 @@ class Releaseadvert extends Component {
             status:1,
             premium:'',
             price:''
-        }
-        this.handleRowstype = this.handleRowstype.bind(this)
-        this.renderRowscountry = this.renderRowscountry.bind(this)
-        this.renderRowscurrency = this.renderRowscurrency.bind(this)
-        this.renderRowspayway = this.renderRowspayway.bind(this)
-        this.handleFormSubmit = this.handleFormSubmit.bind(this)
-        this.handelChange = this.handelChange.bind(this)
+        };
+        this.handleRowstype = this.handleRowstype.bind(this);
+        this.renderRowscountry = this.renderRowscountry.bind(this);
+        this.renderRowscurrency = this.renderRowscurrency.bind(this);
+        this.renderRowspayway = this.renderRowspayway.bind(this);
+        this.handleFormSubmit = this.handleFormSubmit.bind(this);
+        this.handelChange = this.handelChange.bind(this);
     }
     hideModal = () => {
         this.setState({
@@ -46,12 +46,12 @@ class Releaseadvert extends Component {
     handleRowstype(status){
         this.setState({
             status:status
-        })
+        });
     }
     handleFormSubmit(e){
-            e.preventDefault()
-            const userId= localStorage.getItem("userId")
-            const loginname = localStorage.getItem("loginname")
+            e.preventDefault();
+            const userId= localStorage.getItem("userId");
+            const loginname = localStorage.getItem("loginname");
 
             // const premium = this.refs.premium.value;
             // const price = this.refs.price.value;
@@ -74,7 +74,7 @@ class Releaseadvert extends Component {
             });
         }
         else{
-            alert("请先登录哦")
+            alert("请先登录哦");
         }
     }
     renderRowscountry() {
@@ -110,11 +110,11 @@ class Releaseadvert extends Component {
 
     handelChange(e){
         const money = this.props.array.cnyDetailList || {};
-        const price = parseFloat(money.buy)
+        const price = parseFloat(money.buy);
             this.setState({
                 premium: e.target.value,
                 price: ((e.target.value) / 100 + 1)  * price
-            })
+            });
     }
 
     // renderField({ input, label, type, meta: { touched, error } }) {
@@ -131,7 +131,7 @@ class Releaseadvert extends Component {
 
         const premium = this.state.premium;
         const money = this.props.array.cnyDetailList || {};
-        const price =  parseFloat(this.state.price || money.buy).toFixed(2)
+        const price =  parseFloat(this.state.price || money.buy).toFixed(2);
 
         // console.log(this.props)
 
@@ -261,7 +261,7 @@ function mapStateToProps(state) {
 }
 
 // const reduxSignupForm = reduxForm({
-//     form: 'SignForm',
+//     form: 'form',
 //      validate
 // })(Releaseadvert);
 

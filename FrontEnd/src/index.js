@@ -1,19 +1,14 @@
 /**
  * Created by oxchain on 2017/10/17.
  */
-
-import {
-    AUTH_USER
-} from './actions/types';
-
-import React from 'react'
+import React from 'react';
 import { createStore, applyMiddleware, compose } from 'redux';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { Router, browserHistory } from 'react-router';
 import reduxThunk from 'redux-thunk';
 import reducers from './reducers';
-
+import { AUTH_USER } from './actions/types';
 import {Route, BrowserRouter, Switch, Redirect} from 'react-router-dom';
 import Header from  './components/common/header';
 import Footer from  './components/common/footer';
@@ -88,7 +83,7 @@ ReactDOM.render(
                     <Route path="/forgetpsw" component={Forgetpsw}/>
                     <Route path="/resetpsw" component={Resetpsw}/>
                     <Route path="/emailforget" component={Emialforget}/>
-                    <Route path="/otherInfodetail" component={OtherInfodetail}/>
+                    <Route path="/otherInfodetail:id" component={OtherInfodetail}/>
 
                     <Route path="/" component={Home}/>
                 </Switch>

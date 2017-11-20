@@ -18,45 +18,45 @@ class RefereeList extends Component {
             pageSize:8, //每页显示的条数8条
             result:1,
             loading:false,
-        }
+        };
         this.renderrow = this.renderrow.bind(this);
     }
     componentWillMount(){
-        const userId=localStorage.getItem("userId")
+        const userId=localStorage.getItem("userId");
         const userIdDate={
             userId:userId,
             pageNum:1,
             pageSize:this.state.pageSize, //每页显示的条数8条
-        }
+        };
         this.props.fetchArbitrateList({userIdDate});
     }
     handleEvidence(item){
-        console.log(item)
+        console.log(item);
         const orderId={
             id:item
-        }
+        };
         this.props.fetchEvidence({orderId});
-        console.log(this.props.evidenceData)
+        console.log(this.props.evidenceData);
         this.setState({
             show:true
-        })
+        });
     }
     handleArbitrate(){
-        const userId=localStorage.getItem("userId")
-        console.log(this.props.evidenceData.orderId)
+        const userId=localStorage.getItem("userId");
+        console.log(this.props.evidenceData.orderId);
         const resultData={
             id:this.props.evidenceData.orderId,
             userId:userId,
             successId:this.state.result
-        }
-        this.props.arbitrateResult({resultData})
+        };
+        this.props.arbitrateResult({resultData});
         this.setState({
             show:false
-        })
+        });
     }
     renderrow() {
         return this.props.arbitrate_list.map((item, index)=>{
-            const userId=localStorage.getItem("userId")
+            const userId=localStorage.getItem("userId");
             return (
                 <tr key={index}>
                     <td >
@@ -70,36 +70,36 @@ class RefereeList extends Component {
                     <td>{item.orderStatusName}</td>
                     <td>{item.status == 1 ? <button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleEvidence.bind(this, item.id)}>仲裁</button> : ""}</td>
                 </tr>
-            )
-        })
+            );
+        });
     }
     renderDownload(val, index){
         return(
             <a className="ant-btn ant-btn-primary ant-btn-lg" key={index}
                   href={`${ROOT_ARBITRATE}/arbitrate/${val}/downloadfile`}
                   download="download">点击下载</a>
-        )
+        );
     }
     handleRadioValue(e){
-        this.setState({result:e.target.value})
+        this.setState({result:e.target.value});
     }
     handlePagination(pageNum) {
-        const userId=localStorage.getItem("userId")
+        const userId=localStorage.getItem("userId");
         const userIdDate={
             userId:userId,
             pageNum:pageNum,
             pageSize:this.state.pageSize, //每页显示的条数8条
-        }
+        };
         this.props.fetchArbitrateList({userIdDate});
     }
     render() {
         const { show, loading } = this.state;
         let close = () => {
-            this.setState({show:false})
+            this.setState({show:false});
         };
         const arbitrate_list=this.props.arbitrate_list;
         const evidenceData = this.props.evidenceData;
-        const totalNum = arbitrate_list && arbitrate_list[0].pageCount
+        const totalNum = arbitrate_list && arbitrate_list[0].pageCount;
         const buyerContent = evidenceData && evidenceData.buyerContent;
         const sellerContent = evidenceData && evidenceData.sellerContent;
         const buyerFiles = evidenceData && evidenceData.buyerFiles;
@@ -215,7 +215,7 @@ class RefereeList extends Component {
                     {/*</Modal.Footer>*/}
                 {/*</Modal>*/}
             </div>
-        )
+        );
     }
 }
 

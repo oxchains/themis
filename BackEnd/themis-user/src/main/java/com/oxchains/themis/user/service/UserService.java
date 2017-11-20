@@ -294,6 +294,9 @@ public class UserService extends BaseService {
 
     private UserTxDetail findUserTxDetailByUserId(Long userId){
         UserTxDetail userTxDetail = userTxDetailDao.findByUserId(userId);
+        if(null == userTxDetail){
+            return null;
+        }
         List<Order> orders = orderDao.findByBuyerIdOrSellerId(userId, userId);
         double buyAmount = 0d;
         double sellAmount = 0d;
