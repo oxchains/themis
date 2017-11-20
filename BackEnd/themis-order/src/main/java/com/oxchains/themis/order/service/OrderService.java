@@ -336,16 +336,12 @@ public class OrderService {
         try {
             //将卖家的公私匙上传到公私匙表里
             orderAddresskeys1 = orderAddresskeyRepo.findOrderAddresskeysByOrderId(orderAddresskeys.getOrderId());
-            orderAddresskeys1.setSellerPubAuth(orderAddresskeys.getSellerPubAuth());
-            orderAddresskeys1.setSellerPriAuth(orderAddresskeys.getSellerPriAuth());
-            orderAddresskeys1 = orderAddresskeyRepo.save(orderAddresskeys1);
-
             //调用用户中心接口生成协商地址
             Orders orders = orderRepo.findOne(orderAddresskeys1.getOrderId());
             StringBuilder sb = new StringBuilder();
             sb.append(orderAddresskeys1.getBuyerPubAuth());
             sb.append(",");
-            sb.append(orderAddresskeys1.getSellerPubAuth());
+            sb.append(orderAddresskeys.getSellerPubAuth());
             sb.append(",");
             sb.append(orderAddresskeys1.getUserPubAuth());
 
@@ -354,6 +350,9 @@ public class OrderService {
             JSONObject jsonObject = restTemplate.postForObject(ThemisUserAddress.CREATE_CENTET_ADDRESS,formEntity,JSONObject.class);
             Integer status =  (Integer) jsonObject.get("status");
             if(status == 1){
+                orderAddresskeys1.setSellerPubAuth(orderAddresskeys.getSellerPubAuth());
+                orderAddresskeys1.setSellerPriAuth(orderAddresskeys.getSellerPriAuth());
+                orderAddresskeyRepo.save(orderAddresskeys1);
                 ordersInfo = new OrdersInfo(orders);
                 LinkedHashMap data = (LinkedHashMap) jsonObject.get("data");
                 ordersInfo.setP2shAddress((String) data.get("address"));
@@ -372,85 +371,61 @@ public class OrderService {
     * 这是一个工具类方法  为了给要返回到前台的orders 附上订单状态值
     * */
     public void setOrderStatusName(OrdersInfo o){
-        String orderStatusName = ParamType.OrderStatus.getName(o.getOrderStatus());
-        o.setOrderStatusName(orderStatusName);
-        /*try {
-            if(o.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_CONFIRM.getStatus()){
-                o.setOrderStatusName("待确认");
+        if(o != null){
+            if(o.getOrderStatus() != null){
+                String orderStatusName = ParamType.OrderStatus.getName(o.getOrderStatus());
+                o.setOrderStatusName(orderStatusName);
             }
-            if(o.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_PAY.getStatus()){
-                o.setOrderStatusName("待付款");
-            }
-            if(o.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_SEND.getStatus()){
-                o.setOrderStatusName("待收货");
-            }
-            if(o.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_RECIVE.getStatus()){
-                o.setOrderStatusName("待收货");
-            }
-            if(o.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_COMMENT.getStatus()){
-                o.setOrderStatusName("待评价");
-            }
-            if(o.getOrderStatus().longValue() == ParamType.OrderStatus.FINISH.getStatus()){
-                o.setOrderStatusName("已完成");
-            }
-            if(o.getOrderStatus().longValue() == ParamType.OrderStatus.CANCEL.getStatus()){
-                o.setOrderStatusName("已取消");
-            }
-            if(o.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_REFUND.getStatus()){
-                o.setOrderStatusName("退款中");
-            }
-        } catch (Exception e) {
-            LOG.error("set order status value faild : {}",e.getMessage(),e);
-        }*/
+        }
     }
     public UserTxDetails findUserTxDetailsAndNotice(Pojo pojo){
-        UserTxDetails UserTxDetails = null;
+        UserTxDetails userTxDetails = null;
         try {
             Notice notice = this.findNoticeById(pojo.getNoticeId());
             pojo.setUserId(notice.getUserId());
-            UserTxDetails = this.findUserTxDetails(pojo);
-            UserTxDetails.setNotice(notice);
-            UserTxDetails.setLoginname(this.getUserById(notice.getUserId()).getLoginname());
-            UserTxDetails.setSuccessCount(orderRepo.countByBuyerIdAndOrderStatus(pojo.getUserId(),ParamType.OrderStatus.FINISH.getStatus())+orderRepo.countBySellerIdAndOrderStatus(pojo.getUserId(),ParamType.OrderStatus.FINISH.getStatus()));
+            userTxDetails = this.findUserTxDetails(pojo);
+            userTxDetails.setNotice(notice);
+            userTxDetails.setLoginname(this.getUserById(notice.getUserId()).getLoginname());
+            userTxDetails.setSuccessCount(orderRepo.countByBuyerIdAndOrderStatus(pojo.getUserId(),ParamType.OrderStatus.FINISH.getStatus())+orderRepo.countBySellerIdAndOrderStatus(pojo.getUserId(),ParamType.OrderStatus.FINISH.getStatus()));
         } catch (Exception e) {
             LOG.error("find user transaction and notice  faild : {}",e.getMessage(),e);
             return null;
         }
-        return UserTxDetails;
+        return userTxDetails;
     }
     public UserTxDetails findUserTxDetails(Pojo pojo){
-        UserTxDetails UserTxDetails = null;
+        UserTxDetails userTxDetails = null;
         try {
-            UserTxDetails = userTxDetailRepo.findByUserId(pojo.getUserId());
+            userTxDetails = userTxDetailRepo.findByUserId(pojo.getUserId());
             DecimalFormat df   = new DecimalFormat("######0.00");
             String goodDegree = "";
-            if(UserTxDetails.getGoodDesc()+UserTxDetails.getBadDesc() == 0){
+            if(userTxDetails.getGoodDesc()+userTxDetails.getBadDesc() == 0){
                 goodDegree = "0.00%";
             }
             else{
-                goodDegree = df.format(((UserTxDetails.getGoodDesc().doubleValue() / (UserTxDetails.getGoodDesc().doubleValue()+UserTxDetails.getBadDesc().doubleValue()))*100))+"%";
+                goodDegree = df.format(((userTxDetails.getGoodDesc().doubleValue() / (userTxDetails.getGoodDesc().doubleValue()+userTxDetails.getBadDesc().doubleValue()))*100))+"%";
             }
             User user = this.getUserById(pojo.getUserId());
-            UserTxDetails.setEmailVerify("未验证");
-            UserTxDetails.setUsernameVerify("未验证");
-            UserTxDetails.setMobilePhoneVerify("未验证");
-            UserTxDetails.setCreateTime(user.getCreateTime().toString());
-            UserTxDetails.setGoodDegree(goodDegree);
-            UserTxDetails.setLoginname(this.getUserById(pojo.getUserId()).getLoginname());
+            userTxDetails.setEmailVerify("未验证");
+            userTxDetails.setUsernameVerify("未验证");
+            userTxDetails.setMobilePhoneVerify("未验证");
+            userTxDetails.setCreateTime(user.getCreateTime());
+            userTxDetails.setGoodDegree(goodDegree);
+            userTxDetails.setLoginname(this.getUserById(pojo.getUserId()).getLoginname());
             if(user.getEmail()!=null){
-                UserTxDetails.setEmailVerify("已验证");
+                userTxDetails.setEmailVerify("已验证");
             }
             if(user.getUsername()!=null){
-                UserTxDetails.setUsernameVerify("已验证");
+                userTxDetails.setUsernameVerify("已验证");
             }
             if(user.getMobilephone()!=null){
-                UserTxDetails.setMobilePhoneVerify("已验证");
+                userTxDetails.setMobilePhoneVerify("已验证");
             }
         } catch (Exception e) {
             LOG.error("find user transaction faild : {}",e.getMessage(),e);
             return null;
         }
-        return UserTxDetails;
+        return userTxDetails;
     }
 
     private HttpHeaders getHttpHeader(){
@@ -639,7 +614,9 @@ public class OrderService {
             if(null != str){
                 Integer status = (Integer) str.get("status");
                 if(status == 1){
-                    user = JsonUtil.jsonToEntity(JsonUtil.toJson(str.get("data")), User.class);
+                    Object data = str.get("data");
+                    String userStr = JsonUtil.toJson(data);
+                    user = JsonUtil.jsonToEntity(userStr, User.class);
                 }
             }
             return user;
@@ -656,7 +633,9 @@ public class OrderService {
             if(null != str){
                 Integer status = (Integer) str.get("status");
                 if(status == 1){
-                    list = JsonUtil.jsonToList(JsonUtil.toJson(str.get("data")), User.class);
+                    Object data = str.get("data");
+                    String strs = JsonUtil.toJson(data);
+                    list = JsonUtil.jsonToList(strs, User.class);
                 }
                 return list;
             }
@@ -672,7 +651,9 @@ public class OrderService {
             if(jsonObject != null){
                 Integer status = (Integer) jsonObject.get("status");
                 if(status == 1){
-                    Transaction transaction = JsonUtil.jsonToEntity(JsonUtil.toJson(jsonObject.get("data")), Transaction.class);
+                    Object data = jsonObject.get("data");
+                    String str = JsonUtil.toJson(data);
+                    Transaction transaction = JsonUtil.jsonToEntity(str, Transaction.class);
                     return transaction !=null ? transaction.getP2shAddress():null;
                 }
             }
@@ -696,7 +677,9 @@ public class OrderService {
             JSONObject forObject = restTemplate.getForObject(ThemisUserAddress.SAVE_NOTICE + id + "/" + sta, JSONObject.class);
             Integer status = (Integer) forObject.get("status");
             if(status == 1){
-                Notice notice = JsonUtil.jsonToEntity(JsonUtil.toJson(forObject.get("data")),Notice.class);
+                Object data = forObject.get("data");
+                String str = JsonUtil.toJson(data);
+                Notice notice = JsonUtil.jsonToEntity(str,Notice.class);
                 return notice;
             }
         } catch (RestClientException e) {
@@ -711,7 +694,9 @@ public class OrderService {
             JSONObject forObject = restTemplate.getForObject(ThemisUserAddress.GET_NOTICE + id, JSONObject.class);
             Integer status = (Integer) forObject.get("status");
             if(status == 1){
-                Notice notice = JsonUtil.jsonToEntity(JsonUtil.toJson(forObject.get("data")), Notice.class);
+                Object data = forObject.get("data");
+                String str = JsonUtil.toJson(data);
+                Notice notice = JsonUtil.jsonToEntity(str, Notice.class);
                 return notice;
             }
         } catch (RestClientException e) {
