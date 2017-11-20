@@ -13,6 +13,7 @@ import java.util.Objects;
  **/
 @Entity
 @Data
+@Table(name = "block_chain_info")
 public class BlockChainInfo {
 
     @Id
