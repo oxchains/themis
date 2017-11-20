@@ -981,14 +981,10 @@ div {
 }
 .loginlia,.registerlia
 {
-    float: right!important;
+    float:right!important;
     display: inline-block;
     margin-right: 20px!important;
 }
-/*.loginlia:hover,.loginlia:active,.registerlia:hover,.loginlia:active*/
-/*{*/
-    /*background-color: #fff;*/
-/*}*/
 .pagecomponent
 {
     display: flex;
