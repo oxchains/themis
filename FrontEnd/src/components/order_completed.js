@@ -83,7 +83,7 @@ class OrderCompleted extends Component {
                             </tr>
                             </thead>
                             <tbody>
-                            {this.props.completed_orders == null ? <tr><td colSpan={8}>暂无数据</td></tr> : this.renderrow()}
+                            {this.props.completed_orders == null ? <tr><td className="text-center h5" colSpan={8}>没有更多消息了</td></tr> : this.renderrow()}
                             </tbody>
                         </table>
                     </div>

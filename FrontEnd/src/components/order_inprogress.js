@@ -159,7 +159,7 @@ class OrderInProgress extends Component {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {this.props.not_completed_orders == null ? <tr><td colSpan={9}>暂无数据</td></tr> : this.renderrow()}
+                                {this.props.not_completed_orders == null ? <tr><td className="text-center h5" colSpan={9}>没有更多消息了</td></tr> : this.renderrow()}
                                 </tbody>
                             </table>
                         </div>

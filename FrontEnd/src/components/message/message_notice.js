@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom';
 import {Pagination} from 'antd';
 import { connect } from 'react-redux';
 import {fetchMessageNotice} from "../../actions/message";
-import  MessageList from './message_list';
 
 class MessageNotice extends Component{
     constructor(props) {
