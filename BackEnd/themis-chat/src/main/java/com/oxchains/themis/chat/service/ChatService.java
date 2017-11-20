@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.oxchains.themis.chat.entity.ChatContent;
 import com.oxchains.themis.chat.repo.MongoRepo;
 import com.oxchains.themis.common.constant.ThemisUserAddress;
+import com.oxchains.themis.common.util.JsonUtil;
 import com.oxchains.themis.repo.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,14 +49,15 @@ public class ChatService {
         }
         return null;
     }
-    private User getUserById(Long userId){
+    //从用户中心 根据用户id获取用户信息
+    public User getUserById(Long userId){
         User user = null;
         try {
             JSONObject str = restTemplate.getForObject(ThemisUserAddress.GET_USER+userId, JSONObject.class);
             if(null != str){
                 Integer status = (Integer) str.get("status");
                 if(status == 1){
-                    user = (User) str.get("data");
+                    user = JsonUtil.jsonToEntity(JsonUtil.toJson(str.get("data")), User.class);
                 }
             }
             return user;

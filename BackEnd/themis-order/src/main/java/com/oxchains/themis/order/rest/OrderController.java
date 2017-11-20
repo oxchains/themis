@@ -16,8 +16,6 @@ import javax.annotation.Resource;
 public class OrderController {
     @Resource
     private OrderService orderService;
-    @Value("${order.image.url}")
-    private String imageUrl;
     /*
    * 一 ：添加订单
    * */
