@@ -84,7 +84,7 @@ class Myadvert extends Component {
                 <td>{item.price}</td>
                 <td>{item.premium}</td>
                 <td>{item.createTime}</td>
-                <td>{item.txStatus ==0 ?"未交易" :item.txStatus == 1?"交易中" :item.txStatus ==2?"已完成":""}</td>
+                <td>{item.txStatus ==0 ?"进行中" :item.txStatus == 2?"已完成":""}</td>
                 <td className="tabletitle">
                     <button className={`tablebuy ${item.txStatus == 2 ? "hidden":""}`} onClick={() => this.handleOff(item)}>下架</button>
                 </td>

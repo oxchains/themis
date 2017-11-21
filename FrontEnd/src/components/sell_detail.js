@@ -97,7 +97,7 @@ class Selldetail extends Component {
         const userId=localStorage.getItem("userId");
         const messmoney = this.state.messmoney;
         const messnum = this.state.messnum;
-        console.log(this.props.data);
+        // console.log(this.props.data);
         const data = this.props.all.notice || [];
         const datanum = this.props.all;
         const time = data.validPayTime/1000/60;

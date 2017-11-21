@@ -35,7 +35,7 @@ class Buydetail extends Component {
     };
     componentWillMount(){
         const noticeId = this.props.match.params.id.slice(1);
-        console.log( this.props.match.params.id.slice(1));
+       
         this.props.fetctBuyBtcDetail({noticeId});
     }
     handelChange(e){
@@ -75,6 +75,8 @@ class Buydetail extends Component {
         // const userId=localStorage.getItem("userId");
         const messmoney = this.state.messmoney;
         const messnum = this.state.messnum;
+        console.log(messnum);
+        
         const data = this.props.all.notice || [];
         const datanum = this.props.all || [];
         const time = data.validPayTime/1000/60;
