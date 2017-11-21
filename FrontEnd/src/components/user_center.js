@@ -29,7 +29,6 @@ class Usercenter extends Component {
                       </Tab>
                   </TabsControl>
               </div>
-
         );
     }
 }
@@ -53,7 +52,7 @@ let TabsControl = React.createClass({
                        {React.Children.map(this.props.children, (element, index) => {
                            return (<li className={`liheight ${that.getTitleItemCssClasses(index)}`} onClick={() => {this.setState({currentIndex: index});}}>
                                <p>{element.props.name}</p></li>);
-                       })};
+                       })}
                    </ul>
                </div>
                 <div className="col-lg-9  col-xs-9">
