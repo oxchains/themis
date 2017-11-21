@@ -21,7 +21,7 @@ class Signin extends Component {
     renderAlert() {
         const { from } = this.props.location.state || { from: { pathname: '/' } };
         if (this.props.loggedIn) {
-            location.reload();
+            // location.reload();
             return (
                 <Redirect to={from}/>
             );
