@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 import { Modal, Button } from 'antd';
-import { GetverifyCodePhone, ChangePhoneSave, ChangePasswordSave} from '../actions/auth';
+import { GetverifyCodePhone, ChangePhoneSave, ChangePasswordSave } from '../actions/auth';
 class Safeset extends Component {
     constructor(props) {
         super(props);
@@ -21,19 +21,19 @@ class Safeset extends Component {
     }
     showModal = () => {
         this.setState({
-            visible:true,
+            visible: true,
         });
     }
     showModalPSW = () => {
         this.setState({
-            visiblepsw:true,
+            visiblepsw: true,
         });
     }
     handleOk = () => {
         const loginname = localStorage.getItem("loginname");
         const mobilephone = localStorage.getItem("phonenum");
 
-        this.props.ChangePhoneSave({loginname, mobilephone}, err=>{
+        this.props.ChangePhoneSave({ loginname, mobilephone }, err => {
             this.setState({ loading: true });
             setTimeout(() => {
                 this.setState({ loading: false, visible: false });
@@ -45,7 +45,7 @@ class Safeset extends Component {
         const password = this.refs.password.value;
         const newPassword = this.refs.newPassword.value;
 
-        this.props.ChangePasswordSave({loginname, password, newPassword}, err=>{
+        this.props.ChangePasswordSave({ loginname, password, newPassword }, err => {
             this.setState({ loadingpsw: true });
             setTimeout(() => {
                 this.setState({ loadingpsw: false, visiblepsw: false });
@@ -59,8 +59,8 @@ class Safeset extends Component {
     handleCancelPSW = () => {
         this.setState({ visiblepsw: false });
     };
-    handlesend(){
-        if(this.state.liked){
+    handlesend() {
+        if (this.state.liked) {
             this.timer = setInterval(function () {
                 var count = this.state.count;
                 this.state.liked = false;
@@ -82,52 +82,52 @@ class Safeset extends Component {
         const loginname = localStorage.getItem("loginname");
         const phonenum = localStorage.getItem("phonenum");
 
-        this.props.GetverifyCodePhone({loginname, phonenum}, ()=>{});
+        this.props.GetverifyCodePhone({ loginname, phonenum }, () => { });
     }
-    phoneChange(e){
+    phoneChange(e) {
         // console.log(e.target.value);
         const phonenum = localStorage.setItem("phonenum", e.target.value);
         var regex = /^1[3|4|5|7|8][0-9]\d{4,8}$/;
-        if (regex.test(e.target.value) ) {
+        if (regex.test(e.target.value)) {
 
-        } else{
+        } else {
             alert('请输入正确的手机号码！');
         }
     }
     render() {
-        var text = this.state.liked ? '发送验证码' : this.state.count + ' s ' ;
-        const { visible, loading, visiblepsw, loadingpsw} = this.state;
+        var text = this.state.liked ? '发送验证码' : this.state.count + ' s ';
+        const { visible, loading, visiblepsw, loadingpsw } = this.state;
 
         return (
             <div >
-               <div className="changeStyle">
-                  <span className="fa fa-mobile"></span>
-                   <div className="bindPhone">
-                       <p>绑定手机</p>
-                       <p className="bindinfo">提现,修改密码,及安全设置时用以收验证短信</p>
-                   </div>
-                   <Button className="changePhone" onClick={this.showModal}>修改</Button>
-                   <Modal
-                       visible={visible}
-                       title="请输入新的手机号"
-                       onOk={this.handleOk}
-                       onCancel={this.handleCancel}
-                       footer={[
-                           <Button className="confirmStyle" key="submit" type="primary" size="large" loading={loading} onClick={this.handleOk}>
-                               确认
+                <div className="changeStyle">
+                    <span className="fa fa-mobile"></span>
+                    <div className="bindPhone">
+                        <p>绑定手机</p>
+                        <p className="bindinfo">提现,修改密码,及安全设置时用以收验证短信</p>
+                    </div>
+                    <Button className="changePhone" onClick={this.showModal}>修改</Button>
+                    <Modal
+                        visible={visible}
+                        title="请输入新的手机号"
+                        onOk={this.handleOk}
+                        onCancel={this.handleCancel}
+                        footer={[
+                            <Button className="confirmStyle" key="submit" type="primary" size="large" loading={loading} onClick={this.handleOk}>
+                                确认
                            </Button>,
-                       ]}
-                   >
-                      <div className="modalInput">
-                          <input className="formChange" type="text" placeholder="请输入新的手机号码" onBlur={this.phoneChange} />
-                          <div className="Verifycodewidth">
-                              <input className="formVerifycode " type="text" placeholder=" 请输入验证码"/>
-                              <span className={`send-testcode  ${this.state.liked?"" :"time-color"}`} onClick={this.handlesend}>{text}</span>
-                          </div>
-                      </div>
+                        ]}
+                    >
+                        <div className="modalInput">
+                            <input className="formChange" type="text" placeholder="请输入新的手机号码" onBlur={this.phoneChange} />
+                            <div className="Verifycodewidth">
+                                <input className="formVerifycode " type="text" placeholder=" 请输入验证码" />
+                                <span className={`send-testcode  ${this.state.liked ? "" : "time-color"}`} onClick={this.handlesend}>{text}</span>
+                            </div>
+                        </div>
 
-                   </Modal>
-               </div>
+                    </Modal>
+                </div>
                 <div className="changeStyle">
                     <span> <i className="fa fa-unlock-alt"></i></span>
                     <div className="bindPhone">
@@ -146,8 +146,8 @@ class Safeset extends Component {
                             </Button>,
                         ]}
                     >
-                        <input className="formChange" type="text" placeholder="请输入旧密码"  ref="password"/>
-                        <input className="formChange " type="text" placeholder=" 请输入新密码" ref="newPassword"/>
+                        <input className="formChange" type="text" placeholder="请输入旧密码" ref="password" />
+                        <input className="formChange " type="text" placeholder=" 请输入新密码" ref="newPassword" />
                     </Modal>
                 </div>
 
@@ -160,7 +160,7 @@ class Safeset extends Component {
 
 function mapStateToProps(state) {
     return {
-     all:state.auth.all
+        all: state.auth.all
     };
 }
-export default connect(mapStateToProps, {GetverifyCodePhone, ChangePhoneSave, ChangePasswordSave})(Safeset);
+export default connect(mapStateToProps, { GetverifyCodePhone, ChangePhoneSave, ChangePasswordSave })(Safeset);

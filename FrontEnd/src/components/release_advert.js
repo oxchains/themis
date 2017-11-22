@@ -23,10 +23,10 @@ class Releaseadvert extends Component {
             isModalOpen: false,
             error: null,
             actionResult: '',
-            currentIndex:0,
-            status:1,
-            premium:'',
-            price:''
+            currentIndex: 0,
+            status: 1,
+            premium: '',
+            price: ''
         };
         this.handleRowstype = this.handleRowstype.bind(this);
         this.renderRowscountry = this.renderRowscountry.bind(this);
@@ -40,46 +40,46 @@ class Releaseadvert extends Component {
             isModalOpen: false
         });
     };
-    componentWillMount(){
+    componentWillMount() {
         this.props.fetctArray();
     }
-    handleRowstype(status){
+    handleRowstype(status) {
         this.setState({
-            status:status
+            status: status
         });
     }
-    handleFormSubmit(e){
-            e.preventDefault();
-            const userId= localStorage.getItem("userId");
-            const loginname = localStorage.getItem("loginname");
+    handleFormSubmit(e) {
+        e.preventDefault();
+        const userId = localStorage.getItem("userId");
+        const loginname = localStorage.getItem("loginname");
 
-            // const premium = this.refs.premium.value;
-            // const price = this.refs.price.value;
+        // const premium = this.refs.premium.value;
+        // const price = this.refs.price.value;
 
-            const premium = this.state.premium;
-            const price = this.state.price;
+        const premium = this.state.premium;
+        const price = this.state.price;
 
-            const minPrice = this.refs.minPrice.value;
-            const minTxLimit = this.refs.minTxLimit.value;
-            const maxTxLimit = this.refs.maxTxLimit.value;
-            const noticeContent = this.refs.noticeContent.value;
+        const minPrice = this.refs.minPrice.value;
+        const minTxLimit = this.refs.minTxLimit.value;
+        const maxTxLimit = this.refs.maxTxLimit.value;
+        const noticeContent = this.refs.noticeContent.value;
 
-            const noticeType = this.state.status;
-            const location = this.state.country;
-            const currency = this.state.currency;
-            const payType = this.state.payway;
-        if(this.props.authenticated){
-            this.props.releaseAdvert({userId, loginname, noticeType, location, currency, premium, price, minPrice, minTxLimit, maxTxLimit, payType, noticeContent}, err=>{
-                this.setState({ isModalOpen: true, error: err, actionResult: err||'发布成功!'});
+        const noticeType = this.state.status;
+        const location = this.state.country;
+        const currency = this.state.currency;
+        const payType = this.state.payway;
+        if (this.props.authenticated) {
+            this.props.releaseAdvert({ userId, loginname, noticeType, location, currency, premium, price, minPrice, minTxLimit, maxTxLimit, payType, noticeContent }, err => {
+                this.setState({ isModalOpen: true, error: err, actionResult: err || '发布成功!' });
             });
         }
-        else{
+        else {
             alert("请先登录哦");
         }
     }
     renderRowscountry() {
         const locationList = this.props.array.locationList || [];
-        return locationList.map(({id, name}) => {
+        return locationList.map(({ id, name }) => {
             const ID = id.toString();
             const Option = Select.Option;
             return (
@@ -89,7 +89,7 @@ class Releaseadvert extends Component {
     }
     renderRowscurrency() {
         const currencyList = this.props.array.currencyList || [];
-        return currencyList.map(({id, currency_name}) => {
+        return currencyList.map(({ id, currency_name }) => {
             const Option = Select.Option;
             const ID = id.toString();
             return (
@@ -97,9 +97,9 @@ class Releaseadvert extends Component {
             );
         });
     }
-    renderRowspayway(){
+    renderRowspayway() {
         const paymentList = this.props.array.paymentList || [];
-        return paymentList.map(({id, payment_name}) => {
+        return paymentList.map(({ id, payment_name }) => {
             const Option = Select.Option;
             const ID = id.toString();
             return (
@@ -108,13 +108,13 @@ class Releaseadvert extends Component {
         });
     }
 
-    handelChange(e){
+    handelChange(e) {
         const money = this.props.array.cnyDetailList || {};
         const price = parseFloat(money.buy);
-            this.setState({
-                premium: e.target.value,
-                price: ((e.target.value) / 100 + 1)  * price
-            });
+        this.setState({
+            premium: e.target.value,
+            price: ((e.target.value) / 100 + 1) * price
+        });
     }
 
     // renderField({ input, label, type, meta: { touched, error } }) {
@@ -131,7 +131,7 @@ class Releaseadvert extends Component {
 
         const premium = this.state.premium;
         const money = this.props.array.cnyDetailList || {};
-        const price =  parseFloat(this.state.price || money.buy).toFixed(2);
+        const price = parseFloat(this.state.price || money.buy).toFixed(2);
 
         // console.log(this.props)
 
@@ -152,55 +152,55 @@ class Releaseadvert extends Component {
                     <h5 className="h3title">*选择广告类型</h5>
                     <span className="tipspan"> &nbsp;&nbsp;您想要创建什么样的交易广告？如果您希望出售比特币,请确保您在THEMIS的钱包中有比特币。</span>
                     <ul className=" buytype">
-                        <li className={` ${this.state.status == 1 ? "tab-way-item active" :" tab-way-item"} `}   onClick={()=>this.handleRowstype(1)}>在线购买比特币</li>
-                        <li className={`${this.state.status == 2 ? "tab-way-item active" :" tab-way-item "}`} onClick={()=>this.handleRowstype(2)}>在线出售比特币</li>
+                        <li className={` ${this.state.status == 1 ? "tab-way-item active" : " tab-way-item"} `} onClick={() => this.handleRowstype(1)}>在线购买比特币</li>
+                        <li className={`${this.state.status == 2 ? "tab-way-item active" : " tab-way-item "}`} onClick={() => this.handleRowstype(2)}>在线出售比特币</li>
                     </ul>
                     <div className="clear display">
-                    <h5 className="h3title clear">*所在地</h5>
-                    <span  className="tipspan"> 请选择你要发布广告的国家。</span>
-                    <Select defaultValue="选择国家" style={{ width: 240 }}  onChange={(value) => this.state.country = value}>
-                        {this.renderRowscountry()}
-                    </Select>
+                        <h5 className="h3title clear">*所在地</h5>
+                        <span className="tipspan"> 请选择你要发布广告的国家。</span>
+                        <Select defaultValue="选择国家" style={{ width: 240 }} onChange={(value) => this.state.country = value}>
+                            {this.renderRowscountry()}
+                        </Select>
                     </div>
                     <h4 className="h4title">更多信息</h4>
                     <h5 className="h3title clear">*货币:</h5>
-                    <span  className="tipspan"> 您希望交易付款的货币类型。</span>
-                    <Select defaultValue="选择货币" style={{ width: 240 }}  onChange={(value) => this.state.currency = value}>
+                    <span className="tipspan"> 您希望交易付款的货币类型。</span>
+                    <Select defaultValue="选择货币" style={{ width: 240 }} onChange={(value) => this.state.currency = value}>
                         {this.renderRowscurrency()}
                     </Select>
                     <h5 className="h3title clear">*溢价: </h5>
-                    <span  className="tipspan">基于市场价的溢出比例,市场价是根据部分大型交易所实时价格得出的,确保您的报价趋于一个相对合理的范围,比如当前价格为7000,溢价比例为10%,那么价格为7700。</span>
+                    <span className="tipspan">基于市场价的溢出比例,市场价是根据部分大型交易所实时价格得出的,确保您的报价趋于一个相对合理的范围,比如当前价格为7000,溢价比例为10%,那么价格为7700。</span>
 
                     <input type="text" placeholder="%" className="display slectoption" onChange={this.handelChange} value={premium} ref="premium" />
                     {/*<Field name="premium" component={this.renderField} onChange={this.handelChange} value={premium}  type="text"  label="%"  />*/}
 
                     <h5 className="h3title clear">*价格: </h5>
-                    <span  className="tipspan">基于溢价比例得出的报价,10分钟更新一次。</span>
+                    <span className="tipspan">基于溢价比例得出的报价,10分钟更新一次。</span>
 
-                    <input type="text" placeholder="CNY" className="display slectoption" onChange={this.handelChange} value= {price} disabled ref="price" />
+                    <input type="text" placeholder="CNY" className="display slectoption" onChange={this.handelChange} value={price} disabled ref="price" />
                     {/*<Field name="price" component={this.renderField} onChange={this.handelChange} value={price}  type="text"  label="CNY"  />*/}
 
                     <h5 className="h3title clear">*最低价: (选填)</h5>
-                    <span  className="tipspan">最低可成交的价格,可帮助您在价格剧烈波动时保持稳定的盈利,比如最低价为12000,市场价处于12000以下时,您的广告将依旧以12000的价格展示出来。</span>
+                    <span className="tipspan">最低可成交的价格,可帮助您在价格剧烈波动时保持稳定的盈利,比如最低价为12000,市场价处于12000以下时,您的广告将依旧以12000的价格展示出来。</span>
 
                     <input type="text" placeholder="CNY" className="display slectoption" ref="minPrice" />
                     {/*<Field name="minPrice" component={this.renderField} type="text"  label="CNY"  />*/}
 
                     <h5 className="h3title clear">*最小限额: </h5>
-                    <span  className="tipspan">一次交易的最低交易限制。</span>
+                    <span className="tipspan">一次交易的最低交易限制。</span>
 
                     <input type="text" placeholder="请输入最小限额 CNY" className="display slectoption" ref="minTxLimit" />
                     {/*<Field name="minTxLimit" component={this.renderField} type="text"  label="请输入最小限额 CNY"  />*/}
 
                     <h5 className="h3title clear">*最大限额: </h5>
-                    <span  className="tipspan">一次交易中的最大交易限制,您的钱包余额也会影响最大量的设置。</span>
+                    <span className="tipspan">一次交易中的最大交易限制,您的钱包余额也会影响最大量的设置。</span>
 
                     <input type="text" placeholder="请输入最大限额 CNY" className="display slectoption" ref="maxTxLimit" />
                     {/*<Field name="maxTxLimit" component={this.renderField} type="text"  label="请输入最大限额 CNY"  />*/}
 
 
                     <h5 className="h3title clear">*收款方式:</h5>
-                    <span  className="tipspan"> 您希望交易付款的货币类型。</span>
+                    <span className="tipspan"> 您希望交易付款的货币类型。</span>
                     <Select defaultValue="支付方式" style={{ width: 240 }} onChange={(value) => this.state.payway = value}>
                         {this.renderRowspayway()}
                     </Select>
@@ -211,11 +211,11 @@ class Releaseadvert extends Component {
 
                 <Modal isOpen={this.state.isModalOpen} onRequestHide={this.hideModal}>
                     <ModalHeader>
-                        <ModalClose onClick={this.hideModal}/>
+                        <ModalClose onClick={this.hideModal} />
                         <ModalTitle>提示:</ModalTitle>
                     </ModalHeader>
                     <ModalBody>
-                        <p className={this.state.error?'text-red':'text-green'}>
+                        <p className={this.state.error ? 'text-red' : 'text-green'}>
                             {this.state.actionResult}
                         </p>
                     </ModalBody>
@@ -256,7 +256,7 @@ function mapStateToProps(state) {
         authenticated: state.auth.authenticated,
         errorMessage: state.auth.error,
         // all:state.advert.all,
-        array:state.advert.array
+        array: state.advert.array
     };
 }
 
@@ -265,4 +265,4 @@ function mapStateToProps(state) {
 //      validate
 // })(Releaseadvert);
 
-export default connect(mapStateToProps, {releaseAdvert, fetctArray})(Releaseadvert);
+export default connect(mapStateToProps, { releaseAdvert, fetctArray })(Releaseadvert);

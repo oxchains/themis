@@ -12,10 +12,10 @@ import {
     FETCH_PASSWORD
 } from '../actions/types';
 
-const INITIAL_STATE = { all:null, array: [], data:null};
+const INITIAL_STATE = { all: null, array: [], data: null };
 
-export default function(state = INITIAL_STATE, action) {
-    switch(action.type) {
+export default function (state = INITIAL_STATE, action) {
+    switch (action.type) {
         case AUTH_USER:
             return { ...state, error: '', authenticated: true };
         case UNAUTH_USER:

@@ -13,14 +13,13 @@ import { signinAction } from '../../actions/auth';
 
 class Emialforget extends Component {
 
-    handleEmailSubmit()
-    {
-        const email= this.refs.email.value ;
-        const password = this.refs.password.value ;
-        if(email && password)
-            this.props.signinAction({ email, password }, ()=>{});
+    handleEmailSubmit() {
+        const email = this.refs.email.value;
+        const password = this.refs.password.value;
+        if (email && password)
+            this.props.signinAction({ email, password }, () => { });
     }
-    render(){
+    render() {
         return (
             <div className="login-box">
                 <div className="login-box-body">
@@ -32,8 +31,8 @@ class Emialforget extends Component {
                     </div>
                     <div className="form-style">
                         <div className="form-signin" >
-                            <input className="input form-group" type="text" placeholder="请输入邮箱地址" ref="email"/> <br/>
-                            <input className="input form-group" type="password" placeholder="请输入密码" ref="password"/><br/>
+                            <input className="input form-group" type="text" placeholder="请输入邮箱地址" ref="email" /> <br />
+                            <input className="input form-group" type="password" placeholder="请输入密码" ref="password" /><br />
                             <div className="form-group">
                                 <button className="btn form-login" onClick={this.handleEmailSubmit.bind(this)}><a
                                     href="/resetpsw">下一步</a></button>

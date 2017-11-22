@@ -264,7 +264,7 @@ function _init() {
             //Make sure the body tag has the .fixed class
             if (!$("body").hasClass("fixed")) {
                 if (typeof $.fn.slimScroll != 'undefined') {
-                    $(".sidebar").slimScroll({destroy: true}).height("auto");
+                    $(".sidebar").slimScroll({ destroy: true }).height("auto");
                 }
                 return;
             } else if (typeof $.fn.slimScroll == 'undefined' && window.console) {
@@ -274,7 +274,7 @@ function _init() {
             if ($.AdminLTE.options.sidebarSlimScroll) {
                 if (typeof $.fn.slimScroll != 'undefined') {
                     //Destroy if it exists
-                    $(".sidebar").slimScroll({destroy: true}).height("auto");
+                    $(".sidebar").slimScroll({ destroy: true }).height("auto");
                     //Add slimscroll
                     $(".sidebar").slimScroll({
                         height: ($(window).height() - $(".main-header").height()) + "px",
@@ -330,7 +330,7 @@ function _init() {
             //Enable expand on hover for sidebar mini
             if ($.AdminLTE.options.sidebarExpandOnHover
                 || ($('body').hasClass('fixed')
-                && $('body').hasClass('sidebar-mini'))) {
+                    && $('body').hasClass('sidebar-mini'))) {
                 this.expandOnHover();
             }
         },

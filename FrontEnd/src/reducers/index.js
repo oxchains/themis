@@ -13,10 +13,10 @@ import messageReducer from './message_reducer';
 const rootReducer = combineReducers({
     form: formReducer,
     auth: authReducer,
-    order:orderReducer,
-    advert:releaseAdvert,
-    arbitrate:arbitrateReducer,
-    message:messageReducer
+    order: orderReducer,
+    advert: releaseAdvert,
+    arbitrate: arbitrateReducer,
+    message: messageReducer
 });
 
 export default rootReducer;
