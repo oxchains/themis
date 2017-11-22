@@ -15,7 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Jedis;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -60,6 +63,9 @@ public class JwtService {
     @Resource
     private TokenKeyDao tokenKeyDao;
 
+    @Resource
+    private RedisTemplate redisTemplate;
+
     public JwtService(UserDao userDao) {
         this.userDao = userDao;
     }
@@ -94,13 +100,25 @@ public class JwtService {
     }
 
     Optional<JwtAuthentication> parse(String token) {
+        User user = null;
         try {
             Jws<Claims> jws = new DefaultJwtParser()
                     .setSigningKey(publicKey)
                     .parseClaimsJws(token);
             Claims claims = jws.getBody();
             String subject=claims.getSubject();
-            User user = userDao.findByLoginname(subject);
+
+            // 先从redis中获取，如果redis中没有，就从数据库中获取
+            boolean keyExists = redisTemplate.hasKey(subject);
+            if (keyExists){
+                ValueOperations<String ,User> operations = redisTemplate.opsForValue();
+                user = operations.get(subject);
+                LOG.info("Jwt: UserInfo from redis server");
+            }else {
+                user = userDao.findByLoginname(subject);
+                LOG.info("Jwt: UserInfo from mysql server");
+            }
+
             JwtAuthentication jwtAuthentication = new JwtAuthentication(user, token, claims);
             return Optional.of(jwtAuthentication);
         } catch (Exception e) {
