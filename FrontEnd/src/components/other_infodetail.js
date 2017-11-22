@@ -87,18 +87,18 @@ class OtherInfodetail extends Component {
                                 </Button>,
                             ]}
                         >
-                            <p>{message}</p>
+                            <p className="text-center">{message}</p>
                         </Modal>
                         <Modal className="modal-style"
                                visible={visible}
                                onOk={this.handleOk}
                                footer={[
-                                   <Button className="confirmStyle" key="submit" type="primary" size="large" onClick={this.handleOk}>
+                                   <Button className="confirmStyle " key="submit" type="primary" size="large" onClick={this.handleOk}>
                                        确认
                                    </Button>,
                                ]}
                         >
-                            <p>{message}</p>
+                            <p className="text-center">{message}</p>
                         </Modal>
 
                     </div>
