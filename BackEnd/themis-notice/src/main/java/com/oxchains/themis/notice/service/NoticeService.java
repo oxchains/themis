@@ -314,7 +314,7 @@ public class NoticeService {
             // 将好评度等值添加到list中返回
             for (int i = 0; i < resultList.size(); i++){
                 Long userId = resultList.get(i).getUserId();
-                UserTxDetail utdInfo = userTxDetailDao.findOne(userId);
+                UserTxDetail utdInfo = userTxDetailDao.findByUserId(userId);
                 if (utdInfo == null){
                     resultList.get(i).setTxNum(0);
                     resultList.get(i).setTrustNum(0);
@@ -390,7 +390,7 @@ public class NoticeService {
             // 将好评度等值添加到list中返回
             for (int i = 0; i < resultList.size(); i++){
                 Long userId = resultList.get(i).getUserId();
-                UserTxDetail utdInfo = userTxDetailDao.findOne(userId);
+                UserTxDetail utdInfo = userTxDetailDao.findByUserId(userId);
                 if (null == utdInfo){
                     resultList.get(i).setTxNum(0);
                     resultList.get(i).setTrustNum(0);
@@ -521,7 +521,7 @@ public class NoticeService {
      */
     private void setUserTxDetail(List<Notice> subList, int i) {
         Long userId = subList.get(i).getUserId();
-        UserTxDetail userTxDetail = userTxDetailDao.findOne(userId);
+        UserTxDetail userTxDetail = userTxDetailDao.findByUserId(userId);
         if (null == userTxDetail){
             subList.get(i).setTxNum(0);
             subList.get(i).setTrustNum(0);
