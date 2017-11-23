@@ -1515,7 +1515,7 @@ html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
 .ant-modal-body
 {
     width: 90%;
-    text-align: center;
+    /*text-align: center;*/
     margin: 0 auto;
     padding: 30px 20px 16px 16px!important;
 }

@@ -3,12 +3,12 @@
  */
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Alert} from 'react-bootstrap';
+// import {Alert} from 'react-bootstrap';
 import Chat from './chat';
 import QRCode from 'qrcode.react';
-import {Upload, Button, Icon, Modal, message} from 'antd';
+import {Upload, Button, Icon, Modal, message, Popconfirm, Alert} from 'antd';
 import TabsControl from "./react_tab";
-import {ROOT_ARBITRATE} from '../actions/types';
+import {ROOT_ARBITRATE, ROOT_ORDER} from '../actions/types';
 import {uploadEvidence} from '../actions/arbitrate';
 import {fetchOrdersDetails, fetchTradePartnerMessage, addPaymentInfo, addTransactionId, fetchKey, confirmOrder, confirmSendMoney, releaseBtc, confirmGoods, saveComment, cancelOrders} from '../actions/order';
 class OrderProgress extends Component {
@@ -16,40 +16,40 @@ class OrderProgress extends Component {
         super(props);
         this.state = {
             orderStatus:0,
+            orderId:'',
             alertVisible: false,
             error:false,
             errorMessage:"",
             show:false,
             shownext:false,
             tip:'',
-            orderId:1,
             p2shAddress:'',
             amount:0,
             txId:'',
             confirm:true,
             releaseBtc:false,
-            partnerName:'',
             comment:1,
             evidence:false,
             status:"",
             fileList: [],
             uploading: false,
             loading:false,
-            uri:""
+            uri:"",
+            partnerId:'',
+            partnerName:''
         };
-        this.renderDangerAlert = this.renderDangerAlert.bind(this);
+        // this.renderDangerAlert = this.renderDangerAlert.bind(this);
         this.renderOrderMessageDetails=this.renderOrderMessageDetails.bind(this);
     }
     componentWillMount() {
-        const message=JSON.parse(localStorage.getItem("partner"));
         const userId=localStorage.getItem("userId");
-        const data={id:message.id, userId:userId};
-        const partnerName=message.friendUsername;
-        this.setState({partnerName:partnerName});
+        const partner=JSON.parse(localStorage.getItem("partner"));
+        const data={id:partner.id, userId:userId};
+        this.setState({orderId: partner.id});
         this.props.fetchOrdersDetails({data}, (msg)=>{
             console.log(msg);
-            this.setState({orderStatus:msg.orderStatus});
-            this.setState({orderId:msg.id});
+            this.setState({orderStatus:msg.orderStatus, partnerId :  msg.sellerId==userId ? msg.buyerId :msg.sellerId, partnerName:msg.friendUsername
+            });
             switch(this.state.orderStatus){
                 case 1:
                     this.setState({tip:"买家已拍下，等待卖家确认", status:"等待卖家确认"});
@@ -76,12 +76,10 @@ class OrderProgress extends Component {
                     this.setState({tip:"退款处理中", status:"退款中"});
                     break;
             }
+            console.log(this.state.partnerId);
+            const partner= {userId:this.state.partnerId};
+            this.props.fetchTradePartnerMessage({partner});
         });
-        const partner={userId:message.partnerId};
-        this.props.fetchTradePartnerMessage({partner});
-        const orderId={
-            id:this.state.orderId
-        };
     }
     renderOrderStatus1() {
         return (
@@ -99,7 +97,6 @@ class OrderProgress extends Component {
                         </div>
                     </div>
                 </div>
-
                 <div className="col-sm-2">
                     <div className="row-header">
                         <div className="row-title">
@@ -164,7 +161,9 @@ class OrderProgress extends Component {
               <div className="h2 g-pt-20 g-pb-20">
                   <div className={`${this.state.orderStatus == 7 ? 'show' : 'hidden'}`}>订单已取消</div>
                   <div className={`${this.state.orderStatus == 8 ? 'show' : 'hidden'}`}>订单已取消，退款中 <br/>
-                      <button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleEvidence.bind(this)}>THEMIS仲裁</button>
+                      <Popconfirm title="是否要申请仲裁?" onConfirm={this.handleEvidence.bind(this)}  okText="确定" cancelText="取消">
+                          <button className="ant-btn ant-btn-primary ant-btn-lg">THEMIS仲裁</button>
+                      </Popconfirm>
                   </div>
               </div>
             );
@@ -234,33 +233,34 @@ class OrderProgress extends Component {
     }
     renderAlert(){
         return(
-            <div>
-                {this.state.error == true ? <div className="col-xs-12 alert alert-danger alert-dismissable text-center">{this.state.errorMessage}</div> : ""}
-            </div>
+            <span>
+                {/*{this.state.error == true ? <div className="alert alert-danger alert-dismissable text-center">{this.state.errorMessage}</div> : ""}*/}
+                {this.state.error == true ? <Alert message={this.state.errorMessage} type="error" showIcon /> : ""}
+            </span>
         );
     }
-    renderDangerAlert(){
-        return (
-            <Alert bsStyle="success" onDismiss={() => {
-                this.setState({alertVisible: false});
-            }}>
-                <h5>确定已付款给卖家？</h5>
-                <div>
-                    <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleAlert}>
-                       取消
-                    </button>
-                    <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleSendMoney.bind(this)} >
-                        确定
-                    </button>
-                </div>
-            </Alert>
-        );
-    }
-    handleAlert(){
-        this.setState({
-            alertVisible: !this.state.alertVisible,
-        });
-    }
+    // renderDangerAlert(){
+    //     return (
+    //         <Alert bsStyle="success" onDismiss={() => {
+    //             this.setState({alertVisible: false});
+    //         }}>
+    //             <h5>确定已付款给卖家？</h5>
+    //             <div>
+    //                 <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleAlert}>
+    //                    取消
+    //                 </button>
+    //                 <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleSendMoney.bind(this)} >
+    //                     确定
+    //                 </button>
+    //             </div>
+    //         </Alert>
+    //     );
+    // }
+    // handleAlert(){
+    //     this.setState({
+    //         alertVisible: !this.state.alertVisible,
+    //     });
+    // }
     handlePaymentInfo(){
         const orderId={
             id:this.state.orderId
@@ -321,6 +321,9 @@ class OrderProgress extends Component {
                  }
              });
         }
+        else{
+            this.setState({error:false, show:false, shownext:false, confirm:false});
+        }
     }
     handleConfirmOrder(){
         const userId=localStorage.getItem('userId');
@@ -334,7 +337,7 @@ class OrderProgress extends Component {
                   this.setState({ orderStatus:this.state.orderStatus+1});
              }
              else{
-                 message("比特币进入themis托管地址需要一定时间，请耐心等待。。。");
+                 alert(msg.message);
              }
        });
     }
@@ -343,9 +346,11 @@ class OrderProgress extends Component {
             id:this.state.orderId
         };
         this.props.confirmSendMoney({orderId}, (msg)=>{
+            console.log(msg);
               if(msg.status == 1){
                   this.setState({ orderStatus:this.state.orderStatus+1});
               }
+
         });
     }
     handlereleaseBtc(){
@@ -402,7 +407,7 @@ class OrderProgress extends Component {
     handleCancleOrders(){
         const userId=localStorage.getItem('userId');
         const cancelData={
-            id:this.state.orderId,                    
+            id:this.state.orderId,
             userId:userId                             
         };
         if(this.state.orderStatus ==3){
@@ -471,7 +476,9 @@ class OrderProgress extends Component {
         const money=orders_details && orders_details.money;
         const price=orders_details && orders_details.notice.price;
         const partner=this.props.partner;
-        console.log(this.props.orders_details);
+        const partnerName = partner && partner.loginname;
+        // console.log(this.props.orders_details);
+        console.log(partner);
         const { uploading, evidence, show, shownext, loading} = this.state;
         const props = {
             action: `${ROOT_ARBITRATE}/arbitrate/uploadEvidence`,
@@ -530,82 +537,86 @@ class OrderProgress extends Component {
                             </div>
                         </div>
                         <div className="col-sm-4">
-                                {/*  第一页  */}
-                                <div className={`order-page0 ${this.state.orderStatus == 1 ? "show" : "hidden"}`}>
-                                    <div className="row order-operation">
-                                        <div className="col-sm-12">
-                                            {this.renderOrderMessageDetails(orders_details)}
-                                            <div className="order-tip">{orderType == "购买" ? "买家已经拍下订单，请等待卖家确定具体的交易金额和数量":"买家已拍下订单，请卖家确定具体的交易金额和数量，确认好之后，输入你的比特币钱包付款地址，比特币将进入themis托管地址中，等待买家付款，卖家确认收款后，点击释放比特币"}</div>
-                                            <div>
-                                                {orderType == "购买" ? "":
-                                                    <span>
-                                                        <button className="ant-btn ant-btn-primary ant-btn-lg g-mb-10" onClick={this.handlePaymentInfo.bind(this)}>填写付款信息</button><br/>
-                                                        <button type="button" className="ant-btn ant-btn-primary ant-btn-lg g-mr-10" disabled={this.state.confirm} onClick={this.handleConfirmOrder.bind(this)}>确认</button>
-                                                    </span>}
-                                                <button type="button" className="ant-btn ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>
-                                                    取消订单
-                                                </button>
-                                            </div>
+                            {/*  第一页  */}
+                            <div className={`order-page0 ${this.state.orderStatus == 1 ? "show" : "hidden"}`}>
+                                <div className="row order-operation">
+                                    <div className="col-sm-12">
+                                        {this.renderOrderMessageDetails(orders_details)}
+                                        <div className="order-tip">{orderType == "购买" ? "买家已经拍下订单，请等待卖家确定具体的交易金额和数量":"买家已拍下订单，请卖家确定具体的交易金额和数量，确认好之后，输入你的比特币钱包付款地址，比特币将进入themis托管地址中，等待买家付款，卖家确认收款后，点击释放比特币"}</div>
+                                        <div>
+                                            {orderType == "购买" ? "":
+                                                <span>
+                                                    <button className="ant-btn ant-btn-primary ant-btn-lg g-mb-10" onClick={this.handlePaymentInfo.bind(this)}>填写付款信息</button><br/>
+                                                    <button type="button" className="ant-btn ant-btn-primary ant-btn-lg g-mr-10" disabled={this.state.confirm} onClick={this.handleConfirmOrder.bind(this)}>确认</button>
+                                                </span>}
+                                            <button type="button" className="ant-btn ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>
+                                                取消订单
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
-                                {/*  第一页  */}
-                                {/*  第二页  */}
-                                <div className={`order-page1 ${this.state.orderStatus == 2 ? "show" : "hidden"}`}>
-                                    <div className="row order-operation">
-                                        <div className="col-sm-12">
-                                            {this.renderOrderMessageDetails(orders_details)}
-                                            <div className="order-tip">{orderType == "购买" ? "买家已经确认具体金额和交易数量，等待买家付款，30分钟内没有确认支付将自动关闭。":"买家已标记为付款，请卖家确认好是否收到正确的款项，如正确，请及时释放themis托管中的比特币。"}</div>
-                                            <div>
-                                                {orderType == "购买" ?
-                                                    <div>
-                                                        <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleAlert.bind(this)}>标记为已经付款</button>
-                                                        <button type="button" className="ant-btn ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
-                                                    </div>
-                                                    :
-                                                    <div>
-                                                        <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" disabled>等待买家付款</button>
-                                                        <button type="button" className="ant-btn ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
-                                                    </div>
-                                                }
+                            </div>
+                            {/*  第一页  */}
+                            {/*  第二页  */}
+                            <div className={`order-page1 ${this.state.orderStatus == 2 ? "show" : "hidden"}`}>
+                                <div className="row order-operation">
+                                    <div className="col-sm-12">
+                                        {this.renderOrderMessageDetails(orders_details)}
+                                        <div className="order-tip">{orderType == "购买" ? "买家已经确认具体金额和交易数量，等待买家付款，30分钟内没有确认支付将自动关闭。":"买家已标记为付款，请卖家确认好是否收到正确的款项，如正确，请及时释放themis托管中的比特币。"}</div>
+                                        <div>
+                                            {orderType == "购买" ?
+                                                <div>
+                                                    <Popconfirm title="确定标记为已付款?" onConfirm={this.handleSendMoney.bind(this)}  okText="确定" cancelText="取消">
+                                                        <a href="#" className="ant-btn ant-btn-primary ant-btn-lg">标记为已经付款</a>
+                                                    </Popconfirm>
+                                                    <button type="button" className="ant-btn ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
+                                                </div>
+                                                :
+                                                <div>
+                                                    <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" disabled>等待买家付款</button>
+                                                    <button type="button" className="ant-btn ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
+                                                </div>
+                                            }
 
-                                                {
-                                                    this.state.alertVisible ? this.renderDangerAlert() : <div></div>
-                                                }
-                                            </div>
+                                            {/*{*/}
+                                                {/*this.state.alertVisible ? this.renderDangerAlert() : <div></div>*/}
+                                            {/*}*/}
                                         </div>
                                     </div>
                                 </div>
-                                {/*  第二页  */}
+                            </div>
+                            {/*  第二页  */}
 
-                                {/*  第三页  */}
-                                <div className={`order-page2 ${this.state.orderStatus == 3 ? "show" : "hidden"}`}>
-                                    <div className="row order-operation">
-                                        <div className="col-sm-12">
-                                            {this.renderOrderMessageDetails(orders_details)}
-                                            {/*<div className="order-tip">{orderType=="购买"?"卖家已经释放比特币" :""}</div>*/}
-                                            <div>
-                                                {orderType == "购买" ?
-                                                    <div>
-                                                        <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" disabled >等待卖家释放比特币</button>
-                                                        <button type="button" className="ant-btn ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
-                                                    </div>
-                                                    :
-                                                    <div>
-                                                        <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handlereleaseBtc.bind(this)} >释放比特币</button>
-                                                        <button type="button" className="ant-btn ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
-                                                        {this.renderAlert()}
-                                                    </div>
-
-                                                }
-                                                <br/>
-                                                <button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleEvidence.bind(this)}>THEMIS仲裁</button>
-                                            </div>
+                            {/*  第三页  */}
+                            <div className={`order-page2 ${this.state.orderStatus == 3 ? "show" : "hidden"}`}>
+                                <div className="row order-operation">
+                                    <div className="col-sm-12">
+                                        {this.renderOrderMessageDetails(orders_details)}
+                                        {/*<div className="order-tip">{orderType=="购买"?"卖家已经释放比特币" :""}</div>*/}
+                                        <div>
+                                            {orderType == "购买" ?
+                                                <div>
+                                                    <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" disabled >等待卖家释放比特币</button>
+                                                    <button type="button" className="ant-btn ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
+                                                </div>
+                                                :
+                                                <div>
+                                                    <Popconfirm title="是否释放比特币?" onConfirm={this.handlereleaseBtc.bind(this)}  okText="确定" cancelText="取消">
+                                                        <a href="#" className="ant-btn ant-btn-primary ant-btn-lg">释放比特币</a>
+                                                    </Popconfirm>
+                                                    <button type="button" className="ant-btn ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
+                                                    {this.renderAlert()}
+                                                </div>
+                                            }
+                                            <br/>
+                                            <Popconfirm title="是否要申请仲裁?" onConfirm={this.handleEvidence.bind(this)}  okText="确定" cancelText="取消">
+                                                <button className="ant-btn ant-btn-primary ant-btn-lg">THEMIS仲裁</button>
+                                            </Popconfirm>
                                         </div>
                                     </div>
                                 </div>
-                                {/*  第三页  */}
-
+                            </div>
+                            {/*  第三页  */}
                             {/*  第四页  */}
                             <div className={`order-page2 ${this.state.orderStatus == 4 ? "show" : "hidden"}`}>
                                 <div className="row order-operation">
@@ -628,35 +639,34 @@ class OrderProgress extends Component {
                                 </div>
                             </div>
                             {/*  第四页  */}
-                                {/*  第五页  */}
-                                <div className={`order-page4 ${this.state.orderStatus == 5 ? "show" : "hidden"}`}>
-                                    <div className="row order-operation">
-                                        <div className="col-sm-12">
-                                            {this.renderOrderMessageDetails(orders_details)}
-                                            <div className="comment">
-                                                <h5>对用户{this.state.partnerName}进行评价</h5>
-                                                <div>
-                                                    <label htmlFor="good" className="radio-inline">
-                                                        <input type="radio" name="comment" id="good" value="1" defaultChecked onClick={this.handleRadioValue.bind(this)}/>好评
-                                                    </label>
-                                                    <label htmlFor="medium" className="radio-inline">
-                                                        <input type="radio" name="comment" id="medium" value="2" onClick={this.handleRadioValue.bind(this)} />中评
-                                                    </label>
-                                                    <label htmlFor="bad" className="radio-inline">
-                                                        <input type="radio" name="comment" id="bad" value="3" onClick={this.handleRadioValue.bind(this)}/>差评
-                                                    </label>                                                                                   
-                                                </div>
-
-                                                <textarea className="form-control" name="" id="" ref="comment" cols="30" rows="10"></textarea>
+                            {/*  第五页  */}
+                            <div className={`order-page4 ${this.state.orderStatus == 5 ? "show" : "hidden"}`}>
+                                <div className="row order-operation">
+                                    <div className="col-sm-12">
+                                        {this.renderOrderMessageDetails(orders_details)}
+                                        <div className="comment">
+                                            <h5>对用户{partnerName}进行评价</h5>
+                                            <div>
+                                                <label htmlFor="good" className="radio-inline">
+                                                    <input type="radio" name="comment" id="good" value="1" defaultChecked onClick={this.handleRadioValue.bind(this)}/>好评
+                                                </label>
+                                                <label htmlFor="medium" className="radio-inline">
+                                                    <input type="radio" name="comment" id="medium" value="2" onClick={this.handleRadioValue.bind(this)} />中评
+                                                </label>
+                                                <label htmlFor="bad" className="radio-inline">
+                                                    <input type="radio" name="comment" id="bad" value="3" onClick={this.handleRadioValue.bind(this)}/>差评
+                                                </label>
                                             </div>
-                                            <button className="ant-btn ant-btn-primary ant-btn-lg"  onClick={this.handleComment.bind(this)}>
-                                                提交评论
-                                            </button>
-                                            <br/>
+                                            <textarea className="form-control" name="" id="" ref="comment" cols="30" rows="10"></textarea>
                                         </div>
+                                        <button className="ant-btn ant-btn-primary ant-btn-lg"  onClick={this.handleComment.bind(this)}>
+                                            提交评论
+                                        </button>
+                                        <br/>
                                     </div>
                                 </div>
-                                {/*  第五页  */}
+                            </div>
+                            {/*  第五页  */}
                             {/*  第六页  */}
                             <div className={`order-page4 ${this.state.orderStatus >= 6 ? "show" : "hidden"}`}>
                                 <div className="row order-operation">
@@ -686,7 +696,7 @@ class OrderProgress extends Component {
                     <div className="container-flow">
                         <div className="row">
                             <div className="col-sm-12">
-                                <div className="qrcode text-center"> <QRCode  value={this.state.uri} level="H" /></div>
+                                <div className="qrcode text-center"> <QRCode  value={this.state.uri+"&orderId=" + this.state.orderId}  level="H" /></div>
                                 <div className="text-center"> 扫码支付</div>
                             </div>
                             <div className="col-sm-12">
@@ -703,10 +713,11 @@ class OrderProgress extends Component {
                                     <input className="form-control" type="text" placeholder="请输入交易id" ref="txId"/>
                                 </div>
                             </div>
-                            {this.renderAlert()}
+                            <div className="col-sm-12">
+                                {this.renderAlert()}
+                            </div>
                         </div>
                     </div>
-
                 </Modal>
                 <Modal visible={evidence} title="证据存根" onOk={this.handleEvidenceSubmit.bind(this)} onCancel={close}
                        footer={[<Button key="back" size="large" onClick={close}>取消</Button>,
