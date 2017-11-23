@@ -19,7 +19,8 @@ class Signin extends Component {
         }
     }
     renderAlert() {
-        const { from } = this.props.location.state || { from: { pathname: '/' } };
+        const { from } =  { from: { pathname: '/' } };
+        // console.log(this.props.loggedIn);
         if (this.props.loggedIn) {
             // location.reload();
             return (
@@ -71,6 +72,7 @@ class Signin extends Component {
     }
 }
 function mapStateToProps(state) {
+    // console.log(state.auth.authenticated);
     return {
         loggedIn: state.auth.authenticated,
         errorMessage: state.auth.error

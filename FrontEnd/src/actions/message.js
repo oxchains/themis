@@ -16,7 +16,7 @@ export function fetchMessageNumber({userId}){
     return function message(dispatch) {
         axios.get(`${ROOT_MESSAGE}/message/query/unReadCount?userId=${userId}&tip=${tip}`, { headers: getAuthorizedHeader() })
             .then(response => {
-                console.log(response);
+                // console.log(response);
                 dispatch({type: FETCH_MESSAGES_NUMBER, payload: response.data.data});
                 tip=2;
                 message(dispatch);
