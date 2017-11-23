@@ -20,6 +20,7 @@ class Chat extends Component{
         let flag=true;
         let reconnect = new Date().getTime(), time;
         let timeFlag=true;
+
         $(".getMore").on("click", function(){
             if(flag){
                 //获取聊天记录
@@ -114,7 +115,6 @@ class Chat extends Component{
 
                 $(".chat-head").html("重新连接中...");
                 let ws = new WebSocket(`${ROOT_SOCKET}/ws?`+partner.userId +"_"+receiverId+"_"+partner.id); //链接websocket
-                $(".chat-head").html(receiverName);
                 ws.onopen = tempWs.onopen;
                 ws.onmessage = tempWs.onmessage;
                 ws.onerror = tempWs.onerror;
@@ -163,7 +163,7 @@ class Chat extends Component{
                 <span className="chat-head col-sm-12 h5 text-center"></span>
                 <div className="chat-body g-mb-10">
                     <ul className="chat-message clearfix">
-                        <li className="text-center"><a href="javascript:(0);" className="gray g-pt-10 g-pb-10 getMore">获取更多聊天记录</a></li>
+                        <li className="text-center"><span className="gray g-pt-10 g-pb-10 getMore">获取更多聊天记录</span></li>
                     </ul>
                 </div>
                 <div className="clearfix">
@@ -174,8 +174,8 @@ class Chat extends Component{
     }
 }
 function mapStateToProps(state) {
-    return {
-        orders_details: state.order.orders_details,
+    return{
+        partner:state.order.partner_message,
     };
 }
 
