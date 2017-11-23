@@ -27,7 +27,7 @@ class Signin extends Component {
             );
         } else if (this.props.errorMessage) {
             return (
-                <div className="alert alert-danger alert-dismissable">
+                <div className="alert alert-danger alert-dismissable text-center">
                     {this.props.errorMessage}
                 </div>
             );
@@ -58,8 +58,8 @@ class Signin extends Component {
                                 <div className="form-group">
                                     <button className="btn form-login" onClick={this.handlePhoneSubmit.bind(this)}>登录</button>
                                 </div>
-                                <div className="form-group">
-                                    <a className="forgetpwd" href="/forgetpsw">忘记密码 ?</a>
+                                <div className="form-group forgetpwd">
+                                    <a className="" href="/forgetpsw">忘记密码 ?</a>
                                 </div>
                                 {this.renderAlert()}
                             </div>

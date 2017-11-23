@@ -22,7 +22,7 @@ div {
 }
 .input
 {
-    width: 83%;
+    width: 100%;
     height: 40px;
     border:1px solid #ccc;
     border-radius:1px;
@@ -171,7 +171,7 @@ div {
 .form-login
 {
     display:block;
-    width:83%!important;
+    width:100%!important;
     height: 36px;
     margin-bottom: 15px;
     border-radius:3px;
@@ -209,12 +209,13 @@ div {
 .form-test
 {
     display:block;
-    width:50%!important;
+    width:70%!important;
     height: 36px;
     margin-bottom: 15px;
     border-radius:1px;
     border:1px solid #ccc;
     padding: 10px;
+    margin-right: 20px;
 }
 .form-test .help-block
 {
@@ -327,8 +328,8 @@ div {
     font-size: 25px;
     padding-top: 15px;
     padding-bottom: 5px;
-    margin-bottom: 40px;
-   cursor: pointer;
+    margin-bottom: 30px;
+    cursor: pointer;
 }
 .loginli>a
 {
@@ -344,11 +345,14 @@ div {
 }
 .forgetpwd
 {
-    width: 85%;
-    color: #444444;
+    /* width: 100%; */
     display: flex;
     justify-content: flex-end;
     padding-right: 15px;
+}
+.forgetpwd>a,.forgetpwd>a:hover,.forgetpwd>a:active
+{
+    color: #444444;
     font-size: 13px;
 }
 .forgetpwd:hover,.forgetpwd:active
