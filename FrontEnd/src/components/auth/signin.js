@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { signinAction } from '../../actions/auth';
-
+import { Alert } from 'antd';
 class Signin extends Component {
     constructor(props) {
         super(props);
@@ -20,7 +20,6 @@ class Signin extends Component {
     }
     renderAlert() {
         const { from } =  { from: { pathname: '/' } };
-        // console.log(this.props.loggedIn);
         if (this.props.loggedIn) {
             // location.reload();
             return (
@@ -28,9 +27,10 @@ class Signin extends Component {
             );
         } else if (this.props.errorMessage) {
             return (
-                <div className="alert alert-danger alert-dismissable text-center">
-                    {this.props.errorMessage}
-                </div>
+                // <div className="alert alert-danger alert-dismissable text-center">
+                //     {this.props.errorMessage}
+                // </div>
+                <Alert message= {this.props.errorMessage} type="error" showIcon />
             );
         }
     }
@@ -39,7 +39,6 @@ class Signin extends Component {
             <div className="mainbgc">
                 <div className="login-box">
                     <div className="login-box-body">
-
                         <div className=" signinWay text-center g-pt-50">
                             <ul className="row loginul">
                                 <li className="col-xs-6 loginli"> <a className="signinTypeBar g-pb-3" href="/signin">手机登录</a></li>
@@ -72,7 +71,6 @@ class Signin extends Component {
     }
 }
 function mapStateToProps(state) {
-    // console.log(state.auth.authenticated);
     return {
         loggedIn: state.auth.authenticated,
         errorMessage: state.auth.error

@@ -7,6 +7,8 @@ import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import { signupUser, GetverifyCode } from '../../actions/auth';
+import { Alert } from 'antd';
+
 import {
     Modal,
     ModalHeader,
@@ -47,9 +49,11 @@ class Signup extends Component {
     renderAlert() {
         if (this.props.errorMessage) {
             return (
-                <div className="alert alert-danger alert-dismissable">
-                    {this.props.errorMessage}
-                </div>
+                // <div className="alert alert-danger alert-dismissable">
+                //     {this.props.errorMessage}
+                // </div>
+                <Alert message= {this.props.errorMessage} type="error" showIcon />
+                
             );
         }
     }
@@ -105,7 +109,6 @@ class Signup extends Component {
         return (
             <div className={`form-style ${touched && error ? 'has-error' : ''}`}>
                 <input {...input} placeholder={label} type={type} className="form-control " />
-                {/*<span className={`glyphicon glyphicon-${icon} form-control-feedback`}></span>*/}
                 <div className="help-block ">{touched && error ? error : ''}</div>
             </div>
         );

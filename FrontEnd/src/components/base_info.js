@@ -103,7 +103,7 @@ class Baseinfo extends Component {
                         <li>累计交易量:（买）{buyAmount} —（卖）{sellAmount} BTC</li>
                     </ul>
                 </div>
-                <textarea className="textarea-info" name="" id="" cols="53" rows="5" placeholder="简介，在您的公共资料上展示您的介绍信息。纯文本，不超过200字" ref="description"></textarea>
+                <textarea className="textarea-info" name="" id="" cols="80" rows="5" placeholder="简介，在您的公共资料上展示您的介绍信息。纯文本，不超过200字" ref="description"></textarea>
                 <div className="display-save">
                     <button className="form-save" onClick={this.handleSave}>保存</button>
                 </div>
