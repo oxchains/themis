@@ -27,7 +27,6 @@ class MessageLetter extends Component{
         this.props.fetchMessageLetter({userId, pageNum, pageSize});
     }
     handleOrder(val){
-        console.log(val);
         const userId= localStorage.getItem('userId');
         const orderData={id:val.orderId, userId:userId, partnerId:val.partnerId, friendUsername:val.friendUsername};
         localStorage.setItem("partner", JSON.stringify(orderData));
@@ -35,10 +34,13 @@ class MessageLetter extends Component{
     }
     renderList(){
         return this.props.message_letter.pageList.map((item, index)=>{
+            console.log(item);
             return(
                 <li className="message-item-list clearfix" key={index}>
                     <div className="col-xs-2">
-                        <div className="photo pull-right"></div>
+                        <div className="photo pull-right">
+                            <img src="../public/img/touxiang.png" alt=""/>
+                        </div>
                     </div>
                     <div className="col-xs-10 message-item-content" onClick={this.handleOrder.bind(this, item.messageText)}>
                         <div className="message-item-tip"><span>{item.messageType == 1 ? item.messageText.friendUsername:""}</span><span>{item.messageText.postDate}</span></div>
@@ -49,8 +51,8 @@ class MessageLetter extends Component{
         });
     }
     render(){
-        const totalNum = this.props.message_letter && this.props.message_letter.rowCount;
         console.log(this.props.message_letter);
+        const totalNum = this.props.message_letter && this.props.message_letter.rowCount;
         return (
             <div className="message-box">
                 <div className="container">
@@ -70,7 +72,7 @@ class MessageLetter extends Component{
                         </div>
                         <div className="col-xs-12 message-item-content">
                             <ul>
-                                {this.props.message_letter == null ? <div className="text-center h4">暂无消息</div> : this.renderList()}
+                                { totalNum == 0 || !this.props.message_letter  ? <div className="text-center h4">目前没有新消息</div> : this.renderList()}
                             </ul>
                         </div>
                         <div className="col-xs-12">
@@ -83,12 +85,10 @@ class MessageLetter extends Component{
             </div>
         );
     }
-
 }
 function mapStateToProps(state) {
     return {
         message_letter:state.message.message_letter
     };
 }
-
 export default connect(mapStateToProps, {fetchMessageLetter})(MessageLetter);

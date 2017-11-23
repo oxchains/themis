@@ -47,7 +47,6 @@ class OrderProgress extends Component {
         const data={id:partner.id, userId:userId};
         this.setState({orderId: partner.id});
         this.props.fetchOrdersDetails({data}, (msg)=>{
-            console.log(msg);
             this.setState({orderStatus:msg.orderStatus, partnerId :  msg.sellerId==userId ? msg.buyerId :msg.sellerId, partnerName:msg.friendUsername
             });
             switch(this.state.orderStatus){
@@ -76,7 +75,6 @@ class OrderProgress extends Component {
                     this.setState({tip:"退款处理中", status:"退款中"});
                     break;
             }
-            console.log(this.state.partnerId);
             const partner= {userId:this.state.partnerId};
             this.props.fetchTradePartnerMessage({partner});
         });
@@ -174,35 +172,37 @@ class OrderProgress extends Component {
         }
         return(
             <div className="container-fluid" style={{"height":"381.42px"}}>
-                <ul className="row text-left g-pt-40">
-                    <li className="col-sm-12 ">
-                        {partner.loginname}
+                <ul className="row text-left g-pt-40 partner">
+                    <li className="col-sm-12 text-center">
+                        <img src="./public/img/touxiang.png" alt=""/>
+                        <h4 className="h4">{partner.loginname}</h4>
+
                     </li>
-                    <li className="col-sm-6">
+                    <li className="col-sm-6 pl-15x">
                         <span>交易量:</span><span>{partner.txNum}</span>
                     </li>
-                    <li className="col-sm-6">
+                    <li className="col-sm-6 pl-15x">
                         <span>电子邮箱:</span><span>{partner.emailVerify}</span>
                     </li>
-                    <li className="col-sm-6">
+                    <li className="col-sm-6 pl-15x">
                         <span>已确认的交易次数:</span><span>{partner.txNum}</span>
                     </li>
-                    <li className="col-sm-6">
+                    <li className="col-sm-6 pl-15x">
                         <span>电话号码:</span><span>{partner.mobilePhoneVerify}</span>
                     </li>
-                    <li className="col-sm-6">
+                    <li className="col-sm-6 pl-15x">
                         <span>好评度:</span><span>{partner.goodDegree}</span>
                     </li>
-                    <li className="col-sm-6">
+                    <li className="col-sm-6 pl-15x">
                         <span>实名认证:</span><span>{partner.usernameVerify}</span>
                     </li>
-                    <li className="col-sm-6">
+                    <li className="col-sm-6 pl-15x">
                         <span>第一次购买:</span><span>{partner.firstBuyTime}</span>
                     </li>
-                    <li className="col-sm-6">
+                    <li className="col-sm-6 pl-15x">
                         <span>信任:</span><span>{partner.believeNum}</span>
                     </li>
-                    <li className="col-sm-6">
+                    <li className="col-sm-6 pl-15x">
                         <span>用户创建时间:</span><span>{partner.createTime}</span>
                     </li>
                 </ul>
@@ -234,33 +234,10 @@ class OrderProgress extends Component {
     renderAlert(){
         return(
             <span>
-                {/*{this.state.error == true ? <div className="alert alert-danger alert-dismissable text-center">{this.state.errorMessage}</div> : ""}*/}
                 {this.state.error == true ? <Alert message={this.state.errorMessage} type="error" showIcon /> : ""}
             </span>
         );
     }
-    // renderDangerAlert(){
-    //     return (
-    //         <Alert bsStyle="success" onDismiss={() => {
-    //             this.setState({alertVisible: false});
-    //         }}>
-    //             <h5>确定已付款给卖家？</h5>
-    //             <div>
-    //                 <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleAlert}>
-    //                    取消
-    //                 </button>
-    //                 <button type="button" className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleSendMoney.bind(this)} >
-    //                     确定
-    //                 </button>
-    //             </div>
-    //         </Alert>
-    //     );
-    // }
-    // handleAlert(){
-    //     this.setState({
-    //         alertVisible: !this.state.alertVisible,
-    //     });
-    // }
     handlePaymentInfo(){
         const orderId={
             id:this.state.orderId
@@ -278,7 +255,6 @@ class OrderProgress extends Component {
         const sellerPubAuth=this.refs.sellerPubAuth.value;
         const sellerPriAuth=this.refs.sellerPriAuth.value;
         const orderId=this.state.orderId;
-        console.log(sellerPubAuth);
         if(sellerPubAuth && sellerPriAuth){
              const paymentInfo={
                  sellerPubAuth:sellerPubAuth,
@@ -286,7 +262,6 @@ class OrderProgress extends Component {
                  orderId:orderId
              };
              this.props.addPaymentInfo({paymentInfo}, (msg)=>{
-                 console.log(msg);
                  if(msg.status == 1){
                      this.setState({uri:msg.data.uri, error:false, p2shAddress:msg.data.p2shAddress, amount:msg.data.amount, show:false, shownext:true});
                  }
@@ -309,7 +284,6 @@ class OrderProgress extends Component {
         const regex=/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{64}$/;
         if(txId){
              this.props.addTransactionId({txIdInfo}, (msg)=>{
-                 console.log(msg);
                  if(regex.test(txId)){
                      this.setState({error:false, show:false, shownext:false, confirm:false});
                  }
@@ -332,13 +306,12 @@ class OrderProgress extends Component {
             id:this.state.orderId
         };
         this.props.confirmOrder({orderId}, (msg)=>{
-            console.log(msg);
-             if(msg.status == 1){
-                  this.setState({ orderStatus:this.state.orderStatus+1});
-             }
-             else{
-                 alert(msg.message);
-             }
+            if(msg.status == 1){
+            this.setState({ orderStatus:this.state.orderStatus+1});
+        }
+        else{
+             alert(msg.message);
+        }
        });
     }
     handleSendMoney(){
@@ -346,7 +319,6 @@ class OrderProgress extends Component {
             id:this.state.orderId
         };
         this.props.confirmSendMoney({orderId}, (msg)=>{
-            console.log(msg);
               if(msg.status == 1){
                   this.setState({ orderStatus:this.state.orderStatus+1});
               }
@@ -360,7 +332,6 @@ class OrderProgress extends Component {
             userId:userId
         };
         this.props.releaseBtc({releaseData}, (msg) => {
-            console.log(msg);
             if(msg.status == 1){
                 this.setState({orderStatus:this.state.orderStatus+1});
             }
@@ -380,7 +351,6 @@ class OrderProgress extends Component {
             userId:userId
         };
         this.props.confirmGoods({confirmGoodsData}, (msg)=>{
-            console.log(msg);
               if(msg.status==1){
                    this.setState({ orderStatus:this.state.orderStatus+1});
               }
@@ -463,7 +433,6 @@ class OrderProgress extends Component {
         }
     }
     render(){
-        console.log('status: ' + this.state.orderStatus);
         let close = () => {
             this.setState({show:false, shownext:false, evidence:false, error:false});
         };
@@ -477,8 +446,6 @@ class OrderProgress extends Component {
         const price=orders_details && orders_details.notice.price;
         const partner=this.props.partner;
         const partnerName = partner && partner.loginname;
-        // console.log(this.props.orders_details);
-        console.log(partner);
         const { uploading, evidence, show, shownext, loading} = this.state;
         const props = {
             action: `${ROOT_ARBITRATE}/arbitrate/uploadEvidence`,
@@ -577,10 +544,6 @@ class OrderProgress extends Component {
                                                     <button type="button" className="ant-btn ant-btn-lg" onClick={this.handleCancleOrders.bind(this)}>取消订单</button>
                                                 </div>
                                             }
-
-                                            {/*{*/}
-                                                {/*this.state.alertVisible ? this.renderDangerAlert() : <div></div>*/}
-                                            {/*}*/}
                                         </div>
                                     </div>
                                 </div>
@@ -592,7 +555,6 @@ class OrderProgress extends Component {
                                 <div className="row order-operation">
                                     <div className="col-sm-12">
                                         {this.renderOrderMessageDetails(orders_details)}
-                                        {/*<div className="order-tip">{orderType=="购买"?"卖家已经释放比特币" :""}</div>*/}
                                         <div>
                                             {orderType == "购买" ?
                                                 <div>
@@ -730,7 +692,7 @@ class OrderProgress extends Component {
                             <Button>
                                 <Icon type="upload" /> 聊天截图
                             </Button>
-                            <div>最多可上传5张图片</div>
+                            <span>最多可上传5张图片</span>
                         </Upload>
                     </div>
                     <textarea className="form-control" name="" id="" cols="30" rows="10" placeholder="请输入此次仲裁重要部分证据和备注" ref="voucherDes"></textarea>

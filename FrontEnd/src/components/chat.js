@@ -32,7 +32,6 @@ class Chat extends Component{
                         request.setRequestHeader("Authorization", 'Bearer '+token);
                     },
                     success:function(data){
-                        console.log(data);
                         if(data.data!=null){
                             var list=data.data;
                             $.each(list, function(index){
@@ -75,7 +74,6 @@ class Chat extends Component{
         //监听 messages
         ws.onmessage = (e) => {
             var data=JSON.parse(e.data);
-            // console.log(data)
             // 收到消息，重置定时器
             clearTimeout(ws.receiveMessageTimer);
             switch (data.msgType) {

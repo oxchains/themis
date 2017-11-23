@@ -25,9 +25,7 @@ import {
  * 获取未完成订单列表
  * @returns {Function}
  */
-
 export function fetchNoCompletedOrders({formData}) {
-    console.log(formData);
     return function(dispatch) {
         axios({
             method:'post',
@@ -35,7 +33,6 @@ export function fetchNoCompletedOrders({formData}) {
             data:formData,
             headers: getAuthorizedHeader()
         }).then((res) => {
-            console.log(res);
             if (res.data.status == 1) {
                 dispatch({
                     type: FETCH_NOT_COMPLETED_ORDERS,
@@ -45,7 +42,6 @@ export function fetchNoCompletedOrders({formData}) {
         }).catch( err => dispatch(requestError(err.message)) );
     };
 }
-
 /**
  * 获取已完成订单列表
  * @returns {Function}
@@ -59,7 +55,6 @@ export function fetchCompletedOrders({userId}) {
             data:userId,
             headers: getAuthorizedHeader()
         }).then((res) => {
-            console.log(res);
             if (res.data.status == 1) {
                 dispatch({
                     type: FETCH_COMPLETED_ORDERS,
@@ -69,7 +64,6 @@ export function fetchCompletedOrders({userId}) {
         }).catch( err => dispatch(requestError(err.message)) );
     };
 }
-
 /**
  * 获取订单详情
  * @returns {Function}
@@ -82,7 +76,6 @@ export function fetchOrdersDetails({data}, callback) {
             data: data,
             headers: getAuthorizedHeader()
         }).then((res) => {
-            console.log(res);
             if (res.data.status == 1) {
                 callback(res.data.data);
                 dispatch({
@@ -116,7 +109,6 @@ export function fetchTradePartnerMessage({partner}) {
             });
     };
 }
-
 /**
  * 获取卖家付款信息
  * @returns {Function}
@@ -139,15 +131,11 @@ export function fetchKey({orderId}, callback) {
         });
     };
 }
-
-
-
 /**
  * 卖家上传付款信息
  * @returns {Function}
  */
 export function addPaymentInfo({paymentInfo}, callback) {
-    console.log(paymentInfo);
     return function (dispatch) {
         axios({
             method: 'post',
@@ -167,13 +155,11 @@ export function addPaymentInfo({paymentInfo}, callback) {
         });
     };
 }
-
 /**
  * 卖家上传交易id
  * @returns {Function}
  */
 export function addTransactionId({txIdInfo}, callback) {
-    console.log(txIdInfo);
     return function (dispatch) {
         axios({
             method: 'post',
@@ -193,13 +179,11 @@ export function addTransactionId({txIdInfo}, callback) {
         });
     };
 }
-
 /**
  * 卖家确认订单
  * @returns {Function}
  */
 export function confirmOrder({orderId}, callback) {
-    console.log(orderId);
     return function (dispatch) {
         axios({
             method: 'post',
@@ -217,7 +201,6 @@ export function confirmOrder({orderId}, callback) {
         });
     };
 }
-
 /**
  * 买家付款
  * @returns {Function}
@@ -240,7 +223,6 @@ export function confirmSendMoney({orderId}, callback) {
         });
     };
 }
-
 /**
  * 卖家释放比特币
  * @returns {Function}
@@ -263,7 +245,6 @@ export function releaseBtc({releaseData}, callback) {
         });
     };
 }
-
 /**
  * 买家确认收货
  * @returns {Function}
@@ -288,7 +269,6 @@ export function confirmGoods({confirmGoodsData}, callback) {
         });
     };
 }
-
 /**
  * 提交评价
  * @returns {Function}
@@ -301,7 +281,6 @@ export function saveComment({commentData}, callback) {
             data: commentData,
             headers: getAuthorizedHeader()
         }).then((res) => {
-            console.log(res);
             if (res.data.status == 1) {
                 dispatch({
                     type: SAVE_COMMENT,
@@ -314,16 +293,11 @@ export function saveComment({commentData}, callback) {
         });
     };
 }
-
-
-
-
 /**
  * 取消订单
  * @returns {Function}
  */
 export function cancelOrders({cancelData}, callback) {
-    console.log(cancelData);
     return function (dispatch) {
         axios({
             method: 'post',
@@ -331,7 +305,6 @@ export function cancelOrders({cancelData}, callback) {
             data: cancelData,
             headers: getAuthorizedHeader()
         }).then((res) => {
-            console.log(res);
             if (res.data.status == 1) {
                 dispatch({
                     type: CANCEL_ORDERS,

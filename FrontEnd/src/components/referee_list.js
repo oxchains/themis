@@ -4,11 +4,9 @@
 import React, { Component }from 'react';
 import {connect} from 'react-redux';
 import { Pagination, Radio, Modal, Button} from 'antd';
-// import {Alert, Modal, Button} from 'react-bootstrap';
 import {fetchArbitrateList, fetchEvidence, arbitrateResult} from '../actions/arbitrate';
 import {ROOT_ARBITRATE} from '../actions/types';
 const RadioGroup = Radio.Group;
-
 
 class RefereeList extends Component {
     constructor(props) {
@@ -43,7 +41,6 @@ class RefereeList extends Component {
     }
     handleArbitrate(){
         const userId=localStorage.getItem("userId");
-        console.log(this.props.evidenceData.orderId);
         const resultData={
             id:this.props.evidenceData.orderId,
             userId:userId,
@@ -55,7 +52,7 @@ class RefereeList extends Component {
         });
     }
     renderrow() {
-        return this.props.arbitrate_list.map((item, index)=>{
+        return this.props.arbitrate_list.data.map((item, index)=>{
             const userId=localStorage.getItem("userId");
             return (
                 <tr key={index}>
@@ -99,7 +96,7 @@ class RefereeList extends Component {
         };
         const arbitrate_list=this.props.arbitrate_list;
         const evidenceData = this.props.evidenceData;
-        const totalNum = arbitrate_list && arbitrate_list[0].pageCount;
+        const totalNum = arbitrate_list && arbitrate_list.pageCount;
         const buyerContent = evidenceData && evidenceData.buyerContent;
         const sellerContent = evidenceData && evidenceData.sellerContent;
         const buyerFiles = evidenceData && evidenceData.buyerFiles;
@@ -123,7 +120,7 @@ class RefereeList extends Component {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {this.props.arbitrate_list == null ? <tr><td colSpan={8}>暂无数据</td></tr> : this.renderrow()}
+                                { !arbitrate_list || totalNum == 0  ? <tr><td className="text-center h5" colSpan={8}>暂无数据</td></tr> : this.renderrow()}
                                 </tbody>
                             </table>
                         </div>
@@ -173,52 +170,11 @@ class RefereeList extends Component {
                             </RadioGroup>
                         </div>
                     </div>
-
                 </Modal>
-
-                {/*<Modal show={this.state.show} onHide={close} container={this} aria-labelledby="contained-modal-title">*/}
-                    {/*<Modal.Header closeButton>*/}
-                        {/*<Modal.Title id="contained-modal-title text-center">证据存根</Modal.Title>*/}
-                    {/*</Modal.Header>*/}
-                    {/*<Modal.Body>*/}
-                        {/*<div className="row  margin-b-15 ">*/}
-                            {/*<label className="col-sm-4 control-label text-right"><strong>买家附件</strong></label>*/}
-                            {/*<div className="col-sm-8 g-pb-10 ">*/}
-                                {/*{buyerFiles ? buyerFiles.split(',').map(this.renderDownload): "暂无数据" }*/}
-                            {/*</div>*/}
-                            {/*<label className="col-sm-4 control-label text-right"><strong>卖家附件</strong></label>*/}
-                            {/*<div className="col-sm-8 g-pb-10 ">*/}
-                                {/*{sellerFiles ? sellerFiles.split(',').map(this.renderDownload): "暂无数据" }*/}
-                            {/*</div>*/}
-                            {/*<label className="col-sm-4 control-label text-right"><strong>买家备注</strong></label>*/}
-                            {/*<div className="col-sm-8 g-pb-10">*/}
-                                {/*<span>{buyerContent ? buyerContent:"暂无数据"}</span>*/}
-                            {/*</div>*/}
-                            {/*<label className="col-sm-4 control-label text-right"><strong>卖家备注</strong></label>*/}
-                            {/*<div className="col-sm-8 g-pb-10">*/}
-                                {/*<span>{sellerContent ? sellerContent :"暂无数据"}</span>*/}
-                            {/*</div>*/}
-                            {/*<div className="col-sm-12 text-center g-pb-20">*/}
-                                {/*<span className="h4">仲裁胜利方</span>*/}
-                            {/*</div>*/}
-                            {/*<div className="col-sm-12 text-center">*/}
-                                {/*<RadioGroup onChange={this.handleRadioValue.bind(this)} value={this.state.result}>*/}
-                                    {/*<Radio value={1}>买家</Radio>*/}
-                                    {/*<Radio value={2}>卖家</Radio>*/}
-                                {/*</RadioGroup>*/}
-                            {/*</div>*/}
-                        {/*</div>*/}
-                    {/*</Modal.Body>*/}
-                    {/*<Modal.Footer>*/}
-                        {/*<Button onClick={this.handleArbitrate.bind(this)}>确定</Button>*/}
-                        {/*<Button onClick={close}>取消</Button>*/}
-                    {/*</Modal.Footer>*/}
-                {/*</Modal>*/}
             </div>
         );
     }
 }
-
 function mapStateToProps(state) {
     return {
         arbitrate_list: state.arbitrate.arbitrate_list,

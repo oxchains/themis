@@ -32,7 +32,9 @@ class MessageNotice extends Component{
             return(
                 <li className="message-item-list clearfix" key={index}>
                     <div className="col-xs-2">
-                        <div className="photo pull-right"></div>
+                        <div className="photo pull-right">
+                            <img src="../public/img/touxiang.png" alt=""/>
+                        </div>
                     </div>
                     <div className="col-xs-10 message-item-content">
                         <div className="message-item-tip"><span>{item.messageType == 2 ? "公告" :""}</span><span>{item.messageText.postDate}</span></div>
@@ -44,7 +46,6 @@ class MessageNotice extends Component{
     }
     render(){
         const totalNum = this.props.message_notice && this.props.message_notice.rowCount;
-        console.log(this.props.message_notice);
         return (
             <div className="message-box">
                 <div className="container">
@@ -64,7 +65,8 @@ class MessageNotice extends Component{
                         </div>
                         <div className="col-xs-12 message-item-content">
                            <ul>
-                               {this.props.message_notice == null ? <div className="text-center h4">暂无消息</div> : this.renderList()}
+
+                               { !this.props.message_notice || totalNum == 0 ? <div className="text-center h4">目前没有新消息</div> : this.renderList()}
                            </ul>
                         </div>
                         <div className="col-xs-12">
@@ -83,5 +85,4 @@ function mapStateToProps(state) {
         message_notice:state.message.message_notice,
     };
 }
-
 export default connect(mapStateToProps, {fetchMessageNotice})(MessageNotice);

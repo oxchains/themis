@@ -31,7 +31,9 @@ class MessageSystem extends Component{
             return(
                 <li className="message-item-list clearfix" key={index}>
                     <div className="col-xs-2">
-                        <div className="photo pull-right"></div>
+                        <div className="photo pull-right">
+                            <img src="../public/img/touxiang.png" alt=""/>
+                        </div>
                     </div>
                     <div className="col-xs-10 message-item-content">
                         <div className="message-item-tip"><span>{item.messageType == 2 ? "公告" :""}</span><span>{item.messageText.postDate}</span></div>
@@ -43,7 +45,6 @@ class MessageSystem extends Component{
     }
     render(){
         const totalNum = this.props.message_system && this.props.message_system.rowCount;
-        console.log(this.props.message_system);
         return (
             <div className="message-box">
                 <div className="container">
@@ -63,7 +64,7 @@ class MessageSystem extends Component{
                         </div>
                         <div className="col-xs-12 message-item-content">
                             <ul>
-                                {this.props.message_system == null ? <div className="text-center h4">暂无消息</div> : this.renderList()}
+                                { totalNum == 0 || !this.props.message_system  ? <div className="text-center h4">目前没有新消息</div> : this.renderList()}
                             </ul>
                         </div>
                         <div className="col-xs-12">
@@ -76,12 +77,10 @@ class MessageSystem extends Component{
             </div>
         );
     }
-
 }
 function mapStateToProps(state) {
     return {
         message_system:state.message.message_system
     };
 }
-
 export default connect(mapStateToProps, {fetchMessageSystem})(MessageSystem);

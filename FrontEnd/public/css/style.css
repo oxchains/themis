@@ -459,6 +459,16 @@ div {
     margin:auto;
 }
 
+.partner img{
+    width: 100px;
+    border-radius: 50%;
+    box-shadow: 0 0 20px #bbbbbb;
+}
+.pl-15x{
+    padding:5px 0;
+    padding-left: 15%;
+
+}
 /*orderprocess-chat*/
 .tab_title_wrap span{
     display: inline-block;
@@ -1496,6 +1506,7 @@ html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
     text-align: center;
 }
 .detailTitle>img
+
 {
     box-shadow: 0 0 20px #bbbbbb;
 }
@@ -1542,17 +1553,16 @@ td {
 .message-list li .active{
     border-bottom: 2px solid #2ad0e9;
 }
-.photo{
-    height: 50px;
+.photo img{
     width: 50px;
-    background: black;
-    border-radius: 25px;
+    border-radius: 50%;
+    box-shadow: 0 0 20px #bbbbbb;
 }
 .message-item-list:nth-child(1){
     border-top: 1px solid lightgray;
 }
 .message-item-list{
-    padding: 20px 0;
+    padding: 15px 0;
     margin:0 30px;
     border-bottom: 1px solid lightgray;
 }
@@ -1562,7 +1572,18 @@ td {
     font-weight: 400;
 }
 .message-item-detail{
-    padding: 20px;
+    padding-top: 10px;
+    padding-left: 20px;
+}
+.message-item-list:hover{
+    cursor: pointer;
+    background: lightgray;
+}
+.message-item-list:hover .message-item-content .message-item-tip{
+    color: black;
+}
+.message-item-list:hover .message-item-content{
+    color: black;
 }
 .ant-pagination-item, .ant-pagination-item-link, .ant-pagination-item-link
 {

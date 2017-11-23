@@ -38,7 +38,6 @@ export function signinAction({ mobilephone, password }) {
                     localStorage.setItem('believeNum', response.data.data.userTxDetail.believeNum);//信任人数
                     localStorage.setItem('sellAmount', response.data.data.userTxDetail.sellAmount); //出售的累计交易数量
                     localStorage.setItem('buyAmount', response.data.data.userTxDetail.buyAmount); //购买的累计交易数量
-
                     dispatch({ type: AUTH_USER });
                     // browserHistory.push('/');
                 } else {

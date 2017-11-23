@@ -57,7 +57,6 @@ class OrderInProgress extends Component {
                 uploading: true,
             });
             this.props.uploadEvidence({formData}, (msg)=>{
-                console.log(msg);
                 if(msg.status == 1){
                     this.setState({
                         fileList: [],
@@ -111,7 +110,6 @@ class OrderInProgress extends Component {
         window.location.href='/orderprogress';
     }
     render() {
-        console.log(this.props.not_completed_orders);
         let close = () => {
             this.setState({visible:false});
         };
@@ -161,11 +159,10 @@ class OrderInProgress extends Component {
                                     <th>创建时间</th>
                                     <th>交易状态</th>
                                     <th>操作</th>
-                                    <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                { data == null ? <tr><td className="text-center h5" colSpan={9}>loading....</td></tr> : this.renderrow()}
+                                { !not_completed_orders || totalNum == 0  ? <tr><td className="text-center h5" colSpan={8}>暂无订单</td></tr> : this.renderrow()}
                                 </tbody>
                             </table>
                         </div>
@@ -185,7 +182,7 @@ class OrderInProgress extends Component {
                                 <Button>
                                     <Icon type="upload" /> 聊天截图
                                 </Button>
-                                <div>最多可上传5张图片</div>
+                                <span>最多可上传5张图片</span>
                             </Upload>
                         </div>
                         <textarea className="form-control" name="" id="" cols="30" rows="10" placeholder="请输入此次仲裁重要部分证据和备注" ref="voucherDes"></textarea>

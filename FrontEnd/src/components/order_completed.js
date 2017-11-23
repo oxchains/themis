@@ -61,8 +61,6 @@ class OrderCompleted extends Component {
     }
     render() {
         const completed_orders = this.props.completed_orders;
-        console.log(completed_orders);
-        const data=completed_orders &&completed_orders.data;
         const totalNum = completed_orders && completed_orders.pageCount;
         return (
             <div className="container g-pb-150">
@@ -88,7 +86,7 @@ class OrderCompleted extends Component {
                             </tr>
                             </thead>
                             <tbody>
-                            { data===null ? <tr><td className="text-center h5" colSpan={8}>loading....</td></tr> : this.renderrow()}
+                            { !completed_orders || totalNum == 0  ? <tr><td className="text-center h5" colSpan={8}>暂无订单</td></tr> : this.renderrow()}
                             </tbody>
                         </table>
                     </div>

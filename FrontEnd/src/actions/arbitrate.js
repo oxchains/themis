@@ -28,7 +28,7 @@ export function fetchArbitrateList({userIdDate}) {
             if (res.data.status == 1) {
                 dispatch({
                     type: FETCH_ARBITRATE_LIST,
-                    payload: res.data.data
+                    payload: res.data
                 });
             }
         }).catch( err => dispatch(requestError(err.message)) );
@@ -42,7 +42,6 @@ export function fetchArbitrateList({userIdDate}) {
 
 
 export function uploadEvidence({formData}, callback) {
-    console.log(formData);
     return function(dispatch) {
         axios({
             method:'post',
@@ -51,7 +50,6 @@ export function uploadEvidence({formData}, callback) {
             headers: {'content-type': 'multipart/form-data', 'authorization': localStorage.getItem('token')},
             withCredentials: true
         }).then((res) => {
-            console.log(res);
             if (res.data.status == 1) {
                 dispatch({
                     type: UPLOAD_EVIDENCE,
@@ -70,7 +68,6 @@ export function uploadEvidence({formData}, callback) {
  */
 
 export function fetchEvidence({orderId}) {
-    console.log(orderId);
     return function(dispatch) {
         axios({
             method:'post',
@@ -78,7 +75,6 @@ export function fetchEvidence({orderId}) {
             data:orderId,
             headers: getAuthorizedHeader()
         }).then((res) => {
-            console.log(res);
             if (res.data.status == 1) {
                 dispatch({
                     type: FETCH_EVIDENCE,
@@ -95,7 +91,6 @@ export function fetchEvidence({orderId}) {
  */
 
 export function arbitrateResult({resultData}) {
-    console.log(resultData);
     return function(dispatch) {
         axios({
             method:'post',
@@ -103,7 +98,6 @@ export function arbitrateResult({resultData}) {
             data:resultData,
             headers: getAuthorizedHeader()
         }).then((res) => {
-            console.log(res);
             if (res.data.status == 1) {
                 dispatch({
                     type: ARBITRATE_RESULT,

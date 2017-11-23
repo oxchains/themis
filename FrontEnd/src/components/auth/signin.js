@@ -34,6 +34,7 @@ class Signin extends Component {
         }
     }
     render() {
+        console.log(this.props.errorMessage);
         return (
             <div className="mainbgc">
                 <div className="login-box">

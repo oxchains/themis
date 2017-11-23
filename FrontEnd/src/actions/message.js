@@ -16,7 +16,6 @@ export function fetchMessageNumber({userId}){
     return function message(dispatch) {
         axios.get(`${ROOT_MESSAGE}/message/query/unReadCount?userId=${userId}&tip=${tip}`, { headers: getAuthorizedHeader() })
             .then(response => {
-                console.log(response);
                 dispatch({type: FETCH_MESSAGES_NUMBER, payload: response.data.data});
                 tip=2;
                 message(dispatch);
@@ -33,7 +32,6 @@ export function fetchMessageNotice({userId, pageNum, pageSize}){
             .catch(err => dispatch(requestError(err.message)));
     };
 }
-
 export function fetchMessageSystem({userId, pageNum, pageSize}){
     return function(dispatch) {
         axios.get(`${ROOT_MESSAGE}/message/query/globalMsg?userId=${userId}&pageNum=${pageNum}&pageSize=${pageSize}`, { headers: getAuthorizedHeader() })
@@ -43,9 +41,6 @@ export function fetchMessageSystem({userId, pageNum, pageSize}){
             .catch(err => dispatch(requestError(err.message)));
     };
 }
-
-
-
 export function fetchMessageLetter({userId, pageNum, pageSize}){
     return function(dispatch) {
         axios.get(`${ROOT_MESSAGE}/message/query/privateMsg?userId=${userId}&pageNum=${pageNum}&pageSize=${pageSize}`, { headers: getAuthorizedHeader() })
