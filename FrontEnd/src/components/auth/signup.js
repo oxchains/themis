@@ -6,7 +6,7 @@
 import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
-import { signupUser, GetverifyCode} from '../../actions/auth';
+import { signupUser, GetverifyCode } from '../../actions/auth';
 import {
     Modal,
     ModalHeader,
@@ -21,13 +21,13 @@ class Signup extends Component {
         super(props);
         this.state = {
             isModalOpen: false,
-            spin : false,
+            spin: false,
             error: null,
             actionResult: '',
             count: 60,
             liked: true,
-            index:2,
-            choosenum:''
+            index: 2,
+            choosenum: ''
         };
         this.handlesend = this.handlesend.bind(this);
     }
@@ -38,9 +38,9 @@ class Signup extends Component {
         });
     };
     handleFormSubmit({ loginname, mobilephone, email, password }) {
-        if(loginname && password && mobilephone)
+        if (loginname && password && mobilephone)
             this.props.signupUser({ loginname, mobilephone, email, password }, err => {
-                this.setState({ isModalOpen: true, error: err, actionResult: err||'注册成功!', spin:false });
+                this.setState({ isModalOpen: true, error: err, actionResult: err || '注册成功!', spin: false });
             });
     }
 
@@ -54,8 +54,8 @@ class Signup extends Component {
         }
     }
 
-    handlesend(){
-        if(this.state.liked){
+    handlesend() {
+        if (this.state.liked) {
             this.timer = setInterval(function () {
                 var count = this.state.count;
                 this.state.liked = false;
@@ -73,14 +73,14 @@ class Signup extends Component {
             }.bind(this), 1000);
         }
         const phonenum = localStorage.getItem("phonenum");
-        this.props.GetverifyCode({phonenum}, ()=>{});
+        this.props.GetverifyCode({ phonenum }, () => { });
     }
     handleChange(e) {
-        let {index} = this.state;
+        let { index } = this.state;
         index++;
-        if (index%2 == 0) {
+        if (index % 2 == 0) {
             index = 2;
-        }else {
+        } else {
             index = 1;
         }
         this.setState({
@@ -88,14 +88,14 @@ class Signup extends Component {
         });
         console.log("选中状态" + this.state.index);
     }
-    phoneChange(e){
+    phoneChange(e) {
         console.log(e.target.value);
         const phonenum = localStorage.setItem("phonenum", e.target.value);
 
         var regex = /^1[3|4|5|7|8][0-9]\d{4,8}$/;
-        if (regex.test(e.target.value) ) {
+        if (regex.test(e.target.value)) {
 
-        } else{
+        } else {
             alert('请输入正确的手机号码！');
         }
     }
@@ -104,47 +104,46 @@ class Signup extends Component {
     renderField({ input, label, type, icon, meta: { touched, error } }) {
         return (
             <div className={`form-style ${touched && error ? 'has-error' : ''}`}>
-                <input {...input} placeholder={label} type={type} className="form-control "/>
+                <input {...input} placeholder={label} type={type} className="form-control " />
                 {/*<span className={`glyphicon glyphicon-${icon} form-control-feedback`}></span>*/}
                 <div className="help-block ">{touched && error ? error : ''}</div>
             </div>
         );
     }
     render() {
-        const { handleSubmit} = this.props;
+        const { handleSubmit } = this.props;
 
-        if(this.props.all)
-        {
+        if (this.props.all) {
             return alert("验证码是");
         }
 
-        var text = this.state.liked ? '发送验证码' : this.state.count + ' s后重新发' ;
-        const url = this.state.error === '操作失败' ? "/signup":"/signin";
+        var text = this.state.liked ? '发送验证码' : this.state.count + ' s后重新发';
+        const url = this.state.error === '操作失败' ? "/signup" : "/signin";
 
         return (
             <div>
                 <div className="login-box">
                     <div className="form-style">
-                        <div className=" login-box-msg" style={{fontSize: 24+'px'}}>手机注册</div>
+                        <div className=" login-box-msg" style={{ fontSize: 24 + 'px' }}>手机注册</div>
                     </div>
 
                     <div className="login-box-body">
 
                         {this.renderAlert()}
                         <form className="form-signin" onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
-                            <Field name="loginname" component={this.renderField} type="text"  label="请输入用户名"  />
-                            <Field name="mobilephone" component={this.renderField} type="text"  onBlur={this.phoneChange} label="请输入手机号"  />
+                            <Field name="loginname" component={this.renderField} type="text" label="请输入用户名" />
+                            <Field name="mobilephone" component={this.renderField} type="text" onBlur={this.phoneChange} label="请输入手机号" />
                             <div className="form-style-test">
-                               <Field name="email" className="form-test " component={this.renderField} type="text" label="请输入验证码"/>
-                                <span className={`send-testcode  ${this.state.liked?"" :"time-color"}`} onClick={this.handlesend}>{text}</span>
+                                <Field name="email" className="form-test " component={this.renderField} type="text" label="请输入验证码" />
+                                <span className={`send-testcode  ${this.state.liked ? "" : "time-color"}`} onClick={this.handlesend}>{text}</span>
                             </div>
                             <Field name="password" component={this.renderField} type="password" label="请输入密码" icon="lock" />
                             <div className=" ">
                                 <div className=" checkbox-margin">
-                                    <input type="checkbox"  defaultChecked className="checkbox-width"  onChange={this.handleChange.bind(this)}/><span> 我已阅读themis用户手册及相关法律</span>
+                                    <input type="checkbox" defaultChecked className="checkbox-width" onChange={this.handleChange.bind(this)} /><span> 我已阅读themis用户手册及相关法律</span>
                                 </div>
                                 <div className="">
-                                    <button type="submit" className="btn   form-register"><i className={`fa fa-spinner fa-spin ${this.state.spin?'':'hidden'}`}></i> 注册</button>
+                                    <button type="submit" className="btn   form-register"><i className={`fa fa-spinner fa-spin ${this.state.spin ? '' : 'hidden'}`}></i> 注册</button>
                                 </div>
                                 <div className="form-group">
                                     <a className="forgetpwd" href="/signin">已有账户 ? 点击登录</a>
@@ -157,17 +156,17 @@ class Signup extends Component {
 
                 <Modal isOpen={this.state.isModalOpen} onRequestHide={this.hideModal}>
                     <ModalHeader>
-                        <ModalClose onClick={this.hideModal}/>
+                        <ModalClose onClick={this.hideModal} />
                         <ModalTitle>提示:</ModalTitle>
                     </ModalHeader>
                     <ModalBody>
-                        <p className={this.state.error?'text-red':'text-green'}>
+                        <p className={this.state.error ? 'text-red' : 'text-green'}>
                             {this.state.actionResult}
                         </p>
                     </ModalBody>
                     <ModalFooter>
                         <button className='btn btn-default' onClick={this.hideModal}>
-                            <a  href={url}>关闭</a>
+                            <a href={url}>关闭</a>
                         </button>
                     </ModalFooter>
                 </Modal>
@@ -178,17 +177,17 @@ class Signup extends Component {
 const validate = values => {
     const errors = {};
 
-    if(!values.loginname) {
+    if (!values.loginname) {
         errors.loginname = ' *不能为空';
     }
 
-    if(!values.mobilephone) {
+    if (!values.mobilephone) {
         errors.mobilephone = ' *不能为空';
     }
-    if(!values.email) {
+    if (!values.email) {
         errors.email = ' *不能为空';
     }
-    if(!values.password) {
+    if (!values.password) {
         errors.password = ' *不能为空';
     }
     return errors;
@@ -197,7 +196,7 @@ const validate = values => {
 function mapStateToProps(state) {
     // console.log(state.auth.all)
     return {
-        all:state.auth.all
+        all: state.auth.all
     };
 }
 
@@ -206,4 +205,4 @@ const reduxSignupForm = reduxForm({
     validate
 })(Signup);
 
-export default connect(mapStateToProps, { signupUser, GetverifyCode})(reduxSignupForm);
+export default connect(mapStateToProps, { signupUser, GetverifyCode })(reduxSignupForm);

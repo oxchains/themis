@@ -20,37 +20,37 @@ import {
     FETCH_TRUSTED,
 } from '../actions/types';
 
-const INITIAL_STATE = { all: [], array: [], data:[]};
+const INITIAL_STATE = { all: [], array: [], data: [] };
 
-export default function(state = INITIAL_STATE, action) {
-    switch(action.type) {
+export default function (state = INITIAL_STATE, action) {
+    switch (action.type) {
         case FETCH_ADVERT:
-            return { ...state, all:action.payload.data.data};
+            return { ...state, all: action.payload.data.data };
         case FETCH_BUY_NOW:
-            return { ...state, data:action.payload.data.data};
+            return { ...state, data: action.payload.data.data };
         case FETCH_SELL_NOW:
-            return { ...state, data:action.payload.data.data};
+            return { ...state, data: action.payload.data.data };
         case FETCH_BUY_SECAT:
-            return { ...state, all:action.payload.data.data};
+            return { ...state, all: action.payload.data.data };
         case FETCH_SELL_SECAT:
-            return { ...state, all:action.payload.data.data};
+            return { ...state, all: action.payload.data.data };
         case FETCH_BUY_BTC_DETAIL:
-            return { ...state, all:action.payload.data.data};
+            return { ...state, all: action.payload.data.data };
         case FETCH_SELL_BTC_DETAIL:
-            return { ...state, all:action.payload.data.data};
+            return { ...state, all: action.payload.data.data };
         case FETCH_ARRAY:
             // console.log(action.payload.data.data)
-            return { ...state, array:action.payload.data.data};
+            return { ...state, array: action.payload.data.data };
         case FETCH_HOME:
-            return { ...state, all:action.payload.data.data};
+            return { ...state, all: action.payload.data.data };
         case FETCH_MY_ADVERT:
-            return { ...state, all:action.payload.data.data};
+            return { ...state, all: action.payload.data.data };
         case FETCH_OFF_MYBTC:
-            return { ...state, data:action.payload.data.data};
+            return { ...state, data: action.payload.data.data };
         case FETCH_BASE_INFO:
-            return { ...state, all:action.payload.data.data};
+            return { ...state, all: action.payload.data.data };
         case FETCH_TRUSTED:
-            return { ...state, all:action.payload.data.data};
+            return { ...state, all: action.payload.data.data };
 
     }
     return state;

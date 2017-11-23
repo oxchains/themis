@@ -35,10 +35,11 @@ export function fetchNoCompletedOrders({formData}) {
             data:formData,
             headers: getAuthorizedHeader()
         }).then((res) => {
+            console.log(res);
             if (res.data.status == 1) {
                 dispatch({
                     type: FETCH_NOT_COMPLETED_ORDERS,
-                    payload: res.data.data
+                    payload: res.data
                 });
             }
         }).catch( err => dispatch(requestError(err.message)) );
@@ -62,7 +63,7 @@ export function fetchCompletedOrders({userId}) {
             if (res.data.status == 1) {
                 dispatch({
                     type: FETCH_COMPLETED_ORDERS,
-                    payload: res.data.data
+                    payload: res.data
                 });
             }
         }).catch( err => dispatch(requestError(err.message)) );

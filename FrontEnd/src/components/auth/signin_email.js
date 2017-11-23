@@ -8,19 +8,15 @@ import { Field } from 'redux-form';
 import { connect } from 'react-redux';
 import { signinAction } from '../../actions/auth';
 
-
-
-
 class Emiallogin extends Component {
-// let Emiallogin = React.createClass({
-    handleEmailSubmit()
-    {
-        const email= this.refs.email.value ;
-        const password = this.refs.password.value ;
-        if(email && password)
-            this.props.signinAction({ email, password }, ()=>{});
+    // let Emiallogin = React.createClass({
+    handleEmailSubmit() {
+        const email = this.refs.email.value;
+        const password = this.refs.password.value;
+        if (email && password)
+            this.props.signinAction({ email, password }, () => { });
     }
-    render(){
+    render() {
         return (
             <div className="login-box">
                 <div className="login-box-body">
@@ -30,19 +26,19 @@ class Emiallogin extends Component {
                             <li className="col-xs-6 loginli"><a className="signinTypeBar g-pb-3" href="/signinemail">邮箱登录</a></li>
                         </ul>
                     </div>
-            <div className="form-style">
-                <div className="form-signin" >
-                    <input className="input form-group" type="text" placeholder="请输入邮箱" ref="email"/> <br/>
-                    <input className="input form-group" type="password" placeholder="请输入密码" ref="password"/><br/>
-                    <div className="form-group">
-                        <button className="btn form-login" onClick={this.handleEmailSubmit.bind(this)}>登录</button>
-                    </div>
-                    <div className="form-group">
-                        <a className="forgetpwd" href="">忘记密码 ?</a>
-                    </div>
+                    <div className="form-style">
+                        <div className="form-signin" >
+                            <input className="input form-group" type="text" placeholder="请输入邮箱" ref="email" /> <br />
+                            <input className="input form-group" type="password" placeholder="请输入密码" ref="password" /><br />
+                            <div className="form-group">
+                                <button className="btn form-login" onClick={this.handleEmailSubmit.bind(this)}>登录</button>
+                            </div>
+                            <div className="form-group">
+                                <a className="forgetpwd" href="">忘记密码 ?</a>
+                            </div>
 
-                </div>
-                 </div>
+                        </div>
+                    </div>
                 </div>
             </div>);
     }

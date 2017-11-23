@@ -44,12 +44,12 @@ class Baseinfo extends Component {
         }
     }
 
-    handleSave(){
-       let formdata = new FormData();
-       formdata.append("loginname", localStorage.getItem("loginname"));
-       formdata.append("description", this.refs.description.value);
-        this.props.fetctBaseInfo({formdata}, err=>{
-            this.setState({ isModalOpen: true, error: err, actionResult: err||'保存成功!'});
+    handleSave() {
+        let formdata = new FormData();
+        formdata.append("loginname", localStorage.getItem("loginname"));
+        formdata.append("description", this.refs.description.value);
+        this.props.fetctBaseInfo({ formdata }, err => {
+            this.setState({ isModalOpen: true, error: err, actionResult: err || '保存成功!' });
         });
     }
 
@@ -57,14 +57,14 @@ class Baseinfo extends Component {
         const loginname = localStorage.getItem('loginname');//登录名
         const mobilephone = localStorage.getItem('mobilephone');//手机号
         const createTime = localStorage.getItem('createTime');//注册时间
-        const email =  localStorage.getItem('email');//邮箱
+        const email = localStorage.getItem('email');//邮箱
         const firstBuyTime = localStorage.getItem('firstBuyTime'); //第一次交易时间
-        const  txNum = localStorage.getItem('txNum'); //交易次数
-        const  believeNum = localStorage.getItem('believeNum'); //信任人数
-        const  sellAmount = localStorage.getItem('sellAmount'); //出售的累计交易数量
-        const  buyAmount = localStorage.getItem('buyAmount'); //购买的累计交易数量
+        const txNum = localStorage.getItem('txNum'); //交易次数
+        const believeNum = localStorage.getItem('believeNum'); //信任人数
+        const sellAmount = localStorage.getItem('sellAmount'); //出售的累计交易数量
+        const buyAmount = localStorage.getItem('buyAmount'); //购买的累计交易数量
         const imageUrl = this.state.imageUrl;
-       const actionUrl = "http://47.93.163.113:8081/user/info?loginname=" +loginname;
+        const actionUrl = "http://47.93.163.113:8081/user/info?loginname=" + loginname;
         return (
             <div>
                 <div className="maininfo">
@@ -81,20 +81,20 @@ class Baseinfo extends Component {
                                 imageUrl ?
                                     <img src={imageUrl} alt="" className="avatar" /> :
                                     <div className="touxiangStyle">
-                                        <img src="./public/img/default.png"  className="avatar" alt=""/>
+                                        <img src="./public/img/default.png" className="avatar" alt="" />
                                         <p>上传头像</p>
                                     </div>
                             }
                         </Upload>
                     </div>
                     <div className="display-info">
-                        <h5 style={{marginBottom:20+'px', marginTop:30 +'px'}}>{loginname}</h5>
+                        <h5 style={{ marginBottom: 20 + 'px', marginTop: 30 + 'px' }}>{loginname}</h5>
                     </div>
                 </div>
                 <div className="validateinfo">
                     <ul>
                         <li>身份证验证:已验证</li>
-                        <li>电子邮件验证:{email ?"已验证" : "未验证"}</li>
+                        <li>电子邮件验证:{email ? "已验证" : "未验证"}</li>
                         <li>手机号码:{mobilephone}</li>
                         <li>注册时间: {createTime}</li>
                         <li>第一次交易时间：{firstBuyTime}</li>
@@ -110,11 +110,11 @@ class Baseinfo extends Component {
 
                 <Modal isOpen={this.state.isModalOpen} onRequestHide={this.hideModal}>
                     <ModalHeader>
-                        <ModalClose onClick={this.hideModal}/>
+                        <ModalClose onClick={this.hideModal} />
                         <ModalTitle>提示:</ModalTitle>
                     </ModalHeader>
                     <ModalBody>
-                        <p className={this.state.error?'text-red':'text-green'}>
+                        <p className={this.state.error ? 'text-red' : 'text-green'}>
                             {this.state.actionResult}
                         </p>
                     </ModalBody>
@@ -135,7 +135,7 @@ class Baseinfo extends Component {
 
 function mapStateToProps(state) {
     return {
-        all:state.advert.all
+        all: state.advert.all
     };
 }
 export default connect(mapStateToProps, { fetctBaseInfo })(Baseinfo);

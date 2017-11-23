@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { signinAction, GetverifyCode} from '../../actions/auth';
+import { signinAction, GetverifyCode } from '../../actions/auth';
 
 class Forgetpsw extends Component {
     constructor(props) {
@@ -17,14 +17,14 @@ class Forgetpsw extends Component {
     }
 
     handlePhoneSubmit() {
-        const mobilephone= this.refs.loginname.value ;
-        const password = this.refs.password.value ;
-        if(mobilephone && password) {
-            this.props.signinAction({mobilephone, password});
+        const mobilephone = this.refs.loginname.value;
+        const password = this.refs.password.value;
+        if (mobilephone && password) {
+            this.props.signinAction({ mobilephone, password });
         }
     }
-    handlesend(){
-        if(this.state.liked){
+    handlesend() {
+        if (this.state.liked) {
             this.timer = setInterval(function () {
                 var count = this.state.count;
                 this.state.liked = false;
@@ -42,22 +42,22 @@ class Forgetpsw extends Component {
             }.bind(this), 1000);
         }
         const phonenum = localStorage.getItem("phonenum");
-        this.props.GetverifyCode({phonenum}, ()=>{});
+        this.props.GetverifyCode({ phonenum }, () => { });
     }
-    phoneChange(e){
+    phoneChange(e) {
         console.log(e.target.value);
         const phonenum = localStorage.setItem("phonenum", e.target.value);
 
         var regex = /^1[3|4|5|7|8][0-9]\d{4,8}$/;
-        if (regex.test(e.target.value) ) {
+        if (regex.test(e.target.value)) {
 
-        } else{
+        } else {
             alert('请输入正确的手机号码！');
         }
     }
 
-    render(){
-        var text = this.state.liked ? '发送验证码' : this.state.count + ' s 后重新发' ;
+    render() {
+        var text = this.state.liked ? '发送验证码' : this.state.count + ' s 后重新发';
         return (
             <div className="mainbgc">
                 <div className="login-box">
@@ -77,13 +77,13 @@ class Forgetpsw extends Component {
                                     <option value="3">英国 + 33</option>
                                     <option value="4">韩国 + 44</option>
                                 </select>
-                                <input className="input form-group" type="text" onBlur={this.phoneChange} placeholder="请输入手机号" ref="loginname"/> <br/>
+                                <input className="input form-group" type="text" onBlur={this.phoneChange} placeholder="请输入手机号" ref="loginname" /> <br />
                                 <div className="form-style-test">
-                                    <input ref="email" className="form-test " type="text" label="请输入验证码"/>
-                                    <span className={`send-testcode  ${this.state.liked?"" :"time-color"}`} onClick={this.handlesend}>{text}</span>
+                                    <input ref="email" className="form-test " type="text" label="请输入验证码" />
+                                    <span className={`send-testcode  ${this.state.liked ? "" : "time-color"}`} onClick={this.handlesend}>{text}</span>
                                 </div>
                                 <div className="form-group">
-                                    <button  className="btn form-login" onClick={this.handlePhoneSubmit.bind(this)}><a
+                                    <button className="btn form-login" onClick={this.handlePhoneSubmit.bind(this)}><a
                                         href="/resetpsw">下一步</a></button>
                                 </div>
                             </div>
@@ -100,7 +100,7 @@ function mapStateToProps(state) {
         errorMessage: state.auth.error
     };
 }
-export default connect(mapStateToProps, { signinAction, GetverifyCode})(Forgetpsw);
+export default connect(mapStateToProps, { signinAction, GetverifyCode })(Forgetpsw);
 
 
 

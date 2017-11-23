@@ -12,28 +12,29 @@ class Signin extends Component {
         this.state = {};
     }
     handlePhoneSubmit() {
-        const mobilephone= this.refs.loginname.value ;
-        const password = this.refs.password.value ;
-        if(mobilephone && password) {
-            this.props.signinAction({mobilephone, password});
+        const mobilephone = this.refs.loginname.value;
+        const password = this.refs.password.value;
+        if (mobilephone && password) {
+            this.props.signinAction({ mobilephone, password });
         }
     }
     renderAlert() {
-        const { from } = this.props.location.state || { from: { pathname: '/' } };
+        const { from } =  { from: { pathname: '/' } };
+        // console.log(this.props.loggedIn);
         if (this.props.loggedIn) {
-            location.reload();
+            // location.reload();
             return (
-                <Redirect to={from}/>
+                <Redirect to={from} />
             );
-        }else if(this.props.errorMessage){
+        } else if (this.props.errorMessage) {
             return (
-                <div className="alert alert-danger alert-dismissable">
+                <div className="alert alert-danger alert-dismissable text-center">
                     {this.props.errorMessage}
                 </div>
             );
         }
     }
-    render(){
+    render() {
         return (
             <div className="mainbgc">
                 <div className="login-box">
@@ -53,13 +54,13 @@ class Signin extends Component {
                                     <option value="3">英国 + 33</option>
                                     <option value="4">韩国 + 44</option>
                                 </select>
-                                <input className="input form-group" type="text" placeholder="请输入手机号" ref="loginname"/> <br/>
-                                <input className="input form-group" type="password" placeholder="请输入密码" ref="password"/><br/>
+                                <input className="input form-group" type="text" placeholder="请输入手机号" ref="loginname" /> <br />
+                                <input className="input form-group" type="password" placeholder="请输入密码" ref="password" /><br />
                                 <div className="form-group">
-                                    <button  className="btn form-login" onClick={this.handlePhoneSubmit.bind(this)}>登录</button>
+                                    <button className="btn form-login" onClick={this.handlePhoneSubmit.bind(this)}>登录</button>
                                 </div>
-                                <div className="form-group">
-                                    <a className="forgetpwd" href="/forgetpsw">忘记密码 ?</a>
+                                <div className="form-group forgetpwd">
+                                    <a className="" href="/forgetpsw">忘记密码 ?</a>
                                 </div>
                                 {this.renderAlert()}
                             </div>
@@ -71,6 +72,7 @@ class Signin extends Component {
     }
 }
 function mapStateToProps(state) {
+    // console.log(state.auth.authenticated);
     return {
         loggedIn: state.auth.authenticated,
         errorMessage: state.auth.error

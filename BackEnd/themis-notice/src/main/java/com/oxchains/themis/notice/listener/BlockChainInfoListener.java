@@ -8,6 +8,7 @@ import com.oxchains.themis.notice.domain.BlockChainInfo;
 import com.oxchains.themis.notice.domain.CNYDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +28,7 @@ import java.util.List;
 public class BlockChainInfoListener {
 
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
+    private static String CNY_TAG = "¥";
     @Resource private CNYDetailDao cnyDetailDao;
     @Resource private BlockChainInfoDao blockChainInfoDao;
 
@@ -46,35 +48,48 @@ public class BlockChainInfoListener {
             String url = "https://blockchain.info/ticker";
             String result = HttpUtils.sendGet(url);
             BlockChainInfo blockChainInfo = (BlockChainInfo) JsonUtil.fromJson(result, BlockChainInfo.class);
-            LOG.info("BTC market: {}", blockChainInfo);
+            LOG.info("比特币行情: {}", blockChainInfo);
             if (null != blockChainInfo){
-                List<BlockChainInfo> bciList = blockChainInfoDao.findBySymbol("¥");
-                CNYDetail cnyDetail = cnyDetailDao.findBySymbol("¥");
+                List<BlockChainInfo> bciList = blockChainInfoDao.findBySymbol(CNY_TAG);
+                CNYDetail cnyDetail = cnyDetailDao.findBySymbol(CNY_TAG);
                 if (bciList.size() != 0 && cnyDetail != null){
                     for (BlockChainInfo b : bciList) {
-                        b.setSaveTime(currentTime);
-                        b.setSymbol("¥");
-                        blockChainInfoDao.save(b);
+                        if (CNY_TAG.equals(b.getSymbol())){
+                            b.setSaveTime(currentTime);
+                            b.setSymbol(CNY_TAG);
+                            blockChainInfoDao.save(b);
+                        }else {
+                            LOG.error("********** 实时获取比特币价格异常：货币符号异常 **********");
+                            return;
+                        }
                     }
-                    cnyDetail.setSaveTime(currentTime);
-                    cnyDetail.setBuy(blockChainInfo.getCNY().getBuy());
-                    cnyDetail.setLast(blockChainInfo.getCNY().getLast());
-                    cnyDetail.setSell(blockChainInfo.getCNY().getSell());
-                    cnyDetail.setSymbol(blockChainInfo.getCNY().getSymbol());
-                    cnyDetailDao.save(cnyDetail);
-
+                    if (CNY_TAG.equals(cnyDetail.getSymbol())){
+                        cnyDetail.setSaveTime(currentTime);
+                        cnyDetail.setBuy(blockChainInfo.getCNY().getBuy());
+                        cnyDetail.setLast(blockChainInfo.getCNY().getLast());
+                        cnyDetail.setSell(blockChainInfo.getCNY().getSell());
+                        cnyDetail.setSymbol(blockChainInfo.getCNY().getSymbol());
+                        cnyDetailDao.save(cnyDetail);
+                    }else {
+                        LOG.error("********** 实时获取比特币价格异常：货币符号异常 **********");
+                        return;
+                    }
                 }else {
-                    blockChainInfo.setSymbol("¥");
-                    blockChainInfo.setSaveTime(currentTime);
-                    blockChainInfoDao.save(blockChainInfo);
+                    if (CNY_TAG.equals(blockChainInfo.getSymbol()) && CNY_TAG.equals(blockChainInfo.getCNY().getSymbol())){
+                        blockChainInfo.setSymbol(CNY_TAG);
+                        blockChainInfo.setSaveTime(currentTime);
+                        blockChainInfoDao.save(blockChainInfo);
 
-                    blockChainInfo.getCNY().setSaveTime(currentTime);
-                    cnyDetailDao.save(blockChainInfo.getCNY());
+                        blockChainInfo.getCNY().setSaveTime(currentTime);
+                        cnyDetailDao.save(blockChainInfo.getCNY());
+                    }else {
+                        LOG.error("********** 实时获取比特币价格异常：货币符号异常 **********");
+                        return;
+                    }
                 }
             }else {
-                LOG.error("query BTC market failed");
+                LOG.error("********** 实时获取比特币价格错误 **********");
                 return;
-
             }
             LOG.info("This timed tasks has been completed");
         }catch (Exception e){

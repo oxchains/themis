@@ -16,12 +16,14 @@ import com.oxchains.themis.repo.entity.*;
 import com.oxchains.themis.user.domain.UserTrust;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.*;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.concurrent.Executors;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -58,6 +60,9 @@ public class UserService extends BaseService {
 
     @Resource
     MailService mailService;
+
+    @Resource
+    private RedisTemplate redisTemplate;
 
 //    @Resource
 //    AccountService accountService;
@@ -127,6 +132,7 @@ public class UserService extends BaseService {
                 break;
                 default:
         }
+        reSaveRedis(u);
         return save(u);
     }
     private RestResp save(User user){
@@ -160,17 +166,36 @@ public class UserService extends BaseService {
 
             u.setLoginStatus(Status.LoginStatus.LOGOUT.getStatus());
             userDao.save(u);
+
+            // redis 存储，key:loginname
+            boolean keyExist = redisTemplate.hasKey(u.getLoginname());
+            if (!keyExist){
+                saveRedis(u);
+            }
+
             ConstantUtils.USER_TOKEN.put(u.getLoginname(), token);
 
             //new UserToken(u.getUsername(),token)
             return RestResp.success("登录成功", userInfo);
         }).orElse(RestResp.fail("登录失败"));
     }
+
+    private void saveRedis(User u){
+        ValueOperations<String, User> operations = redisTemplate.opsForValue();
+        operations.set(u.getLoginname(), u);
+    }
+
+    private void reSaveRedis(User u){
+        redisTemplate.delete(u.getLoginname());
+        saveRedis(u);
+    }
+
     public RestResp logout(User user){
         User u = userDao.findByLoginname(user.getLoginname());
         if(null != u && u.getLoginStatus().equals(Status.LoginStatus.LOGIN.getStatus())){
             u.setLoginStatus(Status.LoginStatus.LOGOUT.getStatus());
             userDao.save(u);
+            redisTemplate.delete(u.getLoginname());
             return RestResp.success("退出成功");
         }else {
             return RestResp.fail("退出失败");

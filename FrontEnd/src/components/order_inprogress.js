@@ -4,7 +4,7 @@
 import React, { Component }from 'react';
 import {connect} from 'react-redux';
 import { Link } from 'react-router-dom';
-import {Pagination, Alert, Upload, Button, Icon, Modal} from 'antd';
+import {Pagination, Alert, Upload, Button, Icon, Modal, Popconfirm} from 'antd';
 // import {Alert, Upload, Button, Icon, Modal} from 'antd';
 import {ROOT_ARBITRATE} from '../actions/types';
 import {uploadEvidence} from '../actions/arbitrate';
@@ -14,14 +14,14 @@ class OrderInProgress extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            visible: false,
-            evidenceOFile: [],
+            visible:false,
+            evidenceOFile:[],
             id:1,
             alertVisible:false,
             isEvidenceFileDone:false,
             pageSize:8, //每页显示的条数8条
-            fileList: [],
-            uploading: false,
+            fileList:[],
+            uploading:false,
         };
         this.renderrow = this.renderrow.bind(this);
     }
@@ -84,7 +84,7 @@ class OrderInProgress extends Component {
         this.props.fetchNoCompletedOrders({formData}, ()=>{});
     }
     renderrow(){
-        return this.props.not_completed_orders.map((item, index) =>{
+        return this.props.not_completed_orders.data.map((item, index) =>{
             return(
                 <tr key={index} >
                     <td>{item.friendUsername}</td>
@@ -95,7 +95,11 @@ class OrderInProgress extends Component {
                     <td>{item.createTime}</td>
                     <td>{item.orderStatusName}<span>{item.arbitrate == 1 ? "(仲裁中)": ""}</span></td>
                     <td><button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleOrderDetail.bind(this, item)}>详情</button></td>
-                    <td>{item.orderStatus == 3 || item.orderStatus == 8 ? <button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleEvidence.bind(this, item.id)}>仲裁</button> : <div></div>}</td>
+                    {/*<td><Link className="ant-btn ant-btn-primary ant-btn-lg" to={`/orderprogress:${item.id}`}>详情</Link></td>*/}
+                    <td>{item.orderStatus == 3 || item.orderStatus == 8 ?
+                        <Popconfirm title="是否要申请仲裁?" onConfirm={this.handleEvidence.bind(this, item.id)}  okText="确定" cancelText="取消">
+                            <button className="ant-btn ant-btn-primary ant-btn-lg">THEMIS仲裁</button>
+                        </Popconfirm> : <div></div>}</td>
                 </tr>
                 );
         });
@@ -107,11 +111,13 @@ class OrderInProgress extends Component {
         window.location.href='/orderprogress';
     }
     render() {
+        console.log(this.props.not_completed_orders);
         let close = () => {
             this.setState({visible:false});
         };
         const not_completed_orders = this.props.not_completed_orders;
-        const totalNum = not_completed_orders && not_completed_orders[0].pageCount;
+        const totalNum = not_completed_orders && not_completed_orders.pageCount;
+        const data=not_completed_orders && not_completed_orders.data;
         const { uploading, visible} = this.state;
         const props = {
             action:`${ROOT_ARBITRATE}/arbitrate/uploadEvidence`,
@@ -159,7 +165,7 @@ class OrderInProgress extends Component {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {this.props.not_completed_orders == null ? <tr><td className="text-center h5" colSpan={9}>没有更多消息了</td></tr> : this.renderrow()}
+                                { data == null ? <tr><td className="text-center h5" colSpan={9}>loading....</td></tr> : this.renderrow()}
                                 </tbody>
                             </table>
                         </div>

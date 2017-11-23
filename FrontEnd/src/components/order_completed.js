@@ -13,6 +13,7 @@ class OrderCompleted extends Component {
         this.renderrow = this.renderrow.bind(this);
         this.state={
             pageSize:8, //每页显示的条数8条
+            totalNum:0
         };
     }
     componentWillMount() {
@@ -23,6 +24,8 @@ class OrderCompleted extends Component {
             pageSize:this.state.pageSize, //每页显示的条数8条
         };
         this.props.fetchCompletedOrders({userId});
+    }
+    componentWillReceiveProps(nextProps){
     }
     handlePagination(pageNum) {
         const userIdInfo= localStorage.getItem('userId');
@@ -35,7 +38,7 @@ class OrderCompleted extends Component {
     }
     renderrow(){
         const userId=localStorage.getItem("userId");
-        return this.props.completed_orders.map((item, index)=>{
+        return this.props.completed_orders.data.map((item, index)=>{
             return(
                 <tr key={index}>
                     <td>{item.friendUsername}</td>
@@ -58,7 +61,9 @@ class OrderCompleted extends Component {
     }
     render() {
         const completed_orders = this.props.completed_orders;
-        const totalNum = completed_orders && completed_orders[0].pageCount;
+        console.log(completed_orders);
+        const data=completed_orders &&completed_orders.data;
+        const totalNum = completed_orders && completed_orders.pageCount;
         return (
             <div className="container g-pb-150">
                 <div className="orderType text-center g-pt-50 g-pb-50">
@@ -83,7 +88,7 @@ class OrderCompleted extends Component {
                             </tr>
                             </thead>
                             <tbody>
-                            {this.props.completed_orders == null ? <tr><td className="text-center h5" colSpan={8}>没有更多消息了</td></tr> : this.renderrow()}
+                            { data===null ? <tr><td className="text-center h5" colSpan={8}>loading....</td></tr> : this.renderrow()}
                             </tbody>
                         </table>
                     </div>

@@ -8,14 +8,10 @@ package com.oxchains.themis.common.constant.notice;
  **/
 public class NoticeTxStatus {
     /**
-     * 未交易
+     * 未交易和交易中
      */
     public static final Integer UNDONE_TX = 0;
 
-    /**
-     * 交易中
-     */
-    public static final Integer DOING_TX = 1;
 
     /**
      * 交易完成
