@@ -16,10 +16,10 @@ class Signout extends Component {
         return (
             <div>
                 {/*<section className="content">*/}
-                    {/*<div className="text-center"><h2>您已退出登录</h2></div>*/}
+                {/*<div className="text-center"><h2>您已退出登录</h2></div>*/}
                 {/*</section>*/}
                 <div className="siginout">
-                    <Signin location="{this.props.location}"  />
+                    <Signin location="{this.props.location}" />
                 </div>
             </div>
         );

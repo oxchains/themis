@@ -3,10 +3,10 @@
  */
 
 import React, { Component } from 'react';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Field } from 'redux-form';
 import { connect } from 'react-redux';
-import { fetctSellBtcDetail, fetctSellnow} from '../actions/releaseadvert';
+import { fetctSellBtcDetail, fetctSellnow } from '../actions/releaseadvert';
 import {
     Modal,
     ModalHeader,
@@ -23,14 +23,14 @@ class Selldetail extends Component {
             isModalOpen: false,
             error: null,
             actionResult: '',
-            messmoney:'',
-            messnum:'',
+            messmoney: '',
+            messnum: '',
         };
         this.handelChange = this.handelChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         // this.handlePayway = this.handlePayway.bind(this)
     }
-    handelChange(e){
+    handelChange(e) {
         const data = this.props.all.notice || [];
         let type = e.target.name;
         if (type == "money") {
@@ -50,23 +50,23 @@ class Selldetail extends Component {
             isModalOpen: false
         });
     };
-    componentWillMount(){
+    componentWillMount() {
         const noticeId = this.props.match.params.id.slice(1);
-        console.log( this.props.match.params.id.slice(1));
-        this.props.fetctSellBtcDetail({noticeId});
+        console.log(this.props.match.params.id.slice(1));
+        this.props.fetctSellBtcDetail({ noticeId });
     }
 
-    handleSubmit(){
+    handleSubmit() {
         const formdata = {
             userId: localStorage.getItem("userId"),
-            noticeId : this.props.match.params.id.slice(1),
-            money : this.state.messmoney,
-            amount : this.state.messnum
+            noticeId: this.props.match.params.id.slice(1),
+            money: this.state.messmoney,
+            amount: this.state.messnum
         };
         // if(this.props.authenticated){
-            this.props.fetctSellnow({formdata}, err=>{
-                this.setState({ isModalOpen: true, error: err, actionResult: err||'下单成功!'});
-            });
+        this.props.fetctSellnow({ formdata }, err => {
+            this.setState({ isModalOpen: true, error: err, actionResult: err || '下单成功!' });
+        });
         // }else {
         //     alert("请先登录哦～")
         // }
@@ -76,9 +76,9 @@ class Selldetail extends Component {
         const { from } = this.props.location.state || { from: { pathname: '/' } };
         if (this.props.data) {
             return (
-                <Redirect to={from}/>
+                <Redirect to={from} />
             );
-        }else if(this.props.data){
+        } else if (this.props.data) {
             return (
                 <div className="alert alert-danger alert-dismissable">
                     {this.props.errorMessage}
@@ -86,46 +86,46 @@ class Selldetail extends Component {
             );
         }
     }
-    showOrderDetail(item){
+    showOrderDetail(item) {
         // console.log(item)
-        const userId= localStorage.getItem('userId');
-        const orderData={id:item.id, userId:userId, partnerId:item.sellerId == userId ?item.buyerId:item.sellerId};
+        const userId = localStorage.getItem('userId');
+        const orderData = { id: item.id, userId: userId, partnerId: item.sellerId == userId ? item.buyerId : item.sellerId };
         localStorage.setItem("partner", JSON.stringify(orderData));
-        window.location.href='/orderprogress';
+        window.location.href = '/orderprogress';
     }
     render() {
-        const userId=localStorage.getItem("userId");
+        const userId = localStorage.getItem("userId");
         const messmoney = this.state.messmoney;
         const messnum = this.state.messnum;
-        console.log(this.props.data);
+        // console.log(this.props.data);
         const data = this.props.all.notice || [];
         const datanum = this.props.all;
-        const time = data.validPayTime/1000/60;
+        const time = data.validPayTime / 1000 / 60;
         return (
             <div className="maincontent">
                 <div className="detail-title">
-                    <div className="detailTitle" style={{padding:0}}>
+                    <div className="detailTitle" style={{ padding: 0 }}>
 
-                            <img src="./public/img/touxiang.png" style={{width:100+'px', borderRadius:50 +'%'}} alt=""/>
-                            <h4 style={{marginBottom:10+'px', paddingLeft:15+'px'}}>{datanum.loginname}</h4>
-                            <ul className="detailul">
-                                <li>
-                                    <p>{datanum.txNum}</p>
-                                    <p>交易次数</p>
-                                </li>
-                                <li>
-                                    <p>{datanum.believeNum}</p>
-                                    <p>信任人数</p>
-                                </li>
-                                <li>
-                                    <p>{datanum.goodDegree}</p>
-                                    <p>好评度</p>
-                                </li>
-                                <li>
-                                    <p>{datanum.successCount} BTC</p>
-                                    <p>历史成交数</p>
-                                </li>
-                            </ul>
+                        <img src="./public/img/touxiang.png" style={{ width: 100 + 'px', borderRadius: 50 + '%' }} alt="" />
+                        <h4 style={{ marginBottom: 10 + 'px', paddingLeft: 15 + 'px' }}>{datanum.loginname}</h4>
+                        <ul className="detailul">
+                            <li>
+                                <p>{datanum.txNum}</p>
+                                <p>交易次数</p>
+                            </li>
+                            <li>
+                                <p>{datanum.believeNum}</p>
+                                <p>信任人数</p>
+                            </li>
+                            <li>
+                                <p>{datanum.goodDegree}</p>
+                                <p>好评度</p>
+                            </li>
+                            <li>
+                                <p>{datanum.successCount} BTC</p>
+                                <p>历史成交数</p>
+                            </li>
+                        </ul>
 
                     </div>
                 </div>
@@ -135,21 +135,21 @@ class Selldetail extends Component {
                             <ul className="priceul">
                                 <li>报价 : &#x3000;&#x3000;&#x3000;&#x3000;&#x3000;{data.price}CNY/BTC</li>
                                 <li>交易额度 : &#x3000;&#x3000;&#x3000;{data.minTxLimit}-{data.maxTxLimit} CNY</li>
-                                <li>付款方式 : &#x3000;&#x3000;&#x3000;{data.payType == 1 ?"现金":data.payType == 2 ?"转账":data.payType == 3 ?"支付宝":data.payType == 4 ? "微信":data.payType == 5 ? "Apple Pay":""}</li>
+                                <li>付款方式 : &#x3000;&#x3000;&#x3000;{data.payType == 1 ? "现金" : data.payType == 2 ? "转账" : data.payType == 3 ? "支付宝" : data.payType == 4 ? "微信" : data.payType == 5 ? "Apple Pay" : ""}</li>
                                 <li>付款期限 : &#x3000;&#x3000;&#x3000;{time}分钟</li>
                             </ul>
                             <h4 className="sellwhat">你想出售多少？</h4>
-                            <input type="text" className="inputmoney sellmoney" onChange={this.handelChange} name="money" value={messmoney} placeholder="请输入你想出售的金额"/>
+                            <input type="text" className="inputmoney sellmoney" onChange={this.handelChange} name="money" value={messmoney} placeholder="请输入你想出售的金额" />
                             <i className="fa fa-exchange" aria-hidden="true"></i>
-                            <input type="text" className="inputmoney sellmoney" onChange={this.handelChange} name="btc" value={messnum} placeholder="请输入你想出售的数量"/>
+                            <input type="text" className="inputmoney sellmoney" onChange={this.handelChange} name="btc" value={messnum} placeholder="请输入你想出售的数量" />
                             <button className="form-sell" onClick={this.handleSubmit}>立刻出售</button>
                         </div>
                     </div>
 
                     <div className="col-lg-3 col-xs-3 col-md-3 advertContent">
-                          <h5 className="adcontent">广告内容</h5>
+                        <h5 className="adcontent">广告内容</h5>
                         <div className="ad-info">
-                          <p> {data.noticeContent}</p>
+                            <p> {data.noticeContent}</p>
                         </div>
                     </div>
                 </div>
@@ -167,11 +167,11 @@ class Selldetail extends Component {
 
                 <Modal isOpen={this.state.isModalOpen} onRequestHide={this.hideModal}>
                     <ModalHeader>
-                        <ModalClose onClick={this.hideModal}/>
+                        <ModalClose onClick={this.hideModal} />
                         <ModalTitle>提示:</ModalTitle>
                     </ModalHeader>
                     <ModalBody>
-                        <p className={this.state.error?'text-red':'text-green'}>
+                        <p className={this.state.error ? 'text-red' : 'text-green'}>
                             {this.state.actionResult}
                         </p>
                     </ModalBody>
@@ -192,8 +192,8 @@ class Selldetail extends Component {
 
 function mapStateToProps(state) {
     return {
-        data:state.advert.data,     //点击出售返回的data
-        all:state.advert.all        //广告详情页面加载时的数据
+        data: state.advert.data,     //点击出售返回的data
+        all: state.advert.all        //广告详情页面加载时的数据
     };
 }
-export default connect(mapStateToProps, {fetctSellBtcDetail, fetctSellnow})(Selldetail);
+export default connect(mapStateToProps, { fetctSellBtcDetail, fetctSellnow })(Selldetail);

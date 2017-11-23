@@ -12,16 +12,16 @@ class Home extends Component {
         this.renderRows = this.renderRows.bind(this);
         this.renderArray = this.renderArray.bind(this);
     }
-    componentWillMount(){
-     this.props.fetctHome();
+    componentWillMount() {
+        this.props.fetctHome();
     }
-    renderRows(){
+    renderRows() {
         const arraydata = this.props.all || [];   //列表数组的数据
         return arraydata.map((item, index) => {
-        return(
-                <div  key={index} className="list-border">
+            return (
+                <div key={index} className="list-border">
                     <div className="title-bgc">
-                        <img src={item.src ? item.src : "/public/img/touxiang.png"} alt=""/>
+                        <img src={item.src ? item.src : "/public/img/touxiang.png"} alt="" />
                         <p>{item.loginname}</p>
                     </div>
                     <div className="col-lg-4">
@@ -36,24 +36,24 @@ class Home extends Component {
                         <p>{item.trustPercent} %</p>
                         <p>信誉度</p>
                     </div>
-                    <hr className="clear"/>
+                    <hr className="clear" />
                     <div className=" home-content">
                         <p>交易价格:{item.price}CNY</p>
                         <p>交易限额:{item.minTxLimit}-{item.maxTxLimit}CNY</p>
-                        <p>付款方式:{item.payType == 1 ?"现金":item.payType == 2 ?"转账":item.payType == 3 ?"支付宝":item.payType == 4 ? "微信":item.payType == 5 ? "Apple Pay":""}</p>
+                        <p>付款方式:{item.payType == 1 ? "现金" : item.payType == 2 ? "转账" : item.payType == 3 ? "支付宝" : item.payType == 4 ? "微信" : item.payType == 5 ? "Apple Pay" : ""}</p>
                     </div>
                     <button className="home-button" >
-                        <a href={`/buydetail:${item.id}`} className={`${item.noticeType == 1?'hidden':''}`}>{item.noticeType == 2?"购买比特币" : ""}</a>
-                        <a href={`/selldetail:${item.id}`} className={`${item.noticeType == 2?'hidden':''}`}>{item.noticeType == 1?"出售比特币" : ""}</a>
+                        <a href={`/buydetail:${item.id}`} className={`${item.noticeType == 1 ? 'hidden' : ''}`}>{item.noticeType == 2 ? "购买比特币" : ""}</a>
+                        <a href={`/selldetail:${item.id}`} className={`${item.noticeType == 2 ? 'hidden' : ''}`}>{item.noticeType == 1 ? "出售比特币" : ""}</a>
                     </button>
                 </div>
-        );
-    });
+            );
+        });
     }
-    renderArray(item, index){
-        return(
+    renderArray(item, index) {
+        return (
             <div key={index} className="list-item">
-                <img src={item.src} alt=""/>
+                <img src={item.src} alt="" />
                 <p>{item.title}</p>
                 <div className="home-content">
                     <p>{item.content}</p>
@@ -63,9 +63,9 @@ class Home extends Component {
     }
     render() {
         const ArrayLinks = [
-            { src:"./public/img/买卖-.png", title:"快速买卖", content:"themis是一个不涉及第三方的P2P交易平台，交易过程方便快捷"},
-            { src:"./public/img/安全.png", title:"安全交易", content:"冷存储、SSL、多重加密等银行级别安全技术，十年金融安全经验安全团队"},
-            { src:"./public/img/快速.png", title:"及时掌控", content:"行情及时掌握,交易随时随地"},
+            { src: "./public/img/买卖-.png", title: "快速买卖", content: "themis是一个不涉及第三方的P2P交易平台，交易过程方便快捷" },
+            { src: "./public/img/安全.png", title: "安全交易", content: "冷存储、SSL、多重加密等银行级别安全技术，十年金融安全经验安全团队" },
+            { src: "./public/img/快速.png", title: "及时掌控", content: "行情及时掌握,交易随时随地" },
         ];
         return (
             <div className="clear">
@@ -73,7 +73,7 @@ class Home extends Component {
                     <div className="bannertitle">
                         <h2>THEMIS</h2>
                         <h4>T H E M I S 比 特 币 场 外 交 易 平 台</h4>
-                        <hr/>
+                        <hr />
                         <h5>去中心化托管更安全</h5>
                     </div>
                 </div>
@@ -87,9 +87,9 @@ class Home extends Component {
                     </div>
                 </div>
                 <div className="home-bottom">
-                   <div className="list-width">
-                       {ArrayLinks.map(this.renderArray)}
-                   </div>
+                    <div className="list-width">
+                        {ArrayLinks.map(this.renderArray)}
+                    </div>
                 </div>
             </div>
         );
@@ -98,7 +98,7 @@ class Home extends Component {
 
 function mapStateToProps(state) {
     return {
-       all:state.advert.all
+        all: state.advert.all
     };
 }
-export default connect(mapStateToProps, {fetctHome})(Home);
+export default connect(mapStateToProps, { fetctHome })(Home);

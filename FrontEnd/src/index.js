@@ -9,14 +9,14 @@ import { Router, browserHistory } from 'react-router';
 import reduxThunk from 'redux-thunk';
 import reducers from './reducers';
 import { AUTH_USER } from './actions/types';
-import {Route, BrowserRouter, Switch, Redirect} from 'react-router-dom';
-import Header from  './components/common/header';
-import Footer from  './components/common/footer';
-import Singin from  './components/auth/signin';
-import Signinemail from  './components/auth/signin_email';
+import { Route, BrowserRouter, Switch, Redirect } from 'react-router-dom';
+import Header from './components/common/header';
+import Footer from './components/common/footer';
+import Singin from './components/auth/signin';
+import Signinemail from './components/auth/signin_email';
 
-import Singup from  './components/auth/signup';
-import Signout from  './components/auth/signout';
+import Singup from './components/auth/signup';
+import Signout from './components/auth/signout';
 import Forgetpsw from './components/auth/forget_psw';
 import Emialforget from './components/auth/forget_email';
 import Resetpsw from './components/auth/reset_psw';
@@ -50,47 +50,47 @@ const store = createStoreWithMiddleware(reducers);
 const token = localStorage.getItem('token');
 // If token exist, singin automatic
 if (token) {
-    store.dispatch({type: AUTH_USER});
+    store.dispatch({ type: AUTH_USER });
 }
 
 ReactDOM.render(
     <Provider store={store} >
-    <BrowserRouter>
-        <div>
-            <main>
-                <Header/>
-                <Switch>
-                    <Route path="/signin" component={Singin}/>
-                    <Route path="/signinemail" component={Signinemail}/>
-                    <Route path="/signup" component={Singup}/>
-                    <Route path="/signout" component={Signout} />
-                    <Route path="/usercenter" component={Usercenter}/>
-                    <Route path="/orderinprogress" component={OrderInProgress}/>
-                    <Route path="/ordercompleted" component={OrderCompleted}/>
-                    <Route path="/orderprogress" component={OrderProgress}/>
-                    <Route path="/arbitrationbuyer" component={ArbitrationBuyer}/>
-                    <Route path="/arbitrationmanage" component={ArbitrationManage}/>
-                    <Route path="/refereelist" component={RefereeList}/>
-                    <Route path="/releaseadvert" component={Releaseadvert}/>
-                    <Route path="/buybtc" component={Buybtc}/>
-                    <Route path="/sellbtc" component={Sellbtc}/>
-                    <Route path="/selldetail:id" component={Selldetail}/>
-                    <Route path="/buydetail:id" component={Buydetail}/>
-                    <Route path="/myadvert" component={Myadvert}/>
-                    <Route path="/messagenotice" component={MessageNotice}/>
-                    <Route path="/messagesystem" component={MessageSystem}/>
-                    <Route path="/messageletter" component={MessageLetter}/>
-                    <Route path="/forgetpsw" component={Forgetpsw}/>
-                    <Route path="/resetpsw" component={Resetpsw}/>
-                    <Route path="/emailforget" component={Emialforget}/>
-                    <Route path="/otherInfodetail:id" component={OtherInfodetail}/>
+        <BrowserRouter>
+            <div>
+                <main>
+                    <Header />
+                    <Switch>
+                        <Route path="/signin" component={Singin} />
+                        <Route path="/signinemail" component={Signinemail} />
+                        <Route path="/signup" component={Singup} />
+                        <Route path="/signout" component={Signout} />
+                        <Route path="/usercenter" component={Usercenter} />
+                        <Route path="/orderinprogress" component={OrderInProgress} />
+                        <Route path="/ordercompleted" component={OrderCompleted} />
+                        <Route path="/orderprogress" component={OrderProgress} />
+                        <Route path="/arbitrationbuyer" component={ArbitrationBuyer} />
+                        <Route path="/arbitrationmanage" component={ArbitrationManage} />
+                        <Route path="/refereelist" component={RefereeList} />
+                        <Route path="/releaseadvert" component={Releaseadvert} />
+                        <Route path="/buybtc" component={Buybtc} />
+                        <Route path="/sellbtc" component={Sellbtc} />
+                        <Route path="/selldetail:id" component={Selldetail} />
+                        <Route path="/buydetail:id" component={Buydetail} />
+                        <Route path="/myadvert" component={Myadvert} />
+                        <Route path="/messagenotice" component={MessageNotice} />
+                        <Route path="/messagesystem" component={MessageSystem} />
+                        <Route path="/messageletter" component={MessageLetter} />
+                        <Route path="/forgetpsw" component={Forgetpsw} />
+                        <Route path="/resetpsw" component={Resetpsw} />
+                        <Route path="/emailforget" component={Emialforget} />
+                        <Route path="/otherInfodetail:id" component={OtherInfodetail} />
 
-                    <Route path="/" component={Home}/>
-                </Switch>
-                <Footer/>
-            </main>
-        </div>
-    </BrowserRouter>
+                        <Route path="/" component={Home} />
+                    </Switch>
+                    <Footer />
+                </main>
+            </div>
+        </BrowserRouter>
     </Provider>
     , document.querySelector('.wrapper')
 );
