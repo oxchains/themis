@@ -60,9 +60,15 @@ class Buydetail extends Component {
             money: this.state.messmoney,
             amount: this.state.messnum
         };
-        this.props.fetctBuynow({ formdata }, err => {
-            this.setState({ isModalOpen: true, error: err, actionResult: err || '下单成功!' });
-        });
+        const authenticated = this.props.authenticated;
+        if(authenticated){
+            this.props.fetctBuynow({ formdata }, err => {
+                this.setState({ isModalOpen: true, error: err, actionResult: err || '下单成功!' });
+            });
+        }else{
+            alert('登录后才可以下单哦～');
+        }
+        
     }
     showOrderDetail(item) {
         // console.log(item)
@@ -161,7 +167,8 @@ class Buydetail extends Component {
 function mapStateToProps(state) {
     return {
         data: state.advert.data,     //点击立刻购买返回的data
-        all: state.advert.all       //广告详情页面加载时的数据
+        all: state.advert.all,       //广告详情页面加载时的数据
+        authenticated: state.auth.authenticated
     };
 }
 export default connect(mapStateToProps, { fetctBuyBtcDetail, fetctBuynow })(Buydetail);

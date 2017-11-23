@@ -34,7 +34,6 @@ class MessageLetter extends Component{
     }
     renderList(){
         return this.props.message_letter.pageList.map((item, index)=>{
-            console.log(item);
             return(
                 <li className="message-item-list clearfix" key={index}>
                     <div className="col-xs-2">

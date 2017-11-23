@@ -29,12 +29,18 @@ class OtherInfodetail extends Component {
         });
     }
     toggleButton(buttonStatus) {
+        const authenticated = this.props.authenticated;
         const lastStatus = this.state.buttonStatus;
         const buttonText = buttonStatus === 1 ? '信任' : '屏蔽';
         const name = 'TA';//从后端得到该用户名
-        lastStatus === buttonStatus
+        if(authenticated){
+            lastStatus === buttonStatus
             ? this.setState({ visible: true, buttonStatus: 0, message: `您已取消${buttonText}` })
             : this.setState({ visible: true, buttonStatus, message: `您已${buttonText}${name}` });
+        }else{
+            alert('请先登陆哦～');
+        }
+        // this.props.isTrustAndisShield()
     }
     handleOk = () => {
         this.setState({
@@ -137,7 +143,8 @@ class OtherInfodetail extends Component {
 
 function mapStateToProps(state) {
     return {
-        all: state.advert.all       //广告详情页面加载时的数据
+        all: state.advert.all,       //广告详情页面加载时的数据
+        authenticated:state.auth.authenticated
     };
 }
 export default connect(mapStateToProps, {})(OtherInfodetail);

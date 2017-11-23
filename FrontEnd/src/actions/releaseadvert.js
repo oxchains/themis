@@ -70,7 +70,7 @@ export function fetcAdvertSeach({ searchType, location, currency, payType, pageN
     return function (dispatch) {
         axios.post(`${ROOT_URLL}/notice/search/page/buy`, { searchType, location, currency, payType, pageNum }, { headers: getAuthorizedHeader() })
             .then(response => {
-                console.log(response);
+                // console.log(response);
                 dispatch({ type: FETCH_BUY_SECAT, payload: response });
             })
             .catch(err => {
@@ -171,7 +171,7 @@ export function fetctSellSeach({ searchType, location, currency, payType, pageNu
     return function (dispatch) {
         axios.post(`${ROOT_URLL}/notice/search/page/sell`, { searchType, location, currency, payType, pageNum }, { headers: getAuthorizedHeader() })
             .then(response => {
-                console.log(response);
+                // console.log(response);
                 dispatch({ type: FETCH_SELL_SECAT, payload: response });
             })
             .catch(err => {
@@ -240,7 +240,7 @@ export function fetctOffMyAd({ id }, callback) {
 //用户基本信息
 
 export function fetctBaseInfo({ formdata }, callback) {
-    console.log(formdata);
+    // console.log(formdata);
     return function (dispatch) {
         // axios.post(`${ROOT_URLC}/user/info`,{loginname,description,image},{ headers: getAuthorizedHeader() })
         axios({
@@ -251,7 +251,7 @@ export function fetctBaseInfo({ formdata }, callback) {
             headers: { 'content-type': 'multipart/form-data', getAuthorizedHeader },
             withCredentials: true
         }).then(response => {
-            console.log(response);
+            // console.log(response);
             // dispatch({type: FETCH_BASE_INFO, payload: response})
             if (response.data.status == 1) {
                 callback();
@@ -271,7 +271,7 @@ export function fetctTrusted({ userId, type, pageNo, pageSize }, callback) {
     return function (dispatch) {
         axios.get(`${ROOT_URLC}/user/trust?userId=${userId}&pageNo=${pageNo}&pageSize=${pageSize}&type=${type}`,
             { headers: getAuthorizedHeader() }).then(response => {
-                console.log(response);
+                // console.log(response);
                 dispatch({ type: FETCH_TRUSTED, payload: response });
 
             })
