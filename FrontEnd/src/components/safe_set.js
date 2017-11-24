@@ -150,7 +150,7 @@ class Safeset extends Component {
                     >
                         <input className="formChange" type="text" placeholder="请输入旧密码" ref="password" />
                         <input className="formChange " type="password" placeholder=" 请输入新密码" ref="newPassword" />
-                        <input className="formChange " type="password" placeholder=" 请再次输入新密码" ref="newPasswordagain" />
+                        <input className="formChange " type="password" placeholder=" 确认新密码" ref="newPasswordagain" />
                     </Modal>
                 </div>
 
