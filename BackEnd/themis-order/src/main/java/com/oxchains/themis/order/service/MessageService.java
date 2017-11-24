@@ -35,21 +35,23 @@ public class MessageService {
     //添加订单的站内信
     public void postAddOrderMessage(Orders orders,Long userId,Long noticeUserId){
         try {
+            //发布公告人的通知
             String username = orderService.getUserById(userId).getLoginname();
             String noticeMessage = MessageFormat.format(MessageCopywrit.ADD_ORDERS_NOTICE,username,orders.getId());
-            String placeMessage = MessageFormat.format(MessageCopywrit.ADD_ORDERS_PLACE,orders.getId());
-            //发布公告人的通知
             MessageText messageText = new MessageText(0L,noticeMessage, MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
             MessageText save = messageTextRepo.save(messageText);
             Message message1 = new Message(noticeUserId,save.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message1);
+
             //下订单人的通知
+            String placeMessage = MessageFormat.format(MessageCopywrit.ADD_ORDERS_PLACE,orders.getId());
             MessageText messageText1 = new MessageText(0L,placeMessage, MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
             MessageText save1 = messageTextRepo.save(messageText1);
             Message message2 = new Message(userId,save1.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message2);
         } catch (Exception e) {
             LOG.error("MESSAGE -- post add orders faild : {}",e.getMessage(),e);
+            throw  e;
         }
     }
     //卖家上传公私钥的站内信

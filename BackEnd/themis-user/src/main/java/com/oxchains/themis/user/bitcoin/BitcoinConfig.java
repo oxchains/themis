@@ -29,8 +29,7 @@ public class BitcoinConfig extends AbstractConfig{
     static {
         Properties pro = new Properties();
         try {
-            //pro.load(BitcoinConfig.class.getResourceAsStream("/application.properties"));
-            pro.load(BitcoinConfig.class.getResourceAsStream("/bitcoin-rpc-client.properties"));
+            pro.load(BitcoinConfig.class.getResourceAsStream("/application.properties"));
             url = pro.getProperty("bitcoin.service.url");
             port = pro.getProperty("bitcoin.service.port");
             username = pro.getProperty("bitcoin.service.username");

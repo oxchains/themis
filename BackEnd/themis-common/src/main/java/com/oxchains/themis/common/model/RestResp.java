@@ -10,7 +10,8 @@ public class RestResp implements Serializable{
     public final String message;
     public final Object data;
 
-    private RestResp(int status, String message, Object data) {
+
+    protected RestResp(int status, String message, Object data) {
         this.status = status;
         this.message = message;
         this.data = data;
