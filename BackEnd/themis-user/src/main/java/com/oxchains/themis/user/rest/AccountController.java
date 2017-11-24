@@ -135,8 +135,8 @@ public class AccountController {
         return JsonUtil.toJson(bitcoinService.payToUserWithFees(param.getOrderId(),param.getRecvAddress(),Arrays.asList(param.getPrvKeys().split(",")),param.getAmount()));
     }
 
-    @GetMapping(value = "/transaction/{orderId}")
+    @GetMapping(value = "/transactin/{orderId}")
     public RestResp getTransaction(@PathVariable String orderId){
-        return bitcoinService.getTransaction(orderId);
+        return bitcoinService.getTransactionStatus(orderId);
     }
 }

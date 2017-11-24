@@ -259,19 +259,11 @@ public class MessageService {
                 }
             }
         }else {
-            if (tip == 1){
-                COUNT = unReadSize;
-                return COUNT;
-            }else {
-                if (COUNT.equals(unReadSize)){
-                    Thread.sleep(2000);
-                    if (count >= MessageConst.Constant.FIFTEEN.getValue()){
-                        return 0;
-                    }
-                    return invokeDb(userId, tip, ++count);
-                }
-                return invokeDb(userId, tip, count);
+            Thread.sleep(2000);
+            if (count >= MessageConst.Constant.FIFTEEN.getValue()){
+                return MessageConst.Constant.ZERO.getValue();
             }
+            return invokeDb(userId, tip, ++count);
         }
     }
 }

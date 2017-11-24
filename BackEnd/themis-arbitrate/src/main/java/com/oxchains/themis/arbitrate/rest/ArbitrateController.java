@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 /**
@@ -98,7 +99,7 @@ public class ArbitrateController {
         }
     }
     @RequestMapping("/arbitrate/saveOrderAbritrate")
-    public String saveOrderAbritrate(OrderArbitrate orderArbitrate){
+    public String saveOrderAbritrate(@RequestBody List<OrderArbitrate> orderArbitrate){
         return JsonUtil.toJson(arbitrateService.saveOrderAbritrate(orderArbitrate));
     }
 }
