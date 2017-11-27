@@ -1,8 +1,9 @@
-package com.oxchains.themis.order.entity;
+package com.oxchains.themis.repo.entity;
 
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by huohuo on 2017/10/25.
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "order_address_key")
 @Data
-public class OrderAddresskeys {
+public class OrderAddresskeys implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;        //公私匙表唯一id
@@ -23,7 +24,7 @@ public class OrderAddresskeys {
     private String sellerPriAuth; //卖家私匙
     private String sellerBuyerPriAuth; //卖家拥有的买家的私匙
     private String userPubAuth; //仲裁者公匙
-    private String userPriAuth; //装菜社私匙
+    private String userPriAuth; //仲裁者私匙
 
     @Override
     public String toString() {
@@ -40,7 +41,6 @@ public class OrderAddresskeys {
                 ", userPriAuth='" + userPriAuth + '\'' +
                 '}';
     }
-
     public OrderAddresskeys(String orderId, String buyerPubAuth, String buyerPriAuth, String userPubAuth, String userPriAuth) {
         this.orderId = orderId;
         this.buyerPubAuth = buyerPubAuth;
@@ -48,7 +48,6 @@ public class OrderAddresskeys {
         this.userPubAuth = userPubAuth;
         this.userPriAuth = userPriAuth;
     }
-
     public OrderAddresskeys() {
     }
 }

@@ -1,4 +1,4 @@
-package com.oxchains.themis.arbitrate.entity;
+package com.oxchains.themis.arbitrate.entity.vo;
 
 import com.oxchains.themis.repo.entity.Notice;
 import com.oxchains.themis.repo.entity.UserTxDetail;
