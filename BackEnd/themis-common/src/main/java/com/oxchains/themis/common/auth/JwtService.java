@@ -107,7 +107,7 @@ public class JwtService {
             Claims claims = jws.getBody();
             String subject=claims.getSubject();
             boolean keyExist = redisTemplate.hasKey(subject);
-            if (!keyExist){
+            if (keyExist){
                 ValueOperations<String, User> operations = redisTemplate.opsForValue();
                 user = operations.get(subject);
             }else {
