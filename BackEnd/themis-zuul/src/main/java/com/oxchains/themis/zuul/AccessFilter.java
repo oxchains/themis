@@ -4,7 +4,6 @@ import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,7 +19,6 @@ import java.util.logging.Logger;
 public class AccessFilter extends ZuulFilter{
 
     private static final Logger logger = Logger.getLogger(AccessFilter.class.getCanonicalName());
-
 
     @Override
     public String filterType() {
@@ -50,8 +48,7 @@ public class AccessFilter extends ZuulFilter{
         String token = request.getHeader("Authorization");
         logger.log(Level.FINE,"Authorization token: {}",token);
         if(null == token){
-            if("/themis-user/user/login".equals(url) || "/themis-user/user/register".equals(url)){
-                // 放行
+            if("/themis-user/user/login".equals(url)){
             }else {
                 //过滤该请求，不往下级服务去转发请求，到此结束
                 rcx.setSendZuulResponse(false);
@@ -61,18 +58,6 @@ public class AccessFilter extends ZuulFilter{
 
             }
         }
-//        else {
-//            // 有token，验证token和redis中token
-//            boolean isSuccess = jwtService.parse2(token);
-//            if (isSuccess){
-//                // 放行
-//            } else {
-//                rcx.setSendZuulResponse(false);
-//                rcx.setResponseStatusCode(401);
-//                rcx.setResponseBody("{}");
-//                return null;
-//            }
-//        }
         //如果有token，则进行路由转发
         logger.info("Authorized,continue...");
         //这里return的值没有意义，zuul框架没有使用该返回值

@@ -2,10 +2,87 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cb0832ac-ff3b-429d-81e5-ec02423ff699" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../BackEnd/themis-arbitrate/src/main/java/com/oxchains/themis/arbitrate/entity/UserTxDetails.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../BackEnd/themis-arbitrate/src/main/resources/application-dev.properties" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../BackEnd/themis-arbitrate/src/main/resources/application-prd.properties" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../BackEnd/themis-arbitrate/src/main/resources/application-test.properties" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../BackEnd/themis-chat/src/main/resources/application-dev.properties" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../BackEnd/themis-chat/src/main/resources/application-prd.properties" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../BackEnd/themis-chat/src/main/resources/application-test.properties" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../BackEnd/themis-common/src/main/java/com/oxchains/themis/common/model/RestRespPage.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/java/com/oxchains/themis/order/common/RestRespPage.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/resources/application-dev.properties" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/resources/application-prd.properties" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/resources/application-test.properties" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../BackEnd/themis-common/src/main/java/com/oxchains/themis/common/auth/JwtService2.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/java/com/oxchains/themis/order/repo/UserTxDetailRepo.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../BackEnd/themis-user/shell" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../BackEnd/themis-user/src/main/java/com/oxchains/themis/RedisConfig.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../BackEnd/themis-user/src/main/resources/application-dev.properties" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../BackEnd/themis-user/src/main/resources/application-prod.properties" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-zuul/src/main/resources/application.properties" afterPath="$PROJECT_DIR$/../BackEnd/themis-zuul/src/main/resources/application.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/pom.xml" afterPath="$PROJECT_DIR$/../BackEnd/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-arbitrate/pom.xml" afterPath="$PROJECT_DIR$/../BackEnd/themis-arbitrate/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-arbitrate/src/main/java/com/oxchains/themis/arbitrate/common/MessageCopywrit.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-arbitrate/src/main/java/com/oxchains/themis/arbitrate/common/MessageCopywrit.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-arbitrate/src/main/java/com/oxchains/themis/arbitrate/common/ParamType.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-arbitrate/src/main/java/com/oxchains/themis/arbitrate/common/ParamType.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-arbitrate/src/main/java/com/oxchains/themis/arbitrate/config/OrderArbitrateListener.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-arbitrate/src/main/java/com/oxchains/themis/arbitrate/config/OrderArbitrateListener.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-arbitrate/src/main/java/com/oxchains/themis/arbitrate/entity/vo/OrdersInfo.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-arbitrate/src/main/java/com/oxchains/themis/arbitrate/entity/vo/OrdersInfo.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-arbitrate/src/main/java/com/oxchains/themis/arbitrate/rest/ArbitrateController.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-arbitrate/src/main/java/com/oxchains/themis/arbitrate/rest/ArbitrateController.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-arbitrate/src/main/java/com/oxchains/themis/arbitrate/service/ArbitrateService.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-arbitrate/src/main/java/com/oxchains/themis/arbitrate/service/ArbitrateService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-arbitrate/src/main/java/com/oxchains/themis/arbitrate/service/MessageService.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-arbitrate/src/main/java/com/oxchains/themis/arbitrate/service/MessageService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-arbitrate/src/main/resources/application.properties" afterPath="$PROJECT_DIR$/../BackEnd/themis-arbitrate/src/main/resources/application.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-chat/pom.xml" afterPath="$PROJECT_DIR$/../BackEnd/themis-chat/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-chat/src/main/java/com/oxchains/themis/chat/ChainAppConfiguration.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-chat/src/main/java/com/oxchains/themis/chat/ChainAppConfiguration.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-chat/src/main/java/com/oxchains/themis/chat/service/ChatService.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-chat/src/main/java/com/oxchains/themis/chat/service/ChatService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-chat/src/main/java/com/oxchains/themis/chat/websocket/chatfunction/function/UserChat.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-chat/src/main/java/com/oxchains/themis/chat/websocket/chatfunction/function/UserChat.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-chat/src/main/resources/application.properties" afterPath="$PROJECT_DIR$/../BackEnd/themis-chat/src/main/resources/application.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-common/pom.xml" afterPath="$PROJECT_DIR$/../BackEnd/themis-common/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-common/src/main/java/com/oxchains/themis/common/auth/JwtService.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-common/src/main/java/com/oxchains/themis/common/auth/JwtService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-common/src/main/java/com/oxchains/themis/common/constant/ThemisUserAddress.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-common/src/main/java/com/oxchains/themis/common/constant/ThemisUserAddress.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-common/src/main/java/com/oxchains/themis/common/constant/notice/NoticeTxStatus.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-common/src/main/java/com/oxchains/themis/common/constant/notice/NoticeTxStatus.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-common/src/main/java/com/oxchains/themis/common/model/RestResp.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-common/src/main/java/com/oxchains/themis/common/model/RestResp.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-common/src/main/resources/application.properties" afterPath="$PROJECT_DIR$/../BackEnd/themis-common/src/main/resources/application.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-eureka/src/main/java/com/oxchains/themis/EurekaApplication.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-eureka/src/main/java/com/oxchains/themis/EurekaApplication.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-eureka/src/main/resources/application.properties" afterPath="$PROJECT_DIR$/../BackEnd/themis-eureka/src/main/resources/application.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-message/src/main/java/com/oxchains/themis/message/service/MessageService.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-message/src/main/java/com/oxchains/themis/message/service/MessageService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-message/src/main/resources/application-dev.properties" afterPath="$PROJECT_DIR$/../BackEnd/themis-message/src/main/resources/application-dev.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-message/src/main/resources/application-test.properties" afterPath="$PROJECT_DIR$/../BackEnd/themis-message/src/main/resources/application-test.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-message/src/main/resources/application.properties" afterPath="$PROJECT_DIR$/../BackEnd/themis-message/src/main/resources/application.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-notice/Dockerfile" afterPath="$PROJECT_DIR$/../BackEnd/themis-notice/Dockerfile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-notice/src/main/java/com/oxchains/themis/NoticeApplication.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-notice/src/main/java/com/oxchains/themis/NoticeApplication.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-notice/src/main/java/com/oxchains/themis/notice/listener/BlockChainInfoListener.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-notice/src/main/java/com/oxchains/themis/notice/listener/BlockChainInfoListener.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-notice/src/main/java/com/oxchains/themis/notice/service/NoticeService.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-notice/src/main/java/com/oxchains/themis/notice/service/NoticeService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-notice/src/main/resources/application-dev.properties" afterPath="$PROJECT_DIR$/../BackEnd/themis-notice/src/main/resources/application-dev.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-notice/src/main/resources/application-test.properties" afterPath="$PROJECT_DIR$/../BackEnd/themis-notice/src/main/resources/application-test.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-notice/src/main/resources/application.properties" afterPath="$PROJECT_DIR$/../BackEnd/themis-notice/src/main/resources/application.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/java/com/oxchains/themis/order/common/ParamType.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/java/com/oxchains/themis/order/common/ParamType.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/java/com/oxchains/themis/order/common/Pojo.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/java/com/oxchains/themis/order/common/Pojo.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/java/com/oxchains/themis/order/config/ChainAppConfiguration.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/java/com/oxchains/themis/order/config/ChainAppConfiguration.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/java/com/oxchains/themis/order/entity/Orders.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/java/com/oxchains/themis/order/entity/Orders.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/java/com/oxchains/themis/order/entity/UserTxDetails.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/java/com/oxchains/themis/order/entity/UserTxDetails.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/java/com/oxchains/themis/order/entity/vo/OrdersInfo.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/java/com/oxchains/themis/order/entity/vo/OrdersInfo.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/java/com/oxchains/themis/order/rest/OrderController.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/java/com/oxchains/themis/order/rest/OrderController.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/java/com/oxchains/themis/order/service/MessageService.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/java/com/oxchains/themis/order/service/MessageService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/java/com/oxchains/themis/order/service/OrderService.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/java/com/oxchains/themis/order/service/OrderService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/resources/application.properties" afterPath="$PROJECT_DIR$/../BackEnd/themis-order/src/main/resources/application.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-repo/pom.xml" afterPath="$PROJECT_DIR$/../BackEnd/themis-repo/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-repo/src/main/java/com/oxchains/themis/repo/entity/Notice.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-repo/src/main/java/com/oxchains/themis/repo/entity/Notice.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-user/Dockerfile" afterPath="$PROJECT_DIR$/../BackEnd/themis-user/Dockerfile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-user/Jenkinsfile" afterPath="$PROJECT_DIR$/../BackEnd/themis-user/Jenkinsfile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-user/src/main/java/com/oxchains/themis/HttpSessionConfig.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-user/src/main/java/com/oxchains/themis/HttpSessionConfig.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-user/src/main/java/com/oxchains/themis/UserApplication.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-user/src/main/java/com/oxchains/themis/UserApplication.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-user/src/main/java/com/oxchains/themis/user/bitcoin/BitcoinConfig.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-user/src/main/java/com/oxchains/themis/user/bitcoin/BitcoinConfig.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-user/src/main/java/com/oxchains/themis/user/rest/AccountController.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-user/src/main/java/com/oxchains/themis/user/rest/AccountController.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-user/src/main/java/com/oxchains/themis/user/service/UserService.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-user/src/main/java/com/oxchains/themis/user/service/UserService.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-user/src/main/resources/application-test.properties" afterPath="$PROJECT_DIR$/../BackEnd/themis-user/src/main/resources/application-test.properties" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-user/src/main/resources/application.properties" afterPath="$PROJECT_DIR$/../BackEnd/themis-user/src/main/resources/application.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-user/src/main/resources/bitcoin-rpc-client.properties" afterPath="$PROJECT_DIR$/../BackEnd/themis-user/src/main/resources/bitcoin-rpc-client.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-user/src/test/java/SmsTest.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-user/src/test/java/SmsTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-zuul/pom.xml" afterPath="$PROJECT_DIR$/../BackEnd/themis-zuul/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-zuul/src/main/java/com/oxchains/themis/ZuulApplication.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-zuul/src/main/java/com/oxchains/themis/ZuulApplication.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../BackEnd/themis-zuul/src/main/java/com/oxchains/themis/zuul/AccessFilter.java" afterPath="$PROJECT_DIR$/../BackEnd/themis-zuul/src/main/java/com/oxchains/themis/zuul/AccessFilter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/../BackEnd/themis-user/themis-user.yml" afterPath="$PROJECT_DIR$/../BackEnd/themis-repo/themis-user.yml" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -99,7 +176,7 @@
   <component name="NodeModulesDirectoryManager">
     <handled-path value="$PROJECT_DIR$/node_modules" />
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="742" />
     <option name="y" value="139" />
     <option name="width" value="1394" />
@@ -258,16 +335,15 @@
       <workItem from="1510124120678" duration="3185000" />
       <workItem from="1510887901576" duration="675000" />
       <workItem from="1510915684273" duration="2207000" />
-      <workItem from="1511773424809" duration="186000" />
+      <workItem from="1511773424809" duration="463000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="42987000" />
+    <option name="totallyTimeSpent" value="43264000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1780822" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />

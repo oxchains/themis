@@ -92,10 +92,19 @@ public class NoticeService {
                 }
             }
 
-            // 不能发布公告得判断
+            // 溢价判断
+            if (notice.getPremium() < 0 && notice.getPremium() > NoticeConstants.TEN) {
+                return RestResp.fail("请按规定输入溢价（0~10）");
+            }
+
+            // 两种不能发布公告得判断
             List<Notice> noticeListUnDone = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(notice.getUserId(), notice.getNoticeType(), NoticeTxStatus.UNDONE_TX);
             if (noticeListUnDone.size() != 0){
                 return RestResp.fail("已经有一条此类型公告");
+            }
+            List<Notice> noticeListDoing = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(notice.getUserId(), notice.getNoticeType(), NoticeTxStatus.DOING_TX);
+            if (noticeListDoing.size() != 0){
+                return RestResp.fail("已经有一条此类型公告且正在交易");
             }
 
             String createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
@@ -184,7 +193,9 @@ public class NoticeService {
                 }
             }else {
                 List<Notice> unDoneNoticeList = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(userId, noticeType, NoticeTxStatus.UNDONE_TX);
+                List<Notice> doingNoticeList = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(userId, noticeType, NoticeTxStatus.DOING_TX);
                 resultList.addAll(unDoneNoticeList);
+                resultList.addAll(doingNoticeList);
             }
             PageDTO<Notice> pageDTO = new PageDTO<>();
             if (page == null){
@@ -314,7 +325,7 @@ public class NoticeService {
             // 将好评度等值添加到list中返回
             for (int i = 0; i < resultList.size(); i++){
                 Long userId = resultList.get(i).getUserId();
-                UserTxDetail utdInfo = userTxDetailDao.findByUserId(userId);
+                UserTxDetail utdInfo = userTxDetailDao.findOne(userId);
                 if (utdInfo == null){
                     resultList.get(i).setTxNum(0);
                     resultList.get(i).setTrustNum(0);
@@ -390,7 +401,7 @@ public class NoticeService {
             // 将好评度等值添加到list中返回
             for (int i = 0; i < resultList.size(); i++){
                 Long userId = resultList.get(i).getUserId();
-                UserTxDetail utdInfo = userTxDetailDao.findByUserId(userId);
+                UserTxDetail utdInfo = userTxDetailDao.findOne(userId);
                 if (null == utdInfo){
                     resultList.get(i).setTxNum(0);
                     resultList.get(i).setTrustNum(0);
@@ -431,6 +442,9 @@ public class NoticeService {
             }
             if (noticeInfo.getTxStatus().equals(NoticeTxStatus.DONE_TX)) {
                 return RestResp.fail("公告已下架");
+            }
+            if (noticeInfo.getTxStatus().equals(NoticeTxStatus.DOING_TX)) {
+                return RestResp.fail("交易中公告，禁止下架");
             }
             List<Notice> noticeList = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(noticeInfo.getUserId(), noticeInfo.getNoticeType(), noticeInfo.getTxStatus());
             if (noticeList.size() == 0){
@@ -521,7 +535,7 @@ public class NoticeService {
      */
     private void setUserTxDetail(List<Notice> subList, int i) {
         Long userId = subList.get(i).getUserId();
-        UserTxDetail userTxDetail = userTxDetailDao.findByUserId(userId);
+        UserTxDetail userTxDetail = userTxDetailDao.findOne(userId);
         if (null == userTxDetail){
             subList.get(i).setTxNum(0);
             subList.get(i).setTrustNum(0);
