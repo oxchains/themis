@@ -1,0 +1,10 @@
+if docker ps -a | grep -i themis-user; then
+   docker rm -f pharmacy
+fi
+if docker images | grep -i localhost:5005/oxchains/themis-user; then
+   docker rmi localhost:5005/oxchains/themis-user
+fi
+
+cd BackEnd/themis-user
+docker build -t localhost:5005/oxchains/themis-user .
+docker push localhost:5005/oxchains/themis-user
