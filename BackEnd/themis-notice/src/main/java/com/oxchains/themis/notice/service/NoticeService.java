@@ -8,6 +8,7 @@ import com.oxchains.themis.notice.common.NoticeConst;
 import com.oxchains.themis.notice.dao.*;
 import com.oxchains.themis.notice.domain.*;
 import com.oxchains.themis.notice.domain.Currency;
+import com.oxchains.themis.notice.domain.Payment;
 import com.oxchains.themis.notice.rest.dto.PageDTO;
 import com.oxchains.themis.notice.rest.dto.StatusDTO;
 import com.oxchains.themis.repo.dao.UserDao;
