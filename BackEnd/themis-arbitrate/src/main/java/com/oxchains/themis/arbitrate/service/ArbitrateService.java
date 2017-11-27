@@ -3,18 +3,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.oxchains.themis.arbitrate.common.*;
 import com.oxchains.themis.arbitrate.entity.OrderEvidence;
 import com.oxchains.themis.arbitrate.entity.Orders;
-import com.oxchains.themis.arbitrate.entity.UserTxDetails;
 import com.oxchains.themis.arbitrate.entity.vo.OrdersInfo;
 import com.oxchains.themis.arbitrate.repo.*;
-import com.oxchains.themis.common.constant.ThemisUserAddress;
 import com.oxchains.themis.common.model.RestResp;
-import com.oxchains.themis.common.model.RestRespPage;
 import com.oxchains.themis.common.util.JsonUtil;
-import com.oxchains.themis.repo.dao.UserRelationDao;
 import com.oxchains.themis.repo.entity.Notice;
 import com.oxchains.themis.repo.entity.OrderArbitrate;
 import com.oxchains.themis.repo.entity.User;
-import org.aspectj.weaver.ast.Or;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -28,9 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.annotation.Resource;
 import java.io.File;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,9 +49,9 @@ public class ArbitrateService {
     @Resource
     private RestTemplate restTemplate;
     @Resource
-    private MessageService messageService;
+    private OrderAddresskeyRepo orderAddresskeyRepo;
     @Resource
-    UserTxDetailRepo userTxDetailRepo;
+    private MessageService messageService;
 
     public static final Integer BUYER_SUCCESS = 1;
     public static final Integer SELLER_SUCCESS = 2;
@@ -66,9 +61,9 @@ public class ArbitrateService {
     public RestResp findArbitrareOrderById(Pojo pojos){
         Pageable pageable = new PageRequest(pojos.getPageNum()-1,pojos.getPageSize(),new Sort(Sort.Direction.DESC,"id"));
         List<OrdersInfo> ordersInfoList = null;
-        Page<OrderArbitrate> orderArbitratePage = null;
         try {
             OrdersInfo ordersInfo = null;
+            Page<OrderArbitrate> orderArbitratePage = null;
             orderArbitratePage = orderArbitrateRepo.findByUserIdAndAndStatusIsNot(pojos.getUserId(),ParamType.ArbitrateStatus.NOARBITRATE.getStatus(),pageable);
             ordersInfoList = new ArrayList<>();
             for (OrderArbitrate o: orderArbitratePage.getContent()) {
@@ -76,15 +71,15 @@ public class ArbitrateService {
                 ordersInfo.setBuyerUsername(this.getUserById(ordersInfo.getBuyerId()).getLoginname());
                 ordersInfo.setSellerUsername(this.getUserById(ordersInfo.getSellerId()).getLoginname());
                 this.setOrderStatusName(ordersInfo);
+                ordersInfo.setPageCount(orderArbitratePage.getTotalPages());
                 ordersInfo.setStatus(o.getStatus());
                 ordersInfoList.add(ordersInfo);
-
             }
         } catch (Exception e) {
             LOG.error("find arbitrate order faild : {}",e.getMessage(),e);
             return RestResp.fail("未知错误");
         }
-        return RestRespPage.success(ordersInfoList,orderArbitratePage.getTotalPages());
+        return RestResp.success(ordersInfoList);
     }
     /*
     * 根据订单编号查询订单的详细信息
@@ -108,17 +103,49 @@ public class ArbitrateService {
    * 这是一个工具类方法  为了给要返回到前台的orders 附上订单状态值
    * */
     public void setOrderStatusName(OrdersInfo o){
-        if(o != null){
-            if(o.getOrderStatus() != null){
-                String orderStatusName = ParamType.OrderStatus.getName(o.getOrderStatus());
-                o.setOrderStatusName(orderStatusName);
+        try {
+            if(o.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_CONFIRM.getStatus()){
+                o.setOrderStatusName("待确认");
             }
+            if(o.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_PAY.getStatus()){
+                o.setOrderStatusName("待付款");
+            }
+            if(o.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_SEND.getStatus()){
+                o.setOrderStatusName("待收货");
+            }
+            if(o.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_RECIVE.getStatus()){
+                o.setOrderStatusName("待收货");
+            }
+            if(o.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_COMMENT.getStatus()){
+                o.setOrderStatusName("待评价");
+            }
+            if(o.getOrderStatus().longValue() == ParamType.OrderStatus.FINISH.getStatus()){
+                o.setOrderStatusName("已完成");
+            }
+            if(o.getOrderStatus().longValue() == ParamType.OrderStatus.CANCEL.getStatus()){
+                o.setOrderStatusName("已取消");
+            }
+            if(o.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_REFUND.getStatus()){
+                o.setOrderStatusName("退款中");
+            }
+        } catch (Exception e) {
+            LOG.error("set order status value faild : {}",e.getMessage(),e);
         }
     }
     public RestResp uploadEvidence(RegisterRequest pojo,String imageUrl){
         OrderEvidence orderEvidence = null;
         try {
-
+            StringBuilder imageName = new StringBuilder();
+            List<MultipartFile> multipartFileList = Arrays.asList(pojo.getFiles());
+            for(MultipartFile mf:multipartFileList){
+                String filename = mf.getOriginalFilename();
+                String suffix = filename.substring(filename.lastIndexOf("."));
+                UUID uuid = UUID.randomUUID();
+                String newFileName = uuid.toString() + suffix;
+                mf.transferTo(new File(imageUrl+newFileName));
+                imageName.append(",");
+                imageName.append(newFileName);
+            }
             orderEvidence = orderEvidenceRepo.findByOrderId(pojo.getId());
             Orders orders = orderRepo.findOne(pojo.getId());
             if(orderEvidence == null){
@@ -135,39 +162,13 @@ public class ArbitrateService {
                 }
                 messageService.postEvidenceMessage(orders,pojo.getUserId());
             }
-            StringBuilder imageName = new StringBuilder();
-            List<MultipartFile> multipartFileList = Arrays.asList(pojo.getFiles());
-            int hasNum = 0;
-
             if(orders.getBuyerId() == pojo.getUserId().longValue()){
-                if(orderEvidence.getBuyerFiles()!=null){
-                    hasNum = orderEvidence.getBuyerFiles().split(",").length;
-                }
+                orderEvidence.setBuyerContent(pojo.getContent());
+                orderEvidence.setBuyerFiles(imageName.toString().substring(1));
             }
             if(orders.getSellerId() == pojo.getUserId().longValue()){
-                if(orderEvidence.getSellerFiles()!=null){
-                    hasNum = orderEvidence.getSellerFiles().split(",").length;
-                }
-            }
-            if(hasNum+multipartFileList.size()>5){
-                return RestResp.fail("对不起,你上传的凭据超出限额,系统上限为五张,你已上传"+hasNum+"张");
-            }
-            for(MultipartFile mf:multipartFileList){
-                String filename = mf.getOriginalFilename();
-                String suffix = filename.substring(filename.lastIndexOf("."));
-                UUID uuid = UUID.randomUUID();
-                String newFileName = uuid.toString() + suffix;
-                mf.transferTo(new File(imageUrl+newFileName));
-                imageName.append(",");
-                imageName.append(newFileName);
-            }
-            if(orders.getBuyerId() == pojo.getUserId().longValue()){
-                orderEvidence.setBuyerContent(orderEvidence.getBuyerContent()!=null?orderEvidence.getBuyerContent()+"."+pojo.getContent():pojo.getContent());
-                orderEvidence.setBuyerFiles(orderEvidence.getBuyerFiles()!=null?orderEvidence.getBuyerFiles()+imageName.toString():imageName.toString().substring(1));
-            }
-            if(orders.getSellerId() == pojo.getUserId().longValue()){
-                orderEvidence.setSellerFiles(orderEvidence.getSellerFiles()!=null?orderEvidence.getSellerFiles()+imageName.toString():imageName.toString().substring(1));
-                orderEvidence.setSellerContent(orderEvidence.getSellerContent()!=null?orderEvidence.getSellerContent()+"."+pojo.getContent():pojo.getContent());
+                orderEvidence.setSellerFiles(imageName.toString().substring(1));
+                orderEvidence.setSellerContent(pojo.getContent());
             }
             orderEvidence = orderEvidenceRepo.save(orderEvidence);
             messageService.postUploadEvidence(orders,pojo.getUserId());
@@ -204,7 +205,7 @@ public class ArbitrateService {
         }
         return orderArbitrate!=null?RestResp.success(orderArbitrate):RestResp.fail();
     }
-    public HttpHeaders getHttpHeader(){
+    private HttpHeaders getHttpHeader(){
         HttpHeaders headers = null;
         try {
             headers = new HttpHeaders();
@@ -219,75 +220,51 @@ public class ArbitrateService {
     public RestResp getEvidence(Pojo pojo){
         return RestResp.success(orderEvidenceRepo.findByOrderId(pojo.getId()));
     }
-    public RestResp saveOrderAbritrate(List<OrderArbitrate> arbitrateList){
-        for (OrderArbitrate o:arbitrateList) {
-            OrderArbitrate save = orderArbitrateRepo.save(o);
-        }
-        return RestResp.success();
+    public RestResp saveOrderAbritrate(OrderArbitrate orderArbitrate){
+        OrderArbitrate save = orderArbitrateRepo.save(orderArbitrate);
+        return save != null?RestResp.success():RestResp.fail();
     }
-    //从用户中心 根据用户id获取用户信息
     public User getUserById(Long userId){
         User user = null;
         try {
-            JSONObject str = restTemplate.getForObject(ThemisUserAddress.GET_USER+userId, JSONObject.class);
+            JSONObject str = restTemplate.getForObject(com.oxchains.themis.common.constant.ThemisUserAddress.GET_USER+userId, JSONObject.class);
             if(null != str){
                 Integer status = (Integer) str.get("status");
                 if(status == 1){
-                    Object data = str.get("data");
-                    String userStr = JsonUtil.toJson(data);
-                    user = JsonUtil.jsonToEntity(userStr, User.class);
+                    user = JsonUtil.jsonToEntity(JsonUtil.toJson(str.get("data")), User.class);
                 }
-                return user;
             }
+            return user;
         } catch (Exception e) {
             LOG.error("get user by id from themis-user faild : {}",e.getMessage(),e);
-            throw  e;
         }
         return null;
     }
-    //操作订单状态时 修改公告状态
-    public Notice saveNotice(Long id,Integer sta){
+    public Notice saveNotice(Long id, Integer sta){
         try {
-            JSONObject forObject = restTemplate.getForObject(ThemisUserAddress.SAVE_NOTICE + id + "/" + sta, JSONObject.class);
+            JSONObject forObject = restTemplate.getForObject(com.oxchains.themis.common.constant.ThemisUserAddress.SAVE_NOTICE + id + "/" + sta, JSONObject.class);
             Integer status = (Integer) forObject.get("status");
             if(status == 1){
-                Object data = forObject.get("data");
-                String str = JsonUtil.toJson(data);
-                Notice notice = JsonUtil.jsonToEntity(str,Notice.class);
+                Notice notice = JsonUtil.jsonToEntity(JsonUtil.toJson(forObject.get("data")),Notice.class);
                 return notice;
             }
         } catch (RestClientException e) {
             LOG.error("update notice status faild:{}",e.getMessage(),e);
-            throw  e;
         }
         return null;
 
     }
-    //从公告系统 获取公告
     public Notice findNoticeById(Long id){
         try {
-            JSONObject forObject = restTemplate.getForObject(ThemisUserAddress.GET_NOTICE + id, JSONObject.class);
+            JSONObject forObject = restTemplate.getForObject(com.oxchains.themis.common.constant.ThemisUserAddress.GET_NOTICE + id, JSONObject.class);
             Integer status = (Integer) forObject.get("status");
             if(status == 1){
-                Object data = forObject.get("data");
-                String str = JsonUtil.toJson(data);
-                Notice notice = JsonUtil.jsonToEntity(str, Notice.class);
+                Notice notice = JsonUtil.jsonToEntity(JsonUtil.toJson(forObject.get("data")), Notice.class);
                 return notice;
             }
         } catch (RestClientException e) {
             LOG.error("get notice faild : {}",e.getMessage(),e);
-            throw  e;
         }
         return null;
-    }
-    public void userTxDetailHandle(Orders orders){
-        UserTxDetails userTxDetails = userTxDetailRepo.findByUserId(orders.getBuyerId());
-        userTxDetails.setTxNum(userTxDetails.getTxNum()+1);
-        userTxDetails.setSuccessCount(userTxDetails.getSuccessCount().add(orders.getAmount()));
-        userTxDetailRepo.save(userTxDetails);
-        UserTxDetails noticeTx = userTxDetailRepo.findByUserId(orders.getSellerId());
-        noticeTx.setTxNum(noticeTx.getTxNum()+1);
-        noticeTx.setSuccessCount(noticeTx.getSuccessCount().add(orders.getAmount()));
-        userTxDetailRepo.save(noticeTx);
     }
 }

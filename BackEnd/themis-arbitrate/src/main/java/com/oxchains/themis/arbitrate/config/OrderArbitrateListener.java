@@ -80,14 +80,13 @@ public class OrderArbitrateListener {
                         orders.setFinishTime(DateUtil.getPresentDate());
                         Orders save = orderRepo.save(orders);
                         messageService.postArbitrateFinish(orders);
+
                         List<OrderArbitrate> arbitrates = arbitrateRepo.findByOrOrderIdAndStatus(orders.getId(), ParamType.ArbitrateStatus.ARBITRATEING.getStatus());
                         for(OrderArbitrate oa :arbitrates){
                             oa.setStatus(ParamType.ArbitrateStatus.ARBITRATEEND.getStatus());
                             arbitrateRepo.save(oa);
                         }
-                        if(save.getOrderStatus() == ParamType.OrderStatus.FINISH.getStatus().longValue()){
-                            arbitrateService.userTxDetailHandle(save);
-                        }
+
                     }
                 }
 

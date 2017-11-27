@@ -49,7 +49,7 @@ public class UserChat implements InfoStrategy{
             if( channelHandlerMap!= null && channelHandlerMap.get(keyIDs)!=null){
                 channelHandlerMap.get(keyIDs).getChannel().writeAndFlush(new TextWebSocketFrame(message));
             }
-            else{
+                else{
                 messageService.postPriChatMessage(chatContent);
             }
             kafkaService.send(message);

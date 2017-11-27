@@ -1,6 +1,7 @@
 package com.oxchains.themis.common.auth;
 
 import com.alibaba.fastjson.JSON;
+import com.netflix.eureka.V1AwareInstanceInfoConverter;
 import com.oxchains.themis.common.util.ObjectByteUtil;
 import com.oxchains.themis.repo.dao.TokenKeyDao;
 import com.oxchains.themis.repo.dao.UserDao;
@@ -17,8 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -30,16 +29,15 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.ECPrivateKey;
 import java.time.ZonedDateTime;
 import java.util.Date;
-import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.Optional.empty;
 
 /**
- * @author aiet
- */
-@Service
-public class JwtService {
+ * @author luoxuri
+ * @create 2017-11-24 18:50
+ **/
+public class JwtService2 {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
@@ -58,17 +56,11 @@ public class JwtService {
     private PrivateKey privateKey;
     private PublicKey publicKey;
 
-    private final UserDao userDao;
-
     @Resource
     private TokenKeyDao tokenKeyDao;
 
     @Resource
     private RedisTemplate redisTemplate;
-
-    public JwtService(UserDao userDao) {
-        this.userDao = userDao;
-    }
 
     @PostConstruct
     private void init() throws Exception {
@@ -90,42 +82,6 @@ public class JwtService {
         saveTokenKey(publicKey,privateKey);
     }
 
-    public String generate(User user) {
-        return new DefaultJwtBuilder().
-                setId(UUID.randomUUID().toString()).
-                setSubject(user.getLoginname()).
-                setExpiration(Date.from(ZonedDateTime.now().plusWeeks(1).toInstant())).claim("id", user.getId()).claim("email", user.getEmail()).claim("monilephone",user.getMobilephone()).claim("loginname",user.getLoginname()).
-                signWith(SignatureAlgorithm.ES256, privateKey).
-                compact();
-    }
-
-    Optional<JwtAuthentication> parse(String token) {
-        User user = null;
-        try {
-            Jws<Claims> jws = new DefaultJwtParser()
-                    .setSigningKey(publicKey)
-                    .parseClaimsJws(token);
-            Claims claims = jws.getBody();
-            String subject=claims.getSubject();
-
-            // 先从redis中获取，如果redis中没有，就从数据库中获取
-            boolean keyExists = redisTemplate.hasKey(subject);
-            if (keyExists){
-                ValueOperations<String ,User> operations = redisTemplate.opsForValue();
-                user = operations.get(subject);
-                LOG.info("Jwt: UserInfo from redis server");
-            }else {
-                user = userDao.findByLoginname(subject);
-                LOG.info("Jwt: UserInfo from mysql server");
-            }
-
-            JwtAuthentication jwtAuthentication = new JwtAuthentication(user, token, claims);
-            return Optional.of(jwtAuthentication);
-        } catch (Exception e) {
-            LOG.error("failed to parse jwt token {}: ", token, e);
-        }
-        return empty();
-    }
 
     private void saveTokenKey(PublicKey pubKey,PrivateKey priKey){
         TokenKey tokenKey = tokenKeyDao.findOne(1L);
@@ -140,4 +96,38 @@ public class JwtService {
         tokenKeyDao.save(tokenKey);
     }
 
+    public String generate2(User user) {
+        return new DefaultJwtBuilder().
+                setId(UUID.randomUUID().toString()).
+                setSubject(user.getId().toString()).
+                setExpiration(Date.from(ZonedDateTime.now().plusWeeks(1).toInstant())).claim("id", user.getId()).claim("email", user.getEmail()).claim("monilephone",user.getMobilephone()).claim("loginname",user.getLoginname()).
+                signWith(SignatureAlgorithm.ES256, privateKey).
+                compact();
+    }
+
+    public boolean parse2(String token) {
+        User user = null;
+        try {
+            Jws<Claims> jws = new DefaultJwtParser().setSigningKey(publicKey).parseClaimsJws(token);
+            Claims claims = jws.getBody();
+            String subject=claims.getSubject();
+
+            if (null != token){
+                boolean keyExists = redisTemplate.hasKey(subject);
+                if (keyExists){
+                    ValueOperations operations  =redisTemplate.opsForValue();
+                    String redisToken = operations.get(subject).toString();
+                    if (token.equals(redisToken)){
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+                return false;
+            }
+        } catch (Exception e) {
+            LOG.error("failed to parse jwt token {}: ", token, e);
+        }
+        return false;
+    }
 }

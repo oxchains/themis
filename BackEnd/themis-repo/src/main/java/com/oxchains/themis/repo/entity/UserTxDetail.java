@@ -21,8 +21,6 @@ public class UserTxDetail {
     private String firstBuyTime;  //第一次购买时间
     private Integer believeNum;    // 信任次数
 
-    private Double successCount;
-
     public UserTxDetail(){}
 
     public UserTxDetail(boolean init){
@@ -112,13 +110,5 @@ public class UserTxDetail {
 
     public void setSellAmount(Double sellAmount) {
         this.sellAmount = sellAmount;
-    }
-
-    public Double getSuccessCount() {
-        return successCount;
-    }
-
-    public void setSuccessCount(Double successCount) {
-        this.successCount = successCount;
     }
 }

@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Bean;
  * @desc:
  */
 
-@SpringBootApplication//(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 @EnableEurekaClient
 @EnableZuulProxy
 public class ZuulApplication {

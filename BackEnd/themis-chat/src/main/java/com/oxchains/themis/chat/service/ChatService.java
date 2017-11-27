@@ -29,9 +29,10 @@ public class ChatService {
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
     public List<ChatContent> getChatHistroy(ChatContent chatContent){
         try{
-            LOG.info("get chat history senderId ："+chatContent.getSenderId()+" reciverId :"+chatContent.getReceiverId()+" orderId: "+chatContent.getOrderId());
+
             String username  = this.getUserById(chatContent.getSenderId().longValue()).getLoginname();
             String dusername  = this.getUserById(chatContent.getReceiverId().longValue()).getLoginname();
+
             String keyIDs = ChatUtil.getIDS(chatContent.getSenderId().toString(),chatContent.getReceiverId().toString());
             List<ChatContent> list = mongoRepo.findChatContentByChatIdAndOrderId(keyIDs,chatContent.getOrderId());
             for (ChatContent content:list) {
@@ -56,15 +57,12 @@ public class ChatService {
             if(null != str){
                 Integer status = (Integer) str.get("status");
                 if(status == 1){
-                    Object data = str.get("data");
-                    String userStr = JsonUtil.toJson(data);
-                    user = JsonUtil.jsonToEntity(userStr, User.class);
+                    user = JsonUtil.jsonToEntity(JsonUtil.toJson(str.get("data")), User.class);
                 }
-                return user;
             }
+            return user;
         } catch (Exception e) {
             LOG.error("get user by id from themis-user faild : {}",e.getMessage(),e);
-            throw  e;
         }
         return null;
     }

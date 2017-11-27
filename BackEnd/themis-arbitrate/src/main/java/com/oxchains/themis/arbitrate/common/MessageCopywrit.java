@@ -4,8 +4,8 @@ package com.oxchains.themis.arbitrate.common;
  * Created by xuqi on 2017/11/10.
  */
 public class MessageCopywrit {
-    public static final String ARBITRATE_SUCCESS = "你的订单 {0} 仲裁者 {1} 仲裁您为胜利方,获得密匙碎片一枚";
-    public static final String ARBITRATE_FAILD = "你的订单 {0} 仲裁者 {1} 仲裁对方胜利，对方获的密匙碎片一枚";
+    public static final String ARBITRATE_SUCCESS = "你的订单 {0} 仲裁者 {} 仲裁您为胜利方,获得密匙碎片一枚";
+    public static final String ARBITRATE_FAILD = "你的订单 {0} 仲裁者 {} 仲裁对方胜利，对方获的密匙碎片一枚";
 
     public static final String UPLOD_EVIDENCE = "你对订单 {0} 上传了仲裁凭证";
     public static final String UPLOAD_EVIDENCE_ABRAITRATE = "您仲裁的订单 {0} 用户 {1} 上传了仲裁凭据,请及时处理哦";

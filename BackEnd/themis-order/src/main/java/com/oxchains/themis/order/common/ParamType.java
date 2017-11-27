@@ -117,38 +117,4 @@ public interface ParamType {
             return vcurrencyName;
         }
     }
-    enum CommentStatus{
-        GOOD(1,"好评"),BAD(2,"差评");
-        private Integer status;
-        private String desc;
-
-        CommentStatus(Integer status, String desc) {
-            this.status = status;
-            this.desc = desc;
-        }
-        public Integer getStatus() {
-
-            return status;
-        }
-
-        public String getDesc() {
-            return desc;
-        }
-    }
-    enum UserTxDetailHandle{
-        BELIEVE(1,"信任"),FIRST_BUY_TIME(2,"验证第一次购买时间"),DESC(3,"评价"),TX_NUM_AMOUNT(4,"交易次数和交易总量");
-        private Integer status;
-        private String desc;
-
-        UserTxDetailHandle(Integer status, String desc) {
-            this.status = status;
-            this.desc = desc;
-        }
-        public Integer getStatus() {
-            return status;
-        }
-        public String getDesc() {
-            return desc;
-        }
-    }
 }

@@ -37,23 +37,40 @@ public class OrdersInfo {
     private String sellerUsername; //卖家名称
     private String uri;
     private Orders orders;
+    private Integer pageCount;
     private Integer status;
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Integer getPageCount() {
+        return pageCount;
+    }
+
+    public void setPageCount(Integer pageCount) {
+        this.pageCount = pageCount;
+    }
+
     public OrdersInfo(Orders orders) {
         if(orders != null){
             this.id = orders.getId();
             this.money = orders.getMoney();
             this.amount = orders.getAmount();
             this.arbitrate = orders.getArbitrate();
-            this.buyerId = orders.getBuyerId();
-            this.sellerId = orders.getSellerId();
-            this.createTime = orders.getCreateTime();
-            this.currencyId = orders.getCurrencyId();
-            this.vcurrencyId = orders.getVcurrencyId();
-            this.finishTime = orders.getFinishTime();
-            this.noticeId = orders.getNoticeId();
-            this.paymentId = orders.getPaymentId();
-            this.orderStatus = orders.getOrderStatus();
-            this.uri = orders.getUri();
+            this.buyerId=orders.getBuyerId();
+            this.sellerId=orders.getSellerId();
+            this.createTime=orders.getCreateTime();
+            this.currencyId=orders.getCurrencyId();
+            this.vcurrencyId=orders.getVcurrencyId();
+            this.finishTime=orders.getFinishTime();
+            this.noticeId=orders.getNoticeId();
+            this.paymentId=orders.getPaymentId();
+            this.orderStatus=orders.getOrderStatus();
         }
     }
 

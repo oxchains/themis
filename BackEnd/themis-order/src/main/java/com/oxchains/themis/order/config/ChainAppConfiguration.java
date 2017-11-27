@@ -39,7 +39,7 @@ public class ChainAppConfiguration extends WebSecurityConfigurerAdapter {
           .csrf()
           .disable()
           .authorizeRequests()
-          .antMatchers("/**/*").permitAll()
+          .antMatchers("/order/*").permitAll()
           .and()
           .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
           .exceptionHandling()

@@ -22,25 +22,6 @@
             <version>1.16.14</version>
         </dependency>
     </dependencies>
-    <distributionManagement>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>maven-snapshots</name>
-            <url>http://maven.oxchains.com/repository/maven-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
-    <repositories>
-        <repository>
-            <id>oxchains-repo</id>
-            <url>http://maven.oxchains.com/repository/maven-public/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
 
 </project>

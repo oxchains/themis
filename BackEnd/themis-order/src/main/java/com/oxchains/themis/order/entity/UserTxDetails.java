@@ -5,8 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.math.BigDecimal;
-
 /**
  * Created by huohuo on 2017/10/26.
  * @author huohuo
@@ -37,7 +35,8 @@ public class UserTxDetails {
     private String loginname;
     @Transient
     private String goodDegree;//好评度
-    private BigDecimal successCount;   //历史成交数
+    @Transient
+    private Integer successCount;
     @Override
     public String toString() {
         return "UserTxDetail{" +
