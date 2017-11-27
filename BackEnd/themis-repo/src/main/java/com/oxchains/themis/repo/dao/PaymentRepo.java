@@ -1,6 +1,6 @@
-package com.oxchains.themis.arbitrate.repo;
+package com.oxchains.themis.repo.dao;
 
-import com.oxchains.themis.arbitrate.entity.Payment;
+import com.oxchains.themis.repo.entity.Payment;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,12 +1,14 @@
-package com.oxchains.themis.order.entity;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Value;
+package com.oxchains.themis.repo.entity;
 
-import javax.persistence.*;
+import lombok.Data;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
+
 /**
  * Created by huohuo on 2017/10/23.
  * @author huohuo

@@ -2,7 +2,6 @@ package com.oxchains.themis.arbitrate.service;
 import com.alibaba.fastjson.JSONObject;
 import com.oxchains.themis.arbitrate.common.MessageCopywrit;
 import com.oxchains.themis.arbitrate.common.ParamType;
-import com.oxchains.themis.arbitrate.entity.Orders;
 import com.oxchains.themis.arbitrate.repo.OrderArbitrateRepo;
 import com.oxchains.themis.common.constant.ThemisUserAddress;
 import com.oxchains.themis.common.constant.message.MessageReadStatus;
@@ -11,10 +10,7 @@ import com.oxchains.themis.common.util.DateUtil;
 import com.oxchains.themis.common.util.JsonUtil;
 import com.oxchains.themis.repo.dao.MessageRepo;
 import com.oxchains.themis.repo.dao.MessageTextRepo;
-import com.oxchains.themis.repo.entity.Message;
-import com.oxchains.themis.repo.entity.MessageText;
-import com.oxchains.themis.repo.entity.OrderArbitrate;
-import com.oxchains.themis.repo.entity.User;
+import com.oxchains.themis.repo.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -90,7 +86,7 @@ public class MessageService {
         }
     }
     //发起仲裁时的给三方的站内信
-    public void postEvidenceMessage(Orders orders,Long userId){
+    public void postEvidenceMessage(Orders orders, Long userId){
         try {
             //发起提起仲裁的人的站内信
             String messageContent1 = MessageFormat.format(MessageCopywrit.GENERATE_ABRITRATE,orders.getId());

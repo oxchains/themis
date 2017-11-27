@@ -2,10 +2,11 @@ package com.oxchains.themis.order.rest;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.order.common.Pojo;
 import com.oxchains.themis.order.common.RestRespPage;
-import com.oxchains.themis.order.entity.*;
 import com.oxchains.themis.order.entity.vo.OrdersInfo;
+import com.oxchains.themis.order.entity.vo.UserTxDetails;
 import com.oxchains.themis.order.service.OrderService;
-import org.springframework.beans.factory.annotation.Value;
+import com.oxchains.themis.repo.entity.OrderAddresskeys;
+import com.oxchains.themis.repo.entity.Orders;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
@@ -28,7 +29,7 @@ public class OrderController {
     * 二 ：卖家上传公私钥
     * */
     @RequestMapping("/order/saveAddresskey")
-    public RestResp saveAddresskey(@RequestBody  OrderAddresskeys orderAddresskeys){
+    public RestResp saveAddresskey(@RequestBody OrderAddresskeys orderAddresskeys){
         return orderService.saveAddresskey(orderAddresskeys);
     }
     /*
