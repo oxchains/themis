@@ -39,6 +39,19 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
+        <!-- redis缓存 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-redis</artifactId>
+            <version>1.4.7.RELEASE</version>
+        </dependency>
+
+        <!--缓存支持-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>
