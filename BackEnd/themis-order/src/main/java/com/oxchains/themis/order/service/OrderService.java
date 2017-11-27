@@ -10,7 +10,11 @@ import com.oxchains.themis.common.util.JsonUtil;
 import com.oxchains.themis.order.common.*;
 import com.oxchains.themis.order.entity.*;
 import com.oxchains.themis.order.entity.vo.OrdersInfo;
-import com.oxchains.themis.order.repo.*;
+import com.oxchains.themis.order.repo.OrderAddresskeyRepo;
+import com.oxchains.themis.order.repo.OrderCommentRepo;
+import com.oxchains.themis.order.repo.OrderRepo;
+import com.oxchains.themis.order.repo.PaymentRepo;
+import com.oxchains.themis.repo.dao.UserTxDetailDao;
 import com.oxchains.themis.repo.entity.*;
 import org.apache.commons.collections.IteratorUtils;
 import org.slf4j.Logger;
@@ -45,7 +49,7 @@ public class OrderService {
     @Resource
     private OrderAddresskeyRepo orderAddresskeyRepo;
     @Resource
-    private UserTxDetailRepo userTxDetailRepo;
+    private UserTxDetailDao userTxDetailDao;
     @Resource
     private OrderCommentRepo orderCommentRepo;
     @Resource
@@ -125,39 +129,39 @@ public class OrderService {
            private void handleUserTxDetail(Long userId,Long ortherUserId,Integer status,Pojo pojo){
                try {
                    if(status.intValue() == ParamType.UserTxDetailHandle.FIRST_BUY_TIME.getStatus()){
-                       UserTxDetails userTxDetails = userTxDetailRepo.findByUserId(userId);
-                       UserTxDetails noticeTx = userTxDetailRepo.findByUserId(ortherUserId);
-                       if(userTxDetails.getFirstBuyTime() == null){
-                           userTxDetails.setFirstBuyTime(DateUtil.getPresentDate());
+                       UserTxDetail byUserId = userTxDetailDao.findByUserId(userId);
+                       UserTxDetail noticeTx = userTxDetailDao.findByUserId(ortherUserId);
+                       if(byUserId.getFirstBuyTime() == null){
+                           byUserId.setFirstBuyTime(DateUtil.getPresentDate());
                        }
                        if(noticeTx.getFirstBuyTime() == null){
-                           userTxDetails.setFirstBuyTime(DateUtil.getPresentDate());
+                           noticeTx.setFirstBuyTime(DateUtil.getPresentDate());
                        }
-                       userTxDetailRepo.save(userTxDetails);
-                       userTxDetailRepo.save(noticeTx);
+                       userTxDetailDao.save(byUserId);
+                       userTxDetailDao.save(noticeTx);
                    }
                    if(status.intValue() == ParamType.UserTxDetailHandle.DESC.getStatus()){
-                       UserTxDetails byUserId = userTxDetailRepo.findByUserId(userId);
+                       UserTxDetail byUserId = userTxDetailDao.findByUserId(userId);
                        if(pojo.getStatus() == ParamType.CommentStatus.GOOD.getStatus().intValue()){
                            byUserId.setGoodDesc(byUserId.getGoodDesc()+1);
                        }
                        else{
                            byUserId.setBadDesc(byUserId.getBadDesc()+1);
                        }
-                       userTxDetailRepo.save(byUserId);
+                       userTxDetailDao.save(byUserId);
                    }
                    if(status.intValue() == ParamType.UserTxDetailHandle.TX_NUM_AMOUNT.getStatus()){
                        BigDecimal amount = orderRepo.findOne(pojo.getId()).getAmount();
 
-                       UserTxDetails userTxDetails = userTxDetailRepo.findByUserId(userId);
+                       UserTxDetail userTxDetails = userTxDetailDao.findByUserId(userId);
                        userTxDetails.setTxNum(userTxDetails.getTxNum()+1);
-                       userTxDetails.setSuccessCount(userTxDetails.getSuccessCount().add(amount));
-                       userTxDetailRepo.save(userTxDetails);
+                       userTxDetails.setSuccessCount(userTxDetails.getSuccessCount()+amount.doubleValue());
+                       userTxDetailDao.save(userTxDetails);
 
-                       UserTxDetails noticeTx = userTxDetailRepo.findByUserId(ortherUserId);
+                       UserTxDetail noticeTx = userTxDetailDao.findByUserId(ortherUserId);
                        noticeTx.setTxNum(noticeTx.getTxNum()+1);
-                       noticeTx.setSuccessCount(noticeTx.getSuccessCount().add(amount));
-                       userTxDetailRepo.save(noticeTx);
+                       noticeTx.setSuccessCount(noticeTx.getSuccessCount()+amount.doubleValue());
+                       userTxDetailDao.save(noticeTx);
                    }
                } catch (Exception e) {
                    LOG.error("user trasaction detail handle faild :{}",e.getMessage(),e);
@@ -432,18 +436,20 @@ public class OrderService {
         return userTxDetails;
     }
     public UserTxDetails findUserTxDetails(Pojo pojo){
+
         UserTxDetails userTxDetails = null;
         try {
-            userTxDetails = userTxDetailRepo.findByUserId(pojo.getUserId());
+            UserTxDetail userTxDetail = userTxDetailDao.findByUserId(pojo.getUserId());
             DecimalFormat df   = new DecimalFormat("######0.00");
             String goodDegree = "";
-            if(userTxDetails.getGoodDesc()+userTxDetails.getBadDesc() == 0){
+            if(userTxDetail.getGoodDesc()+userTxDetail.getBadDesc() == 0){
                 goodDegree = "0.00%";
             }
             else{
-                goodDegree = df.format(((userTxDetails.getGoodDesc().doubleValue() / (userTxDetails.getGoodDesc().doubleValue()+userTxDetails.getBadDesc().doubleValue()))*100))+"%";
+                goodDegree = df.format(((userTxDetail.getGoodDesc().doubleValue() / (userTxDetail.getGoodDesc().doubleValue()+userTxDetail.getBadDesc().doubleValue()))*100))+"%";
             }
             User user = this.getUserById(pojo.getUserId());
+            userTxDetails = new UserTxDetails(userTxDetail);
             userTxDetails.setEmailVerify("未验证");
             userTxDetails.setUsernameVerify("未验证");
             userTxDetails.setMobilePhoneVerify("未验证");

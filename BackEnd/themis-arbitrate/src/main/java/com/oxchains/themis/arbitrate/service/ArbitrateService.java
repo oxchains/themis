@@ -10,11 +10,11 @@ import com.oxchains.themis.common.constant.ThemisUserAddress;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.model.RestRespPage;
 import com.oxchains.themis.common.util.JsonUtil;
-import com.oxchains.themis.repo.dao.UserRelationDao;
+import com.oxchains.themis.repo.dao.UserTxDetailDao;
 import com.oxchains.themis.repo.entity.Notice;
 import com.oxchains.themis.repo.entity.OrderArbitrate;
 import com.oxchains.themis.repo.entity.User;
-import org.aspectj.weaver.ast.Or;
+import com.oxchains.themis.repo.entity.UserTxDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -30,7 +30,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.io.File;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -56,7 +55,7 @@ public class ArbitrateService {
     @Resource
     private MessageService messageService;
     @Resource
-    UserTxDetailRepo userTxDetailRepo;
+    UserTxDetailDao userTxDetailDao;
 
     public static final Integer BUYER_SUCCESS = 1;
     public static final Integer SELLER_SUCCESS = 2;
@@ -281,13 +280,13 @@ public class ArbitrateService {
         return null;
     }
     public void userTxDetailHandle(Orders orders){
-        UserTxDetails userTxDetails = userTxDetailRepo.findByUserId(orders.getBuyerId());
+        UserTxDetail userTxDetails = userTxDetailDao.findByUserId(orders.getBuyerId());
         userTxDetails.setTxNum(userTxDetails.getTxNum()+1);
-        userTxDetails.setSuccessCount(userTxDetails.getSuccessCount().add(orders.getAmount()));
-        userTxDetailRepo.save(userTxDetails);
-        UserTxDetails noticeTx = userTxDetailRepo.findByUserId(orders.getSellerId());
+        userTxDetails.setSuccessCount(userTxDetails.getSuccessCount()+orders.getAmount().doubleValue());
+        userTxDetailDao.save(userTxDetails);
+        UserTxDetail noticeTx = userTxDetailDao.findByUserId(orders.getSellerId());
         noticeTx.setTxNum(noticeTx.getTxNum()+1);
-        noticeTx.setSuccessCount(noticeTx.getSuccessCount().add(orders.getAmount()));
-        userTxDetailRepo.save(noticeTx);
+        noticeTx.setSuccessCount(noticeTx.getSuccessCount()+orders.getAmount().doubleValue());
+        userTxDetailDao.save(noticeTx);
     }
 }
