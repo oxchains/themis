@@ -8,9 +8,9 @@ import com.oxchains.themis.notice.common.NoticeConst;
 import com.oxchains.themis.notice.dao.*;
 import com.oxchains.themis.notice.domain.*;
 import com.oxchains.themis.notice.domain.Currency;
-import com.oxchains.themis.notice.domain.Payment;
 import com.oxchains.themis.notice.rest.dto.PageDTO;
 import com.oxchains.themis.notice.rest.dto.StatusDTO;
+import com.oxchains.themis.repo.dao.PaymentRepo;
 import com.oxchains.themis.repo.dao.UserDao;
 import com.oxchains.themis.repo.dao.UserTxDetailDao;
 import com.oxchains.themis.repo.entity.*;
@@ -47,7 +47,7 @@ public class NoticeService {
     @Resource private CNYDetailDao cnyDetailDao;
     @Resource private CountryDao countryDao;
     @Resource private CurrencyDao currencyDao;
-    @Resource private PaymentDao paymentDao;
+    @Resource private PaymentRepo paymentDao;
     @Resource private SearchTypeDao searchTypeDao;
     @Resource private UserTxDetailDao userTxDetailDao;
     @Resource private UserDao userDao;
@@ -91,11 +91,6 @@ public class NoticeService {
                 }else {
                     return RestResp.fail("比特币价格获取失败，请手动查询实时价格慎重");
                 }
-            }
-
-            // 溢价判断
-            if (notice.getPremium() < 0 && notice.getPremium() > NoticeConstants.TEN) {
-                return RestResp.fail("请按规定输入溢价（0~10）");
             }
 
             // 两种不能发布公告得判断
