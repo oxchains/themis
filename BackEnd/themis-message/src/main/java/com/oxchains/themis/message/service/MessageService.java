@@ -259,11 +259,17 @@ public class MessageService {
                 }
             }
         }else {
-            Thread.sleep(2000);
-            if (count >= MessageConst.Constant.FIFTEEN.getValue()){
-                return MessageConst.Constant.ZERO.getValue();
+            if (tip == 1){
+                COUNT = unReadSize;
+                return COUNT;
+            }else {
+                Thread.sleep(2000);
+                if (count >= MessageConst.Constant.FIFTEEN.getValue()){
+                    return MessageConst.Constant.ZERO.getValue();
+                }
+                return invokeDb(userId, tip, ++count);
+
             }
-            return invokeDb(userId, tip, ++count);
         }
     }
 }
