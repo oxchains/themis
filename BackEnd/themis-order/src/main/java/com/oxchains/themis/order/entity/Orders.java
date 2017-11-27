@@ -31,6 +31,7 @@ public class Orders implements Serializable{
     private Long orderStatus; // 订单状态    1  待确认 2 代付款  3 待收货 4  待评价 5 完成 6  已取消 7等待卖家退款 8 仲裁中
     private Long noticeId;
     private int arbitrate;   //是否在仲裁中 默认 0： 不在仲裁中 1： 在仲裁中 2:仲裁结束
+    private String uri;
 
     public Orders(String id, BigDecimal money, String createTime, BigDecimal amount, Long paymentId, Long vcurrencyId, Long currencyId, Long buyerId, Long sellerId, Long orderStatus, Long noticeId, int arbitrate) {
         this.id = id;

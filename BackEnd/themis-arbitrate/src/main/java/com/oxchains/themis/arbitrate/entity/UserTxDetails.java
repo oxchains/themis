@@ -1,7 +1,9 @@
-package com.oxchains.themis.order.entity;
+package com.oxchains.themis.arbitrate.entity;
+
 import com.oxchains.themis.repo.entity.Notice;
 import com.oxchains.themis.repo.entity.UserTxDetail;
 import lombok.Data;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -13,7 +15,7 @@ import java.math.BigDecimal;
  * @author huohuo
  */
 @Data
-public class UserTxDetails extends UserTxDetail{
+public class UserTxDetails extends UserTxDetail {
     private String createTime;     //用户创建时间
     private Notice notice;      //公告详细信息
     private String emailVerify; //电子邮箱是否验证
@@ -31,5 +33,4 @@ public class UserTxDetails extends UserTxDetail{
         this.setBelieveNum(userTxDetail.getBelieveNum());
         this.setSuccessCount(userTxDetail.getSuccessCount());
     }
-
 }

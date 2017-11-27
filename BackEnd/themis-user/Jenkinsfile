@@ -5,7 +5,7 @@ node {
       git 'https://github.com/oxchains/themis.git'
       // Get the Maven tool.
       // ** NOTE: This 'M3' Maven tool must be configured
-      // **       in the global configuration.           
+      // **       in the global configuration.
       mvnHome = tool 'M3'
    }
    stage('Package'){

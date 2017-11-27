@@ -42,11 +42,8 @@ public class SmsTest {
     }
 
     static void sendMail() throws Exception{
-        //MailService mailService =new MailService();
-        //String[] to = {"chenchunlin@oxchains.com"};
-        //mailService.send(new Email(to,"email","test"));
-
-        String str =new String("123141414");
-        System.out.println(str.toString());
+        MailService mailService =new MailService();
+        String[] to = {"chenchunlin@oxchains.com"};
+        mailService.send(new Email(to,"email","test"));
     }
 }
