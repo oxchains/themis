@@ -22,6 +22,7 @@ import {
     FETCH_OFF_MYBTC,
     FETCH_BASE_INFO,
     FETCH_TRUSTED,
+    OTHER_DETAIL,
     getAuthorizedHeader,
     requestError
 } from './types';
@@ -273,6 +274,23 @@ export function fetctTrusted({ userId, type, pageNo, pageSize }, callback) {
             { headers: getAuthorizedHeader() }).then(response => {
                 // console.log(response);
                 dispatch({ type: FETCH_TRUSTED, payload: response });
+
+            })
+            .catch(err => {
+                dispatch(requestError(err.message));
+            });
+    };
+}
+
+//查看别人详细信息
+
+export function LookOthersdetail(callback) {
+    // console.log(`受信任的:${userId},${type},${pageNo} ,${pageSize} `);
+    return function (dispatch) {
+        axios.get(`${ROOT_URLC}/user/trust`,
+            { headers: getAuthorizedHeader() }).then(response => {
+                // console.log(response);
+                dispatch({ type: OTHER_DETAIL, payload: response });
 
             })
             .catch(err => {

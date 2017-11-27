@@ -48,11 +48,13 @@ class Signup extends Component {
 
     renderAlert() {
         if (this.props.errorMessage) {
+            const text = this.props.errorMessage == 'Network Error'?"网络连接错误":"注册失败";            
+            
             return (
                 // <div className="alert alert-danger alert-dismissable">
                 //     {this.props.errorMessage}
                 // </div>
-                <Alert message= {this.props.errorMessage} type="error" showIcon />
+                <Alert message= {text} type="error" showIcon />
                 
             );
         }
@@ -116,9 +118,9 @@ class Signup extends Component {
     render() {
         const { handleSubmit } = this.props;
 
-        if (this.props.all) {
-            return alert("验证码是");
-        }
+        // if (this.props.all) {
+        //     return alert("验证码是");
+        // }
 
         var text = this.state.liked ? '发送验证码' : this.state.count + ' s后重新发';
         const url = this.state.error === '操作失败' ? "/signup" : "/signin";
@@ -131,8 +133,6 @@ class Signup extends Component {
                     </div>
 
                     <div className="login-box-body">
-
-                        {this.renderAlert()}
                         <form className="form-signin" onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
                             <Field name="loginname" component={this.renderField} type="text" label="请输入用户名" />
                             <Field name="mobilephone" component={this.renderField} type="text" onBlur={this.phoneChange} label="请输入手机号" />
@@ -151,6 +151,7 @@ class Signup extends Component {
                                 <div className="form-group">
                                     <a className="forgetpwd" href="/signin">已有账户 ? 点击登录</a>
                                 </div>
+                                {this.renderAlert()}
                             </div>
                         </form>
                     </div>
@@ -199,7 +200,8 @@ const validate = values => {
 function mapStateToProps(state) {
     // console.log(state.auth.all)
     return {
-        all: state.auth.all
+        all: state.auth.all,
+        errorMessage: state.auth.error        
     };
 }
 

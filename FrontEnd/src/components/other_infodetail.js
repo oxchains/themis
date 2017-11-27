@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import { Modal, Button } from 'antd';
 import { connect } from 'react-redux';
-// import { } from '../actions/releaseadvert'
+import { LookOthersdetail } from '../actions/releaseadvert';
 class OtherInfodetail extends Component {
     constructor(props) {
         super(props);
@@ -17,6 +17,15 @@ class OtherInfodetail extends Component {
         this.onlineBuy = this.onlineBuy.bind(this);
         this.onlineSell = this.onlineSell.bind(this);
         this.toggleButton = this.toggleButton.bind(this);
+    }
+    componentWillMount(){
+
+        console.log(this.props.match.params.id);
+
+
+
+        const userId = localStorage.getItem("userId");
+        this.props.LookOthersdetail();
     }
     onlineBuy() {
         this.setState({
@@ -32,14 +41,14 @@ class OtherInfodetail extends Component {
         const authenticated = this.props.authenticated;
         const lastStatus = this.state.buttonStatus;
         const buttonText = buttonStatus === 1 ? '信任' : '屏蔽';
-        const name = 'TA';//从后端得到该用户名
-        if(authenticated){
+        const name = '冯肖莉';//从后端得到该用户名
+        // if(authenticated){
             lastStatus === buttonStatus
-            ? this.setState({ visible: true, buttonStatus: 0, message: `您已取消${buttonText}` })
+            ? this.setState({ visible: true, buttonStatus: 0, message: `您已取消${buttonText}${name}` })
             : this.setState({ visible: true, buttonStatus, message: `您已${buttonText}${name}` });
-        }else{
-            alert('请先登陆哦～');
-        }
+        // }else{
+        //     alert('请先登录');
+        // }
         // this.props.isTrustAndisShield()
     }
     handleOk = () => {
@@ -143,8 +152,8 @@ class OtherInfodetail extends Component {
 
 function mapStateToProps(state) {
     return {
-        all: state.advert.all,       //广告详情页面加载时的数据
+        all: state.advert.all,       
         authenticated:state.auth.authenticated
     };
 }
-export default connect(mapStateToProps, {})(OtherInfodetail);
+export default connect(mapStateToProps, { LookOthersdetail })(OtherInfodetail);
