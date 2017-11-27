@@ -1,9 +1,9 @@
 package com.oxchains.themis.order.config;
 
 import com.alibaba.fastjson.JSONObject;
-import com.oxchains.themis.order.entity.Orders;
-import com.oxchains.themis.order.repo.OrderRepo;
 import com.oxchains.themis.order.service.MessageService;
+import com.oxchains.themis.repo.dao.OrderRepo;
+import com.oxchains.themis.repo.entity.Orders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;

@@ -1,5 +1,7 @@
 package com.oxchains.themis.arbitrate.entity;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
 /**
@@ -8,6 +10,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "order_arbitrate_upload_evidence")
+@Data
 public class OrderEvidence {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,52 +20,4 @@ public class OrderEvidence {
     private String buyerFiles;
     private String sellerContent;
     private String sellerFiles;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
-    }
-
-    public String getBuyerContent() {
-        return buyerContent;
-    }
-
-    public void setBuyerContent(String buyerContent) {
-        this.buyerContent = buyerContent;
-    }
-
-    public String getBuyerFiles() {
-        return buyerFiles;
-    }
-
-    public void setBuyerFiles(String buyerFiles) {
-        this.buyerFiles = buyerFiles;
-    }
-
-    public String getSellerContent() {
-        return sellerContent;
-    }
-
-    public void setSellerContent(String sellerContent) {
-        this.sellerContent = sellerContent;
-    }
-
-    public String getSellerFiles() {
-        return sellerFiles;
-    }
-
-    public void setSellerFiles(String sellerFiles) {
-        this.sellerFiles = sellerFiles;
-    }
 }

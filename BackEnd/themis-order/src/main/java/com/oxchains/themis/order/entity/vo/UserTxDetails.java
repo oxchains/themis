@@ -1,4 +1,4 @@
-package com.oxchains.themis.order.entity;
+package com.oxchains.themis.order.entity.vo;
 import com.oxchains.themis.repo.entity.Notice;
 import com.oxchains.themis.repo.entity.UserTxDetail;
 import lombok.Data;
