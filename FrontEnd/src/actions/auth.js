@@ -86,10 +86,8 @@ export function signupUser({ loginname, mobilephone, email, password }, callback
             .catch((err) => {
                 dispatch(authError(err.message));
             });
-            
     };
 }
-
 /**
  * 注册获取验证码
  */

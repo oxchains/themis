@@ -152,8 +152,8 @@ class OtherInfodetail extends Component {
 
 function mapStateToProps(state) {
     return {
-        all: state.advert.all,       
-        authenticated:state.auth.authenticated
+        all: state.advert.all,
+        authenticated: state.auth.authenticated
     };
 }
 export default connect(mapStateToProps, { LookOthersdetail })(OtherInfodetail);

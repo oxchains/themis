@@ -3,18 +3,18 @@ package com.oxchains.themis.arbitrate.config;
 import com.alibaba.fastjson.JSONObject;
 import com.oxchains.themis.arbitrate.common.ParamType;
 import com.oxchains.themis.arbitrate.common.ShamirUtil;
-import com.oxchains.themis.arbitrate.entity.OrderAddresskeys;
-import com.oxchains.themis.arbitrate.entity.Orders;
-import com.oxchains.themis.arbitrate.repo.OrderAddresskeyRepo;
 import com.oxchains.themis.arbitrate.repo.OrderArbitrateRepo;
-import com.oxchains.themis.arbitrate.repo.OrderRepo;
 import com.oxchains.themis.arbitrate.service.ArbitrateService;
 import com.oxchains.themis.arbitrate.service.MessageService;
 import com.oxchains.themis.common.constant.ThemisUserAddress;
 import com.oxchains.themis.common.model.OrdersKeyAmount;
 import com.oxchains.themis.common.util.DateUtil;
 import com.oxchains.themis.common.util.JsonUtil;
+import com.oxchains.themis.repo.dao.OrderAddresskeyRepo;
+import com.oxchains.themis.repo.dao.OrderRepo;
+import com.oxchains.themis.repo.entity.OrderAddresskeys;
 import com.oxchains.themis.repo.entity.OrderArbitrate;
+import com.oxchains.themis.repo.entity.Orders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -80,13 +80,14 @@ public class OrderArbitrateListener {
                         orders.setFinishTime(DateUtil.getPresentDate());
                         Orders save = orderRepo.save(orders);
                         messageService.postArbitrateFinish(orders);
-
                         List<OrderArbitrate> arbitrates = arbitrateRepo.findByOrOrderIdAndStatus(orders.getId(), ParamType.ArbitrateStatus.ARBITRATEING.getStatus());
                         for(OrderArbitrate oa :arbitrates){
                             oa.setStatus(ParamType.ArbitrateStatus.ARBITRATEEND.getStatus());
                             arbitrateRepo.save(oa);
                         }
-
+                        if(save.getOrderStatus() == ParamType.OrderStatus.FINISH.getStatus().longValue()){
+                            arbitrateService.userTxDetailHandle(save);
+                        }
                     }
                 }
 

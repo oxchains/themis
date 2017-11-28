@@ -3,11 +3,11 @@ import com.oxchains.themis.common.constant.message.MessageReadStatus;
 import com.oxchains.themis.common.constant.message.MessageType;
 import com.oxchains.themis.common.util.DateUtil;
 import com.oxchains.themis.order.common.MessageCopywrit;
-import com.oxchains.themis.order.entity.Orders;
 import com.oxchains.themis.repo.dao.MessageRepo;
 import com.oxchains.themis.repo.dao.MessageTextRepo;
 import com.oxchains.themis.repo.entity.Message;
 import com.oxchains.themis.repo.entity.MessageText;
+import com.oxchains.themis.repo.entity.Orders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ import java.text.MessageFormat;
 public class MessageService {
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
     @Resource
-    private RestTemplate restTemplate;
+    private RemoteCallService callService;
     @Resource
     private MessageRepo messageRepo;
     @Resource
@@ -35,21 +35,23 @@ public class MessageService {
     //添加订单的站内信
     public void postAddOrderMessage(Orders orders,Long userId,Long noticeUserId){
         try {
-            String username = orderService.getUserById(userId).getLoginname();
-            String noticeMessage = MessageFormat.format(MessageCopywrit.ADD_ORDERS_NOTICE,username,orders.getId());
-            String placeMessage = MessageFormat.format(MessageCopywrit.ADD_ORDERS_PLACE,orders.getId());
             //发布公告人的通知
+            String username = callService.getUserById(userId).getLoginname();
+            String noticeMessage = MessageFormat.format(MessageCopywrit.ADD_ORDERS_NOTICE,username,orders.getId());
             MessageText messageText = new MessageText(0L,noticeMessage, MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
             MessageText save = messageTextRepo.save(messageText);
             Message message1 = new Message(noticeUserId,save.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message1);
+
             //下订单人的通知
+            String placeMessage = MessageFormat.format(MessageCopywrit.ADD_ORDERS_PLACE,orders.getId());
             MessageText messageText1 = new MessageText(0L,placeMessage, MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
             MessageText save1 = messageTextRepo.save(messageText1);
             Message message2 = new Message(userId,save1.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message2);
         } catch (Exception e) {
             LOG.error("MESSAGE -- post add orders faild : {}",e.getMessage(),e);
+            throw  e;
         }
     }
     //卖家上传公私钥的站内信
@@ -179,7 +181,7 @@ public class MessageService {
     /*
     * 取消订单后等待买家收到退款
     * */
-    public void postRefund(Orders orders,Long userId){
+    public void postRefund(Orders orders, Long userId){
         try {
             String byMessageContent = MessageFormat.format(MessageCopywrit.CANCEL_REFUND,orders.getId());
             MessageText byMessageText = new MessageText(0L,byMessageContent, MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());

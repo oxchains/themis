@@ -48,14 +48,12 @@ class Signup extends Component {
 
     renderAlert() {
         if (this.props.errorMessage) {
-            const text = this.props.errorMessage == 'Network Error'?"网络连接错误":"注册失败";            
-            
+            const text = this.props.errorMessage == 'Network Error'?"网络连接错误":"注册失败";
             return (
                 // <div className="alert alert-danger alert-dismissable">
                 //     {this.props.errorMessage}
                 // </div>
                 <Alert message= {text} type="error" showIcon />
-                
             );
         }
     }
@@ -198,13 +196,11 @@ const validate = values => {
 };
 
 function mapStateToProps(state) {
-    // console.log(state.auth.all)
     return {
         all: state.auth.all,
-        errorMessage: state.auth.error        
+        errorMessage: state.auth.error,
     };
 }
-
 const reduxSignupForm = reduxForm({
     form: 'SignForm',
     validate

@@ -63,12 +63,6 @@ class Releaseadvert extends Component {
         const minTxLimit = this.refs.minTxLimit.value;
         const maxTxLimit = this.refs.maxTxLimit.value;
         const noticeContent = this.refs.noticeContent.value;
-  
-        console.log(typeof minPrice);
-
-
-
-
         const noticeType = this.state.status;
         const location = this.state.country;
         const currency = this.state.currency;

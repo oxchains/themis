@@ -8,6 +8,7 @@ import com.oxchains.themis.notice.common.NoticeConst;
 import com.oxchains.themis.notice.dao.*;
 import com.oxchains.themis.notice.domain.*;
 import com.oxchains.themis.notice.domain.Currency;
+import com.oxchains.themis.notice.domain.Payment;
 import com.oxchains.themis.notice.rest.dto.PageDTO;
 import com.oxchains.themis.notice.rest.dto.StatusDTO;
 import com.oxchains.themis.repo.dao.UserDao;
@@ -92,7 +93,12 @@ public class NoticeService {
                 }
             }
 
-            // 不能发布公告得判断
+            // 溢价判断
+            if (notice.getPremium() < 0 && notice.getPremium() > NoticeConstants.TEN) {
+                return RestResp.fail("请按规定输入溢价（0~10）");
+            }
+
+            // 两种不能发布公告得判断
             List<Notice> noticeListUnDone = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(notice.getUserId(), notice.getNoticeType(), NoticeTxStatus.UNDONE_TX);
             if (noticeListUnDone.size() != 0){
                 return RestResp.fail("已经有一条此类型公告");

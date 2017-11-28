@@ -1,10 +1,12 @@
 package com.oxchains.themis.order.rest;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.order.common.Pojo;
-import com.oxchains.themis.order.entity.*;
+import com.oxchains.themis.order.common.RestRespPage;
 import com.oxchains.themis.order.entity.vo.OrdersInfo;
+import com.oxchains.themis.order.entity.vo.UserTxDetails;
 import com.oxchains.themis.order.service.OrderService;
-import org.springframework.beans.factory.annotation.Value;
+import com.oxchains.themis.repo.entity.OrderAddresskeys;
+import com.oxchains.themis.repo.entity.Orders;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
@@ -27,7 +29,7 @@ public class OrderController {
     * 二 ：卖家上传公私钥
     * */
     @RequestMapping("/order/saveAddresskey")
-    public RestResp saveAddresskey(@RequestBody  OrderAddresskeys orderAddresskeys){
+    public RestResp saveAddresskey(@RequestBody OrderAddresskeys orderAddresskeys){
         return orderService.saveAddresskey(orderAddresskeys);
     }
     /*
@@ -35,6 +37,11 @@ public class OrderController {
     * */
     @RequestMapping("/order/uploadTxId")
     public RestResp uploadTxId(@RequestBody Pojo pojo){
+        return orderService.uploadTxId(pojo);
+    }
+    //移动端
+    @RequestMapping("/order/uploadTxIdMove")
+    public RestResp uploadTxIdMove(@RequestBody Pojo pojo){
         return orderService.uploadTxId(pojo);
     }
     /*
@@ -100,7 +107,7 @@ public class OrderController {
     * 根据id查询自己已完成的的订单
     * */
     @RequestMapping("/order/findCompletedOrders")
-    public RestResp findCompletedOrders(@RequestBody Pojo pojo){
+    public RestRespPage findCompletedOrders(@RequestBody Pojo pojo){
         this.checkPage(pojo);
         return orderService.findCompletedOrdersById(pojo);
     }
@@ -108,7 +115,7 @@ public class OrderController {
    * 根据id查询自己未完成的的订单
    * */
     @RequestMapping("/order/findNoCompletedOrders")
-    public RestResp findNoCompletedOrders(@RequestBody Pojo pojo){
+    public RestRespPage findNoCompletedOrders(@RequestBody Pojo pojo){
         this.checkPage(pojo);
         return orderService.findNoCompletedOrdersById(pojo);
     }

@@ -2,7 +2,6 @@ package com.oxchains.themis;
 
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 /**
  * spring session配置
@@ -12,8 +11,6 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
  * @name HttpSessionConfig
  * @desc:
  */
-@Configuration
-@EnableRedisHttpSession
 public class HttpSessionConfig {
 
     /**

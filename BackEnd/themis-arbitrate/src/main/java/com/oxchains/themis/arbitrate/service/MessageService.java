@@ -2,7 +2,6 @@ package com.oxchains.themis.arbitrate.service;
 import com.alibaba.fastjson.JSONObject;
 import com.oxchains.themis.arbitrate.common.MessageCopywrit;
 import com.oxchains.themis.arbitrate.common.ParamType;
-import com.oxchains.themis.arbitrate.entity.Orders;
 import com.oxchains.themis.arbitrate.repo.OrderArbitrateRepo;
 import com.oxchains.themis.common.constant.ThemisUserAddress;
 import com.oxchains.themis.common.constant.message.MessageReadStatus;
@@ -11,10 +10,7 @@ import com.oxchains.themis.common.util.DateUtil;
 import com.oxchains.themis.common.util.JsonUtil;
 import com.oxchains.themis.repo.dao.MessageRepo;
 import com.oxchains.themis.repo.dao.MessageTextRepo;
-import com.oxchains.themis.repo.entity.Message;
-import com.oxchains.themis.repo.entity.MessageText;
-import com.oxchains.themis.repo.entity.OrderArbitrate;
-import com.oxchains.themis.repo.entity.User;
+import com.oxchains.themis.repo.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -40,7 +36,6 @@ public class MessageService {
     @Resource
     private OrderArbitrateRepo orderArbitrateRepo;
     public static final Integer BUYER_SUCCESS = 1;
-    public static final Integer SELLER_SUCCESS = 2;
     //仲裁投票后给双方的站内信
     public void postArbitrateMessage(Orders orders,Long userId,Integer successId){
         try {
@@ -50,6 +45,7 @@ public class MessageService {
             MessageText successSave = messageTextRepo.save(successMessageText);
             Message message1 = new Message(successId.intValue() ==  BUYER_SUCCESS?orders.getBuyerId():orders.getSellerId(),successSave.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message1);
+
             String faildContent = MessageFormat.format(MessageCopywrit.ARBITRATE_FAILD,orders.getId(),username);
             MessageText messageText2 = new MessageText(0L,faildContent,MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
             MessageText faildSave = messageTextRepo.save(messageText2);
@@ -90,7 +86,7 @@ public class MessageService {
         }
     }
     //发起仲裁时的给三方的站内信
-    public void postEvidenceMessage(Orders orders,Long userId){
+    public void postEvidenceMessage(Orders orders, Long userId){
         try {
             //发起提起仲裁的人的站内信
             String messageContent1 = MessageFormat.format(MessageCopywrit.GENERATE_ABRITRATE,orders.getId());
@@ -133,7 +129,7 @@ public class MessageService {
             //仲裁人的站内信
             String messageContent1 = MessageFormat.format(MessageCopywrit.UPLOAD_EVIDENCE_ABRAITRATE,orders.getId(),this.getUserById(userId).getLoginname());
             MessageText messageText1 = new MessageText(0L,messageContent1,MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
-            messageText1= messageTextRepo.save(messageText);
+            messageText1= messageTextRepo.save(messageText1);
             List<OrderArbitrate> list = orderArbitrateRepo.findByOrderId(orders.getId());
             for (OrderArbitrate o : list){
                 Message abritrateMessage = new Message(o.getUserId(),messageText1.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
@@ -153,10 +149,11 @@ public class MessageService {
                 if(status == 1){
                     user = JsonUtil.jsonToEntity(JsonUtil.toJson(str.get("data")), User.class);
                 }
+                return user;
             }
-            return user;
         } catch (Exception e) {
             LOG.error("get user by id from themis-user faild : {}",e.getMessage(),e);
+            throw  e;
         }
         return null;
     }

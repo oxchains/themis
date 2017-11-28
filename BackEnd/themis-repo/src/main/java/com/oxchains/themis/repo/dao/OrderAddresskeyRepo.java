@@ -1,6 +1,6 @@
-package com.oxchains.themis.arbitrate.repo;
+package com.oxchains.themis.repo.dao;
 
-import com.oxchains.themis.arbitrate.entity.OrderAddresskeys;
+import com.oxchains.themis.repo.entity.OrderAddresskeys;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
  * @author huohuo
  */
 @Repository
-public interface OrderAddresskeyRepo extends CrudRepository<OrderAddresskeys,Long>{
+public interface OrderAddresskeyRepo extends CrudRepository<OrderAddresskeys,Long> {
     OrderAddresskeys findOrderAddresskeysByOrderId(String id);
 }

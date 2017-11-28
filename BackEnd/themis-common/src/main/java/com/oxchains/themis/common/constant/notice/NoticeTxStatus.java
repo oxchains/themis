@@ -12,7 +12,6 @@ public class NoticeTxStatus {
      */
     public static final Integer UNDONE_TX = 0;
 
-
     /**
      * 交易完成
      */
