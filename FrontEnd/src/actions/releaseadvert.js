@@ -23,6 +23,7 @@ import {
     FETCH_BASE_INFO,
     FETCH_TRUSTED,
     OTHER_DETAIL,
+    ISTRUST_OR_ISSHIELD,
     getAuthorizedHeader,
     requestError
 } from './types';
@@ -71,7 +72,7 @@ export function fetcAdvertSeach({ searchType, location, currency, payType, pageN
     return function (dispatch) {
         axios.post(`${ROOT_URLL}/notice/search/page/buy`, { searchType, location, currency, payType, pageNum }, { headers: getAuthorizedHeader() })
             .then(response => {
-                // console.log(response);
+                console.log(response);
                 dispatch({ type: FETCH_BUY_SECAT, payload: response });
             })
             .catch(err => {
@@ -172,7 +173,7 @@ export function fetctSellSeach({ searchType, location, currency, payType, pageNu
     return function (dispatch) {
         axios.post(`${ROOT_URLL}/notice/search/page/sell`, { searchType, location, currency, payType, pageNum }, { headers: getAuthorizedHeader() })
             .then(response => {
-                // console.log(response);
+                console.log(response);
                 dispatch({ type: FETCH_SELL_SECAT, payload: response });
             })
             .catch(err => {
@@ -199,11 +200,11 @@ export function fetctArray() {
 // 我的广告
 
 export function fetctMyAdvert({ userId, noticeType, txStatus, pageNum }, callback) {
-    // console.log(` 我的广告: ${userId},${noticeType},${txStatus},${pageNum}`)
+    console.log(` 我的广告: ${userId},${noticeType},${txStatus},${pageNum}`);
     return function (dispatch) {
         axios.get(`${ROOT_URLL}/notice/query/me2?userId=${userId}&pageNum=${pageNum}&noticeType=${noticeType}&txStatus=${txStatus}`, { headers: getAuthorizedHeader() })
             .then(response => {
-                // console.log(response)
+                // console.log(response);
                 dispatch({ type: FETCH_MY_ADVERT, payload: response });
                 if (response.data.status == 1) {
                     callback();
@@ -284,13 +285,27 @@ export function fetctTrusted({ userId, type, pageNo, pageSize }, callback) {
 
 //查看别人详细信息
 
-export function LookOthersdetail(callback) {
-    // console.log(`受信任的:${userId},${type},${pageNo} ,${pageSize} `);
+export function LookOthersdetail({fromUserId, toUserId}, callback) {
+    console.log(`查看别人详细信息:${fromUserId},${toUserId}`);
     return function (dispatch) {
-        axios.get(`${ROOT_URLC}/user/trust`,
-            { headers: getAuthorizedHeader() }).then(response => {
-                // console.log(response);
+        axios.get(`${ROOT_URLC}/user/relation?fromUserId=${fromUserId}&toUserId=${toUserId}`, { headers: getAuthorizedHeader() })
+        .then(response => {
+                console.log(response);
                 dispatch({ type: OTHER_DETAIL, payload: response });
+            })
+            .catch(err => {
+                dispatch(requestError(err.message));
+            });
+    };
+}
+//是否信任或屏蔽
+export function isTrustAndisShield({fromUserId, toUserId, status}, callback) {
+    console.log(`isTrustAndisShield:${fromUserId}, ${toUserId}, ${status}`);
+    return function (dispatch) {
+        axios.post(`${ROOT_URLC}/user/trust?fromUserId=${fromUserId}&toUserId=${toUserId}&status=${status}`, { headers: getAuthorizedHeader() })
+        .then(response => {
+                console.log(response);
+                dispatch({ type: ISTRUST_OR_ISSHIELD, payload: response });
 
             })
             .catch(err => {

@@ -73,6 +73,7 @@ export const FETCH_MESSAGES_NOTICE = 'fetch_messages_notice';              //获
 export const FETCH_MESSAGE_SYSTEM = 'fetch_message_system';               //获取系统消息
 export const FETCH_MESSAGE_LETTER = 'fetch_message_letter';                //获取私信消息
 export const OTHER_DETAIL = 'other_detail';                              //查看他人详细信息
+export const ISTRUST_OR_ISSHIELD = 'istrust_or_issheild';                 //是否信任或屏蔽
 
 
 

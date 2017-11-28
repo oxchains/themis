@@ -98,11 +98,11 @@ class Releaseadvert extends Component {
     }
     renderRowspayway() {
         const paymentList = this.props.array.paymentList || [];
-        return paymentList.map(({ id, payment_name }) => {
+        return paymentList.map(({ id, paymentName }) => {
             const Option = Select.Option;
             const ID = id.toString();
             return (
-                <Option key={id} label={payment_name} value={ID}>{payment_name}</Option>
+                <Option key={id} label={paymentName} value={ID}>{paymentName}</Option>
             );
         });
     }

@@ -18,13 +18,12 @@ class Home extends Component {
     renderRows() {
         const arraydata = this.props.all || [];   //列表数组的数据
         return arraydata.map((item, index) => {
-            console.log(item.id);
             return (
                 <div key={index} className="list-border">
                     <div className="title-bgc">
-                    <a href={`/otherInfodetail:${item.id}`}> <img src={item.src ? item.src : "/public/img/touxiang.png"} alt="" /></a>
+                    <a href={`/otherInfodetail:${item.userId}`}> <img src={item.src ? item.src : "/public/img/touxiang.png"} alt="" /></a>
                         <p>
-                           <a href={`/otherInfodetail:${item.id}`}>{item.loginname}</a>
+                           <a href={`/otherInfodetail:${item.userId}`}>{item.loginname}</a>
                         </p>
                     </div>
                     <div className="col-lg-4">
