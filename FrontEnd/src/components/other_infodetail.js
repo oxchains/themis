@@ -10,7 +10,6 @@ class OtherInfodetail extends Component {
         super(props);
         this.state = {
             status: 1,
-            // buttonStatus: 0,
             message: '',
             visible: false
         };
@@ -29,8 +28,7 @@ class OtherInfodetail extends Component {
         this.props.fetctMyAdvert({ userId, noticeType, txStatus, pageNum });
     }
     componentWillReceiveProps(nextProps) {
-        // const preProps = this.props.array || [];
-        console.log(nextProps === this.props);
+        // console.log(nextProps === this.props);
         // console.log(this.props);
         // console.log(nextProps);
         this.setState({
