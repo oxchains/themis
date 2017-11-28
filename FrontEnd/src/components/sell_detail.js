@@ -51,15 +51,15 @@ class Selldetail extends Component {
         });
     };
     componentWillMount() {
-        const noticeId = this.props.match.params.id;
-        console.log(this.props.match.params.id);
+        const noticeId = this.props.match.params.id.slice(1);
+        // console.log(this.props.match.params.id.slice(1));
         this.props.fetctSellBtcDetail({ noticeId });
     }
 
     handleSubmit() {
         const formdata = {
             userId: localStorage.getItem("userId"),
-            noticeId: this.props.match.params.id,
+            noticeId: this.props.match.params.id.slice(1),
             money: this.state.messmoney,
             amount: this.state.messnum
         };
