@@ -34,7 +34,7 @@ public interface Status {
         }
     }
     enum TrustStatus{
-        TRUST(1,"信任"),SHIELD(2,"屏蔽");
+        NONE(0,"无记录"),TRUST(1,"信任"),SHIELD(2,"屏蔽");
         private Integer status;
         private String name;
 

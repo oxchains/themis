@@ -7,7 +7,7 @@
 FROM ubuntu:latest
 MAINTAINER oxchains
 VOLUME /home/container
-ADD themis-user-1.0.1-SNAPSHOT.jar app.jar
+ADD ./target/themis-user-1.0.1-SNAPSHOT.jar app.jar
 ADD jdk8.tar.gz /usr/java/
 ENV JAVA_HOME=/usr/java/jdk1.8.0_152
 ENV JRE_HOME=/usr/java/jdk1.8.0_152/jre
