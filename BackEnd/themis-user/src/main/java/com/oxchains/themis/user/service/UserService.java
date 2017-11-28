@@ -13,6 +13,7 @@ import com.oxchains.themis.common.util.DateUtil;
 import com.oxchains.themis.common.util.EncryptUtils;
 import com.oxchains.themis.repo.dao.*;
 import com.oxchains.themis.repo.entity.*;
+import com.oxchains.themis.user.domain.UserRelationInfo;
 import com.oxchains.themis.user.domain.UserTrust;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -352,6 +353,26 @@ public class UserService extends BaseService {
         }catch (Exception e){
             return RestResp.fail("操作失败");
         }
+    }
+
+    public RestResp getRelation(UserRelation relation){
+        UserRelationInfo userRelationInfo = null;
+        User user = userDao.findOne(relation.getFromUserId());
+        if(null == user){
+            return RestResp.fail("无法查询相关用户信息");
+        }
+        userRelationInfo = new UserRelationInfo(user);
+        UserTxDetail userTxDetail = userTxDetailDao.findByUserId(relation.getToUserId());
+        userRelationInfo.setUserTxDetail(userTxDetail);
+        UserRelation ur = userRelationDao.findByFromUserIdAndToUserId(relation.getFromUserId(),relation.getToUserId());
+        if(null == ur){
+            ur = new UserRelation();
+            ur.setFromUserId(relation.getFromUserId());
+            ur.setToUserId(relation.getToUserId());
+            ur.setStatus(Status.TrustStatus.NONE.getStatus());
+        }
+        userRelationInfo.setUserRelation(ur);
+        return RestResp.success(userRelationInfo);
     }
 
     public RestResp forgetPwd(RequestBody body){
