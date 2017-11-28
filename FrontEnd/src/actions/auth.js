@@ -24,7 +24,8 @@ export function signinAction({ mobilephone, password }) {
     return function (dispatch) {
         axios.post(`${ROOT_URLC}/user/login`, { mobilephone, password })
             .then(response => {
-                // console.log(response);
+                console.log(response.status);
+
                 if (response.data.status == 1) {
                     localStorage.setItem('token', response.data.data.token);
                     localStorage.setItem('role', response.data.data.role.id);
@@ -44,7 +45,9 @@ export function signinAction({ mobilephone, password }) {
                     dispatch(authError(response.data.message));
                 }
             })
-            .catch((err) => dispatch(authError(err.message)));
+            .catch((err) => {
+                dispatch(authError(err.message));
+            });
     };
 }
 
@@ -72,7 +75,7 @@ export function signupUser({ loginname, mobilephone, email, password }, callback
     return function (dispatch) {
         axios.post(`${ROOT_URLC}/user/register`, { loginname, mobilephone, email, password })
             .then(response => {
-                // console.log(response);
+                console.log(response.status);
                 if (response.data.status == 1) {
                     callback();
                 } else {
@@ -80,10 +83,11 @@ export function signupUser({ loginname, mobilephone, email, password }, callback
                     callback(response.data.message);
                 }
             })
-            .catch(err => callback(err.message));
+            .catch((err) => {
+                dispatch(authError(err.message));
+            });
     };
 }
-
 /**
  * 注册获取验证码
  */

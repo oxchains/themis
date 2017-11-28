@@ -18,6 +18,7 @@ import {
     FETCH_OFF_MYBTC,
     FETCH_BASE_INFO,
     FETCH_TRUSTED,
+    OTHER_DETAIL
 } from '../actions/types';
 
 const INITIAL_STATE = { all: [], array: [], data: [] };
@@ -50,6 +51,8 @@ export default function (state = INITIAL_STATE, action) {
         case FETCH_BASE_INFO:
             return { ...state, all: action.payload.data.data };
         case FETCH_TRUSTED:
+            return { ...state, all: action.payload.data.data };
+         case OTHER_DETAIL:
             return { ...state, all: action.payload.data.data };
 
     }
