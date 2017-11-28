@@ -25,12 +25,10 @@ class Signin extends Component {
             return (
                 <Redirect to={from} />
             );
-        } else if (this.props.errorMessage) {
+        } else if (this.props.errorMessage){
+            const text = this.props.errorMessage == 'Network Error'?"网络连接错误":"登录失败";
             return (
-                // <div className="alert alert-danger alert-dismissable text-center">
-                //     {this.props.errorMessage}
-                // </div>
-                <Alert message= {this.props.errorMessage} type="error" showIcon />
+                <Alert message= {text} type="error" showIcon />
             );
         }
     }

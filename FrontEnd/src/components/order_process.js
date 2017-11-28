@@ -378,7 +378,7 @@ class OrderProgress extends Component {
         const userId=localStorage.getItem('userId');
         const cancelData={
             id:this.state.orderId,
-            userId:userId                             
+            userId:userId
         };
         if(this.state.orderStatus ==3){
             this.props.cancelOrders({cancelData}, (msg)=>{
@@ -703,7 +703,7 @@ class OrderProgress extends Component {
 }
 
 function mapStateToProps(state) {
-    return {                                         
+    return {
         orders_details: state.order.orders_details,
         partner:state.order.partner_message,
         payment_info:state.order.payment_info
