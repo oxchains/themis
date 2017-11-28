@@ -55,10 +55,29 @@ public class NoticeService {
     public RestResp broadcastNotice(Notice notice){
         try {
             // 必填项判断
-            if (null == notice.getNoticeType() && null == notice.getLocation() && null == notice.getCurrency()
-                    && null == notice.getPrice() && null == notice.getMinTxLimit() && null == notice.getMaxTxLimit()
-                    && null == notice.getPayType() && null == notice.getNoticeContent() && null == notice.getPremium()) {
-                return RestResp.fail("必填项不能为空");
+            if (null == notice.getNoticeType()){
+                return RestResp.fail("请选择广告类型");
+            }
+            if (null == notice.getLocation()){
+                return RestResp.fail("请选择所在地");
+            }
+            if (null == notice.getCurrency()){
+                return RestResp.fail("请选择货币类型");
+            }
+            if (null == notice.getPremium()){
+                return RestResp.fail("请填写溢价");
+            }
+            if (null == notice.getPrice()){
+                return RestResp.fail("比特币价格获取失败，请联系管理员！");
+            }
+            if (null == notice.getMinTxLimit()){
+                return RestResp.fail("请填写最小限额");
+            }
+            if (null == notice.getMaxTxLimit()){
+                return RestResp.fail("请填写最大限额");
+            }
+            if (null == notice.getPayType()){
+                return RestResp.fail("请选择收款/付款方式");
             }
 
             // 选填项(最低价)判断-11.1中国又禁止一部分btc相关平台，此价格获取失败
@@ -89,11 +108,11 @@ public class NoticeService {
                         }
                     }
                 }else {
-                    return RestResp.fail("比特币价格获取失败，请手动查询实时价格慎重");
+                    return RestResp.fail("比特币价格获取失败，请联系管理员");
                 }
             }
 
-            // 两种不能发布公告得判断
+            // 不能发布公告得判断
             List<Notice> noticeListUnDone = noticeDao.findByUserIdAndNoticeTypeAndTxStatus(notice.getUserId(), notice.getNoticeType(), NoticeTxStatus.UNDONE_TX);
             if (noticeListUnDone.size() != 0){
                 return RestResp.fail("已经有一条此类型公告");
@@ -298,7 +317,7 @@ public class NoticeService {
                 page = noticeDao.findByLocationAndNoticeTypeAndTxStatus(location, noticeType, NoticeTxStatus.UNDONE_TX, pageable);
             } else if (null == location && null == currency && null != payType) {
                 page = noticeDao.findByPayTypeAndNoticeTypeAndTxStatus(payType, noticeType, NoticeTxStatus.UNDONE_TX, pageable);
-            } else if (null == location && null != currency && null != payType) {
+            } else if (null == location && null != currency && null == payType) {
                 page = noticeDao.findByCurrencyAndNoticeTypeAndTxStatus(currency, noticeType, NoticeTxStatus.UNDONE_TX, pageable);
             } else if (null == location && null == currency && null == payType) {
                 page = noticeDao.findByNoticeTypeAndTxStatus(noticeType, NoticeTxStatus.UNDONE_TX, pageable);
@@ -374,7 +393,7 @@ public class NoticeService {
                 page = noticeDao.findByLocationAndNoticeTypeAndTxStatus(location, noticeType, NoticeTxStatus.UNDONE_TX, pageable);
             } else if (null == location && null == currency && null != payType) {
                 page = noticeDao.findByPayTypeAndNoticeTypeAndTxStatus(payType, noticeType, NoticeTxStatus.UNDONE_TX, pageable);
-            } else if (null == location && null != currency && null != payType) {
+            } else if (null == location && null != currency && null == payType) {
                 page = noticeDao.findByCurrencyAndNoticeTypeAndTxStatus(currency, noticeType, NoticeTxStatus.UNDONE_TX, pageable);
             } else if (null == location && null == currency && null == payType) {
                 page = noticeDao.findByNoticeTypeAndTxStatus(noticeType, NoticeTxStatus.UNDONE_TX, pageable);
