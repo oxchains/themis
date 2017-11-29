@@ -9,12 +9,12 @@ class OtherInfodetail extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            // buttonStatus: this.props.array.userRelation && this.props.array.userRelation.status,
             status: 1,
             message: '',
             visible: false
         };
-        this.onlineBuy = this.onlineBuy.bind(this);
-        this.onlineSell = this.onlineSell.bind(this);
+        this.onlineBuyorSell = this.onlineBuyorSell.bind(this);
         this.toggleButton = this.toggleButton.bind(this);
     }
     componentWillMount(){
@@ -28,23 +28,12 @@ class OtherInfodetail extends Component {
         this.props.fetctMyAdvert({ userId, noticeType, txStatus, pageNum });
     }
     componentWillReceiveProps(nextProps) {
-        // console.log(nextProps === this.props);
-        // console.log(this.props);
-        // console.log(nextProps);
-        this.setState({
-            buttonStatus:nextProps.array.userRelation.status
-         });
+            this.setState({
+                buttonStatus: nextProps.array.userRelation.status
+             });
     }
-    onlineBuy() {
-        this.state.status = 1;
-        const userId = this.props.match.params.id.slice(1);
-        const noticeType = this.state.status;
-        const txStatus = 1;
-        const pageNum = 1;
-        this.props.fetctMyAdvert({ userId, noticeType, txStatus, pageNum });
-    }
-    onlineSell() {
-        this.state.status = 2;
+    onlineBuyorSell(status) {
+        this.state.status = status;
         const userId = this.props.match.params.id.slice(1);
         const noticeType = this.state.status;
         const txStatus = 1;
@@ -53,27 +42,23 @@ class OtherInfodetail extends Component {
     }
     toggleButton(buttonStatus) {
         const authenticated = this.props.authenticated;
-        const datanum = this.props.all || [];
-        const data = datanum.userTxDetail || [];
-        const name = datanum.username;//从后端得到该用户名
-
+        const datanum = this.props.array || [];
+        const name = datanum.loginname;//从后端得到该用户名
         const lastStatus = this.state.buttonStatus;
         const buttonText = buttonStatus === 1 ? '信任' : '屏蔽';
-
-        if(lastStatus == buttonStatus){
-            this.state.buttonStatus = 0;
-            this.setState({ visible: true, message: `您已取消${buttonText}${name}` });
-        }else{
-            this.state.buttonStatus = buttonStatus;
-            this.setState({ visible: true, message: `您已${buttonText}${name}` });
-        }
-        // if(authenticated){
-            // lastStatus == buttonStatus
-            // ? this.setState({ visible: true, buttonStatus: 0, message: `您已取消${buttonText}${name}` })
-            // : this.setState({ visible: true, buttonStatus, message: `您已${buttonText}${name}` });
-        // }else{
-        //     alert('请先登录');
-        // }
+       if(this.props.authenticated){
+            if(lastStatus === buttonStatus){
+                this.state.buttonStatus = 0;
+                this.props.array.userRelation.status = 0;
+                this.setState({ visible: true, message: `您已取消${buttonText}${name}` });
+            }else{
+                this.state.buttonStatus = buttonStatus;
+                this.props.array.userRelation.status = buttonStatus;
+                this.setState({ visible: true, message: `您已${buttonText}${name}` });
+            }
+       }else{
+           alert("请先登录!");
+       }
         const fromUserId = localStorage.getItem("userId");
         const toUserId = this.props.match.params.id.slice(1);
         const status = this.state.buttonStatus;
@@ -110,7 +95,7 @@ class OtherInfodetail extends Component {
                     <div className="detailTitle" style={{ padding: 0 }}>
                         <img src="./public/img/touxiang.png" style={{ width: 100 + 'px', borderRadius: 50 + '%' }} alt="" />
 
-                        <h4 style={{ marginBottom: 10 + 'px' }}>{datanum.username}</h4>
+                        <h4 style={{ marginBottom: 10 + 'px' }}>{datanum.loginname}</h4>
                         <ul className="detailul">
                             <li>
                                 <p>{data.txNum}</p>
@@ -161,8 +146,8 @@ class OtherInfodetail extends Component {
                 <div className="clear otherdetail-content">
                     <div className="other-way">
                         <ul className=" titleul">
-                            <li className={`${this.state.status == 1 ? "way-title-item active" : " way-title-item"} `} onClick={this.onlineBuy}>TA的在线购买广告</li>
-                            <li className={`${this.state.status == 2 ? "way-title-item active" : " way-title-item "}`} onClick={this.onlineSell}>TA的在线出售广告</li>
+                            <li className={`${this.state.status == 1 ? "way-title-item active" : " way-title-item"} `} onClick={()=>this.onlineBuyorSell(1)}>TA的在线购买广告</li>
+                            <li className={`${this.state.status == 2 ? "way-title-item active" : " way-title-item "}`} onClick={()=>this.onlineBuyorSell(2)}>TA的在线出售广告</li>
                         </ul>
                     </div>
                     <table className={`other-tableborder ${this.props.all.rowCount == 0 || !arraydata? "hidden":"" }`}>
@@ -177,6 +162,7 @@ class OtherInfodetail extends Component {
                              {this.handleRow()}
                         </tbody>
                     </table>
+                    <div className={`text-center h4 ${this.props.all.rowCount == 0 || !arraydata? "":"hidden" }`}>暂无数据</div>
                 </div>
             </div>
         );
