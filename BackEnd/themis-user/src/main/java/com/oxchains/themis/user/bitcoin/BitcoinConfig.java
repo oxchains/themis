@@ -26,22 +26,6 @@ public class BitcoinConfig extends AbstractConfig{
     private static String maxFee;
     private static String minFee;
 
-    static {
-        Properties pro = new Properties();
-        try {
-            //pro.load(BitcoinConfig.class.getResourceAsStream("/application.properties"));
-            pro.load(BitcoinConfig.class.getResourceAsStream("/bitcoin-rpc-client.properties"));
-            url = pro.getProperty("bitcoin.service.url");
-            port = pro.getProperty("bitcoin.service.port");
-            username = pro.getProperty("bitcoin.service.username");
-            password = pro.getProperty("bitcoin.service.password");
-            feeRate = pro.getProperty("bitcoin.fee.rate");
-            maxFee = pro.getProperty("bitcoin.max.fee");
-            minFee = pro.getProperty("bitcoin.min.fee");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     private BitcoinConfig(){}
     public static String getUrlString(){
         return "http://"+username+":"+password+"@"+url+":"+port+"/";
@@ -84,5 +68,40 @@ public class BitcoinConfig extends AbstractConfig{
         }else {
             return fee;
         }
+    }
+
+    @Value("${bitcoin.service.url}")
+    public void setUrl(String url) {
+        BitcoinConfig.url = url;
+    }
+
+    @Value("${bitcoin.service.port}")
+    public void setPort(String port) {
+        BitcoinConfig.port = port;
+    }
+
+    @Value("${bitcoin.service.username}")
+    public void setUsername(String username) {
+        BitcoinConfig.username = username;
+    }
+
+    @Value("${bitcoin.service.password}")
+    public void setPassword(String password) {
+        BitcoinConfig.password = password;
+    }
+
+    @Value("${bitcoin.fee.rate}")
+    public void setFeeRate(String feeRate) {
+        BitcoinConfig.feeRate = feeRate;
+    }
+
+    @Value("${bitcoin.max.fee}")
+    public void setMaxFee(String maxFee) {
+        BitcoinConfig.maxFee = maxFee;
+    }
+
+    @Value("${bitcoin.service.port}")
+    public void setMinFee(String minFee) {
+        BitcoinConfig.minFee = minFee;
     }
 }
