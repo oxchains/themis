@@ -357,7 +357,7 @@ public class UserService extends BaseService {
 
     public RestResp getRelation(UserRelation relation){
         UserRelationInfo userRelationInfo = null;
-        User user = userDao.findOne(relation.getFromUserId());
+        User user = userDao.findOne(relation.getToUserId());
         if(null == user){
             return RestResp.fail("无法查询相关用户信息");
         }
