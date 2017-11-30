@@ -2,11 +2,14 @@ package com.oxchains.themis.zuul;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
+import com.oxchains.themis.repo.dao.UserDao;
+import com.oxchains.themis.zuul.service.ParseService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author ccl
@@ -18,49 +21,85 @@ import java.util.logging.Logger;
 @Component
 public class AccessFilter extends ZuulFilter{
 
-    private static final Logger logger = Logger.getLogger(AccessFilter.class.getCanonicalName());
+    private static final Logger LOG = LoggerFactory.getLogger(AccessFilter.class);
 
+    @Resource
+    private ParseService parseService;
+
+    /**
+     * pre：请求执行之前的filter
+     * route：处理请求，进行路由
+     * post：请求处理完成后执行的filter
+     * error：出现错误是执行的filter
+     */
     @Override
     public String filterType() {
-        //前置过滤器
         return "pre";
     }
 
+    /**
+     * filter执行顺序，通过数字指定，优先级,数字越大,优先级越低
+     */
     @Override
     public int filterOrder() {
-        //优先级,数字越大,优先级越低
         return 0;
     }
 
+    /**
+     * filter是否需要执行，true：执行，false：不执行
+     */
     @Override
     public boolean shouldFilter() {
-        //是否执行该过滤器
         return true;
     }
 
+    /**
+     * filter具体逻辑
+     */
     @Override
     public Object run() {
-        RequestContext rcx = RequestContext.getCurrentContext();
-        HttpServletRequest request = rcx.getRequest();
-        String url = request.getRequestURI();
+        try {
+            RequestContext rcx = RequestContext.getCurrentContext();
+            HttpServletRequest request = rcx.getRequest();
+            String url = request.getRequestURI();
 
-        //String token = request.getParameter("Authorization");
-        String token = request.getHeader("Authorization");
-        logger.log(Level.FINE,"Authorization token: {}",token);
-        if(null == token){
-            if("/themis-user/user/login".equals(url)){
-            }else {
-                //过滤该请求，不往下级服务去转发请求，到此结束
-                rcx.setSendZuulResponse(false);
-                rcx.setResponseStatusCode(401);
-                rcx.setResponseBody("{}");
-                return null;
+            //String token = request.getParameter("Authorization");
+            String token = request.getHeader("Authorization");
+//        LOG.log(Level.FINE,"Authorization token: {}",token);
+            if(null == token){
+                LOG.info("当前请求没有携带 TOKEN");
+                if("/themis-user/user/login".equals(url) || "themis-user/user/register".equals(url)){
+                    LOG.info("请求有效，放行");
+                }else {
+                    //过滤该请求，不往下级服务去转发请求，到此结束
+                    rcx.setSendZuulResponse(false);
+                    rcx.setResponseStatusCode(401);
+                    rcx.setResponseBody("{}");
+                    LOG.error("请求无效");
+                    return null;
 
+                }
+            } else {
+                LOG.info("当前请求携带 TOKEN ：{}" , token);
+                boolean isSuccess = parseService.parse(token);
+                if (isSuccess){
+                    LOG.info("请求有效，放行");
+                } else {
+                    rcx.setSendZuulResponse(false);
+                    rcx.setResponseStatusCode(401);
+                    rcx.setResponseBody("{}");
+                    LOG.error("请求无效");
+                    return null;
+                }
             }
+            //如果有token，则进行路由转发
+            LOG.info("Authorized,continue...");
+            //这里return的值没有意义，zuul框架没有使用该返回值
+            return null;
+        }catch (Exception e){
+            e.printStackTrace();
+            LOG.error("Zuul filter 异常", e.getMessage());
         }
-        //如果有token，则进行路由转发
-        logger.info("Authorized,continue...");
-        //这里return的值没有意义，zuul框架没有使用该返回值
         return null;
     }
 }

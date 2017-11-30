@@ -1,4 +1,4 @@
-package com.oxchains.themis.zuul;
+package com.oxchains.themis.zuul.rest;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
