@@ -67,8 +67,7 @@ public class MessageService {
 
             return RestResp.success("操作成功", mt);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("站内信：发送系统消息异常", e.getMessage());
+            LOG.error("站内信：发送系统消息异常", e);
         }
         return RestResp.success("操作失败");
     }
@@ -99,8 +98,7 @@ public class MessageService {
 
             return RestResp.success("操作成功", messageDTO);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("站内信：获取未读私信信息失败", e.getMessage());
+            LOG.error("站内信：获取未读私信信息失败", e);
         }
         return RestResp.fail("操作失败");
     }
@@ -151,7 +149,6 @@ public class MessageService {
 
             return RestResp.success("操作成功", messageDTO);
         }catch (Exception e){
-            e.printStackTrace();
             LOG.error("站内信：获取已读私信信息失败");
         }
         return RestResp.fail("操作失败");
@@ -187,7 +184,7 @@ public class MessageService {
             return RestResp.success("操作成功", messageDTO);
         }catch (Exception e){
             e.printStackTrace();
-            LOG.error("站内信：获取公告信息异常", e.getMessage());
+            LOG.error("站内信：获取公告信息异常", e);
         }
         return RestResp.fail("操作失败");
     }
@@ -198,8 +195,7 @@ public class MessageService {
             Integer result = invokeDb(userId, tip, count);
             return RestResp.success("操作成功", result);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("站内信：获取未读信息数量异常", e.getMessage());
+            LOG.error("站内信：获取未读信息数量异常", e);
         }
         return RestResp.fail("操作失败");
     }
