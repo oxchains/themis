@@ -78,8 +78,7 @@ public class BlockChainInfoListener {
             }
             LOG.info("This timed tasks has been completed");
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("定时任务：获取比特币价格异常", e.getMessage());
+            LOG.error("定时任务：获取比特币价格异常", e);
         }
     }
 }

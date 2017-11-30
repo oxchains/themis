@@ -1,9 +1,11 @@
 package com.oxchains.themis.chat.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.oxchains.themis.chat.entity.ChatContent;
 import com.oxchains.themis.chat.repo.MongoRepo;
 import com.oxchains.themis.common.constant.ThemisUserAddress;
+import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.util.JsonUtil;
 import com.oxchains.themis.repo.entity.User;
 import org.slf4j.Logger;
@@ -49,6 +51,7 @@ public class ChatService {
         return null;
     }
     //从用户中心 根据用户id获取用户信息
+    @HystrixCommand(fallbackMethod = "remoteError")
     public User getUserById(Long userId){
         User user = null;
         try {
@@ -67,5 +70,8 @@ public class ChatService {
             throw  e;
         }
         return null;
+    }
+    private RestResp remoteError(Long obj){
+        return RestResp.fail("sorry,remote call error");
     }
 }

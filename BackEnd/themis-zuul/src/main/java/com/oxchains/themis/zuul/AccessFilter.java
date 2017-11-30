@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class AccessFilter extends ZuulFilter{
 
-    private static final Logger LOG = LoggerFactory.getLogger(AccessFilter.class);
+    private final Logger LOG = LoggerFactory.getLogger(AccessFilter.class);
 
     @Resource
     private ParseService parseService;
@@ -97,8 +97,7 @@ public class AccessFilter extends ZuulFilter{
             //这里return的值没有意义，zuul框架没有使用该返回值
             return null;
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("Zuul filter 异常", e.getMessage());
+            LOG.error("Zuul filter 异常", e);
         }
         return null;
     }

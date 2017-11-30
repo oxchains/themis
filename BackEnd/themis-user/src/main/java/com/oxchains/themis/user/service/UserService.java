@@ -75,7 +75,17 @@ public class UserService extends BaseService {
         user.setPassword(EncryptUtils.encodeSHA256(user.getPassword()));
         Optional<User> optional = findUser(user);
         if (optional.isPresent()) {
-            return RestResp.fail("操作失败");
+            User u = optional.get();
+            if(null != user.getLoginname() && user.getLoginname().equals(u.getLoginname())){
+                return RestResp.fail("用户名已经存在");
+            }
+            if(null != user.getMobilephone() && user.getMobilephone().equals(u.getMobilephone())){
+                return RestResp.fail("该手机号已被注册");
+            }
+            if(null != user.getEmail() && user.getEmail().equals(u.getEmail())){
+                return RestResp.fail("该邮箱已被注册");
+            }
+            return RestResp.fail("注册用户已经存在");
         }
         if(null == user.getCreateTime()){
             user.setCreateTime(DateUtil.getPresentDate());
@@ -217,7 +227,7 @@ public class UserService extends BaseService {
         if(null != u && u.getLoginStatus().equals(Status.LoginStatus.LOGIN.getStatus())){
             u.setLoginStatus(Status.LoginStatus.LOGOUT.getStatus());
             userDao.save(u);
-            redisTemplate.delete(u.getLoginname());
+            redisTemplate.delete(u.getId().toString());
             return RestResp.success("退出成功");
         }else {
             return RestResp.fail("退出失败");

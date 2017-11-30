@@ -31,11 +31,10 @@ import java.util.*;
  * @create 2017-11-06 15:02
  **/
 @Service
-@Scope(value = "prototype")
 public class MessageService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MessageService.class);
-    private static Integer COUNT = 0;
+    private final Logger LOG = LoggerFactory.getLogger(MessageService.class);
+    private final Map<Long, Integer> countMap = new HashMap<>();
 
     @Resource private MessageDao messageDao;
     @Resource private MessageTextDao messageTextDao;
@@ -68,8 +67,7 @@ public class MessageService {
 
             return RestResp.success("操作成功", mt);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("站内信：发送系统消息异常", e.getMessage());
+            LOG.error("站内信：发送系统消息异常", e);
         }
         return RestResp.success("操作失败");
     }
@@ -100,8 +98,7 @@ public class MessageService {
 
             return RestResp.success("操作成功", messageDTO);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("站内信：获取未读私信信息失败", e.getMessage());
+            LOG.error("站内信：获取未读私信信息失败", e);
         }
         return RestResp.fail("操作失败");
     }
@@ -152,7 +149,6 @@ public class MessageService {
 
             return RestResp.success("操作成功", messageDTO);
         }catch (Exception e){
-            e.printStackTrace();
             LOG.error("站内信：获取已读私信信息失败");
         }
         return RestResp.fail("操作失败");
@@ -187,8 +183,7 @@ public class MessageService {
             messageDTO.setTotalPage(page.getTotalPages());
             return RestResp.success("操作成功", messageDTO);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("站内信：获取公告信息异常", e.getMessage());
+            LOG.error("站内信：获取公告信息异常", e);
         }
         return RestResp.fail("操作失败");
     }
@@ -199,8 +194,7 @@ public class MessageService {
             Integer result = invokeDb(userId, tip, count);
             return RestResp.success("操作成功", result);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("站内信：获取未读信息数量异常", e.getMessage());
+            LOG.error("站内信：获取未读信息数量异常", e);
         }
         return RestResp.fail("操作失败");
     }
@@ -209,14 +203,14 @@ public class MessageService {
         // 用户登录后，将所在用户组未读公告信息添加到message表中
         // 1，先找到roleid，然后得到角色userGroup，然后根据msgType和up得到id
         User user = userDao.findOne(userId);
-        if (user != null){
+        if (user != null) {
             Long userGroup = user.getRoleId();
             List<MessageText> messageTextList = messageTextDao.findByMessageTypeAndUserGroup(MessageType.PUBLIC, userGroup);
 
-            if (messageTextList.size() != 0){
+            if (messageTextList.size() != 0) {
                 // 所有公告
                 Set<Long> set = new HashSet<>();
-                for (MessageText mt: messageTextList) {
+                for (MessageText mt : messageTextList) {
                     set.add(mt.getId());
                 }
 
@@ -229,7 +223,7 @@ public class MessageService {
                 // 添加剩余没有的公告
                 Iterator<Long> it = set.iterator();
                 Message message = new Message();
-                while (it.hasNext()){
+                while (it.hasNext()) {
                     message.setMessageTextId(it.next().longValue());
                     message.setReadStatus(MessageReadStatus.UN_READ);
                     message.setReceiverId(userId);
@@ -241,35 +235,23 @@ public class MessageService {
 
         // 所有未读信息
         Integer unReadSize = messageDao.countByReceiverIdAndReadStatus(userId, MessageReadStatus.UN_READ);
-        if (unReadSize != 0){
-            if (tip == 1){
-                COUNT = unReadSize;
-                return COUNT;
-            } else {
-                if (COUNT.equals(unReadSize)){
-                    Thread.sleep(2000);
-                    // 前台请求15以上，返回的结果还是一样，就返回之前的数量，不走递归
-                    if (count >= MessageConst.Constant.FIFTEEN.getValue()){
-                        return COUNT;
-                    }
-                    return invokeDb(userId, tip, ++count);
-                }else {
-                    COUNT = unReadSize;
-                    return COUNT;
-                }
-            }
-        }else {
-            if (tip == 1){
-                COUNT = unReadSize;
-                return COUNT;
-            }else {
-                Thread.sleep(2000);
-                if (count >= MessageConst.Constant.FIFTEEN.getValue()){
-                    return MessageConst.Constant.ZERO.getValue();
-                }
-                return invokeDb(userId, tip, ++count);
-
-            }
+        int cacheCount = countMap.getOrDefault(userId, -1);
+        if (tip == 1) {
+            // 第一次请求获取未读消息
+            countMap.put(userId, unReadSize);
+            return unReadSize;
         }
+        // 旧值和新值一样，则不返回结果
+        if (cacheCount == unReadSize) {
+            Thread.sleep(2000);
+            // 前台请求15以上，返回的结果还是一样，就返回之前的数量，不走递归
+            if (count >= MessageConst.Constant.FIFTEEN.getValue()) {
+                return unReadSize;
+            }
+            return invokeDb(userId, tip, ++count);
+        }
+        // 旧值和新值，则更新缓存，返回结果
+        countMap.put(userId, unReadSize);
+        return unReadSize;
     }
 }
