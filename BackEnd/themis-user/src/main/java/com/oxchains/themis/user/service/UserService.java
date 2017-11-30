@@ -94,7 +94,13 @@ public class UserService extends BaseService {
         UserTxDetail userTxDetail = new UserTxDetail(true);
         userTxDetail.setUserId(user.getId());
 
-        userTxDetailDao.save(userTxDetail);
+        try{
+            userTxDetailDao.save(userTxDetail);
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            userDao.delete(user.getId());
+            return RestResp.fail("操作失败");
+        }
 
         return RestResp.success("操作成功");
     }
