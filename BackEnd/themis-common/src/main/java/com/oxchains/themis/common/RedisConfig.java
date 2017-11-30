@@ -1,4 +1,4 @@
-package com.oxchains.themis;
+package com.oxchains.themis.common;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;

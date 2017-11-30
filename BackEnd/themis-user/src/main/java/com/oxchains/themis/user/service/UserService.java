@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -65,6 +66,8 @@ public class UserService extends BaseService {
     @Resource
     private RedisTemplate redisTemplate;
 
+    private String token;
+
 //    @Resource
 //    AccountService accountService;
 
@@ -91,7 +94,13 @@ public class UserService extends BaseService {
         UserTxDetail userTxDetail = new UserTxDetail(true);
         userTxDetail.setUserId(user.getId());
 
-        userTxDetailDao.save(userTxDetail);
+        try{
+            userTxDetailDao.save(userTxDetail);
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            userDao.delete(user.getId());
+            return RestResp.fail("操作失败");
+        }
 
         return RestResp.success("操作成功");
     }
@@ -133,7 +142,7 @@ public class UserService extends BaseService {
                 break;
                 default:
         }
-        reSaveRedis(u);
+        reSaveRedis(user, token);
         return save(u);
     }
     private RestResp save(User user){
@@ -153,7 +162,9 @@ public class UserService extends BaseService {
             if(u.getLoginStatus().equals(Status.LoginStatus.LOGIN.getStatus())){
                 return RestResp.fail("用户已经登录");
             }
-            String token = "Bearer " + jwtService.generate(u);
+            String originToken = jwtService.generate(u);
+            token = "Bearer " + originToken;
+
             Role role = roleDao.findById(u.getRoleId());
             UserTxDetail userTxDetail = findUserTxDetailByUserId(u.getId());
 
@@ -166,12 +177,13 @@ public class UserService extends BaseService {
             userInfo.setUserTxDetail(userTxDetail);
 
             u.setLoginStatus(Status.LoginStatus.LOGOUT.getStatus());
-            userDao.save(u);
+            User save = userDao.save(u);
 
-            // redis 存储，key:loginname
-            boolean keyExist = redisTemplate.hasKey(u.getLoginname());
+            // redis 存储
+            boolean keyExist = redisTemplate.hasKey(save.getId().toString());
             if (!keyExist){
-                saveRedis(u);
+                logger.info("保存 TOKEN 到 REDIS");
+                saveRedis(save ,originToken);
             }
 
             ConstantUtils.USER_TOKEN.put(u.getLoginname(), token);
@@ -181,14 +193,23 @@ public class UserService extends BaseService {
         }).orElse(RestResp.fail("登录失败"));
     }
 
-    private void saveRedis(User u){
-        ValueOperations<String, User> operations = redisTemplate.opsForValue();
-        operations.set(u.getLoginname(), u);
+    @Deprecated
+    public String _queryRedisValue(String key){
+        ValueOperations operations = redisTemplate.opsForValue();
+        String value = (String) operations.get(key);
+        System.out.println("UserService：redis中的token = " + value);
+        return value;
     }
 
-    private void reSaveRedis(User u){
-        redisTemplate.delete(u.getLoginname());
-        saveRedis(u);
+    private void saveRedis(User save, String originToken){
+        ValueOperations<String, String> operations = redisTemplate.opsForValue();
+        operations.set(save.getId().toString(), originToken, 7, TimeUnit.DAYS);
+    }
+
+    private void reSaveRedis(User save, String originToken){
+        logger.info("重新保存 TOKEN 到 REDIS ");
+        redisTemplate.delete(save.getId().toString());
+        saveRedis(save, originToken);
     }
 
     public RestResp logout(User user){

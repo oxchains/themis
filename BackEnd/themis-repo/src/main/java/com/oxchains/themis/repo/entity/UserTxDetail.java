@@ -31,6 +31,7 @@ public class UserTxDetail {
             this.goodDesc = 0;
             this.badDesc = 0;
             this.believeNum = 0;
+            this.successCount = 0.0d;
         }
     }
     /**
