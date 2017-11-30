@@ -24,7 +24,7 @@ export function signinAction({ mobilephone, password }) {
     return function (dispatch) {
         axios.post(`${ROOT_URLC}/user/login`, { mobilephone, password })
             .then(response => {
-                console.log(response.status);
+                console.log(response);
 
                 if (response.data.status == 1) {
                     localStorage.setItem('token', response.data.data.token);
@@ -70,12 +70,12 @@ export function signoutUser() {
  * 注册
  */
 
-export function signupUser({ loginname, mobilephone, email, password }, callback) {
-    // console.log(`注册传送的数据: ${loginname}, ${mobilephone},${email}, ${password}`);
+export function signupUser({ loginname, mobilephone, vcode, password }, callback) {
+    console.log(`注册传送的数据: ${loginname}, ${mobilephone},${vcode}, ${password}`);
     return function (dispatch) {
-        axios.post(`${ROOT_URLC}/user/register`, { loginname, mobilephone, email, password })
+        axios.post(`${ROOT_URLC}/user/register`, { loginname, mobilephone, vcode, password })
             .then(response => {
-                console.log(response.status);
+                console.log(response);
                 if (response.data.status == 1) {
                     callback();
                 } else {
@@ -119,7 +119,7 @@ export function GetverifyCodePhone({ loginname, phonenum }) {
         axios.get(`${ROOT_URLC}/user/verifyCode`, { loginname, phonenum }, { headers: getAuthorizedHeader() })
             .then(response => {
                 // console.log("修改手机号获取验证码的接口通了");
-                // console.log(response);
+                console.log(response);
                 dispatch({ type: FETCH_VERIFY_CODE_PHONE, payload: response });
 
             })
@@ -137,7 +137,7 @@ export function ChangePhoneSave({ loginname, mobilephone }, callback) {
     return function (dispatch) {
         axios.post(`${ROOT_URLC}/user/phone`, { loginname, mobilephone }, { headers: getAuthorizedHeader() })
             .then(response => {
-                // console.log(response);
+                console.log(response);
                 dispatch({ type: FETCH_PHONE, payload: response });
                 if (response.data.status == 1) {
                     callback();
@@ -159,7 +159,7 @@ export function ChangePasswordSave({ loginname, password, newPassword }, callbac
     return function (dispatch) {
         axios.post(`${ROOT_URLC}/user/password`, { loginname, password, newPassword }, { headers: getAuthorizedHeader() })
             .then(response => {
-                // console.log(response);
+                console.log(response);
                 dispatch({ type: FETCH_PASSWORD, payload: response });
                 if (response.data.status == 1) {
                     callback();
