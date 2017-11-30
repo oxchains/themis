@@ -48,7 +48,7 @@ public class ApplicationConfiguration extends WebSecurityConfigurerAdapter{
 //                .exceptionHandling()
 //                .authenticationEntryPoint(authError)
 //                .accessDeniedHandler(authError);
-        http.cors().and().csrf().disable().authorizeRequests().antMatchers("/**/*").permitAll();
+        http.cors().and().csrf().disable().authorizeRequests().antMatchers("/**/*", "/**/*/*").permitAll();
     }
 
     @Override

@@ -108,8 +108,7 @@ public class BTCListener {
 
             }
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("定时任务：获取BTC深度行情异常", e.getMessage());
+            LOG.error("定时任务：获取BTC深度行情异常", e);
         }
     }
 }

@@ -227,7 +227,7 @@ public class UserService extends BaseService {
         if(null != u && u.getLoginStatus().equals(Status.LoginStatus.LOGIN.getStatus())){
             u.setLoginStatus(Status.LoginStatus.LOGOUT.getStatus());
             userDao.save(u);
-            redisTemplate.delete(u.getLoginname());
+            redisTemplate.delete(u.getId().toString());
             return RestResp.success("退出成功");
         }else {
             return RestResp.fail("退出失败");
