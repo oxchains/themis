@@ -62,9 +62,6 @@ public class JwtService {
     @Resource
     private TokenKeyDao tokenKeyDao;
 
-    @Resource
-    private RedisTemplate redisTemplate;
-
     public JwtService(UserDao userDao) {
         this.userDao = userDao;
     }
@@ -92,7 +89,7 @@ public class JwtService {
     public String generate(User user) {
         return new DefaultJwtBuilder().
                 setId(UUID.randomUUID().toString()).
-                setSubject(user.getLoginname()).
+                setSubject(user.getId().toString()).
                 setExpiration(Date.from(ZonedDateTime.now().plusWeeks(1).toInstant())).claim("id", user.getId()).claim("email", user.getEmail()).claim("monilephone",user.getMobilephone()).claim("loginname",user.getLoginname()).
                 signWith(SignatureAlgorithm.ES256, privateKey).
                 compact();
@@ -106,13 +103,7 @@ public class JwtService {
                     .parseClaimsJws(token);
             Claims claims = jws.getBody();
             String subject=claims.getSubject();
-            boolean keyExist = redisTemplate.hasKey(subject);
-            if (keyExist){
-                ValueOperations<String, User> operations = redisTemplate.opsForValue();
-                user = operations.get(subject);
-            }else {
-                user = userDao.findByLoginname(subject);
-            }
+            user = userDao.findByLoginname(subject);
             JwtAuthentication jwtAuthentication = new JwtAuthentication(user, token, claims);
             return Optional.of(jwtAuthentication);
         } catch (Exception e) {
