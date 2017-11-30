@@ -12,6 +12,7 @@ import com.oxchains.themis.repo.entity.Transaction;
 import com.oxchains.themis.repo.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
