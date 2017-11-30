@@ -85,7 +85,7 @@ public class UserService extends BaseService {
             if(null != user.getEmail() && user.getEmail().equals(u.getEmail())){
                 return RestResp.fail("该邮箱已被注册");
             }
-            return RestResp.fail("操作失败");
+            return RestResp.fail("注册用户已经存在");
         }
         if(null == user.getCreateTime()){
             user.setCreateTime(DateUtil.getPresentDate());
