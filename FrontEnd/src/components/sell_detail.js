@@ -28,7 +28,6 @@ class Selldetail extends Component {
         };
         this.handelChange = this.handelChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        // this.handlePayway = this.handlePayway.bind(this)
     }
     handelChange(e) {
         const data = this.props.all.notice || [];
@@ -52,7 +51,7 @@ class Selldetail extends Component {
     };
     componentWillMount() {
         const noticeId = this.props.match.params.id.slice(1);
-        console.log(this.props.match.params.id.slice(1));
+        // console.log(this.props.match.params.id.slice(1));
         this.props.fetctSellBtcDetail({ noticeId });
     }
 
@@ -63,13 +62,13 @@ class Selldetail extends Component {
             money: this.state.messmoney,
             amount: this.state.messnum
         };
-        // if(this.props.authenticated){
+        if(this.props.authenticated){
         this.props.fetctSellnow({ formdata }, err => {
             this.setState({ isModalOpen: true, error: err, actionResult: err || '下单成功!' });
         });
-        // }else {
-        //     alert("请先登录哦～")
-        // }
+        }else {
+            alert("请先登录!");
+        }
     }
 
     renderAlert() {
@@ -87,7 +86,6 @@ class Selldetail extends Component {
         }
     }
     showOrderDetail(item) {
-        // console.log(item)
         const userId = localStorage.getItem('userId');
         const orderData = { id: item.id, userId: userId, partnerId: item.sellerId == userId ? item.buyerId : item.sellerId };
         localStorage.setItem("partner", JSON.stringify(orderData));
@@ -97,16 +95,16 @@ class Selldetail extends Component {
         const userId = localStorage.getItem("userId");
         const messmoney = this.state.messmoney;
         const messnum = this.state.messnum;
-        // console.log(this.props.data);
         const data = this.props.all.notice || [];
         const datanum = this.props.all;
         const time = data.validPayTime / 1000 / 60;
+        const imgUrl = 'http://192.168.1.201/v1/tfs/T19RETByhT1RCvBVdK';
         return (
             <div className="maincontent">
                 <div className="detail-title">
                     <div className="detailTitle" style={{ padding: 0 }}>
 
-                        <img src="./public/img/touxiang.png" style={{ width: 100 + 'px', borderRadius: 50 + '%' }} alt="" />
+                        <img src={imgUrl} style={{ width: 100 + 'px', borderRadius: 50 + '%' }} alt="" />
                         <h4 style={{ marginBottom: 10 + 'px', paddingLeft: 15 + 'px' }}>{datanum.loginname}</h4>
                         <ul className="detailul">
                             <li>

@@ -21,8 +21,10 @@ class Home extends Component {
             return (
                 <div key={index} className="list-border">
                     <div className="title-bgc">
-                        <img src={item.src ? item.src : "/public/img/touxiang.png"} alt="" />
-                        <p>{item.loginname}</p>
+                    <a href={`/otherInfodetail:${item.userId}`}> <img src={item.src ? item.src : "/public/img/touxiang.png"} alt="" /></a>
+                        <p>
+                           <a href={`/otherInfodetail:${item.userId}`}>{item.loginname}</a>
+                        </p>
                     </div>
                     <div className="col-lg-4">
                         <p>{item.txNum}</p>

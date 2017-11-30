@@ -13,15 +13,19 @@ import com.oxchains.themis.common.util.DateUtil;
 import com.oxchains.themis.common.util.EncryptUtils;
 import com.oxchains.themis.repo.dao.*;
 import com.oxchains.themis.repo.entity.*;
+import com.oxchains.themis.user.domain.UserRelationInfo;
 import com.oxchains.themis.user.domain.UserTrust;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.*;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -59,6 +63,11 @@ public class UserService extends BaseService {
     @Resource
     MailService mailService;
 
+    @Resource
+    private RedisTemplate redisTemplate;
+
+    private String token;
+
 //    @Resource
 //    AccountService accountService;
 
@@ -66,7 +75,17 @@ public class UserService extends BaseService {
         user.setPassword(EncryptUtils.encodeSHA256(user.getPassword()));
         Optional<User> optional = findUser(user);
         if (optional.isPresent()) {
-            return RestResp.fail("操作失败");
+            User u = optional.get();
+            if(null != user.getLoginname() && user.getLoginname().equals(u.getLoginname())){
+                return RestResp.fail("用户名已经存在");
+            }
+            if(null != user.getMobilephone() && user.getMobilephone().equals(u.getMobilephone())){
+                return RestResp.fail("该手机号已被注册");
+            }
+            if(null != user.getEmail() && user.getEmail().equals(u.getEmail())){
+                return RestResp.fail("该邮箱已被注册");
+            }
+            return RestResp.fail("注册用户已经存在");
         }
         if(null == user.getCreateTime()){
             user.setCreateTime(DateUtil.getPresentDate());
@@ -85,7 +104,13 @@ public class UserService extends BaseService {
         UserTxDetail userTxDetail = new UserTxDetail(true);
         userTxDetail.setUserId(user.getId());
 
-        userTxDetailDao.save(userTxDetail);
+        try{
+            userTxDetailDao.save(userTxDetail);
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            userDao.delete(user.getId());
+            return RestResp.fail("操作失败");
+        }
 
         return RestResp.success("操作成功");
     }
@@ -127,6 +152,7 @@ public class UserService extends BaseService {
                 break;
                 default:
         }
+        reSaveRedis(user, token);
         return save(u);
     }
     private RestResp save(User user){
@@ -146,7 +172,9 @@ public class UserService extends BaseService {
             if(u.getLoginStatus().equals(Status.LoginStatus.LOGIN.getStatus())){
                 return RestResp.fail("用户已经登录");
             }
-            String token = "Bearer " + jwtService.generate(u);
+            String originToken = jwtService.generate(u);
+            token = "Bearer " + originToken;
+
             Role role = roleDao.findById(u.getRoleId());
             UserTxDetail userTxDetail = findUserTxDetailByUserId(u.getId());
 
@@ -159,18 +187,47 @@ public class UserService extends BaseService {
             userInfo.setUserTxDetail(userTxDetail);
 
             u.setLoginStatus(Status.LoginStatus.LOGOUT.getStatus());
-            userDao.save(u);
+            User save = userDao.save(u);
+
+            // redis 存储
+            boolean keyExist = redisTemplate.hasKey(save.getId().toString());
+            if (!keyExist){
+                logger.info("保存 TOKEN 到 REDIS");
+                saveRedis(save ,originToken);
+            }
+
             ConstantUtils.USER_TOKEN.put(u.getLoginname(), token);
 
             //new UserToken(u.getUsername(),token)
             return RestResp.success("登录成功", userInfo);
         }).orElse(RestResp.fail("登录失败"));
     }
+
+    @Deprecated
+    public String _queryRedisValue(String key){
+        ValueOperations operations = redisTemplate.opsForValue();
+        String value = (String) operations.get(key);
+        System.out.println("UserService：redis中的token = " + value);
+        return value;
+    }
+
+    private void saveRedis(User save, String originToken){
+        ValueOperations<String, String> operations = redisTemplate.opsForValue();
+        operations.set(save.getId().toString(), originToken, 7, TimeUnit.DAYS);
+    }
+
+    private void reSaveRedis(User save, String originToken){
+        logger.info("重新保存 TOKEN 到 REDIS ");
+        redisTemplate.delete(save.getId().toString());
+        saveRedis(save, originToken);
+    }
+
     public RestResp logout(User user){
         User u = userDao.findByLoginname(user.getLoginname());
         if(null != u && u.getLoginStatus().equals(Status.LoginStatus.LOGIN.getStatus())){
             u.setLoginStatus(Status.LoginStatus.LOGOUT.getStatus());
             userDao.save(u);
+            redisTemplate.delete(u.getLoginname());
             return RestResp.success("退出成功");
         }else {
             return RestResp.fail("退出失败");
@@ -327,6 +384,26 @@ public class UserService extends BaseService {
         }catch (Exception e){
             return RestResp.fail("操作失败");
         }
+    }
+
+    public RestResp getRelation(UserRelation relation){
+        UserRelationInfo userRelationInfo = null;
+        User user = userDao.findOne(relation.getToUserId());
+        if(null == user){
+            return RestResp.fail("无法查询相关用户信息");
+        }
+        userRelationInfo = new UserRelationInfo(user);
+        UserTxDetail userTxDetail = userTxDetailDao.findByUserId(relation.getToUserId());
+        userRelationInfo.setUserTxDetail(userTxDetail);
+        UserRelation ur = userRelationDao.findByFromUserIdAndToUserId(relation.getFromUserId(),relation.getToUserId());
+        if(null == ur){
+            ur = new UserRelation();
+            ur.setFromUserId(relation.getFromUserId());
+            ur.setToUserId(relation.getToUserId());
+            ur.setStatus(Status.TrustStatus.NONE.getStatus());
+        }
+        userRelationInfo.setUserRelation(ur);
+        return RestResp.success(userRelationInfo);
     }
 
     public RestResp forgetPwd(RequestBody body){

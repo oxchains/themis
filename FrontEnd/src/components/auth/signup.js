@@ -39,21 +39,21 @@ class Signup extends Component {
             isModalOpen: false
         });
     };
-    handleFormSubmit({ loginname, mobilephone, email, password }) {
+    handleFormSubmit({ loginname, mobilephone, vcode, password }) {
         if (loginname && password && mobilephone)
-            this.props.signupUser({ loginname, mobilephone, email, password }, err => {
+            this.props.signupUser({ loginname, mobilephone, vcode, password }, err => {
                 this.setState({ isModalOpen: true, error: err, actionResult: err || '注册成功!', spin: false });
             });
     }
 
     renderAlert() {
         if (this.props.errorMessage) {
+            const text = this.props.errorMessage == 'Network Error'?"网络连接错误":this.props.errorMessage == "Request failed with status code 500"?"服务器错误":this.props.errorMessage;
             return (
                 // <div className="alert alert-danger alert-dismissable">
                 //     {this.props.errorMessage}
                 // </div>
-                <Alert message= {this.props.errorMessage} type="error" showIcon />
-                
+                <Alert message= {text} type="error" showIcon />
             );
         }
     }
@@ -116,9 +116,9 @@ class Signup extends Component {
     render() {
         const { handleSubmit } = this.props;
 
-        if (this.props.all) {
-            return alert("验证码是");
-        }
+        // if (this.props.all) {
+        //     return alert("验证码是");
+        // }
 
         var text = this.state.liked ? '发送验证码' : this.state.count + ' s后重新发';
         const url = this.state.error === '操作失败' ? "/signup" : "/signin";
@@ -131,26 +131,25 @@ class Signup extends Component {
                     </div>
 
                     <div className="login-box-body">
-
-                        {this.renderAlert()}
                         <form className="form-signin" onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
                             <Field name="loginname" component={this.renderField} type="text" label="请输入用户名" />
                             <Field name="mobilephone" component={this.renderField} type="text" onBlur={this.phoneChange} label="请输入手机号" />
                             <div className="form-style-test">
-                                <Field name="email" className="form-test " component={this.renderField} type="text" label="请输入验证码" />
+                                <Field name="vcode" className="form-test " component={this.renderField} type="text" label="请输入验证码" />
                                 <span className={`send-testcode  ${this.state.liked ? "" : "time-color"}`} onClick={this.handlesend}>{text}</span>
                             </div>
                             <Field name="password" component={this.renderField} type="password" label="请输入密码" icon="lock" />
-                            <div className=" ">
+                            <div style={{width:85 +'%'}}>
                                 <div className=" checkbox-margin">
                                     <input type="checkbox" defaultChecked className="checkbox-width" onChange={this.handleChange.bind(this)} /><span> 我已阅读themis用户手册及相关法律</span>
                                 </div>
                                 <div className="">
                                     <button type="submit" className="btn   form-register"><i className={`fa fa-spinner fa-spin ${this.state.spin ? '' : 'hidden'}`}></i> 注册</button>
                                 </div>
-                                <div className="form-group">
-                                    <a className="forgetpwd" href="/signin">已有账户 ? 点击登录</a>
+                                <div className="form-group clicklogin">
+                                    <a className="" href="/signin">已有账户 ? 点击登录</a>
                                 </div>
+                                {this.renderAlert()}
                             </div>
                         </form>
                     </div>
@@ -197,12 +196,11 @@ const validate = values => {
 };
 
 function mapStateToProps(state) {
-    // console.log(state.auth.all)
     return {
-        all: state.auth.all
+        all: state.auth.all,
+        errorMessage: state.auth.error,
     };
 }
-
 const reduxSignupForm = reduxForm({
     form: 'SignForm',
     validate

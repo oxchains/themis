@@ -52,10 +52,6 @@ class Releaseadvert extends Component {
         e.preventDefault();
         const userId = localStorage.getItem("userId");
         const loginname = localStorage.getItem("loginname");
-
-        // const premium = this.refs.premium.value;
-        // const price = this.refs.price.value;
-
         const premium = this.state.premium;
         const price = this.state.price;
 
@@ -63,7 +59,6 @@ class Releaseadvert extends Component {
         const minTxLimit = this.refs.minTxLimit.value;
         const maxTxLimit = this.refs.maxTxLimit.value;
         const noticeContent = this.refs.noticeContent.value;
-
         const noticeType = this.state.status;
         const location = this.state.country;
         const currency = this.state.currency;
@@ -74,7 +69,7 @@ class Releaseadvert extends Component {
             });
         }
         else {
-            alert("请先登录哦");
+            alert("请先登录!");
         }
     }
     renderRowscountry() {
@@ -99,11 +94,11 @@ class Releaseadvert extends Component {
     }
     renderRowspayway() {
         const paymentList = this.props.array.paymentList || [];
-        return paymentList.map(({ id, payment_name }) => {
+        return paymentList.map(({ id, paymentName }) => {
             const Option = Select.Option;
             const ID = id.toString();
             return (
-                <Option key={id} label={payment_name} value={ID}>{payment_name}</Option>
+                <Option key={id} label={paymentName} value={ID}>{paymentName}</Option>
             );
         });
     }
@@ -132,9 +127,6 @@ class Releaseadvert extends Component {
         const premium = this.state.premium;
         const money = this.props.array.cnyDetailList || {};
         const price = parseFloat(this.state.price || money.buy).toFixed(2);
-
-        // console.log(this.props)
-
         return (
             <div className="maincontent">
                 <h2 className="h2title">发布一个比特币交易广告</h2>
@@ -171,7 +163,7 @@ class Releaseadvert extends Component {
                     <h5 className="h3title clear">*溢价: </h5>
                     <span className="tipspan">基于市场价的溢出比例,市场价是根据部分大型交易所实时价格得出的,确保您的报价趋于一个相对合理的范围,比如当前价格为7000,溢价比例为10%,那么价格为7700。</span>
 
-                    <input type="text" placeholder="%" className="display slectoption" onChange={this.handelChange} value={premium} ref="premium" />
+                    <input type="number" placeholder="%" className="display slectoption" onChange={this.handelChange} value={premium} ref="premium" />
                     {/*<Field name="premium" component={this.renderField} onChange={this.handelChange} value={premium}  type="text"  label="%"  />*/}
 
                     <h5 className="h3title clear">*价格: </h5>
@@ -183,19 +175,19 @@ class Releaseadvert extends Component {
                     <h5 className="h3title clear">*最低价: (选填)</h5>
                     <span className="tipspan">最低可成交的价格,可帮助您在价格剧烈波动时保持稳定的盈利,比如最低价为12000,市场价处于12000以下时,您的广告将依旧以12000的价格展示出来。</span>
 
-                    <input type="text" placeholder="CNY" className="display slectoption" ref="minPrice" />
+                    <input type="number" placeholder="CNY" className="display slectoption" ref="minPrice" />
                     {/*<Field name="minPrice" component={this.renderField} type="text"  label="CNY"  />*/}
 
                     <h5 className="h3title clear">*最小限额: </h5>
                     <span className="tipspan">一次交易的最低交易限制。</span>
 
-                    <input type="text" placeholder="请输入最小限额 CNY" className="display slectoption" ref="minTxLimit" />
+                    <input type="number" placeholder="请输入最小限额 CNY" className="display slectoption" ref="minTxLimit" />
                     {/*<Field name="minTxLimit" component={this.renderField} type="text"  label="请输入最小限额 CNY"  />*/}
 
                     <h5 className="h3title clear">*最大限额: </h5>
                     <span className="tipspan">一次交易中的最大交易限制,您的钱包余额也会影响最大量的设置。</span>
 
-                    <input type="text" placeholder="请输入最大限额 CNY" className="display slectoption" ref="maxTxLimit" />
+                    <input type="number" placeholder="请输入最大限额 CNY" className="display slectoption" ref="maxTxLimit" />
                     {/*<Field name="maxTxLimit" component={this.renderField} type="text"  label="请输入最大限额 CNY"  />*/}
 
 

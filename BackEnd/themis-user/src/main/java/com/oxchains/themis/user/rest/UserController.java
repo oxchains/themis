@@ -54,6 +54,12 @@ public class UserController {
     public RestResp login(@RequestBody User user){
         return userService.login(user);
     }
+
+    @GetMapping(value = "/queryRedis/{key}")
+    public String exist(@PathVariable String key){
+        return JsonUtil.toJson(userService._queryRedisValue(key));
+    }
+
     @PostMapping(value = "/logout")
     public RestResp logout(@RequestBody User user){
         return userService.logout(user);
@@ -162,6 +168,11 @@ public class UserController {
     @PostMapping(value = "/trust")
     public RestResp relation(UserRelation relation){
         return userService.relation(relation);
+    }
+
+    @GetMapping(value = "/relation")
+    public RestResp getRelation(UserRelation relation){
+        return userService.getRelation(relation);
     }
 
     @PostMapping(value = "/forget")
