@@ -191,7 +191,8 @@ class Selldetail extends Component {
 function mapStateToProps(state) {
     return {
         data: state.advert.data,     //点击出售返回的data
-        all: state.advert.all        //广告详情页面加载时的数据
+        all: state.advert.all,       //广告详情页面加载时的数据
+        authenticated: state.auth.authenticated
     };
 }
 export default connect(mapStateToProps, { fetctSellBtcDetail, fetctSellnow })(Selldetail);

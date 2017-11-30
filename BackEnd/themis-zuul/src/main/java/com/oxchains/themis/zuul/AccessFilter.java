@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class AccessFilter extends ZuulFilter{
 
-    private static final Logger LOG = LoggerFactory.getLogger(AccessFilter.class);
+    private final Logger LOG = LoggerFactory.getLogger(AccessFilter.class);
 
     @Resource
     private ParseService parseService;

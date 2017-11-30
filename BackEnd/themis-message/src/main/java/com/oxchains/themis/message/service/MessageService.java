@@ -183,7 +183,6 @@ public class MessageService {
             messageDTO.setTotalPage(page.getTotalPages());
             return RestResp.success("操作成功", messageDTO);
         }catch (Exception e){
-            e.printStackTrace();
             LOG.error("站内信：获取公告信息异常", e);
         }
         return RestResp.fail("操作失败");

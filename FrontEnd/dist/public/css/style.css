@@ -154,7 +154,7 @@ div {
 .form-register
 {
     display:block;
-    width:85%!important;
+    width:100%!important;
     height: 36px;
     margin-bottom: 15px;
     border-radius:3px;
@@ -165,7 +165,7 @@ div {
 }
 .help-block
 {
-    width: 80px!important;
+    width: 20%!important;
     margin-top:10px!important;
 }
 .form-login
@@ -350,7 +350,14 @@ div {
     justify-content: flex-end;
     padding-right: 15px;
 }
-.forgetpwd>a,.forgetpwd>a:hover,.forgetpwd>a:active
+.clicklogin
+{
+    /* width: 85%; */
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 15px;
+}
+.forgetpwd>a,.forgetpwd>a:hover,.forgetpwd>a:active,.clicklogin>a,.clicklogin>a:hover,.clicklogin>a:active
 {
     color: #444444;
     font-size: 13px;

@@ -38,7 +38,7 @@ import java.util.List;
 @Transactional
 public class NoticeService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NoticeService.class);
+    private final Logger LOG = LoggerFactory.getLogger(NoticeService.class);
 
     @Resource private NoticeDao noticeDao;
     @Resource private BTCTickerDao btcTickerDao;
@@ -183,7 +183,7 @@ public class NoticeService {
                 return RestResp.fail("操作失败");
             }
         }catch (Exception e){
-            LOG.error("查询所有公告异常", e.getMessage());
+            LOG.error("查询所有公告异常", e);
         }
         return RestResp.fail("操作失败");
     }
@@ -237,8 +237,7 @@ public class NoticeService {
                 return RestResp.fail("操作失败");
             }
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("查询BTC价格异常", e.getMessage());
+            LOG.error("查询BTC价格异常", e);
         }
         return RestResp.fail("操作失败");
     }
@@ -282,8 +281,7 @@ public class NoticeService {
                 return RestResp.fail("操作失败");
             }
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("获取BTC价格异常", e.getMessage());
+            LOG.error("获取BTC价格异常", e);
         }
         return RestResp.fail("操作失败");
     }
@@ -431,8 +429,7 @@ public class NoticeService {
             pageDTO.setPageList(resultList);
             return RestResp.success("操作成功", pageDTO);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("搜索出售公告异常", e.getMessage());
+            LOG.error("搜索出售公告异常", e);
         }
         return RestResp.fail("操作失败");
     }
@@ -466,8 +463,7 @@ public class NoticeService {
             Notice notice = noticeDao.findOne(id);
             return RestResp.success("操作成功", notice);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("根据公告ID查找异常", e.getMessage());
+            LOG.error("根据公告ID查找异常", e);
         }
         return RestResp.fail("操作失败");
     }
@@ -506,8 +502,7 @@ public class NoticeService {
                 return RestResp.fail("操作失败");
             }
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("查询状态异常", e.getMessage());
+            LOG.error("查询状态异常", e);
         }
         return RestResp.fail("操作失败");
     }
