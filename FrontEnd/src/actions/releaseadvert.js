@@ -34,7 +34,6 @@ export function fetctHome() {
     return function (dispatch) {
         axios.get(`${ROOT_URLL}/notice/query/random`, { headers: getAuthorizedHeader() })
             .then(response => {
-                // console.log("首页")
                 // console.log(response)
                 dispatch({ type: FETCH_HOME, payload: response });
             })
@@ -68,7 +67,6 @@ export function releaseAdvert({ userId, loginname, noticeType, location, currenc
 // 搜索广告
 
 export function fetcAdvertSeach({ searchType, location, currency, payType, pageNum }, callback) {
-    // console.log(`点击购买搜索传送的数据:${searchType},${location},${currency} ,${payType},${pageNum}`);
     return function (dispatch) {
         axios.post(`${ROOT_URLL}/notice/search/page/buy`, { searchType, location, currency, payType, pageNum }, { headers: getAuthorizedHeader() })
             .then(response => {
@@ -86,7 +84,6 @@ export function fetcAdvertSeach({ searchType, location, currency, payType, pageN
 // 购买比特币广告详情
 
 export function fetctBuyBtcDetail({ noticeId }, callback) {
-    // console.log(`购买比特币广告详情:${noticeId} `);
     return function (dispatch) {
         axios.post(`${ROOT_URLZ}/order/findUserTxDetailAndNotice`, { noticeId }, { headers: getAuthorizedHeader() })
             .then(response => {
@@ -102,10 +99,7 @@ export function fetctBuyBtcDetail({ noticeId }, callback) {
 // 购买比特币详情下单
 
 export function fetctBuynow({ formdata }, callback) {
-    // console.log("购买下单传送的数据")
-    // console.log(formdata);
     return function (dispatch) {
-        // axios.get(`${ROOT_URLZ}/order/addOrder`,{formdata}, { headers: getAuthorizedHeader() })
         axios({
             method: 'post',
             url: `${ROOT_URLZ}/order/addOrder `,
@@ -128,8 +122,6 @@ export function fetctBuynow({ formdata }, callback) {
 
 // 出售比特币详情下单
 export function fetctSellnow({ formdata }, callback) {
-    // console.log("出售下单传送的数据")
-    // console.log(formdata);
     return function (dispatch) {
         axios({
             method: 'post',
@@ -154,7 +146,6 @@ export function fetctSellnow({ formdata }, callback) {
 // 出售比特币广告详情
 
 export function fetctSellBtcDetail({ noticeId }, callback) {
-    // console.log(`出售比特币广告详情:${noticeId} `);
     return function (dispatch) {
         axios.post(`${ROOT_URLZ}/order/findUserTxDetailAndNotice`, { noticeId }, { headers: getAuthorizedHeader() })
             .then(response => {
@@ -187,8 +178,6 @@ export function fetctArray() {
     return function (dispatch) {
         axios.get(`${ROOT_URLL}/notice/query/statusKV`, { headers: getAuthorizedHeader() })
             .then(response => {
-                // console.log(`选择框返回的数据: `);
-                // console.log(response)
                 dispatch({ type: FETCH_ARRAY, payload: response });
             })
             .catch(err => {
@@ -204,7 +193,7 @@ export function fetctMyAdvert({ userId, noticeType, txStatus, pageNum }, callbac
     return function (dispatch) {
         axios.get(`${ROOT_URLL}/notice/query/me2?userId=${userId}&pageNum=${pageNum}&noticeType=${noticeType}&txStatus=${txStatus}`, { headers: getAuthorizedHeader() })
             .then(response => {
-                // console.log(response);
+                console.log(response);
                 dispatch({ type: FETCH_MY_ADVERT, payload: response });
                 if (response.data.status == 1) {
                     callback();
@@ -242,18 +231,14 @@ export function fetctOffMyAd({ id }, callback) {
 //用户基本信息
 
 export function fetctBaseInfo({ formdata }, callback) {
-    // console.log(formdata);
     return function (dispatch) {
-        // axios.post(`${ROOT_URLC}/user/info`,{loginname,description,image},{ headers: getAuthorizedHeader() })
         axios({
             method: 'post',
             url: `${ROOT_URLC}/user/info `,
             data: formdata,
-            // headers: getAuthorizedHeader(),
             headers: { 'content-type': 'multipart/form-data', getAuthorizedHeader },
             withCredentials: true
         }).then(response => {
-            // console.log(response);
             // dispatch({type: FETCH_BASE_INFO, payload: response})
             if (response.data.status == 1) {
                 callback();
@@ -269,7 +254,6 @@ export function fetctBaseInfo({ formdata }, callback) {
 //用户中心受信任的
 
 export function fetctTrusted({ userId, type, pageNo, pageSize }, callback) {
-    // console.log(`受信任的:${userId},${type},${pageNo} ,${pageSize} `);
     return function (dispatch) {
         axios.get(`${ROOT_URLC}/user/trust?userId=${userId}&pageNo=${pageNo}&pageSize=${pageSize}&type=${type}`,
             { headers: getAuthorizedHeader() }).then(response => {
