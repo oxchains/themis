@@ -34,7 +34,7 @@ export function fetctHome() {
     return function (dispatch) {
         axios.get(`${ROOT_URLL}/notice/query/random`, { headers: getAuthorizedHeader() })
             .then(response => {
-                // console.log(response)
+                console.log(response);
                 dispatch({ type: FETCH_HOME, payload: response });
             })
             .catch(err => {
@@ -50,7 +50,7 @@ export function releaseAdvert({ userId, loginname, noticeType, location, currenc
     return function (dispatch) {
         axios.post(`${ROOT_URLL}/notice/broadcast`, { userId, loginname, noticeType, location, currency, premium, price, minPrice, minTxLimit, maxTxLimit, payType, noticeContent }, { headers: getAuthorizedHeader() })
             .then(response => {
-                // console.log(response)
+                console.log(response);
                 if (response.data.status == 1) {
                     callback();
                 } else {
@@ -87,7 +87,7 @@ export function fetctBuyBtcDetail({ noticeId }, callback) {
     return function (dispatch) {
         axios.post(`${ROOT_URLZ}/order/findUserTxDetailAndNotice`, { noticeId }, { headers: getAuthorizedHeader() })
             .then(response => {
-                // console.log(response)
+                console.log(response);
                 dispatch({ type: FETCH_BUY_BTC_DETAIL, payload: response });
             })
             .catch(err => {
@@ -106,7 +106,7 @@ export function fetctBuynow({ formdata }, callback) {
             data: formdata,
             headers: getAuthorizedHeader()
         }).then(response => {
-            // console.log(response)
+            console.log(response);
             dispatch({ type: FETCH_BUY_NOW, payload: response });
             if (response.data.status == 1) {
                 callback();
@@ -129,7 +129,7 @@ export function fetctSellnow({ formdata }, callback) {
             data: formdata,
             headers: getAuthorizedHeader()
         }).then(response => {
-            // console.log(response)
+            console.log(response);
             dispatch({ type: FETCH_SELL_NOW, payload: response });
             if (response.data.status == 1) {
                 callback();
@@ -149,7 +149,7 @@ export function fetctSellBtcDetail({ noticeId }, callback) {
     return function (dispatch) {
         axios.post(`${ROOT_URLZ}/order/findUserTxDetailAndNotice`, { noticeId }, { headers: getAuthorizedHeader() })
             .then(response => {
-                // console.log(response)
+                console.log(response);
                 dispatch({ type: FETCH_SELL_BTC_DETAIL, payload: response });
             })
             .catch(err => {
@@ -178,6 +178,7 @@ export function fetctArray() {
     return function (dispatch) {
         axios.get(`${ROOT_URLL}/notice/query/statusKV`, { headers: getAuthorizedHeader() })
             .then(response => {
+                console.log(response);
                 dispatch({ type: FETCH_ARRAY, payload: response });
             })
             .catch(err => {
@@ -214,7 +215,7 @@ export function fetctOffMyAd({ id }, callback) {
     return function (dispatch) {
         axios.get(`${ROOT_URLL}/notice/stop?id=${id}`, { headers: getAuthorizedHeader() })
             .then(response => {
-                // console.log(response)
+                console.log(response);
                 // dispatch({type: FETCH_OFF_MYBTC, payload: response})
                 if (response.data.status == 1) {
                     callback();
@@ -239,6 +240,7 @@ export function fetctBaseInfo({ formdata }, callback) {
             headers: { 'content-type': 'multipart/form-data', getAuthorizedHeader },
             withCredentials: true
         }).then(response => {
+            console.log(response);
             // dispatch({type: FETCH_BASE_INFO, payload: response})
             if (response.data.status == 1) {
                 callback();
@@ -257,7 +259,7 @@ export function fetctTrusted({ userId, type, pageNo, pageSize }, callback) {
     return function (dispatch) {
         axios.get(`${ROOT_URLC}/user/trust?userId=${userId}&pageNo=${pageNo}&pageSize=${pageSize}&type=${type}`,
             { headers: getAuthorizedHeader() }).then(response => {
-                // console.log(response);
+                console.log(response);
                 dispatch({ type: FETCH_TRUSTED, payload: response });
 
             })
