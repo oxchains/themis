@@ -75,6 +75,16 @@ public class UserService extends BaseService {
         user.setPassword(EncryptUtils.encodeSHA256(user.getPassword()));
         Optional<User> optional = findUser(user);
         if (optional.isPresent()) {
+            User u = optional.get();
+            if(null != user.getLoginname() && user.getLoginname().equals(u.getLoginname())){
+                return RestResp.fail("用户名已经存在");
+            }
+            if(null != user.getMobilephone() && user.getMobilephone().equals(u.getMobilephone())){
+                return RestResp.fail("该手机号已被注册");
+            }
+            if(null != user.getEmail() && user.getEmail().equals(u.getEmail())){
+                return RestResp.fail("该邮箱已被注册");
+            }
             return RestResp.fail("操作失败");
         }
         if(null == user.getCreateTime()){
