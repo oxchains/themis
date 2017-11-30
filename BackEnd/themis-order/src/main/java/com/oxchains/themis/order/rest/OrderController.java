@@ -6,7 +6,6 @@ import com.oxchains.themis.order.entity.vo.OrdersInfo;
 import com.oxchains.themis.order.entity.vo.UserTxDetails;
 import com.oxchains.themis.order.service.OrderService;
 import com.oxchains.themis.repo.entity.OrderAddresskeys;
-import com.oxchains.themis.repo.entity.Orders;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
@@ -40,6 +39,9 @@ public class OrderController {
         return orderService.uploadTxId(pojo);
     }
     //移动端
+    /*
+    * 移动端 卖家扫完付款 上传交易凭据
+    * */
     @RequestMapping("/order/uploadTxIdMove")
     public RestResp uploadTxIdMove(@RequestBody Pojo pojo){
         return orderService.uploadTxId(pojo);
@@ -134,7 +136,7 @@ public class OrderController {
     @RequestMapping("/order/findUserTxDetailAndNotice")
     public RestResp findUserTxDetailsAndNotice(@RequestBody Pojo pojo){
         UserTxDetails UserTxDetailsAndNotice = orderService.findUserTxDetailsAndNotice(pojo);
-        return UserTxDetailsAndNotice==null?RestResp.fail("未知错误"):RestResp.success(UserTxDetailsAndNotice);
+        return RestResp.success(UserTxDetailsAndNotice);
     }
     /*
     * 判断卖家有没有上传公私匙
@@ -167,14 +169,6 @@ public class OrderController {
         if(pojo.getPageNum() == null){
             pojo.setPageNum(1);
         }
-    }
-    /*
-    * 张晓晶 调试状态用
-    * */
-    @RequestMapping("/{orderid}/{status}")
-    public RestResp updateOrderStatus(@PathVariable("orderid") String orderId,@PathVariable("status") Long status){
-        Orders o = orderService.updateOrderStatus(orderId,status);
-        return o==null?RestResp.fail():RestResp.success(o);
     }
 }
 
