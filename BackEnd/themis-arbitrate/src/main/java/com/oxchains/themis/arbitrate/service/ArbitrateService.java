@@ -1,5 +1,6 @@
 package com.oxchains.themis.arbitrate.service;
 import com.alibaba.fastjson.JSONObject;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.oxchains.themis.arbitrate.common.*;
 import com.oxchains.themis.arbitrate.entity.OrderEvidence;
 import com.oxchains.themis.arbitrate.entity.vo.OrdersInfo;
@@ -222,6 +223,7 @@ public class ArbitrateService {
         return RestResp.success();
     }
     //从用户中心 根据用户id获取用户信息
+    @HystrixCommand(fallbackMethod = "remoteError")
     public User getUserById(Long userId){
         User user = null;
         try {
@@ -241,25 +243,11 @@ public class ArbitrateService {
         }
         return null;
     }
-    //操作订单状态时 修改公告状态
-    public Notice saveNotice(Long id,Integer sta){
-        try {
-            JSONObject forObject = restTemplate.getForObject(ThemisUserAddress.SAVE_NOTICE + id + "/" + sta, JSONObject.class);
-            Integer status = (Integer) forObject.get("status");
-            if(status == 1){
-                Object data = forObject.get("data");
-                String str = JsonUtil.toJson(data);
-                Notice notice = JsonUtil.jsonToEntity(str,Notice.class);
-                return notice;
-            }
-        } catch (RestClientException e) {
-            LOG.error("update notice status faild:{}",e.getMessage(),e);
-            throw  e;
-        }
-        return null;
-
+    private RestResp remoteError(Long obj){
+        return RestResp.fail("sorry,remote call error");
     }
     //从公告系统 获取公告
+    @HystrixCommand(fallbackMethod = "remoteError")
     public Notice findNoticeById(Long id){
         try {
             JSONObject forObject = restTemplate.getForObject(ThemisUserAddress.GET_NOTICE + id, JSONObject.class);
