@@ -52,10 +52,6 @@ class Releaseadvert extends Component {
         e.preventDefault();
         const userId = localStorage.getItem("userId");
         const loginname = localStorage.getItem("loginname");
-
-        // const premium = this.refs.premium.value;
-        // const price = this.refs.price.value;
-
         const premium = this.state.premium;
         const price = this.state.price;
 
@@ -67,14 +63,14 @@ class Releaseadvert extends Component {
         const location = this.state.country;
         const currency = this.state.currency;
         const payType = this.state.payway;
-        // if (this.props.authenticated) {
+        if (this.props.authenticated) {
             this.props.releaseAdvert({ userId, loginname, noticeType, location, currency, premium, price, minPrice, minTxLimit, maxTxLimit, payType, noticeContent }, err => {
                 this.setState({ isModalOpen: true, error: err, actionResult: err || '发布成功!' });
             });
-        // }
-        // else {
-        //     alert("请先登录哦");
-        // }
+        }
+        else {
+            alert("请先登录!");
+        }
     }
     renderRowscountry() {
         const locationList = this.props.array.locationList || [];
@@ -98,11 +94,11 @@ class Releaseadvert extends Component {
     }
     renderRowspayway() {
         const paymentList = this.props.array.paymentList || [];
-        return paymentList.map(({ id, payment_name }) => {
+        return paymentList.map(({ id, paymentName }) => {
             const Option = Select.Option;
             const ID = id.toString();
             return (
-                <Option key={id} label={payment_name} value={ID}>{payment_name}</Option>
+                <Option key={id} label={paymentName} value={ID}>{paymentName}</Option>
             );
         });
     }
@@ -131,9 +127,6 @@ class Releaseadvert extends Component {
         const premium = this.state.premium;
         const money = this.props.array.cnyDetailList || {};
         const price = parseFloat(this.state.price || money.buy).toFixed(2);
-
-        // console.log(this.props)
-
         return (
             <div className="maincontent">
                 <h2 className="h2title">发布一个比特币交易广告</h2>

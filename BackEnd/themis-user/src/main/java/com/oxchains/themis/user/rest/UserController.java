@@ -170,6 +170,11 @@ public class UserController {
         return userService.relation(relation);
     }
 
+    @GetMapping(value = "/relation")
+    public RestResp getRelation(UserRelation relation){
+        return userService.getRelation(relation);
+    }
+
     @PostMapping(value = "/forget")
     public RestResp forgetPwd(com.oxchains.themis.common.param.RequestBody body){
         return userService.forgetPwd(body);
