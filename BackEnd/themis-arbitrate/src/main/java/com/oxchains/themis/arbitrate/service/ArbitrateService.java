@@ -13,12 +13,15 @@ import com.oxchains.themis.repo.dao.OrderRepo;
 import com.oxchains.themis.repo.dao.PaymentRepo;
 import com.oxchains.themis.repo.dao.UserTxDetailDao;
 import com.oxchains.themis.repo.entity.*;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -54,7 +57,12 @@ public class ArbitrateService {
     private MessageService messageService;
     @Resource
     UserTxDetailDao userTxDetailDao;
-
+    @Resource
+    HashOperations hashOperations;
+    @Value("${themis.user.redisInfo.hk}")
+    private String userHK;
+    @Value("${themis.notice.redisInfo.hk}")
+    private String noticeHk;
     public static final Integer BUYER_SUCCESS = 1;
     public static final Integer SELLER_SUCCESS = 2;
     /*
@@ -70,8 +78,8 @@ public class ArbitrateService {
             ordersInfoList = new ArrayList<>();
             for (OrderArbitrate o: orderArbitratePage.getContent()) {
                 ordersInfo = this.findOrdersDetails(o.getOrderId());
-                ordersInfo.setBuyerUsername(this.getUserById(ordersInfo.getBuyerId()).getLoginname());
-                ordersInfo.setSellerUsername(this.getUserById(ordersInfo.getSellerId()).getLoginname());
+                ordersInfo.setBuyerUsername(this.getLoginNameByUserId(ordersInfo.getBuyerId()));
+                ordersInfo.setSellerUsername(this.getLoginNameByUserId(ordersInfo.getSellerId()));
                 this.setOrderStatusName(ordersInfo);
                 ordersInfo.setStatus(o.getStatus());
                 ordersInfoList.add(ordersInfo);
@@ -223,19 +231,20 @@ public class ArbitrateService {
         return RestResp.success();
     }
     //从用户中心 根据用户id获取用户信息
-    @HystrixCommand(fallbackMethod = "remoteError")
     public User getUserById(Long userId){
-        User user = null;
+
         try {
-            JSONObject str = restTemplate.getForObject(ThemisUserAddress.GET_USER+userId, JSONObject.class);
+            String userInfo = (String) hashOperations.get(userHK, userId.toString());
+            if(StringUtils.isNotBlank(userInfo)){
+                return JsonUtil.jsonToEntity(userInfo,User.class);
+            }
+            String str = restTemplate.getForObject(ThemisUserAddress.GET_USER+userId, String.class);
             if(null != str){
-                Integer status = (Integer) str.get("status");
-                if(status == 1){
-                    Object data = str.get("data");
-                    String userStr = JsonUtil.toJson(data);
-                    user = JsonUtil.jsonToEntity(userStr, User.class);
+                RestResp restResp = JsonUtil.jsonToEntity(str, RestResp.class);
+                if(null != restResp && restResp.status == 1){
+                    hashOperations.put(userHK,userId.toString(),JsonUtil.toJson(restResp.data));
+                    return JsonUtil.objectToEntity(restResp.data,User.class);
                 }
-                return user;
             }
         } catch (Exception e) {
             LOG.error("get user by id from themis-user faild : {}",e.getMessage(),e);
@@ -243,26 +252,34 @@ public class ArbitrateService {
         }
         return null;
     }
-    private RestResp remoteError(Long obj){
-        return RestResp.fail("sorry,remote call error");
-    }
     //从公告系统 获取公告
-    @HystrixCommand(fallbackMethod = "remoteError")
     public Notice findNoticeById(Long id){
+        Notice notice1 = null;
         try {
-            JSONObject forObject = restTemplate.getForObject(ThemisUserAddress.GET_NOTICE + id, JSONObject.class);
-            Integer status = (Integer) forObject.get("status");
-            if(status == 1){
-                Object data = forObject.get("data");
-                String str = JsonUtil.toJson(data);
-                Notice notice = JsonUtil.jsonToEntity(str, Notice.class);
-                return notice;
+            String noticeStrs = (String) hashOperations.get(noticeHk, id.toString());
+            if(StringUtils.isNotBlank(noticeStrs)){
+                return JsonUtil.jsonToEntity(noticeStrs,Notice.class);
+            }
+            String noticeStr = this.getNotice(id);
+            if(noticeStr != null){
+                RestResp restResp = JsonUtil.jsonToEntity(noticeStr, RestResp.class);
+                if(null != restResp && restResp.status == 1){
+                    notice1 = JsonUtil.objectToEntity(restResp.data, Notice.class);
+                }
+                hashOperations.put(noticeHk,id.toString(),JsonUtil.toJson(restResp.data));
+                return notice1;
             }
         } catch (RestClientException e) {
             LOG.error("get notice faild : {}",e.getMessage(),e);
-            throw  e;
         }
         return null;
+    }
+    @HystrixCommand(fallbackMethod = "remoteNoticeError")
+    private String getNotice(Long id){
+        return restTemplate.getForObject(ThemisUserAddress.GET_NOTICE + id, String.class);
+    }
+    private String remoteNoticeError(Long noticeId){
+        return "error"+noticeId;
     }
     public void userTxDetailHandle(Orders orders){
         UserTxDetail userTxDetails = userTxDetailDao.findByUserId(orders.getBuyerId());
@@ -273,5 +290,9 @@ public class ArbitrateService {
         noticeTx.setTxNum(noticeTx.getTxNum()+1);
         noticeTx.setSuccessCount(noticeTx.getSuccessCount()+orders.getAmount().doubleValue());
         userTxDetailDao.save(noticeTx);
+    }
+    private String getLoginNameByUserId(Long userId){
+        User userById = this.getUserById(userId);
+        return userById != null?userById.getLoginname():null;
     }
 }
