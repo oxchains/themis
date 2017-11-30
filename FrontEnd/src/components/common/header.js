@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 import { Badge } from 'antd';
 import { connect } from 'react-redux';
 import { fetchMessageNumber } from "../../actions/message";
+import { signinAction } from '../../actions/auth';
+
 class Header extends Component {
     constructor(props) {
         super(props);
@@ -94,4 +96,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { fetchMessageNumber })(Header);
+export default connect(mapStateToProps, { fetchMessageNumber, signinAction })(Header);

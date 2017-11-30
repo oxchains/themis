@@ -24,8 +24,6 @@ export function signinAction({ mobilephone, password }) {
     return function (dispatch) {
         axios.post(`${ROOT_URLC}/user/login`, { mobilephone, password })
             .then(response => {
-                console.log(response);
-
                 if (response.data.status == 1) {
                     localStorage.setItem('token', response.data.data.token);
                     localStorage.setItem('role', response.data.data.role.id);
@@ -34,16 +32,17 @@ export function signinAction({ mobilephone, password }) {
                     localStorage.setItem('mobilephone', response.data.data.mobilephone);//手机号
                     localStorage.setItem('createTime', response.data.data.createTime);//注册时间
                     localStorage.setItem('email', response.data.data.email);//邮箱
-                    localStorage.setItem('firstBuyTime', response.data.data.userTxDetail.firstBuyTime); //第一次交易时间
-                    localStorage.setItem('txNum', response.data.data.userTxDetail.txNum); //交易次数
-                    localStorage.setItem('believeNum', response.data.data.userTxDetail.believeNum);//信任人数
-                    localStorage.setItem('sellAmount', response.data.data.userTxDetail.sellAmount); //出售的累计交易数量
-                    localStorage.setItem('buyAmount', response.data.data.userTxDetail.buyAmount); //购买的累计交易数量
-                    dispatch({ type: AUTH_USER });
+                    // localStorage.setItem('firstBuyTime', response.data.data.userTxDetail.firstBuyTime); //第一次交易时间
+                    // localStorage.setItem('txNum', response.data.data.userTxDetail.txNum); //交易次数
+                    // localStorage.setItem('believeNum', response.data.data.userTxDetail.believeNum);//信任人数
+                    // localStorage.setItem('sellAmount', response.data.data.userTxDetail.sellAmount); //出售的累计交易数量
+                    // localStorage.setItem('buyAmount', response.data.data.userTxDetail.buyAmount); //购买的累计交易数量
                     // browserHistory.push('/');
                 } else {
                     dispatch(authError(response.data.message));
                 }
+                console.log(response);
+                dispatch({ type: AUTH_USER });
             })
             .catch((err) => {
                 dispatch(authError(err.message));
