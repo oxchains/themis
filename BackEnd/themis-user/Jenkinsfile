@@ -9,13 +9,13 @@ node {
       //mvnHome = tool 'M3'
    }
    stage('Package'){
-        dir(themis/BackEnd){
+        dir(BackEnd){
             sh  'mvn clean package -DskipTests'
         }
    }
 
    stage('Build Image'){
-           dir(themis/BackEnd/themis-user){
+           dir(BackEnd/themis-user){
                docker.build("192.168.1.101:5005/oxchains/themis-user:latest").push()
            }
     }
@@ -23,7 +23,7 @@ node {
 
    stage('Deploy') {
            //替换rpcserver.yaml的镜像版本号，待完成
-           dir('themis/BackEnd/themis-user') {
+           dir('BackEnd/themis-user') {
                //scp rpcserver.yaml 到 k8s的master上
                //sh 'sshpass -p oxchains scp themis-user.yaml root@192.168.1.137:~/apps/themis-user.yml'
 
