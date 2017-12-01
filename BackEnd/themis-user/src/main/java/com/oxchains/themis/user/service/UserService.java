@@ -254,7 +254,7 @@ public class UserService extends BaseService {
                 return optional;
             }
         }
-        return optional;
+        return Optional.empty();
     }
 
     public RestResp findUsers() {
