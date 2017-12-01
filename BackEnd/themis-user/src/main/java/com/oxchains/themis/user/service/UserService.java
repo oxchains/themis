@@ -152,7 +152,7 @@ public class UserService extends BaseService {
                 break;
                 default:
         }
-        reSaveRedis(user, token);
+        reSaveRedis(u, token);
         return save(u);
     }
     private RestResp save(User user){
@@ -167,40 +167,44 @@ public class UserService extends BaseService {
 
     public RestResp login(User user) {
         user.setPassword(EncryptUtils.encodeSHA256(user.getPassword()));
-        Optional<User> optional = findUser(user);
-        return optional.map(u -> {
-            if(u.getLoginStatus().equals(Status.LoginStatus.LOGIN.getStatus())){
-                return RestResp.fail("用户已经登录");
-            }
-            String originToken = jwtService.generate(u);
-            token = "Bearer " + originToken;
+        try{
+            Optional<User> optional = findUser(user);
+            return optional.map(u -> {
+                if(u.getLoginStatus().equals(Status.LoginStatus.LOGIN.getStatus())){
+                    return RestResp.fail("用户已经登录");
+                }
+                String originToken = jwtService.generate(u);
+                token = "Bearer " + originToken;
 
-            Role role = roleDao.findById(u.getRoleId());
-            UserTxDetail userTxDetail = findUserTxDetailByUserId(u.getId());
+                Role role = roleDao.findById(u.getRoleId());
+                UserTxDetail userTxDetail = findUserTxDetailByUserId(u.getId());
 
-            logger.info("token = " + token);
-            User userInfo = new User(u);
-            userInfo.setRole(role);
-            userInfo.setPassword(null);
-            userInfo.setToken(token);
+                logger.info("token = " + token);
+                User userInfo = new User(u);
+                userInfo.setRole(role);
+                userInfo.setPassword(null);
+                userInfo.setToken(token);
 
-            userInfo.setUserTxDetail(userTxDetail);
+                userInfo.setUserTxDetail(userTxDetail);
 
-            u.setLoginStatus(Status.LoginStatus.LOGOUT.getStatus());
-            User save = userDao.save(u);
+                u.setLoginStatus(Status.LoginStatus.LOGOUT.getStatus());
+                User save = userDao.save(u);
 
-            // redis 存储
-            boolean keyExist = redisTemplate.hasKey(save.getId().toString());
-            if (!keyExist){
-                logger.info("保存 TOKEN 到 REDIS");
-                saveRedis(save ,originToken);
-            }
+                // redis 存储
+                boolean keyExist = redisTemplate.hasKey(save.getId().toString());
+                if (!keyExist){
+                    logger.info("保存 TOKEN 到 REDIS");
+                    saveRedis(save ,originToken);
+                }
 
-            ConstantUtils.USER_TOKEN.put(u.getLoginname(), token);
+                ConstantUtils.USER_TOKEN.put(u.getLoginname(), token);
 
-            //new UserToken(u.getUsername(),token)
-            return RestResp.success("登录成功", userInfo);
-        }).orElse(RestResp.fail("登录失败"));
+                //new UserToken(u.getUsername(),token)
+                return RestResp.success("登录成功", userInfo);
+            }).orElse(RestResp.fail("登录账号或密码错误"));
+        }catch (Exception e){
+            return RestResp.fail("用户信息异常");
+        }
     }
 
     @Deprecated
