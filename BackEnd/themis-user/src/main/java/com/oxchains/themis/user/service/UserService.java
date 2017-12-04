@@ -440,4 +440,31 @@ public class UserService extends BaseService {
         return RestResp.success(user);
     }
 
+    public boolean saveVcode(String key, String vcode){
+        try {
+            ValueOperations<String, String> ops = redisTemplate.opsForValue();
+            ops.set(key, vcode, 5L, TimeUnit.MINUTES);
+            return true;
+        }catch (Exception e){
+            logger.error("Redis 操作异常:" ,e);
+            return false;
+        }
+    }
+
+    public String getVcodeFromRedis(String key){
+        String val = null;
+        try{
+            boolean flag = redisTemplate.hasKey(key);
+            if(!flag){
+                return val;
+            }
+            ValueOperations<String,String> ops = redisTemplate.opsForValue();
+            val = ops.get(key);
+            redisTemplate.delete(key);
+            return val;
+        }catch (Exception e){
+            logger.error("Redis 操作异常", e);
+            return null;
+        }
+    }
 }
