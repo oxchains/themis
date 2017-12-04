@@ -26,7 +26,7 @@ class Signin extends Component {
                 <Redirect to={from} />
             );
         } else if (this.props.errorMessage){
-            const text = this.props.errorMessage == 'Network Error'?"网络连接错误":this.props.errorMessage == "Request failed with status code 500"?"服务器错误":this.props.errorMessage;
+            const text = this.props.errorMessage == 'Network Error'?"网络连接错误":this.props.errorMessage == "Request failed with status code 500"?"服务器繁忙 稍后重试":this.props.errorMessage;
             return (
                 <Alert message= {text} type="error" showIcon />
             );
@@ -48,9 +48,9 @@ class Signin extends Component {
                             <div className="form-signin"  >
                                 <select name="" id="" className="input form-group"> +86
                                     <option value="1">中国 + 86</option>
-                                    <option value="2">美国 + 22</option>
-                                    <option value="3">英国 + 33</option>
-                                    <option value="4">韩国 + 44</option>
+                                    <option value="2">美国 + 1</option>
+                                    <option value="3">英国 + 44</option>
+                                    <option value="4">日本 + 81</option>
                                 </select>
                                 <input className="input form-group" type="text" placeholder="请输入手机号" ref="loginname" /> <br />
                                 <input className="input form-group" type="password" placeholder="请输入密码" ref="password" /><br />
@@ -70,7 +70,7 @@ class Signin extends Component {
     }
 }
 function mapStateToProps(state) {
-    console.log(state.auth.error);
+    // console.log(state.auth.error);
     return {
         loggedIn: state.auth.authenticated,
         errorMessage: state.auth.error

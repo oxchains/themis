@@ -126,6 +126,9 @@ public class UserService extends BaseService {
         return RestResp.success("操作成功");
     }
     public RestResp updateUser(User user, ParamType.UpdateUserInfoType uuit) {
+        if(user.getLoginname()==null){
+            return RestResp.fail("非法参数");
+        }
         User u = userDao.findByLoginname(user.getLoginname());
         switch (uuit){
             case INFO:
