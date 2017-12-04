@@ -1,4 +1,5 @@
 package com.oxchains.themis.order.service;
+import com.alibaba.fastjson.JSON;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.oxchains.themis.common.constant.ThemisUserAddress;
 import com.oxchains.themis.common.model.AddressKeys;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -21,6 +23,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 /**
  * @author huohuo
@@ -31,6 +34,8 @@ public class RemoteCallService {
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
     @Resource
     HashOperations hashOperations;
+    @Resource
+    ListOperations listOperations;
     @Value("${themis.user.redisInfo.hk}")
     private String userHK;
     @Value("${themis.notice.redisInfo.hk}")
@@ -39,7 +44,7 @@ public class RemoteCallService {
     private String arbitrateHK;
     @Value("${themis.txAddress.redisInfo.hk}")
     private String txAddressHK;
-    private Integer arbitrateK = 1;
+    private String arbitrateK = "1";
     @Resource
     private RestTemplate restTemplate;
     //从用户中心 根据用户id获取用户信息
@@ -67,15 +72,22 @@ public class RemoteCallService {
     //从用户中心获取仲裁者用户列表
     public List<User> getArbitrateUser(){
         try {
-            String stra = (String) hashOperations.get(arbitrateHK, arbitrateK);
-            if(StringUtils.isNotBlank(stra)){
-                return JsonUtil.objectToList(stra,User.class);
+            List<String> userList1 = listOperations.range(arbitrateHK, 0,3L);
+            if(userList1!=null && userList1.size()>=3){
+                List<User> ulist = new ArrayList<>(5);
+                for (String s: userList1) {
+                    ulist.add(JsonUtil.jsonToEntity(s,User.class));
+                }
+                return ulist;
             }
             String str = restTemplate.getForObject(ThemisUserAddress.GET_ARBITRATE_USER, String.class);
             if(null != str){
                 RestResp restResp = JsonUtil.jsonToEntity(str,RestResp.class);
                 if(null != restResp && restResp.status== 1){
-                    hashOperations.put(arbitrateHK,arbitrateK,JsonUtil.toJson(restResp.data));
+                    List<User> userList = JsonUtil.objectToList(restResp.data, User.class);
+                    for (User user : userList) {
+                        listOperations.leftPush(arbitrateHK, JsonUtil.toJson(user));
+                    }
                     return JsonUtil.objectToList(restResp.data,User.class);
                 }
             }

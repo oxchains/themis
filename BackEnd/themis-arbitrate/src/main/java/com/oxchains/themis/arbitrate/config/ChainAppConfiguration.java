@@ -22,15 +22,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 public class ChainAppConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final JwtTokenFilter jwtTokenFilter;
-    private final JwtAuthenticationProvider jwtAuthenticationProvider;
-    private final AuthError authError;
-
-    public ChainAppConfiguration(@Autowired JwtTokenFilter jwtTokenFilter, @Autowired JwtAuthenticationProvider jwtAuthenticationProvider, @Autowired AuthError authError) {
-        this.jwtTokenFilter = jwtTokenFilter;
-        this.jwtAuthenticationProvider = jwtAuthenticationProvider;
-        this.authError = authError;
-    }
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
@@ -39,17 +30,11 @@ public class ChainAppConfiguration extends WebSecurityConfigurerAdapter {
           .csrf()
           .disable()
           .authorizeRequests()
-          .antMatchers("/**/*").permitAll()
-          .and()
-          .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
-          .exceptionHandling()
-          .authenticationEntryPoint(authError)
-          .accessDeniedHandler(authError);
+          .antMatchers("/**/*","/**/*/*").permitAll();
     }
 
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(jwtAuthenticationProvider);
     }
 
     /**

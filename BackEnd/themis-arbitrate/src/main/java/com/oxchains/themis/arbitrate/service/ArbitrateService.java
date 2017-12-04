@@ -1,6 +1,6 @@
 package com.oxchains.themis.arbitrate.service;
-import com.alibaba.fastjson.JSONObject;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.oxchains.basicService.files.tfsService.TFSConsumer;
 import com.oxchains.themis.arbitrate.common.*;
 import com.oxchains.themis.arbitrate.entity.OrderEvidence;
 import com.oxchains.themis.arbitrate.entity.vo.OrdersInfo;
@@ -30,11 +30,10 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
+
 /**
  * Created by huohuo on 2017/10/25.
  * @author huohuo
@@ -59,6 +58,8 @@ public class ArbitrateService {
     UserTxDetailDao userTxDetailDao;
     @Resource
     HashOperations hashOperations;
+    @Resource
+    TFSConsumer tfsConsumer;
     @Value("${themis.user.redisInfo.hk}")
     private String userHK;
     @Value("${themis.notice.redisInfo.hk}")
@@ -157,7 +158,7 @@ public class ArbitrateService {
             if(hasNum+multipartFileList.size()>5){
                 return RestResp.fail("对不起,你上传的凭据超出限额,系统上限为五张,你已上传"+hasNum+"张");
             }
-            for(MultipartFile mf:multipartFileList){
+            /*for(MultipartFile mf:multipartFileList){
                 String filename = mf.getOriginalFilename();
                 String suffix = filename.substring(filename.lastIndexOf("."));
                 UUID uuid = UUID.randomUUID();
@@ -165,6 +166,13 @@ public class ArbitrateService {
                 mf.transferTo(new File(imageUrl+newFileName));
                 imageName.append(",");
                 imageName.append(newFileName);
+            }*/
+            for(MultipartFile mf:multipartFileList){
+                String filename = mf.getOriginalFilename();
+                String suffix = filename.substring(filename.lastIndexOf("."));
+                String fileName = tfsConsumer.saveTfsFile(mf);
+                imageName.append(",");
+                imageName.append(fileName);
             }
             if(orders.getBuyerId() == pojo.getUserId().longValue()){
                 orderEvidence.setBuyerContent(orderEvidence.getBuyerContent()!=null?orderEvidence.getBuyerContent()+"."+pojo.getContent():pojo.getContent());
@@ -234,7 +242,9 @@ public class ArbitrateService {
     public User getUserById(Long userId){
 
         try {
+            System.out.println(userId);
             String userInfo = (String) hashOperations.get(userHK, userId.toString());
+            System.out.println(userInfo);
             if(StringUtils.isNotBlank(userInfo)){
                 return JsonUtil.jsonToEntity(userInfo,User.class);
             }
