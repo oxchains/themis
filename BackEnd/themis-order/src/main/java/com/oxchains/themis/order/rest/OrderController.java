@@ -2,13 +2,17 @@ package com.oxchains.themis.order.rest;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.order.common.Pojo;
 import com.oxchains.themis.order.common.RestRespPage;
+import com.oxchains.themis.order.entity.ValidaPojo.AddOrderPojo;
+import com.oxchains.themis.order.entity.ValidaPojo.UploadTxIdPojo;
 import com.oxchains.themis.order.entity.vo.OrdersInfo;
 import com.oxchains.themis.order.entity.vo.UserTxDetails;
 import com.oxchains.themis.order.service.OrderService;
 import com.oxchains.themis.repo.entity.OrderAddresskeys;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
+import javax.validation.Valid;
 /**
  * Created by huohuo on 2017/10/23.
  * @author huohuo
@@ -21,21 +25,30 @@ public class OrderController {
    * 一 ：添加订单
    * */
     @RequestMapping("/order/addOrder")
-    public RestResp addOrder(@RequestBody Pojo pojo){
+    public RestResp addOrder(@Valid @RequestBody AddOrderPojo pojo,BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return RestResp.fail(bindingResult.getAllErrors().get(0).getDefaultMessage());
+        }
         return orderService.addOrders(pojo);
     }
     /*
     * 二 ：卖家上传公私钥
     * */
     @RequestMapping("/order/saveAddresskey")
-    public RestResp saveAddresskey(@RequestBody OrderAddresskeys orderAddresskeys){
+    public RestResp saveAddresskey(@Valid @RequestBody OrderAddresskeys orderAddresskeys,BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return RestResp.fail(bindingResult.getAllErrors().get(0).getDefaultMessage());
+        }
         return orderService.saveAddresskey(orderAddresskeys);
     }
     /*
     * 三 ：卖家上传交易凭据
     * */
     @RequestMapping("/order/uploadTxId")
-    public RestResp uploadTxId(@RequestBody Pojo pojo){
+    public RestResp uploadTxId(@Valid @RequestBody UploadTxIdPojo pojo, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return RestResp.fail(bindingResult.getAllErrors().get(0).getDefaultMessage());
+        }
         return orderService.uploadTxId(pojo);
     }
     //移动端
@@ -43,7 +56,10 @@ public class OrderController {
     * 移动端 卖家扫完付款 上传交易凭据
     * */
     @RequestMapping("/order/uploadTxIdMove")
-    public RestResp uploadTxIdMove(@RequestBody Pojo pojo){
+    public RestResp uploadTxIdMove(@Valid @RequestBody UploadTxIdPojo pojo, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return RestResp.fail(bindingResult.getAllErrors().get(0).getDefaultMessage());
+        }
         return orderService.uploadTxId(pojo);
     }
     /*

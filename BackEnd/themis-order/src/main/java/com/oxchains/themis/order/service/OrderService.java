@@ -8,6 +8,8 @@ import com.oxchains.themis.common.util.DateUtil;
 import com.oxchains.themis.common.util.JsonUtil;
 import com.oxchains.themis.order.common.*;
 import com.oxchains.themis.order.entity.*;
+import com.oxchains.themis.order.entity.ValidaPojo.AddOrderPojo;
+import com.oxchains.themis.order.entity.ValidaPojo.UploadTxIdPojo;
 import com.oxchains.themis.order.entity.vo.OrdersInfo;
 import com.oxchains.themis.order.entity.vo.UserTxDetails;
 import com.oxchains.themis.order.repo.OrderCommentRepo;
@@ -24,8 +26,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
@@ -73,23 +73,20 @@ public class OrderService {
     * @param amount 交易数量
     * @param money 总价
     * */
-    public RestResp addOrders(Pojo pojo){
+    public RestResp addOrders(AddOrderPojo pojo){
         Orders orders = null;
         try {
             Notice notice = callService.findNoticeById(pojo.getNoticeId());
-            if(notice == null){
-                return RestResp.fail("add order faild,Cause by get notice faild");
-            }
             AddressKeys addressKeys = callService.getAddressKeys();
             List<User> userList = callService.getArbitrateUser();
             if(userList == null || addressKeys == null || notice == null){
-                return RestResp.fail("Network error,Please try again later");
+                return RestResp.fail("服务器繁忙,请稍后再试!");
             }
             //生成一条订单信息 订单状态为1 是否仲裁为0
             orders = new Orders(DateUtil.getOrderId(),
                     pojo.getMoney(),
                     DateUtil.getPresentDate(),
-                    new BigDecimal(pojo.getAmount()),
+                    pojo.getAmount(),
                     notice.getPayType(), ParamType.VcurrencyStatus.BTC.getId(),
                     notice.getCurrency(),
                     notice.getNoticeType().longValue()== ParamType.NoticeStatus.BUY.getStatus()?notice.getUserId():pojo.getUserId(),
@@ -119,9 +116,9 @@ public class OrderService {
             this.handleUserTxDetail(pojo.getUserId(),notice.getUserId(),ParamType.UserTxDetailHandle.FIRST_BUY_TIME.getStatus(),null);
         }catch (Exception e){
             LOG.error("add orders faild : {}",e.getMessage(),e);
-            return RestResp.fail("请正确填写订单信息");
+            return RestResp.fail("服务器繁忙,请稍后再试!");
         }
-        return orders!=null?RestResp.success(new OrdersInfo(orders)):RestResp.fail("请正确填写订单信息");
+        return orders!=null?RestResp.success(new OrdersInfo(orders)):RestResp.fail("服务器繁忙,请稍后再试!");
     }
            private void handleUserTxDetail(Long userId,Long ortherUserId,Integer status,Pojo pojo){
                try {
@@ -396,29 +393,31 @@ public class OrderService {
             sb.append(",");
             sb.append(orderAddresskeys1.getUserPubAuth());
             OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orderAddresskeys1.getOrderId(),sb.toString(),orders.getAmount().doubleValue());
-            HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), callService.getHttpHeader());
-            JSONObject jsonObject = restTemplate.postForObject(ThemisUserAddress.CREATE_CENTET_ADDRESS,formEntity,JSONObject.class);
-            Integer status =  (Integer) jsonObject.get("status");
-            if(status == 1){
-                orderAddresskeys1.setSellerPubAuth(orderAddresskeys.getSellerPubAuth());
-                orderAddresskeys1.setSellerPriAuth(orderAddresskeys.getSellerPriAuth());
-                orderAddresskeyRepo.save(orderAddresskeys1);
-                ordersInfo = new OrdersInfo(orders);
-                LinkedHashMap data = (LinkedHashMap) jsonObject.get("data");
-                ordersInfo.setP2shAddress((String) data.get("address"));
-                ordersInfo.setUri((String)data.get("URI"));
-                orders.setUri((String)data.get("URI"));
-                orderRepo.save(orders);
-                messageService.postAddAddressKey(orders);
-                return RestResp.success(ordersInfo);
-            }else{
-                return RestResp.fail("公钥验证失败,请输入正确的公私钥");
+            JSONObject jsonObject = callService.createCenterAddress(ordersKeyAmount);
+            if(jsonObject != null){
+                Integer status = (Integer) jsonObject.get("status");
+                if(status == 1){
+                    orderAddresskeys1.setSellerPubAuth(orderAddresskeys.getSellerPubAuth());
+                    orderAddresskeys1.setSellerPriAuth(orderAddresskeys.getSellerPriAuth());
+                    orderAddresskeyRepo.save(orderAddresskeys1);
+                    ordersInfo = new OrdersInfo(orders);
+                    LinkedHashMap data = (LinkedHashMap) jsonObject.get("data");
+                    ordersInfo.setP2shAddress((String) data.get("address"));
+                    ordersInfo.setUri((String)data.get("URI"));
+                    orders.setUri((String)data.get("URI"));
+                    orderRepo.save(orders);
+                    messageService.postAddAddressKey(orders);
+                    return RestResp.success(ordersInfo);
+                }else{
+                    return RestResp.fail("公钥验证失败,请输入正确的公私钥");
+                }
             }
+
         } catch (Exception e) {
             LOG.error("save address key faild : {}",e.getMessage(),e);
-            return RestResp.fail("Network error");
+            return RestResp.fail("服务器繁忙,请稍后再试!");
         }
-
+        return RestResp.fail("服务器繁忙,请稍后再试!");
     }
     /*
     * 这是一个工具类方法  为了给要返回到前台的orders 附上订单状态值
@@ -492,25 +491,23 @@ public class OrderService {
     * @Param id 订单id
     * @Param txid 交易id
     * */
-    public RestResp uploadTxId(Pojo pojo){
+    public RestResp uploadTxId(UploadTxIdPojo pojo){
         try {
             OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount();
             ordersKeyAmount.setTxId(pojo.getTxId());
-            HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), callService.getHttpHeader());
-            JSONObject jsonObject = restTemplate.postForObject(ThemisUserAddress.CHECK_BTC + pojo.getId(), formEntity, JSONObject.class);
-            Integer status = (Integer) jsonObject.get("status");
-            if(status == 1){
-                messageService.postUploadTxId(orderRepo.findOne(pojo.getId()));
-                return RestResp.success();
-            }
-            else{
-
+            JSONObject jsonObject = callService.uploadTxId(ordersKeyAmount, pojo.getId());
+            if(jsonObject != null){
+                Integer status = (Integer) jsonObject.get("status");
+                if(status == 1){
+                    messageService.postUploadTxId(orderRepo.findOne(pojo.getId()));
+                    return RestResp.success();
+                }
             }
         } catch (Exception e) {
             LOG.error("faild upload tx id : {}",e.getMessage(),e);
-            return RestResp.fail("Network error");
+            return RestResp.fail("服务器繁忙,请稍后再试");
         }
-        return RestResp.fail("请输入正确的交易id");
+        return RestResp.fail("服务器繁忙,请稍后再试");
     }
     /*
     * 买家确认付款

@@ -1,8 +1,11 @@
 package com.oxchains.themis.repo.entity;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
@@ -17,10 +20,18 @@ public class OrderAddresskeys implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;        //公私匙表唯一id
     private String orderId;  //相关联的订单id
+
     private String buyerPubAuth; //买家公匙
+
     private String buyerPriAuth;//买家私匙
     private String buyerSellerPriAuth; //买家拥有的买家的私匙
+    @NotNull(message = "请输入公钥")
+    @NotEmpty(message = "请输入公钥")
+    @Size(max = 66,min = 66,message = "公钥格式错误")
     private String sellerPubAuth; //卖家公匙
+    @NotEmpty(message = "请输入私钥")
+    @NotNull(message = "请输入私钥")
+    @Size(max = 52,min = 52,message = "私钥格式错误")
     private String sellerPriAuth; //卖家私匙
     private String sellerBuyerPriAuth; //卖家拥有的买家的私匙
     private String userPubAuth; //仲裁者公匙

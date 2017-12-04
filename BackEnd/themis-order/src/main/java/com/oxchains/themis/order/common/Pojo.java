@@ -15,7 +15,7 @@ public class Pojo implements Serializable {
     private String id;    //订单id
     private Integer successId; // 判断仲裁那个胜利 1 买家  2 卖家
     private Long noticeId;
-    private String txId;
+    private String txId;     //交易id
     private String content;
     private Integer status;
     private String amount;
