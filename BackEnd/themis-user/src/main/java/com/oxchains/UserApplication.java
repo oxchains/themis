@@ -1,4 +1,4 @@
-package com.oxchains.themis;
+package com.oxchains;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

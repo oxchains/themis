@@ -53,6 +53,34 @@ public class ImageBase64 {
         }
     }
 
+    public static byte[] getImageBytes(String imgStr){
+        if(imgStr == null){
+            return null;
+        }
+        if(imgStr.contains(JPG)){
+            imgStr = imgStr.replaceAll(JPG, "");
+        }
+        if(imgStr.contains(PNG)){
+            imgStr = imgStr.replaceAll(PNG,"");
+        }
+
+        BASE64Decoder decoder = new BASE64Decoder();
+        try {
+            byte[] b = decoder.decodeBuffer(imgStr);
+            for(int i= 0; i<b.length; i++){
+                if(b[i] < 0){
+                    b[i] += 256;
+                }
+            }
+
+            return b;
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+
+
     /**
      * 根据图片地址转换为base64编码字符串
      * @param file
