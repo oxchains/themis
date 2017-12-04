@@ -265,4 +265,14 @@ public class UserController {
         }
         return RestResp.fail("验证码错误");
     }
+
+    @RequestMapping(value = "/sendVmail")
+    public RestResp sendVerifyMail(VerifyCode vcode){
+        return userService.sendVmail(vcode);
+    }
+
+    @PostMapping(value = "/resetpwd")
+    public RestResp resetpwd(String resetkey,String password){
+        return userService.resetpwd(resetkey,password);
+    }
 }

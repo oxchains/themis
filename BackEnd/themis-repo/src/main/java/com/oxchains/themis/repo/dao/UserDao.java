@@ -22,6 +22,8 @@ public interface UserDao extends CrudRepository<User,Long> {
      */
     User findByLoginname(String loginname);
 
+    User findByEmail(String email);
+
     /**
      * 通过手机查找
      * @param mobilephone
