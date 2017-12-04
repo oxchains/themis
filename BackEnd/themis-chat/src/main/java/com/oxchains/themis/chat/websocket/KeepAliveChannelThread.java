@@ -24,7 +24,7 @@ public class KeepAliveChannelThread implements Runnable {
         try {
         for (String s : ChatUtil.userChannels.keySet()) {
             for (String s1 : ChatUtil.userChannels.get(s).keySet()){
-                if (System.currentTimeMillis() - ChatUtil.userChannels.get(s).get(s1).getLastUseTime()>(15*1000)){
+                if (System.currentTimeMillis() - ChatUtil.userChannels.get(s).get(s1).getLastUseTime()>(3*1000)){
                     ChannelFuture cf =  ChatUtil.userChannels.get(s).get(s1).getChannel().closeFuture();
                         cf.channel().close().sync();
                         ChatUtil.userChannels.get(s).remove(s1);
