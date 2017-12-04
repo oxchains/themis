@@ -22,6 +22,7 @@ export const ROOT_MESSAGE = 'http://192.168.1.172:9491';
 
 
 
+
 export const AUTH_USER = 'auth_user';                               //登录
 export const UNAUTH_USER = 'unauth_user';                           //退出登录
 export const AUTH_ERROR = 'auth_error';                             //登录失败
