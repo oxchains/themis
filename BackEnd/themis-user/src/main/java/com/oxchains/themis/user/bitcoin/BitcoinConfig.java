@@ -100,7 +100,7 @@ public class BitcoinConfig extends AbstractConfig{
         BitcoinConfig.maxFee = maxFee;
     }
 
-    @Value("${bitcoin.service.port}")
+    @Value("${bitcoin.min.fee}")
     public void setMinFee(String minFee) {
         BitcoinConfig.minFee = minFee;
     }

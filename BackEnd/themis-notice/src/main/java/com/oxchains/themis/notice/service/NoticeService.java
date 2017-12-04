@@ -79,36 +79,24 @@ public class NoticeService {
             if (null == notice.getPayType()){
                 return RestResp.fail("请选择收款/付款方式");
             }
-
-            // 选填项(最低价)判断-11.1中国又禁止一部分btc相关平台，此价格获取失败
-            List<BTCTicker> btcTickerList = btcTickerDao.findBySymbol("btccny");
-            if (btcTickerList.size() != 0){
-                for (BTCTicker btcTicker : btcTickerList) {
-                    Double low = btcTicker.getLow().doubleValue();
-                    Double minPrice = notice.getMinPrice().doubleValue();
-                    if (null == notice.getMinPrice()){
-                        notice.setMinPrice(btcTicker.getLow());
-                    }else { // 市场价低于定义的最低价，那么价格就是自己定义的最低价
-                        if (ArithmeticUtils.minus(low, minPrice) < 0) {
-                            notice.setPrice(notice.getMinPrice());
-                        }
-                    }
+            if (notice.getPremium() < 0){
+                return RestResp.fail("溢价比例最小为：0");
+            }
+            if (ArithmeticUtils.minus(notice.getMaxTxLimit().doubleValue(), notice.getMinTxLimit().doubleValue()) < 0){
+                return RestResp.fail("最大限额不能低于最小限额");
+            }
+            if (notice.getPrice().doubleValue() <= 0){
+                return RestResp.fail("价格异常，请联系管理员");
+            }
+            // 选填项（最低价判断）
+            if (notice.getMinPrice() != null){
+                if (notice.getMinPrice().doubleValue() < 0){
+                    return RestResp.fail("最低价最小为：0");
                 }
-            }else {
-                // 选填项（最低价判断）
-                CNYDetail cnyDetail = cnyDetailDao.findBySymbol("¥");
-                if (cnyDetail != null){
-                    if (null == notice.getMinPrice()){
-                        notice.setMinPrice(new BigDecimal(cnyDetail.getLast()));
-                    }else {
-                        Double low = Double.valueOf(cnyDetail.getLast());
-                        Double minPrice = notice.getMinPrice().doubleValue();
-                        if (ArithmeticUtils.minus(low, minPrice) < 0){
-                            notice.setPrice(notice.getMinPrice());
-                        }
-                    }
-                }else {
-                    return RestResp.fail("比特币价格获取失败，请联系管理员");
+                Double marketLow = notice.getPrice().doubleValue();
+                Double minPrice = notice.getMinPrice().doubleValue();
+                if (ArithmeticUtils.minus(marketLow, minPrice) < 0){
+                    notice.setPrice(notice.getMinPrice());
                 }
             }
 
