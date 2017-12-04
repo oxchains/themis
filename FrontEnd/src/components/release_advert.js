@@ -127,8 +127,9 @@ class Releaseadvert extends Component {
         const premium = this.state.premium;
         const money = this.props.array.cnyDetailList || {};
         const price = parseFloat(this.state.price || money.buy).toFixed(2);
+console.log(userId);
 
-        const url = this.state.status == 1 ? "/buydetail:${item.userId}" : "/selldetail:${item.userId}";
+        const url = this.state.status == 1 ? `/buydetail:${userId}`: `/selldetail:${userId}`;
 
 
 
@@ -219,7 +220,7 @@ class Releaseadvert extends Component {
                     </ModalBody>
                     <ModalFooter>
                         <button className='btn btn-default' onClick={this.hideModal}>
-                            <a className="close-modal" href="/myAdvert" >关闭</a>
+                            <a className="close-modal" href={url} >关闭</a>
                         </button>
                     </ModalFooter>
                 </Modal>

@@ -46,11 +46,10 @@ class Forgetpsw extends Component {
     }
     phoneChange(e) {
         console.log(e.target.value);
-        const phonenum = localStorage.setItem("phonenum", e.target.value);
+        const phonenum = localStorage.setItem("mobilephone", e.target.value);
 
         var regex = /^1[3|4|5|7|8][0-9]\d{4,8}$/;
         if (regex.test(e.target.value)) {
-
         } else {
             alert('请输入正确的手机号码！');
         }

@@ -21,6 +21,7 @@ import Signout from './components/auth/signout';
 import Forgetpsw from './components/auth/forget_psw';
 import Emialforget from './components/auth/forget_email';
 import Resetpsw from './components/auth/reset_psw';
+import JumpTip from './components/email_Jumptip';
 
 import Usercenter from './components/user_center';
 import Buybtc from './components/buy_btc';
@@ -86,7 +87,7 @@ ReactDOM.render(
                         <Route path="/resetpsw" component={Resetpsw} />
                         <Route path="/emailforget" component={Emialforget} />
                         <Route path="/otherInfodetail:id" component={OtherInfodetail} />
-
+                        <Route path="/jumptip" component={JumpTip} />
                         <Route path="/" component={Home} />
                     </Switch>
                     <Footer />
