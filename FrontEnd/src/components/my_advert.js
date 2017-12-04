@@ -105,6 +105,7 @@ class Myadvert extends Component {
     }
     render() {
         const totalNum = this.props.all.rowCount;
+        const arraydata = this.props.all.pageList || [];
         return (
             <div className="mainbar">
                 <div className="col-lg-2 col-md-2 col-xs-2">
@@ -120,7 +121,7 @@ class Myadvert extends Component {
                     </ul>
 
                     <div>
-                        <table className="tableborder">
+                        <table className={`tableborder ${this.props.all.rowCount == 0 || !arraydata? "hidden":"" }`}>
                             <tbody>
                                 <tr className="contentborder ">
                                     <th>编号</th>
@@ -137,11 +138,13 @@ class Myadvert extends Component {
                             </tbody>
 
                         </table>
-                        <div className="pagecomponent">
+                        <div className={`pagecomponent ${this.props.all.rowCount == 0 || !arraydata? "hidden":"" }`}>
                             <Pagination defaultPageSize={this.state.pageSize} total={totalNum} onChange={e => this.onPagination(e)} />
                         </div>
                     </div>
                 </div>
+                <div className={`text-center h4 ${this.props.all.rowCount == 0 || !arraydata? "":"hidden" }`}>暂无数据</div>
+
                 <Modal isOpen={this.state.isModalOpen} onRequestHide={this.hideModal}>
                     <ModalHeader>
                         <ModalClose onClick={this.hideModal} />
