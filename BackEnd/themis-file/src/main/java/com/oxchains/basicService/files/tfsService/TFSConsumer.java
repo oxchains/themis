@@ -27,6 +27,18 @@ public class TFSConsumer {
         }
         return s;
     }
+    public String saveTfsFile(byte[] bytes,String filename) {
+        String s = null;
+        try {
+            FileInfos fileInfos = new FileInfos();
+            fileInfos.setFile(bytes);
+            fileInfos.setFilename(filename);
+            s = tfsService.saveTfsFile(fileInfos);
+        } catch (Exception e) {
+            LOG.error("save file faild : {}",e.getMessage(),e);
+        }
+        return s;
+    }
     public String saveTfsLargeFile(MultipartFile multipartFile) {
         String s = null;
         try {
