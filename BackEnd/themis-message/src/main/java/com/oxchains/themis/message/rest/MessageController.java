@@ -52,10 +52,34 @@ public class MessageController {
     }
 
     /**
-     * 未读信息数量
+     * 所有未读信息数量
      */
     @GetMapping(value = "/query/unReadCount")
     public RestResp unReadCount(@RequestParam Long userId, @RequestParam Integer tip){
         return messageService.unReadCount(userId, tip);
+    }
+
+    /**
+     * 未读公告信息数量
+     */
+    @GetMapping(value = "/query/unReadNoticeCount")
+    public RestResp unReadNoticeCount(@RequestParam Long userId, @RequestParam Integer tip){
+        return messageService.unReadNoticeCount(userId, tip);
+    }
+
+    /**
+     * 未读系统信息数量
+     */
+    @GetMapping(value = "/query/unReadGlobalCount")
+    public RestResp unReadGlobalCount(@RequestParam Long userId, @RequestParam Integer tip){
+        return messageService.unReadGlobalCount(userId, tip);
+    }
+
+    /**
+     * 未读私信数量
+     */
+    @GetMapping(value = "/query/unReadPrivateCount")
+    public RestResp unReadPrivateCount(@RequestParam Long userId, @RequestParam Integer tip){
+        return messageService.unReadPrivateCount(userId, tip);
     }
 }

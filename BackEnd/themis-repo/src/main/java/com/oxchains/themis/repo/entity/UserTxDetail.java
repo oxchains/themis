@@ -51,4 +51,8 @@ public class UserTxDetail {
             this.firstBuyTime = "暂未交易";
         }
     }
+
+    public String getFirstBuyTime() {
+        return firstBuyTime==null?"暂未交易":firstBuyTime;
+    }
 }

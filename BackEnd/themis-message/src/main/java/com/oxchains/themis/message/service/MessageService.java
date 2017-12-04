@@ -21,8 +21,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.processor.ITextNodeProcessorMatcher;
 
 import javax.annotation.Resource;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -34,7 +36,16 @@ import java.util.*;
 public class MessageService {
 
     private final Logger LOG = LoggerFactory.getLogger(MessageService.class);
+    // 所有未读消息map
     private final Map<Long, Integer> countMap = new HashMap<>();
+    // 公告未读消息map
+    private final Map<Long, Integer> countNoticeMap = new HashMap<>();
+    // 私信未读消息map
+    private final Map<Long, Integer> countPrivateMap = new HashMap<>();
+    // 系统未读消息map
+    private final Map<Long, Integer> countGlobalMap = new HashMap<>();
+    // 所有公告
+    private final Set<Long> set = new HashSet<>();
 
     @Resource private MessageDao messageDao;
     @Resource private MessageTextDao messageTextDao;
@@ -72,6 +83,9 @@ public class MessageService {
         return RestResp.success("操作失败");
     }
 
+    /**
+     * 查询系统信息
+     */
     public RestResp queryGlobalMsg(Long userId, Integer pageNum, Integer pageSize){
         try {
             Pageable pageable = new PageRequest(pageNum - 1, pageSize, new Sort(Sort.Direction.DESC, "id"));
@@ -84,6 +98,13 @@ public class MessageService {
                 // 点击系统消息按钮，将所有返回数据的状态修改为已读，接受者id修改为自己的id
                 message.setReadStatus(MessageReadStatus.READ);
                 message.setReceiverId(userId);
+
+                // 获取订单相关信息
+                boolean isSuccess = getOrderInfo(userId, messageText);
+                if (!isSuccess){
+                    return RestResp.fail("站内信：获取订单信息失败");
+                }
+                message.setMessageText(messageText);
                 messageDao.save(message);
 
                 mList.add(message);
@@ -98,11 +119,14 @@ public class MessageService {
 
             return RestResp.success("操作成功", messageDTO);
         }catch (Exception e){
-            LOG.error("站内信：获取未读私信信息失败", e);
+            LOG.error("站内信：获取系统信息失败", e);
         }
         return RestResp.fail("操作失败");
     }
 
+    /**
+     * 查询私信
+     */
     public RestResp queryPrivateMsg(Long userId, Integer pageNum, Integer pageSize){
         try {
             Pageable pageable = new PageRequest(pageNum - 1, pageSize, new Sort(Sort.Direction.DESC, "id"));
@@ -118,19 +142,8 @@ public class MessageService {
                 message.setReceiverId(userId);
 
                 // 获取订单相关信息
-                String orderId = messageText.getOrderId();
-                Order orders = orderDao.findById(orderId);
-                Long buyerId = orders.getBuyerId();
-                Long sellerId = orders.getSellerId();
-                if (userId.equals(buyerId)){
-                    messageText.setPartnerId(sellerId);
-                    User user = userDao.findOne(sellerId);
-                    messageText.setFriendUsername(user.getLoginname());
-                }else if (userId.equals(sellerId)){
-                    messageText.setPartnerId(buyerId);
-                    User user = userDao.findOne(buyerId);
-                    messageText.setFriendUsername(user.getLoginname());
-                }else {
+                boolean isSuccess = getOrderInfo(userId, messageText);
+                if (!isSuccess){
                     return RestResp.fail("站内信：获取订单信息失败");
                 }
 
@@ -149,11 +162,37 @@ public class MessageService {
 
             return RestResp.success("操作成功", messageDTO);
         }catch (Exception e){
-            LOG.error("站内信：获取已读私信信息失败");
+            LOG.error("站内信：获取私信信息异常");
         }
         return RestResp.fail("操作失败");
     }
 
+    /**
+     * 获取订单相关信息
+     */
+    private boolean getOrderInfo(Long userId, MessageText messageText) {
+        String orderId = messageText.getOrderId();
+        Order orders = orderDao.findById(orderId);
+        Long buyerId = orders.getBuyerId();
+        Long sellerId = orders.getSellerId();
+        if (userId.equals(buyerId)){
+            messageText.setPartnerId(sellerId);
+            User user = userDao.findOne(sellerId);
+            messageText.setFriendUsername(user.getLoginname());
+            return true;
+        }else if (userId.equals(sellerId)){
+            messageText.setPartnerId(buyerId);
+            User user = userDao.findOne(buyerId);
+            messageText.setFriendUsername(user.getLoginname());
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    /**
+     * 查询公告信息
+     */
     public RestResp queryNoticeMsg(Long userId, Integer pageNum, Integer pageSize){
         try {
             // 获取自己所在用户组
@@ -188,28 +227,54 @@ public class MessageService {
         return RestResp.fail("操作失败");
     }
 
+    /**
+     * 查询所有未读信息
+     */
     public RestResp unReadCount(Long userId, Integer tip){
         try {
             int count = 0;
             Integer result = invokeDb(userId, tip, count);
             return RestResp.success("操作成功", result);
         }catch (Exception e){
-            LOG.error("站内信：获取未读信息数量异常", e);
+            LOG.error("站内信：获取所有未读信息数量异常", e);
         }
         return RestResp.fail("操作失败");
     }
 
     public Integer invokeDb(Long userId, Integer tip, Integer count) throws InterruptedException {
         // 用户登录后，将所在用户组未读公告信息添加到message表中
-        // 1，先找到roleid，然后得到角色userGroup，然后根据msgType和up得到id
+        addUnReadMsg(userId);
+
+        // 所有未读信息
+        Integer unReadSize = messageDao.countByReceiverIdAndReadStatus(userId, MessageReadStatus.UN_READ);
+        int cacheCount = countMap.getOrDefault(userId, -1);
+        if (tip == 1) {
+            // 第一次请求获取未读消息
+            countMap.put(userId, unReadSize);
+            return unReadSize;
+        }
+        // 旧值和新值一样，则不返回结果
+        if (cacheCount == unReadSize) {
+            Thread.sleep(2000);
+            // 前台请求15以上，返回的结果还是一样，就返回之前的数量，不走递归
+            if (count >= MessageConst.Constant.FIFTEEN.getValue()) {
+                return unReadSize;
+            }
+            return invokeDb(userId, tip, ++count);
+        }
+        // 旧值和新值，则更新缓存，返回结果
+        countMap.put(userId, unReadSize);
+        return unReadSize;
+    }
+
+    private void addUnReadMsg(Long userId) {
+        // 先找到roleId，然后得到角色userGroup，然后根据msgType和userGroup得到id
         User user = userDao.findOne(userId);
         if (user != null) {
             Long userGroup = user.getRoleId();
             List<MessageText> messageTextList = messageTextDao.findByMessageTypeAndUserGroup(MessageType.PUBLIC, userGroup);
 
             if (messageTextList.size() != 0) {
-                // 所有公告
-                Set<Long> set = new HashSet<>();
                 for (MessageText mt : messageTextList) {
                     set.add(mt.getId());
                 }
@@ -232,26 +297,114 @@ public class MessageService {
                 }
             }
         }
+    }
 
-        // 所有未读信息
-        Integer unReadSize = messageDao.countByReceiverIdAndReadStatus(userId, MessageReadStatus.UN_READ);
-        int cacheCount = countMap.getOrDefault(userId, -1);
-        if (tip == 1) {
-            // 第一次请求获取未读消息
-            countMap.put(userId, unReadSize);
+
+    /**
+     * 查询公告信息未读数量
+     */
+    public RestResp unReadNoticeCount(Long userId, Integer tip){
+        try {
+            int count = 0;
+            Integer result = queryNoticeMsgUnReadCount(userId, tip, count);
+            return RestResp.success("操作成功", result);
+        }catch (Exception e){
+            LOG.error("站内信：获取未读公告信息数量异常", e);
+        }
+        return RestResp.fail("操作失败");
+    }
+
+    private Integer queryNoticeMsgUnReadCount(Long userId, Integer tip, int count) throws InterruptedException {
+        Integer unReadSize = messageDao.countByReceiverIdAndReadStatusAndMessageType(userId, MessageReadStatus.UN_READ, MessageType.PUBLIC);
+        int noticeCacheCount = countNoticeMap.getOrDefault(userId, -1);
+        // 第一次请求 获取未读公告信息
+        if (tip == 1){
+            countNoticeMap.put(userId, unReadSize);
             return unReadSize;
         }
-        // 旧值和新值一样，则不返回结果
-        if (cacheCount == unReadSize) {
+        // 不是第一次请求，且新值和旧值一样，不返回结果
+        if (noticeCacheCount == unReadSize){
             Thread.sleep(2000);
             // 前台请求15以上，返回的结果还是一样，就返回之前的数量，不走递归
             if (count >= MessageConst.Constant.FIFTEEN.getValue()) {
                 return unReadSize;
             }
-            return invokeDb(userId, tip, ++count);
+            return queryNoticeMsgUnReadCount(userId, tip, ++count);
         }
-        // 旧值和新值，则更新缓存，返回结果
-        countMap.put(userId, unReadSize);
+        // 不是第一次请求， 且新值和旧值不一样，更新缓存map，立马返回结果
+        countNoticeMap.put(userId, unReadSize);
+        return unReadSize;
+    }
+
+    /**
+     * 查询系统信息未读数量
+     */
+    public RestResp unReadGlobalCount(Long userId, Integer tip){
+        try {
+            int count = 0;
+            Integer result = queryGlobalMsgUnReadCount(userId, tip, count);
+            return RestResp.success("操作成功", result);
+        }catch (Exception e){
+            LOG.error("站内信：获取未读系统信息数量异常", e);
+        }
+        return RestResp.fail("操作失败");
+    }
+
+    private Integer queryGlobalMsgUnReadCount(Long userId, Integer tip, int count) throws InterruptedException {
+        Integer unReadSize = messageDao.countByReceiverIdAndReadStatusAndMessageType(userId, MessageReadStatus.UN_READ, MessageType.GLOBAL);
+        int globalCacheCount = countGlobalMap.getOrDefault(userId, -1);
+        // 第一次请求 获取未读公告信息
+        if (tip == 1){
+            countGlobalMap.put(userId, unReadSize);
+            return unReadSize;
+        }
+        // 不是第一次请求，且新值和旧值一样，不返回结果
+        if (globalCacheCount == unReadSize){
+            Thread.sleep(2000);
+            // 前台请求15以上，返回的结果还是一样，就返回之前的数量，不走递归
+            if (count >= MessageConst.Constant.FIFTEEN.getValue()) {
+                return unReadSize;
+            }
+            return queryGlobalMsgUnReadCount(userId, tip, ++count);
+        }
+        // 不是第一次请求， 且新值和旧值不一样，更新缓存map，立马返回结果
+        countGlobalMap.put(userId, unReadSize);
+        return unReadSize;
+    }
+
+    /**
+     * 查询私信未读数量
+     */
+    public RestResp unReadPrivateCount(Long userId, Integer tip){
+        try {
+            int count = 0;
+            Integer result = queryPrivateMsgUnReadCount(userId, tip, count);
+            return RestResp.success("操作成功", result);
+        }catch (Exception e){
+            LOG.error("站内信：获取未读私信数量异常", e);
+        }
+        return RestResp.fail("操作失败");
+    }
+
+    private Integer queryPrivateMsgUnReadCount(Long userId, Integer tip, int count) throws InterruptedException {
+        Integer unReadSize = messageDao.countByReceiverIdAndReadStatusAndMessageType(userId, MessageReadStatus.UN_READ, MessageType.PRIVATE_LETTET);
+        int privateCacheCount = countPrivateMap.getOrDefault(userId, -1);
+        // 第一次请求 获取未读公告信息
+        if (tip == 1){
+            countPrivateMap.put(userId, unReadSize);
+            return unReadSize;
+        }
+        // 不是第一次请求，且新值和旧值一样，不返回结果
+        if (privateCacheCount == unReadSize){
+            Thread.sleep(2000);
+            // 前台请求15以上，返回的结果还是一样，就返回之前的数量，不走递归
+            if (count >= MessageConst.Constant.FIFTEEN.getValue()) {
+                return unReadSize;
+            }
+            return queryPrivateMsgUnReadCount(userId, tip, ++count);
+        }
+        // 不是第一次请求， 且新值和旧值不一样，更新缓存map，立马返回结果
+        countPrivateMap.put(userId, unReadSize);
         return unReadSize;
     }
 }

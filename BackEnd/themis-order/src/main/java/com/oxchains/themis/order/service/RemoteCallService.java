@@ -1,8 +1,10 @@
 package com.oxchains.themis.order.service;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.oxchains.themis.common.constant.ThemisUserAddress;
 import com.oxchains.themis.common.model.AddressKeys;
+import com.oxchains.themis.common.model.OrdersKeyAmount;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.util.JsonUtil;
 import com.oxchains.themis.repo.entity.Notice;
@@ -25,6 +27,8 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 /**
  * @author huohuo
  * @desc Class that is invoked remotely
@@ -195,5 +199,27 @@ public class RemoteCallService {
             LOG.error("get http header faild : {}",e.getMessage(),e);
         }
         return  headers;
+    }
+    public JSONObject createCenterAddress(OrdersKeyAmount ordersKeyAmount){
+        JSONObject jsonObject = null;
+        try {
+            if(ordersKeyAmount != null){
+                HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), this.getHttpHeader());
+                jsonObject = restTemplate.postForObject(ThemisUserAddress.CREATE_CENTET_ADDRESS,formEntity,JSONObject.class);
+            }
+        } catch (RestClientException e) {
+            LOG.error("create center address faild：{}",e.getMessage(),e);
+        }
+        return jsonObject;
+    }
+    public JSONObject uploadTxId(OrdersKeyAmount ordersKeyAmount, String id){
+        JSONObject jsonObject = null;
+        try {
+            HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), this.getHttpHeader());
+            jsonObject = restTemplate.postForObject(ThemisUserAddress.CHECK_BTC + id, formEntity, JSONObject.class);
+        } catch (RestClientException e) {
+            LOG.error("upload txid faild：{}",e.getMessage(),e);
+        }
+        return jsonObject;
     }
 }

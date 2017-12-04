@@ -7,6 +7,7 @@ import com.oxchains.themis.common.mail.Email;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.param.ParamType;
 import com.oxchains.themis.common.param.RequestBody;
+import com.oxchains.themis.common.param.VerifyCode;
 import com.oxchains.themis.common.util.ConstantUtils;
 import com.oxchains.themis.common.util.DateUtil;
 import com.oxchains.themis.common.util.EncryptUtils;
@@ -16,6 +17,7 @@ import com.oxchains.themis.user.domain.UserRelationInfo;
 import com.oxchains.themis.user.domain.UserTrust;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -71,7 +73,7 @@ public class UserService extends BaseService {
 
     public RestResp addUser(User user) {
         user.setPassword(EncryptUtils.encodeSHA256(user.getPassword()));
-        Optional<User> optional = findUser(user);
+        Optional<User> optional = getUser(user);
         if (optional.isPresent()) {
             User u = optional.get();
             if(null != user.getLoginname() && user.getLoginname().equals(u.getLoginname())){
@@ -257,6 +259,29 @@ public class UserService extends BaseService {
             optional = userDao.findByMobilephoneAndPassword(user.getMobilephone(), user.getPassword());
             if (optional.isPresent()) {
                 return optional;
+            }
+        }
+        return Optional.empty();
+    }
+
+    public Optional<User> getUser(User user){
+        User u = null;
+        if (null != user.getLoginname()) {
+            u = userDao.findByLoginname(user.getLoginname());
+            if (null != u) {
+                return  Optional.of(u);
+            }
+        }
+        if (null != user.getEmail()) {
+            u = userDao.findByEmail(user.getEmail());
+            if (null != u) {
+                return Optional.of(u);
+            }
+        }
+        if (null != user.getMobilephone()) {
+            u = userDao.findByMobilephone(user.getMobilephone());
+            if (null != u) {
+                return Optional.of(u);
             }
         }
         return Optional.empty();
@@ -469,5 +494,49 @@ public class UserService extends BaseService {
             logger.error("Redis 操作异常", e);
             return null;
         }
+    }
+
+    @Value("${themis.frontend.url}")
+    private String frontEndUrl;
+    public RestResp sendVmail(VerifyCode vcode){
+        String vcodeVal = getVcodeFromRedis(vcode.getKey());
+        if (vcodeVal.equals(vcode.getVcode())) {
+            String[] to = {vcode.getKey()};
+            String url = "http://"+frontEndUrl+"/resetpsw?email="+vcode.getKey()+"&vcode="+vcode.getVcode();
+            try {
+                //mailService.send(new Email(to,"修改密码","请点击以下链接进行密码修改操作：\n" +  url));
+                mailService.sendHtmlMail(vcode.getKey(),"修改密码","请点击以下链接进行密码修改操作：\n" +
+                        "<a href='"+url+"'>点击这里</a>");
+                return RestResp.success("邮件已发送到："+vcode.getKey()+"，请尽快修改您的密码");
+            }catch (Exception e){
+                logger.error("邮件发送异常",e);
+                return RestResp.fail("邮件发送失败,请重新操作");
+            }
+        }
+        return RestResp.fail("验证码错误");
+    }
+
+    public RestResp resetpwd(String resetkey,String password){
+        User u = null;
+        boolean flag = false;
+        if(resetkey == null){
+            return RestResp.fail("非法修改");
+        }
+        if(redisTemplate.hasKey(resetkey)){
+            return RestResp.fail("链接失效");
+        }
+        if(resetkey.contains("@")){
+            u = userDao.findByEmail(resetkey);
+        }else {
+            u = userDao.findByMobilephone(resetkey);
+        }
+        if(null == u){
+            return RestResp.fail("重置密码失败");
+        }
+        if(null !=password){
+            u.setPassword(EncryptUtils.encodeSHA256(password));
+            userDao.save(u);
+        }
+        return RestResp.fail("重置密码失败");
     }
 }
