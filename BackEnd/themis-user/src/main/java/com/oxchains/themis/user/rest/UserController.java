@@ -6,6 +6,7 @@ import com.google.common.net.HttpHeaders;
 import com.oxchains.themis.common.constant.Status;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.param.ParamType;
+import com.oxchains.themis.common.param.VerifyCode;
 import com.oxchains.themis.common.util.ImageBase64;
 import com.oxchains.themis.common.util.JsonUtil;
 import com.oxchains.themis.common.util.VerifyCodeUtils;
@@ -201,14 +202,16 @@ public class UserController {
     @Resource
     DefaultKaptcha defaultKaptcha;
 
-    @RequestMapping(value = "/vcode")
-    public void defaultKaptcha(HttpServletRequest reuqest, HttpServletResponse response) throws Exception{
+    @RequestMapping(value = "/imgVcode")
+    public void defaultKaptcha(VerifyCode vcode,HttpServletRequest request, HttpServletResponse response) throws Exception{
         byte[] captchaChallengeAsJpeg = null;
         ByteArrayOutputStream jpegOutputStream = new ByteArrayOutputStream();
         try {
             //生产验证码字符串并保存到session中
             String createText = defaultKaptcha.createText();
-            reuqest.getSession().setAttribute("vcode", createText);
+            if(!userService.saveVcode(vcode.getKey(),createText)){
+                request.getSession().setAttribute(vcode.getKey(), createText);
+            }
             //使用生产的验证码字符串返回一个BufferedImage对象并转为byte写入到byte数组中
             BufferedImage challenge = defaultKaptcha.createImage(createText);
             ImageIO.write(challenge, "jpg", jpegOutputStream);
@@ -230,12 +233,28 @@ public class UserController {
         responseOutputStream.close();
     }
 
-    @RequestMapping("/verifyImgCode")
-    public RestResp verifytKaptchaCOde(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
-        String captchaId = (String) httpServletRequest.getSession().getAttribute("vcode");
-        String parameter = httpServletRequest.getParameter("vcode");
+    @RequestMapping(value = "/phoneVcode")
+    public RestResp phoneVcode(VerifyCode vcode,HttpServletRequest request) throws Exception{
+        try {
+            //生产验证码字符串并保存到session中
+            String createText = defaultKaptcha.createText();
+            if(!userService.saveVcode(vcode.getKey(),createText)){
+                request.getSession().setAttribute(vcode.getKey(), createText);
+            }
+            //手机发送
+            return RestResp.success(createText);
+        } catch (IllegalArgumentException e) {
+            return RestResp.fail("404");
+        }
+    }
 
-        if (captchaId.equals(parameter)) {
+    @RequestMapping("/verifyICode")
+    public RestResp verifytKaptchaCode(VerifyCode vcode, HttpServletRequest request, HttpServletResponse response){
+        String vcodeVal = userService.getVcodeFromRedis(vcode.getKey());
+//        String captchaId = (String) request.getSession().getAttribute("vcode");
+//        String parameter = request.getParameter("vcode");
+
+        if (vcodeVal.equals(vcode.getVcode())) {
             return RestResp.success("验证码正确");
         }
         return RestResp.fail("验证码错误");

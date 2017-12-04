@@ -42,4 +42,30 @@ public interface ParamType {
             this.type = type;
         }
     }
+
+    enum LoginType implements ParamType{
+        LOGINNAME("用户名",1),MOBILEPHONE("手机",2),EMAIL("邮箱",3),OTHER("其他",4);
+        LoginType(String name,int type){}
+        private String name;
+        private int type;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getType() {
+            return type;
+        }
+
+        public void setType(int type) {
+            this.type = type;
+        }
+    }
+
+    enum LoginDevice implements ParamType{
+    }
 }

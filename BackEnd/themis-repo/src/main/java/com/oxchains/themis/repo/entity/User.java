@@ -25,13 +25,13 @@ public class User {
     @Column(length = 32)
     private String username;
 
-    @Column(length = 32)
+    @Column(length = 32,unique = true)
     private String loginname;
 
-    @Column(length = 32)
+    @Column(length = 32,unique = true)
     private String email;
 
-    @Column(length = 11)
+    @Column(length = 11,unique = true)
     private String mobilephone;
 
     //@JsonIgnore
