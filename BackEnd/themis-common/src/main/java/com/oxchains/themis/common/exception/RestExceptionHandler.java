@@ -15,6 +15,6 @@ public class RestExceptionHandler {
     @ExceptionHandler
     @ResponseStatus
     public RestResp runtimeExceptionHandler(Exception e){
-        return RestResp.success("服务器繁忙,请稍后再试!");
+        return RestResp.success("服务器繁忙,请稍后再试!",null);
     }
 }
