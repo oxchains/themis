@@ -118,6 +118,7 @@ public class UserController {
         String image = user.getLoginname()+".jpg";
         if(null != user.getImage() && !"undefined".equals(user.getImage())) {
             //ImageBase64.generateImage(user.getImage(), imageUrl + image);
+            image = tfsConsumer.saveTfsFile(ImageBase64.getImageBytes(user.getImage()),null);
             user.setImage(image);
         }
         return userService.updateUser(user,ParamType.UpdateUserInfoType.INFO);
