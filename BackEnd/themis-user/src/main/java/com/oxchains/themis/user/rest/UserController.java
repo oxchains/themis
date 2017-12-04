@@ -3,6 +3,7 @@ package com.oxchains.themis.user.rest;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.google.common.net.HttpHeaders;
+import com.oxchains.basicService.files.tfsService.TFSConsumer;
 import com.oxchains.themis.common.constant.Status;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.param.ParamType;
@@ -52,6 +53,8 @@ public class UserController {
     @Value("${user.info.image}")
     private String imageUrl;
 
+    @Resource
+    TFSConsumer tfsConsumer;
 
     @PostMapping(value = "/register")
     public RestResp register(@RequestBody User user){
@@ -98,21 +101,23 @@ public class UserController {
         }
         MultipartFile file = user.getFile();
         if(null != file){
-            String fileName = file.getOriginalFilename();
-            String suffix = fileName.substring(fileName.lastIndexOf("."));
-            String newFileName = user.getLoginname() + suffix;
-            String pathName = imageUrl + newFileName;
-            File f =new File(pathName);
-            if(f.exists()){
-                f.delete();
-            }
-            file.transferTo(new File(pathName));
+//            String fileName = file.getOriginalFilename();
+//            String suffix = fileName.substring(fileName.lastIndexOf("."));
+//            String newFileName = user.getLoginname() + suffix;
+//            String pathName = imageUrl + newFileName;
+//            File f =new File(pathName);
+//            if(f.exists()){
+//                f.delete();
+//            }
+//            file.transferTo(new File(pathName));
+            String newFileName = tfsConsumer.saveTfsFile(file);
             user.setImage(newFileName);
             return userService.updateUser(user,ParamType.UpdateUserInfoType.INFO);
         }
+
         String image = user.getLoginname()+".jpg";
         if(null != user.getImage() && !"undefined".equals(user.getImage())) {
-            ImageBase64.generateImage(user.getImage(), imageUrl + image);
+            //ImageBase64.generateImage(user.getImage(), imageUrl + image);
             user.setImage(image);
         }
         return userService.updateUser(user,ParamType.UpdateUserInfoType.INFO);

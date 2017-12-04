@@ -50,6 +50,11 @@
             <!--<version>LATEST</version>-->
         <!--</dependency>-->
 
+        <dependency>
+            <groupId>com.oxchains</groupId>
+            <artifactId>themis-file</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
