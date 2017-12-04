@@ -33,9 +33,6 @@ class Resetpsw extends Component {
                             <div className="form-group">
                                 <button className="btn form-login" onClick={this.handleEmailSubmit.bind(this)}>确定</button>
                             </div>
-
-
-
                         </div>
                     </div>
                 </div>

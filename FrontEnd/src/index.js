@@ -14,8 +14,9 @@ import Header from './components/common/header';
 import Footer from './components/common/footer';
 import Singin from './components/auth/signin';
 import Signinemail from './components/auth/signin_email';
-
 import Singup from './components/auth/signup';
+import Signupemail from './components/auth/signup_email';
+
 import Signout from './components/auth/signout';
 import Forgetpsw from './components/auth/forget_psw';
 import Emialforget from './components/auth/forget_email';
@@ -63,6 +64,7 @@ ReactDOM.render(
                         <Route path="/signin" component={Singin} />
                         <Route path="/signinemail" component={Signinemail} />
                         <Route path="/signup" component={Singup} />
+                        <Route path="/signupemail" component={Signupemail} />
                         <Route path="/signout" component={Signout} />
                         <Route path="/usercenter" component={Usercenter} />
                         <Route path="/orderinprogress" component={OrderInProgress} />

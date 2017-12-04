@@ -6,15 +6,30 @@
 import React, { Component } from 'react';
 import { Field } from 'redux-form';
 import { connect } from 'react-redux';
-import { signinAction } from '../../actions/auth';
-
+import { EmailsigninAction } from '../../actions/auth';
+import { Route, Redirect } from 'react-router-dom';
+import { Alert } from 'antd';
 class Emiallogin extends Component {
     // let Emiallogin = React.createClass({
     handleEmailSubmit() {
         const email = this.refs.email.value;
         const password = this.refs.password.value;
         if (email && password)
-            this.props.signinAction({ email, password }, () => { });
+            this.props.EmailsigninAction({ email, password }, () => { });
+    }
+    renderAlert() {
+        const { from } =  { from: { pathname: '/' } };
+        if (this.props.loggedIn) {
+            // location.reload();
+            return (
+                <Redirect to={from} />
+            );
+        } else if (this.props.errorMessage){
+            const text = this.props.errorMessage == 'Network Error'?"网络连接错误":this.props.errorMessage == "Request failed with status code 500"?"服务器错误":this.props.errorMessage;
+            return (
+                <Alert message= {text} type="error" showIcon />
+            );
+        }
     }
     render() {
         return (
@@ -33,10 +48,10 @@ class Emiallogin extends Component {
                             <div className="form-group">
                                 <button className="btn form-login" onClick={this.handleEmailSubmit.bind(this)}>登录</button>
                             </div>
-                            <div className="form-group">
-                                <a className="forgetpwd" href="">忘记密码 ?</a>
+                            <div className="form-group forgetpwd">
+                                <a className="" href="/forgetpsw">忘记密码 ?</a>
                             </div>
-
+                            {this.renderAlert()}
                         </div>
                     </div>
                 </div>
@@ -47,8 +62,8 @@ class Emiallogin extends Component {
 
 function mapStateToProps(state) {
     return {
-        success: state.auth.authenticated,
+        loggedIn: state.auth.authenticated,
         errorMessage: state.auth.error
     };
 }
-export default connect(mapStateToProps, { signinAction })(Emiallogin);
+export default connect(mapStateToProps, { EmailsigninAction })(Emiallogin);

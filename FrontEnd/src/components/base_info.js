@@ -93,8 +93,8 @@ class Baseinfo extends Component {
                 </div>
                 <div className="validateinfo">
                     <ul>
-                        <li>身份证验证:已验证</li>
-                        <li>电子邮件验证:{email ? "已验证" : "未验证"}</li>
+                        <li>身份证验证:未验证</li>
+                        <li>电子邮件验证:{email ? email : "未验证"}</li>
                         <li>手机号码:{mobilephone}</li>
                         <li>注册时间: {createTime}</li>
                         <li>第一次交易时间：{firstBuyTime}</li>

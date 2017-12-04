@@ -6,20 +6,23 @@
 import React, { Component } from 'react';
 import { Field } from 'redux-form';
 import { connect } from 'react-redux';
-import { signinAction } from '../../actions/auth';
-
-
-
+import { EmialAction } from '../../actions/auth';
 
 class Emialforget extends Component {
 
     handleEmailSubmit() {
         const email = this.refs.email.value;
-        const password = this.refs.password.value;
-        if (email && password)
-            this.props.signinAction({ email, password }, () => { });
-    }
+        const vcode = this.refs.vcode.value;
+        console.log('222');
+        if (email){
+            this.props.EmialAction({ email }, () => { });
+           }else{
+               alert('请先输入邮箱地址');
+           }
+        }
     render() {
+        const Imgurl = this.props.all;
+        console.log(Imgurl);
         return (
             <div className="login-box">
                 <div className="login-box-body">
@@ -32,10 +35,10 @@ class Emialforget extends Component {
                     <div className="form-style">
                         <div className="form-signin" >
                             <input className="input form-group" type="text" placeholder="请输入邮箱地址" ref="email" /> <br />
-                            <input className="input form-group" type="password" placeholder="请输入密码" ref="password" /><br />
+                            <input className="vcode form-group" type="password" placeholder="请输入验证码" ref="vcode" />
+                            <img src={Imgurl ? Imgurl : "./public/img/touxiang.png"} className="imgVcode" onClick={this.handleEmailSubmit.bind(this)} alt="" />
                             <div className="form-group">
-                                <button className="btn form-login" onClick={this.handleEmailSubmit.bind(this)}><a
-                                    href="/resetpsw">下一步</a></button>
+                                <button className="btn form-login" ><a href="">发送</a></button>
                             </div>
                         </div>
                     </div>
@@ -46,9 +49,9 @@ class Emialforget extends Component {
 
 
 function mapStateToProps(state) {
+    console.log(state.auth.all);
     return {
-        success: state.auth.authenticated,
-        errorMessage: state.auth.error
+        all: state.auth.all
     };
 }
-export default connect(mapStateToProps, { signinAction })(Emialforget);
+export default connect(mapStateToProps, { EmialAction })(Emialforget);

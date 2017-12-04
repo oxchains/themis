@@ -8,7 +8,7 @@ export const ROOT_SOCKET = 'ws://192.168.1.112:9999';
 export const ROOT_ORDER= 'http://192.168.1.112:8882';
 export const ROOT_URLZ = 'http://192.168.1.112:8882';
 export const ROOT_ARBITRATE = 'http://192.168.1.112:8883';
-export const ROOT_URLL = 'http://192.168.1.172:8083';
+export const ROOT_URLL = 'http://192.168.1.185:8083';
 export const ROOT_MESSAGE = 'http://192.168.1.172:9491';
 
 // export const ROOT_URLC = 'http://47.93.163.113:8081';
@@ -29,6 +29,7 @@ export const REQUEST_SUCCESS = 'request_success';                   //http请求
 export const REQUEST_ERROR = 'request_error';                       //http请求返回错误
 export const FETCH_VERIFY_CODE = 'request_verifycode';              //注册获取验证码
 export const FETCH_VERIFY_CODE_PHONE = 'request_verifycode_phone';  //修改手机获取验证码
+export const EMAIL_FIND_PSW = 'email_find_psw';                     //邮箱找回密码
 
 
 export const FETCH_ADVERT = 'FETCH_ADVERT';                          //发布广告

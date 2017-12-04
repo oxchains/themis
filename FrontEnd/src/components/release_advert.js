@@ -123,10 +123,16 @@ class Releaseadvert extends Component {
 
     render() {
         // const { handleSubmit } = this.props;
-
+        const userId = localStorage.getItem("userId");
         const premium = this.state.premium;
         const money = this.props.array.cnyDetailList || {};
         const price = parseFloat(this.state.price || money.buy).toFixed(2);
+
+        const url = this.state.status == 1 ? "/buydetail:${item.userId}" : "/selldetail:${item.userId}";
+
+
+
+
         return (
             <div className="maincontent">
                 <h2 className="h2title">发布一个比特币交易广告</h2>
@@ -213,7 +219,7 @@ class Releaseadvert extends Component {
                     </ModalBody>
                     <ModalFooter>
                         <button className='btn btn-default' onClick={this.hideModal}>
-                            <a className="close-modal" href="/myadvert" >关闭</a>
+                            <a className="close-modal" href="/myAdvert" >关闭</a>
                         </button>
                     </ModalFooter>
                 </Modal>

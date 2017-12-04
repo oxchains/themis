@@ -12,12 +12,19 @@ import {
     FETCH_VERIFY_CODE_PHONE,
     FETCH_PHONE,
     FETCH_PASSWORD,
+    EMAIL_FIND_PSW,
     getAuthorizedHeader
 } from './types';
 
+export function authError(error) {
+    return {
+        type: AUTH_ERROR,
+        payload: error
+    };
+}
 
 /**
- * 登录
+ * 手机登录
  */
 export function signinAction({ mobilephone, password }) {
     console.log(`点击登录按钮传过来的数据是 ${mobilephone},${password}`);
@@ -32,11 +39,46 @@ export function signinAction({ mobilephone, password }) {
                     localStorage.setItem('mobilephone', response.data.data.mobilephone);//手机号
                     localStorage.setItem('createTime', response.data.data.createTime);//注册时间
                     localStorage.setItem('email', response.data.data.email);//邮箱
-                    // localStorage.setItem('firstBuyTime', response.data.data.userTxDetail.firstBuyTime); //第一次交易时间
-                    // localStorage.setItem('txNum', response.data.data.userTxDetail.txNum); //交易次数
-                    // localStorage.setItem('believeNum', response.data.data.userTxDetail.believeNum);//信任人数
-                    // localStorage.setItem('sellAmount', response.data.data.userTxDetail.sellAmount); //出售的累计交易数量
-                    // localStorage.setItem('buyAmount', response.data.data.userTxDetail.buyAmount); //购买的累计交易数量
+                    localStorage.setItem('firstBuyTime', response.data.data.userTxDetail.firstBuyTime); //第一次交易时间
+                    localStorage.setItem('txNum', response.data.data.userTxDetail.txNum); //交易次数
+                    localStorage.setItem('believeNum', response.data.data.userTxDetail.believeNum);//信任人数
+                    localStorage.setItem('sellAmount', response.data.data.userTxDetail.sellAmount); //出售的累计交易数量
+                    localStorage.setItem('buyAmount', response.data.data.userTxDetail.buyAmount); //购买的累计交易数量
+
+                } else {
+                    dispatch(authError(response.data.message));
+                    console.log(response.data.message);
+                }
+                dispatch({ type: AUTH_USER });
+            })
+            .catch((err) => {
+                dispatch({ type: AUTH_USER });
+                dispatch(authError(err.message));
+            });
+    };
+}
+
+/**
+ * 邮箱登录
+ */
+export function EmailsigninAction({ email, password }) {
+    console.log(`点击邮箱登录按钮传过来的数据是 ${email},${password}`);
+    return function (dispatch) {
+        axios.post(`${ROOT_URLC}/user/login`, { email, password })
+            .then(response => {
+                if (response.data.status == 1) {
+                    localStorage.setItem('token', response.data.data.token);
+                    localStorage.setItem('role', response.data.data.role.id);
+                    localStorage.setItem('userId', response.data.data.id); //用户ID
+                    localStorage.setItem('loginname', response.data.data.loginname); //用户登录名
+                    localStorage.setItem('mobilephone', response.data.data.mobilephone);//手机号
+                    localStorage.setItem('createTime', response.data.data.createTime);//注册时间
+                    localStorage.setItem('email', response.data.data.email);//邮箱
+                    localStorage.setItem('firstBuyTime', response.data.data.userTxDetail.firstBuyTime); //第一次交易时间
+                    localStorage.setItem('txNum', response.data.data.userTxDetail.txNum); //交易次数
+                    localStorage.setItem('believeNum', response.data.data.userTxDetail.believeNum);//信任人数
+                    localStorage.setItem('sellAmount', response.data.data.userTxDetail.sellAmount); //出售的累计交易数量
+                    localStorage.setItem('buyAmount', response.data.data.userTxDetail.buyAmount); //购买的累计交易数量
                     // browserHistory.push('/');
                 } else {
                     dispatch(authError(response.data.message));
@@ -47,13 +89,6 @@ export function signinAction({ mobilephone, password }) {
             .catch((err) => {
                 dispatch(authError(err.message));
             });
-    };
-}
-
-export function authError(error) {
-    return {
-        type: AUTH_ERROR,
-        payload: error
     };
 }
 
@@ -166,6 +201,22 @@ export function ChangePasswordSave({ loginname, password, newPassword }, callbac
                     callback(response.data.message);
                 }
 
+            })
+            .catch(err => (err.message));
+    };
+}
+
+/**
+ * 邮箱找回密码
+ */
+
+export function EmialAction({ email}, callback) {
+    console.log("邮箱找回" + email );
+    return function (dispatch) {
+        axios.get(`${ROOT_URLC}/user/imgVcode?key=${email}`, { headers: getAuthorizedHeader() })
+            .then(response => {
+                console.log(response);
+                dispatch({ type: EMAIL_FIND_PSW, payload: response });
             })
             .catch(err => (err.message));
     };

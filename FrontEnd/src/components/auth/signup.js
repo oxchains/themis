@@ -5,6 +5,7 @@
 
 import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { signupUser, GetverifyCode } from '../../actions/auth';
 import { Alert } from 'antd';
@@ -126,9 +127,17 @@ class Signup extends Component {
         return (
             <div>
                 <div className="login-box">
-                    <div className="form-style">
+                    {/* <div className="form-style">
                         <div className=" login-box-msg" style={{ fontSize: 24 + 'px' }}>手机注册</div>
-                    </div>
+                    </div> */}
+
+                    <div className=" signinWay text-center g-pt-50">
+                            <ul className="row loginul">
+                                <li className="col-xs-6 loginli"> <Link className="signinTypeBar g-pb-3" to="/signup">手机注册</Link></li>
+                                <li className="col-xs-6 loginli"><Link className=" g-pb-3" to="/signupemail">邮箱注册</Link></li>
+                            </ul>
+                        </div>
+
 
                     <div className="login-box-body">
                         <form className="form-signin" onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
