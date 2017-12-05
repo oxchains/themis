@@ -30,7 +30,7 @@ public class TFSConsumer {
                 fileInfos.setLength(multipartFile.getBytes().length);
                 s = tfsService.saveTfsFile(fileInfos);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.error("save file faild : {}",e);
         }
         return s;
@@ -64,7 +64,7 @@ public class TFSConsumer {
                 fileInfos.setLength(multipartFile.getBytes().length);
                 s = tfsService.saveTfsLargeFile(fileInfos);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.error("save large file faild : {}",e);
         }
         return s;
