@@ -7,6 +7,7 @@ import com.oxchains.themis.arbitrate.service.ArbitrateService;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.util.JsonUtil;
 import com.oxchains.themis.repo.entity.OrderArbitrate;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindingResult;
@@ -17,7 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.util.Base64;
 import java.util.List;
 
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
@@ -70,42 +73,36 @@ public class ArbitrateController {
         try {
             FileInfos infos = arbitrateService.getFile(fileName);
             if(infos!=null){
-                byte[] bytes = infos.getFile();
-                response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + infos.getTfsFilename());
-                response.setContentType(HttpURLConnection.guessContentTypeFromName(infos.getTfsFilename()));
-                response.setContentLengthLong(bytes.length);
-                ByteArrayInputStream fis = new ByteArrayInputStream(bytes);
-                byte[] bytesRead = new byte[1024*1024];
-                int length = 0;
-                while((length=fis.read(bytesRead))!=-1){
-                    response.getOutputStream().write(bytesRead,0,length);
+                String filename = infos.getFilename();
+                byte[] buff = infos.getFile();
+                InputStream input = new ByteArrayInputStream(buff);
+                byte[] buffer = new byte[input.available()];
+                input.read(buffer);
+                input.close();
+                String agent = request.getHeader("USER-AGENT");
+                if(StringUtils.isEmpty(filename) || buff.length < 1){
+                    filename = "error";
+                    buff = new String("no such file").getBytes();
                 }
-            }
-            else{
-                fileNotFound(response);
+                if(agent != null && agent.toLowerCase().indexOf("firefox") > 0)
+                {
+                    filename = "=?UTF-8?B?" + (new String(Base64.getEncoder().encodeToString(filename.getBytes("UTF-8")))) + "?=";
+                }
+                else
+                {
+                    filename =  java.net.URLEncoder.encode(filename, "UTF-8");
+                }
+                response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
+                response.setContentType(HttpURLConnection.guessContentTypeFromName(filename));
+                response.setContentLengthLong(buff.length);
+                response.getOutputStream().write(buff);
+                response.getOutputStream().flush();
+                response.getOutputStream().close();
             }
         } catch (IOException e) {
             LOG.error("downloadfile faild : {}",e.getMessage(),e);
         }
     }
-    /*@RequestMapping("/arbitrate/{fileName}/downloadfile")
-    public void downloadfile(@PathVariable String fileName, HttpServletRequest request, HttpServletResponse response){
-        try {
-            File applicationFile = new File(imageUrl + fileName);
-            if(applicationFile.exists()){
-                Path filePath = applicationFile.toPath();
-                response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + applicationFile.getName());
-                response.setContentType(HttpURLConnection.guessContentTypeFromName(applicationFile.getName()));
-                response.setContentLengthLong(applicationFile.length());
-                Files.copy(filePath, response.getOutputStream());
-            }
-            else{
-                fileNotFound(response);
-            }
-        } catch (IOException e) {
-            LOG.error("downloadfile faild : {}",e);
-        }
-    }*/
     private void checkPage(Pojo pojo){
         if(pojo.getPageSize() == null){
             pojo.setPageSize(8);

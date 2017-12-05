@@ -1,6 +1,7 @@
 package com.oxchains.basicService.files.tfsService;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.oxchains.basicService.files.entity.FileInfos;
+import com.oxchains.basicService.files.exception.SaveFileExecption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +33,7 @@ public class TFSConsumer {
             }
         } catch (Exception e) {
             LOG.error("save file faild : {}",e);
+            return null;
         }
         return s;
     }
@@ -47,8 +49,9 @@ public class TFSConsumer {
                 fileInfos.setLength(bytes.length);
                 s = tfsService.saveTfsFile(fileInfos);
             }
-        } catch (Exception e) {
+        } catch (SaveFileExecption e) {
             LOG.error("save file faild : {}",e);
+            return null;
         }
         return s;
     }
@@ -66,6 +69,7 @@ public class TFSConsumer {
             }
         } catch (Exception e) {
             LOG.error("save large file faild : {}",e);
+            return null;
         }
         return s;
     }
@@ -81,8 +85,9 @@ public class TFSConsumer {
                 fileInfos.setLength(bytes.length);
                 s = tfsService.saveTfsLargeFile(fileInfos);
             }
-        } catch (Exception e) {
+        } catch (SaveFileExecption e) {
             LOG.error("save large file faild : {}",e.getMessage(),e);
+            return null;
         }
         return s;
     }
@@ -96,6 +101,7 @@ public class TFSConsumer {
             }
         } catch (Exception e) {
             LOG.error("get file faild : {}",e);
+            return null;
         }
         return tfsFile;
     }
