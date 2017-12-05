@@ -39,6 +39,9 @@ public class EncryptUtils {
     }
 
     private static String encrypt(String src,String type){
+        if(src==null){
+            return null;
+        }
         MessageDigest md=null;
         String result=null;
         byte[] b=src.getBytes();
