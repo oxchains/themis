@@ -23,7 +23,7 @@ public class TFSConsumer {
             fileInfos.setFilename(multipartFile.getOriginalFilename());
             s = tfsService.saveTfsFile(fileInfos);
         } catch (IOException e) {
-            LOG.error("save file faild : {}",e.getMessage(),e);
+            LOG.error("save file faild : {}",e);
         }
         return s;
     }
@@ -35,7 +35,7 @@ public class TFSConsumer {
             fileInfos.setFilename(filename);
             s = tfsService.saveTfsFile(fileInfos);
         } catch (Exception e) {
-            LOG.error("save file faild : {}",e.getMessage(),e);
+            LOG.error("save file faild : {}",e);
         }
         return s;
     }
@@ -47,7 +47,7 @@ public class TFSConsumer {
             fileInfos.setFilename(multipartFile.getOriginalFilename());
             s = tfsService.saveTfsLargeFile(fileInfos);
         } catch (IOException e) {
-            LOG.error("save large file faild : {}",e.getMessage(),e);
+            LOG.error("save large file faild : {}",e);
         }
         return s;
 
@@ -59,7 +59,7 @@ public class TFSConsumer {
         try {
             tfsFile = tfsService.getTfsFile(tfsFileName);
         } catch (Exception e) {
-            LOG.error("get file faild : {}",e.getMessage(),e);
+            LOG.error("get file faild : {}",e);
         }
         return tfsFile;
     }

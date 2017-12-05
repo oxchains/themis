@@ -92,7 +92,7 @@ public class OrderArbitrateListener {
 
             }
         } catch (RestClientException e) {
-            LOG.error("Order Arbitrate Monitor faild :{}",e.getMessage(),e);
+            LOG.error("Order Arbitrate Monitor faild :{}",e);
         }
     }
     private HttpHeaders getHttpHeader(){
@@ -103,7 +103,7 @@ public class OrderArbitrateListener {
             headers.setContentType(type);
             headers.add("Accept", MediaType.APPLICATION_JSON.toString());
         } catch (Exception e) {
-            LOG.error("get http header faild : {}",e.getMessage(),e);
+            LOG.error("get http header faild : {}",e);
         }
         return  headers;
     }

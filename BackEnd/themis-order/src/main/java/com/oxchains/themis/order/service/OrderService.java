@@ -115,7 +115,7 @@ public class OrderService {
             //处理双方的交易信息
             this.handleUserTxDetail(pojo.getUserId(),notice.getUserId(),ParamType.UserTxDetailHandle.FIRST_BUY_TIME.getStatus(),null);
         }catch (Exception e){
-            LOG.error("add orders faild : {}",e.getMessage(),e);
+            LOG.error("add orders faild : {}",e);
             return RestResp.fail("服务器繁忙,请稍后再试!");
         }
         return orders!=null?RestResp.success(new OrdersInfo(orders)):RestResp.fail("服务器繁忙,请稍后再试!");
@@ -158,7 +158,7 @@ public class OrderService {
                        userTxDetailDao.save(noticeTx);
                    }
                } catch (Exception e) {
-                   LOG.error("user trasaction detail handle faild :{}",e.getMessage(),e);
+                   LOG.error("user trasaction detail handle faild :{}",e);
                    throw  e;
                }
            }
@@ -186,7 +186,7 @@ public class OrderService {
             }
             ordersInfo.setPayment(paymentRepo.findOne(ordersInfo.getPaymentId()));
         } catch (Exception e) {
-            LOG.error("get order details faild : {}",e.getMessage(),e);
+            LOG.error("get order details faild : {}",e);
             return null;
         }
         return ordersInfo;
@@ -220,7 +220,7 @@ public class OrderService {
                 ordersInfoList.add(ordersInfo);
             }
         } catch (Exception e) {
-            LOG.error("query complete order faild : {}",e.getMessage(),e);
+            LOG.error("query complete order faild : {}",e);
             return RestRespPage.fail("未知错误");
         }
         return RestRespPage.success(ordersInfoList,ordersPage.getTotalElements());
@@ -255,7 +255,7 @@ public class OrderService {
                 ordersInfoList.add(ordersInfo);
             }
         } catch (Exception e) {
-            LOG.error("query noComplete order faild : {}",e.getMessage(),e);
+            LOG.error("query noComplete order faild : {}",e);
             return RestRespPage.fail("未知错误");
         }
         return RestRespPage.success(ordersInfoList,ordersPage.getTotalElements());
@@ -303,7 +303,7 @@ public class OrderService {
             ordersInfo = new OrdersInfo(orders1);
             this.setOrderStatusName(ordersInfo);
         } catch (Exception e) {
-            LOG.error("cancel orders faild : {}",e.getMessage(),e);
+            LOG.error("cancel orders faild : {}",e);
             return RestResp.fail("未知错误");
         }
         return orders1!=null?RestResp.success(ordersInfo):RestResp.fail();
@@ -331,8 +331,8 @@ public class OrderService {
                     return RestResp.fail("你的支付还未到账,请稍后重试");
                 }
         } catch (Exception e) {
-            LOG.error("confirm order faild : {}",e.getMessage(),e);
-            return RestResp.fail("未知错误");
+            LOG.error("confirm order faild : {}",e);
+            return RestResp.fail("未知错误", e);
         }
     }
     /*
@@ -367,7 +367,7 @@ public class OrderService {
                 return orders!=null?RestResp.success(ordersInfo):RestResp.fail("未知错误");
             }
         } catch (Exception e) {
-            LOG.error("confirm receive refund faild : {}",e.getMessage(),e);
+            LOG.error("confirm receive refund faild : {}",e);
             return RestResp.fail("未知错误");
         }
         return RestResp.fail("未知错误");
@@ -414,7 +414,7 @@ public class OrderService {
             }
 
         } catch (Exception e) {
-            LOG.error("save address key faild : {}",e.getMessage(),e);
+            LOG.error("save address key faild : {}",e);
             return RestResp.fail("服务器繁忙,请稍后再试!");
         }
         return RestResp.fail("服务器繁忙,请稍后再试!");
@@ -441,7 +441,7 @@ public class OrderService {
                 userTxDetails.setLoginname(this.getLoginNameByUserId(notice.getUserId()));
             }
         } catch (Exception e) {
-            LOG.error("find user transaction and notice  faild : {}",e.getMessage(),e);
+            LOG.error("find user transaction and notice  faild : {}",e);
             return null;
         }
         return userTxDetails;
@@ -479,7 +479,7 @@ public class OrderService {
                 userTxDetails.setMobilePhoneVerify("已验证");
             }
         } catch (Exception e) {
-            LOG.error("find user transaction faild : {}",e.getMessage(),e);
+            LOG.error("find user transaction faild : {}",e);
             return null;
         }
         return userTxDetails;
@@ -504,7 +504,7 @@ public class OrderService {
                 }
             }
         } catch (Exception e) {
-            LOG.error("faild upload tx id : {}",e.getMessage(),e);
+            LOG.error("faild upload tx id : {}",e);
             return RestResp.fail("服务器繁忙,请稍后再试");
         }
         return RestResp.fail("服务器繁忙,请稍后再试");
@@ -524,7 +524,7 @@ public class OrderService {
                 return orders!=null?RestResp.success(ordersInfo):RestResp.fail("未知错误");
             }
         } catch (Exception e) {
-            LOG.error("confirm send money faild : {}",e.getMessage(),e);
+            LOG.error("confirm send money faild : {}",e);
             return RestResp.fail("未知错误");
         }
         return RestResp.fail("未知错误");
@@ -544,7 +544,7 @@ public class OrderService {
                 return orders!=null?RestResp.success(ordersInfo):RestResp.fail();
             }
         } catch (Exception e) {
-            LOG.error("judge seller public private auth faild : {}",e.getMessage(),e);
+            LOG.error("judge seller public private auth faild : {}",e);
         }
         return RestResp.fail();
     };
@@ -579,7 +579,7 @@ public class OrderService {
                 }
             }
         } catch (Exception e) {
-            LOG.error("release BTC faild : {}",e.getMessage(),e);
+            LOG.error("release BTC faild : {}",e);
             return RestResp.fail("未知错误");
         }
         return  RestResp.fail("未知错误");
@@ -599,7 +599,7 @@ public class OrderService {
                 messageService.postConfirmReceive(orders);
             }
         } catch (RestClientException e) {
-            LOG.error("confirm recive BTC faild : {} ",e.getMessage(),e);
+            LOG.error("confirm recive BTC faild : {} ",e);
             return RestResp.fail("未知错误");
         }
         ordersInfo = new OrdersInfo(orders);
@@ -644,7 +644,7 @@ public class OrderService {
                 }
             }
         } catch (Exception e) {
-            LOG.error("faild save comment : {}",e.getMessage(),e);
+            LOG.error("faild save comment : {}",e);
             return RestResp.fail("未知错误");
         }
         return orderComment1!=null?RestResp.success(orderComment1):RestResp.fail();

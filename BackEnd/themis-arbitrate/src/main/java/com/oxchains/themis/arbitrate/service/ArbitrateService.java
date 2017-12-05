@@ -87,7 +87,7 @@ public class ArbitrateService {
 
             }
         } catch (Exception e) {
-            LOG.error("find arbitrate order faild : {}",e.getMessage(),e);
+            LOG.error("find arbitrate order faild : {}",e);
             return RestResp.fail("未知错误");
         }
         return RestRespPage.success(ordersInfoList,orderArbitratePage.getTotalPages());
@@ -106,7 +106,7 @@ public class ArbitrateService {
             ordersInfo.setPayment(paymentRepo.findOne(ordersInfo.getPaymentId()));
             return ordersInfo;
         } catch (Exception e) {
-            LOG.error("get order details faild : {}",e.getMessage(),e);
+            LOG.error("get order details faild : {}",e);
         }
         return ordersInfo;
     }
@@ -185,7 +185,7 @@ public class ArbitrateService {
             orderEvidence = orderEvidenceRepo.save(orderEvidence);
             messageService.postUploadEvidence(orders,pojo.getUserId());
         } catch (Exception e) {
-            LOG.error("upload evidence faild : {}",e.getMessage(),e);
+            LOG.error("upload evidence faild : {}",e);
             return RestResp.fail("申请仲裁失败");
         }
         return  orderEvidence!=null? RestResp.success():RestResp.fail();
@@ -212,7 +212,7 @@ public class ArbitrateService {
                 messageService.postArbitrateMessage(orders,pojo.getUserId(),pojo.getSuccessId());
             }
         } catch (Exception e) {
-            LOG.error("arbitrate orders to user faild : {}",e.getMessage(),e);
+            LOG.error("arbitrate orders to user faild : {}",e);
             return RestResp.fail("仲裁失败请稍后重试");
         }
         return orderArbitrate!=null?RestResp.success(orderArbitrate):RestResp.fail();
@@ -225,7 +225,7 @@ public class ArbitrateService {
             headers.setContentType(type);
             headers.add("Accept", MediaType.APPLICATION_JSON.toString());
         } catch (Exception e) {
-            LOG.error("get http header faild : {}",e.getMessage(),e);
+            LOG.error("get http header faild : {}",e);
         }
         return  headers;
     }
@@ -257,7 +257,7 @@ public class ArbitrateService {
                 }
             }
         } catch (Exception e) {
-            LOG.error("get user by id from themis-user faild : {}",e.getMessage(),e);
+            LOG.error("get user by id from themis-user faild : {}",e);
             throw  e;
         }
         return null;
@@ -280,7 +280,7 @@ public class ArbitrateService {
                 return notice1;
             }
         } catch (RestClientException e) {
-            LOG.error("get notice faild : {}",e.getMessage(),e);
+            LOG.error("get notice faild : {}",e);
         }
         return null;
     }

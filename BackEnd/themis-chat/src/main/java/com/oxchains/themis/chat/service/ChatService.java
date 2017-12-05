@@ -51,7 +51,7 @@ public class ChatService {
             return list;
         }
         catch (Exception e){
-            LOG.error("faild get chat history : {}",e.getMessage(),e);
+            LOG.error("faild get chat history : {}",e);
         }
         return null;
     }
@@ -73,7 +73,7 @@ public class ChatService {
                 }
             }
         } catch (Exception e) {
-            LOG.error("get user by id from themis-user faild : {}",e.getMessage(),e);
+            LOG.error("get user by id from themis-user faild : {}",e);
             throw  e;
         }
         return null;
