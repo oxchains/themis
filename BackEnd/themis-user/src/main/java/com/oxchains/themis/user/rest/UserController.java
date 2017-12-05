@@ -54,9 +54,6 @@ public class UserController {
     @Value("${user.info.image}")
     private String imageUrl;
 
-    @Resource
-    TFSConsumer tfsConsumer;
-
     @PostMapping(value = "/register")
     public RestResp register(@RequestBody User user){
         return userService.addUser(user);
@@ -102,24 +99,22 @@ public class UserController {
         }
         MultipartFile file = user.getFile();
         if(null != file){
-//            String fileName = file.getOriginalFilename();
-//            String suffix = fileName.substring(fileName.lastIndexOf("."));
-//            String newFileName = user.getLoginname() + suffix;
-//            String pathName = imageUrl + newFileName;
-//            File f =new File(pathName);
-//            if(f.exists()){
-//                f.delete();
-//            }
-//            file.transferTo(new File(pathName));
-            String newFileName = tfsConsumer.saveTfsFile(file);
+            String fileName = file.getOriginalFilename();
+            String suffix = fileName.substring(fileName.lastIndexOf("."));
+            String newFileName = user.getLoginname() + suffix;
+            String pathName = imageUrl + newFileName;
+            File f =new File(pathName);
+            if(f.exists()){
+                f.delete();
+            }
+            file.transferTo(new File(pathName));
             user.setImage(newFileName);
             return userService.updateUser(user,ParamType.UpdateUserInfoType.INFO);
         }
 
         String image = user.getLoginname()+".jpg";
         if(null != user.getImage() && !"undefined".equals(user.getImage())) {
-            //ImageBase64.generateImage(user.getImage(), imageUrl + image);
-            image = tfsConsumer.saveTfsFile(ImageBase64.getImageBytes(user.getImage()),null);
+            ImageBase64.generateImage(user.getImage(), imageUrl + image);
             user.setImage(image);
         }
         return userService.updateUser(user,ParamType.UpdateUserInfoType.INFO);

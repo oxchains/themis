@@ -1,5 +1,6 @@
 package com.oxchains.themis.user.service;
 
+import com.oxchains.basicService.files.tfsService.TFSConsumer;
 import com.oxchains.themis.common.auth.JwtService;
 import com.oxchains.themis.common.constant.Status;
 import com.oxchains.themis.common.constant.UserConstants;
@@ -8,10 +9,7 @@ import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.param.ParamType;
 import com.oxchains.themis.common.param.RequestBody;
 import com.oxchains.themis.common.param.VerifyCode;
-import com.oxchains.themis.common.util.ConstantUtils;
-import com.oxchains.themis.common.util.DateUtil;
-import com.oxchains.themis.common.util.EncryptUtils;
-import com.oxchains.themis.common.util.RegexUtils;
+import com.oxchains.themis.common.util.*;
 import com.oxchains.themis.repo.dao.*;
 import com.oxchains.themis.repo.entity.*;
 import com.oxchains.themis.user.domain.UserRelationInfo;
@@ -23,8 +21,10 @@ import org.springframework.data.domain.*;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -66,6 +66,9 @@ public class UserService extends BaseService {
 
     @Resource
     private RedisTemplate redisTemplate;
+
+    @Resource
+    TFSConsumer tfsConsumer;
 
     private String token;
 
@@ -130,15 +133,30 @@ public class UserService extends BaseService {
         return RestResp.success("操作成功");
     }
     public RestResp updateUser(User user, ParamType.UpdateUserInfoType uuit) {
+        if(null == user){
+            return RestResp.fail("参数不能为空");
+        }
         if(user.getLoginname()==null){
             return RestResp.fail("用户名不能为空");
         }
         User u = userDao.findByLoginname(user.getLoginname());
+        if(null == u){
+            return RestResp.fail("用户信息不正确");
+        }
         switch (uuit){
             case INFO:
                 boolean flag = false;
+                MultipartFile file = user.getFile();
+                if(null != file){
+                    String fileName = file.getOriginalFilename();
+                    String suffix = fileName.substring(fileName.lastIndexOf("."));
+                    String newFileName = tfsConsumer.saveTfsFile(file,u.getId());
+                    u.setImage(newFileName);
+                    flag = true;
+                }
                 if(null!=user.getImage() && !"".equals(user.getImage().trim())) {
-                    u.setImage(user.getImage());
+                    String newFileName = tfsConsumer.saveTfsFile(ImageBase64.getImageBytes(user.getImage()),u.getLoginname(),u.getId());
+                    u.setImage(newFileName);
                     flag = true;
                 }
                 if(null!=user.getDescription() && !"".equals(user.getDescription().trim())) {
