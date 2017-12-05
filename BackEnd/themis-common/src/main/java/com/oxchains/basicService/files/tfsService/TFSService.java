@@ -12,5 +12,4 @@ public interface TFSService {
     public FileInfos getTfsFile(String tfsFileName) throws SaveFileExecption;
     public boolean deleteTfsFile(String tfsFileName) throws Exception;
     public boolean hideTfsFile(String tfsFileName, int isHidden) throws Exception;
-    public FileInfo stateTfsFile(String tfsFileName) throws Exception;
 }

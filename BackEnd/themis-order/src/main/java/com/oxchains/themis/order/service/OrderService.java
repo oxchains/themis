@@ -181,10 +181,12 @@ public class OrderService {
             if(ordersInfo.getBuyerId().longValue() == pojo.getUserId()){
                 ordersInfo.setOrderType("购买");
                 ordersInfo.setFriendUsername(this.getLoginNameByUserId(o.getSellerId()));
+                ordersInfo.setPartnerUserId(o.getSellerId());
             }
             else{
                 ordersInfo.setOrderType("出售");
                 ordersInfo.setFriendUsername(this.getLoginNameByUserId(o.getBuyerId()));
+                ordersInfo.setPartnerUserId(o.getBuyerId());
             }
             ordersInfo.setPayment(paymentRepo.findOne(ordersInfo.getPaymentId()));
         } catch (Exception e) {
