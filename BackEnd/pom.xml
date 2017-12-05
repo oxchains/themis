@@ -232,9 +232,6 @@
             <artifactId>spring-boot-starter-redis</artifactId>
             <version>1.4.7.RELEASE</version>
         </dependency>
-<<<<<<< HEAD
-=======
-
         <!-- logstash -->
         <dependency>
             <groupId>net.logstash.logback</groupId>
