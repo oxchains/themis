@@ -52,6 +52,7 @@ public class RemoteCallService {
     @Resource
     private RestTemplate restTemplate;
     //从用户中心 根据用户id获取用户信息
+    @HystrixCommand(fallbackMethod = "getUserError")
     public User getUserById(Long userId){
 
         try {
@@ -69,11 +70,15 @@ public class RemoteCallService {
             }
         } catch (Exception e) {
             LOG.error("get user by id from themis-user faild : {}",e.getMessage(),e);
+            return null;
         }
         return null;
     }
-
+    public User getUserError(Long userId){
+        return null;
+    }
     //从用户中心获取仲裁者用户列表
+    @HystrixCommand(fallbackMethod = "getArbitrateUserError")
     public List<User> getArbitrateUser(){
         try {
             List<String> userList1 = listOperations.range(arbitrateHK, 0,3L);
@@ -97,49 +102,68 @@ public class RemoteCallService {
             }
         } catch (RestClientException e) {
             LOG.error("get arbitrate user from themis-user faild : {}",e.getMessage(),e);
+            return null;
         }
         return null;
     }
+    public List<User> getArbitrateUserError(){
+        return null;
+    }
     //从用户中心获取协商地址
+    @HystrixCommand(fallbackMethod = "getP2shAddressByOrderIdError")
     public String getP2shAddressByOrderId(String id){
         try {
-           String str  = (String) hashOperations.get(arbitrateHK, id);
+           String str  = (String) hashOperations.get(txAddressHK, id);
            if(StringUtils.isNotBlank(str)){
                return str;
            }
             String jsonObject = restTemplate.getForObject(ThemisUserAddress.GET_PTSHADDRESS+id, String.class);
-            RestResp restResp = JsonUtil.jsonToEntity(jsonObject,RestResp.class);
-            if(restResp != null){
-                if(restResp.status == 1){
-                    Transaction transaction = JsonUtil.objectToEntity(restResp.data, Transaction.class);
-                    if(transaction != null){
-                        hashOperations.put(txAddressHK,id,transaction.getP2shAddress());
-                        return transaction .getP2shAddress();
-                    }
-                }
-            }
+           if(jsonObject != null){
+               RestResp restResp = JsonUtil.jsonToEntity(jsonObject,RestResp.class);
+               if(restResp != null){
+                   if(restResp.status == 1){
+                       Transaction transaction = JsonUtil.objectToEntity(restResp.data, Transaction.class);
+                       if(transaction != null){
+                           hashOperations.put(txAddressHK,id,transaction.getP2shAddress());
+                           return transaction .getP2shAddress();
+                       }
+                   }
+               }
+           }
         } catch (Exception e) {
             LOG.error("get transaction from themis-user faild : {}",e.getMessage(),e);
+            return null;
         }
         return null;
     }
+    public String getP2shAddressByOrderIdError(){
+        return null;
+    }
     //从仲裁系统添加仲裁信息
+    @HystrixCommand(fallbackMethod = "saveOrderAbritrateError")
     public Integer saveOrderAbritrate(List<OrderArbitrate> orderArbitrate){
         try {
             HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(orderArbitrate), this.getHttpHeader());
             String jsonObject = restTemplate.postForObject(ThemisUserAddress.SAVE_ARBITRATE, formEntity, String.class);
             if(jsonObject != null){
-                RestResp restResp = JsonUtil.jsonToEntity(jsonObject,RestResp.class);
-                if(restResp != null){
-                    return restResp.status;
+                if(jsonObject != null){
+                    RestResp restResp = JsonUtil.jsonToEntity(jsonObject,RestResp.class);
+                    if(restResp != null){
+                        return restResp.status;
+                    }
                 }
             }
         } catch (RestClientException e) {
             LOG.error("save order arbitrate faild : {}",e.getMessage(),e);
+            return -1;
         }
         return -1;
     }
+    public Integer saveOrderAbritrateError(List<OrderArbitrate> orderArbitrate){
+        return null;
+    }
     //从公告系统 获取公告
+    @HystrixCommand(fallbackMethod = "remoteNoticeError")
     public Notice findNoticeById(Long id){
         Notice notice1 = null;
         try {
@@ -147,7 +171,7 @@ public class RemoteCallService {
             if(StringUtils.isNotBlank(noticeStrs)){
                 return JsonUtil.jsonToEntity(noticeStrs,Notice.class);
             }
-            String noticeStr = this.getNotice(id);
+            String noticeStr = restTemplate.getForObject(ThemisUserAddress.GET_NOTICE + id, String.class);
             if(noticeStr != null){
                 RestResp restResp = JsonUtil.jsonToEntity(noticeStr, RestResp.class);
                 if(null != restResp && restResp.status == 1){
@@ -158,23 +182,21 @@ public class RemoteCallService {
             }
         } catch (RestClientException e) {
             LOG.error("get notice faild : {}",e.getMessage(),e);
+            return null;
         }
         return null;
     }
-    @HystrixCommand(fallbackMethod = "remoteNoticeError")
-    private String getNotice(Long id){
-        return restTemplate.getForObject(ThemisUserAddress.GET_NOTICE + id, String.class);
-    }
-    private String remoteNoticeError(Long noticeId){
-        return "error"+noticeId;
+    private Notice remoteNoticeError(Long noticeId){
+        return null;
     }
     /**
      * 工具类方法 用来在用户系统获取一对随机的公私匙
      * */
+    @HystrixCommand(fallbackMethod = "getAddressKeysError")
     public AddressKeys getAddressKeys(){
         AddressKeys ak = null;
         try {
-            String   r = restTemplate.getForObject(ThemisUserAddress.GET_ADDRESS_KEYS,String.class);
+            String  r = restTemplate.getForObject(ThemisUserAddress.GET_ADDRESS_KEYS,String.class);
             if(r != null){
                 RestResp restResp = JsonUtil.jsonToEntity(r,RestResp.class);
                 if(restResp != null && restResp.status == 1){
@@ -184,9 +206,13 @@ public class RemoteCallService {
             }
         } catch (RestClientException e) {
             LOG.error("get address key faild : {}",e.getMessage(),e);
+            return null;
         }
         return  null;
     };
+    public AddressKeys getAddressKeysError(){
+        return null;
+    }
 
     public HttpHeaders getHttpHeader(){
         HttpHeaders headers = null;
@@ -200,6 +226,7 @@ public class RemoteCallService {
         }
         return  headers;
     }
+    @HystrixCommand(fallbackMethod = "createCenterAddressError")
     public JSONObject createCenterAddress(OrdersKeyAmount ordersKeyAmount){
         JSONObject jsonObject = null;
         try {
@@ -209,9 +236,14 @@ public class RemoteCallService {
             }
         } catch (RestClientException e) {
             LOG.error("create center address faild：{}",e.getMessage(),e);
+            return null;
         }
         return jsonObject;
     }
+    public JSONObject createCenterAddressError(OrdersKeyAmount ordersKeyAmount){
+        return null;
+    }
+    @HystrixCommand(fallbackMethod = "uploadTxIdError")
     public JSONObject uploadTxId(OrdersKeyAmount ordersKeyAmount, String id){
         JSONObject jsonObject = null;
         try {
@@ -221,5 +253,22 @@ public class RemoteCallService {
             LOG.error("upload txid faild：{}",e.getMessage(),e);
         }
         return jsonObject;
+    }
+    public JSONObject uploadTxIdError(OrdersKeyAmount ordersKeyAmount, String id){
+        return null;
+    }
+    @HystrixCommand(fallbackMethod = "moveBTCError" )
+    public JSONObject moveBTC(OrdersKeyAmount ordersKeyAmount){
+        JSONObject jsonObject = null;
+        try {
+            HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), this.getHttpHeader());
+            jsonObject = restTemplate.postForObject(ThemisUserAddress.MOVE_BTC,formEntity,JSONObject.class);
+        } catch (RestClientException e) {
+            LOG.error("releaseBTC faild : {}",e.getMessage(),e);
+        }
+        return jsonObject;
+    }
+    public JSONObject moveBTCError(OrdersKeyAmount ordersKeyAmount){
+        return null;
     }
 }

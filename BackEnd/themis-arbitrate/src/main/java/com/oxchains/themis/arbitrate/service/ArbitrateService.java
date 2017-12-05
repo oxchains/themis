@@ -1,5 +1,6 @@
 package com.oxchains.themis.arbitrate.service;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.oxchains.basicService.files.entity.FileInfos;
 import com.oxchains.basicService.files.tfsService.TFSConsumer;
 import com.oxchains.themis.arbitrate.common.*;
 import com.oxchains.themis.arbitrate.entity.OrderEvidence;
@@ -66,6 +67,7 @@ public class ArbitrateService {
     private String noticeHk;
     public static final Integer BUYER_SUCCESS = 1;
     public static final Integer SELLER_SUCCESS = 2;
+    private static final String remoteError = "服务器繁忙,请稍后重试!";
     /*
    * 根据仲裁者id查找哪些订单可以被自己仲裁的订单列表
    * */
@@ -84,11 +86,10 @@ public class ArbitrateService {
                 this.setOrderStatusName(ordersInfo);
                 ordersInfo.setStatus(o.getStatus());
                 ordersInfoList.add(ordersInfo);
-
             }
         } catch (Exception e) {
             LOG.error("find arbitrate order faild : {}",e.getMessage(),e);
-            return RestResp.fail("未知错误");
+            return RestResp.fail(remoteError);
         }
         return RestRespPage.success(ordersInfoList,orderArbitratePage.getTotalPages());
     }
@@ -121,7 +122,7 @@ public class ArbitrateService {
             }
         }
     }
-    public RestResp uploadEvidence(RegisterRequest pojo,String imageUrl){
+    public RestResp uploadEvidence(RegisterRequest pojo){
         OrderEvidence orderEvidence = null;
         try {
 
@@ -158,19 +159,10 @@ public class ArbitrateService {
             if(hasNum+multipartFileList.size()>5){
                 return RestResp.fail("对不起,你上传的凭据超出限额,系统上限为五张,你已上传"+hasNum+"张");
             }
-            /*for(MultipartFile mf:multipartFileList){
-                String filename = mf.getOriginalFilename();
-                String suffix = filename.substring(filename.lastIndexOf("."));
-                UUID uuid = UUID.randomUUID();
-                String newFileName = uuid.toString() + suffix;
-                mf.transferTo(new File(imageUrl+newFileName));
-                imageName.append(",");
-                imageName.append(newFileName);
-            }*/
             for(MultipartFile mf:multipartFileList){
                 String filename = mf.getOriginalFilename();
                 String suffix = filename.substring(filename.lastIndexOf("."));
-                String fileName = tfsConsumer.saveTfsFile(mf);
+                String fileName = tfsConsumer.saveTfsFile(mf,pojo.getUserId());
                 imageName.append(",");
                 imageName.append(fileName);
             }
@@ -239,8 +231,8 @@ public class ArbitrateService {
         return RestResp.success();
     }
     //从用户中心 根据用户id获取用户信息
+    @HystrixCommand(fallbackMethod = "getUserByIdError")
     public User getUserById(Long userId){
-
         try {
             System.out.println(userId);
             String userInfo = (String) hashOperations.get(userHK, userId.toString());
@@ -258,8 +250,11 @@ public class ArbitrateService {
             }
         } catch (Exception e) {
             LOG.error("get user by id from themis-user faild : {}",e.getMessage(),e);
-            throw  e;
+            return null;
         }
+        return null;
+    }
+    public User getUserByIdError(Long userId){
         return null;
     }
     //从公告系统 获取公告
@@ -281,6 +276,7 @@ public class ArbitrateService {
             }
         } catch (RestClientException e) {
             LOG.error("get notice faild : {}",e.getMessage(),e);
+            return null;
         }
         return null;
     }
@@ -289,7 +285,7 @@ public class ArbitrateService {
         return restTemplate.getForObject(ThemisUserAddress.GET_NOTICE + id, String.class);
     }
     private String remoteNoticeError(Long noticeId){
-        return "error"+noticeId;
+        return null;
     }
     public void userTxDetailHandle(Orders orders){
         UserTxDetail userTxDetails = userTxDetailDao.findByUserId(orders.getBuyerId());
@@ -304,5 +300,14 @@ public class ArbitrateService {
     private String getLoginNameByUserId(Long userId){
         User userById = this.getUserById(userId);
         return userById != null?userById.getLoginname():null;
+    }
+    public FileInfos getFile(String filename){
+        FileInfos tfsFile = null;
+        try {
+            tfsFile = tfsConsumer.getTfsFile(filename);
+        } catch (Exception e) {
+            LOG.error("get file faild：{}",e.getMessage(),e);
+        }
+        return tfsFile;
     }
 }

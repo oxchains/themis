@@ -57,6 +57,7 @@ public class ChatService {
     }
     //从用户中心 根据用户id获取用户信息
     //从用户中心 根据用户id获取用户信息
+    @HystrixCommand(fallbackMethod ="getUserByIdError" )
     public User getUserById(Long userId){
 
         try {
@@ -76,6 +77,9 @@ public class ChatService {
             LOG.error("get user by id from themis-user faild : {}",e.getMessage(),e);
             throw  e;
         }
+        return null;
+    }
+    public User getUserByIdError(Long userId){
         return null;
     }
     private String getLoginNameByUserId(Long userId){

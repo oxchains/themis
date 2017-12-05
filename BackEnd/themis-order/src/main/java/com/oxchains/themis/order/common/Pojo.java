@@ -2,6 +2,7 @@ package com.oxchains.themis.order.common;
 
 import lombok.Data;
 
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -16,6 +17,7 @@ public class Pojo implements Serializable {
     private Integer successId; // 判断仲裁那个胜利 1 买家  2 卖家
     private Long noticeId;
     private String txId;     //交易id
+    @Size(max = 200,message = "评论上限200字")
     private String content;
     private Integer status;
     private String amount;
