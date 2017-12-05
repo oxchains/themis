@@ -1,5 +1,6 @@
 package com.oxchains.themis.user.service;
 
+import com.oxchains.basicService.files.tfsService.TFSConsumer;
 import com.oxchains.themis.common.auth.JwtService;
 import com.oxchains.themis.common.constant.Status;
 import com.oxchains.themis.common.constant.UserConstants;
@@ -8,9 +9,7 @@ import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.param.ParamType;
 import com.oxchains.themis.common.param.RequestBody;
 import com.oxchains.themis.common.param.VerifyCode;
-import com.oxchains.themis.common.util.ConstantUtils;
-import com.oxchains.themis.common.util.DateUtil;
-import com.oxchains.themis.common.util.EncryptUtils;
+import com.oxchains.themis.common.util.*;
 import com.oxchains.themis.repo.dao.*;
 import com.oxchains.themis.repo.entity.*;
 import com.oxchains.themis.user.domain.UserRelationInfo;
@@ -22,8 +21,10 @@ import org.springframework.data.domain.*;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -66,6 +67,9 @@ public class UserService extends BaseService {
     @Resource
     private RedisTemplate redisTemplate;
 
+    @Resource
+    TFSConsumer tfsConsumer;
+
     private String token;
 
 //    @Resource
@@ -96,6 +100,7 @@ public class UserService extends BaseService {
         if (null == user.getLoginStatus()){
             user.setLoginStatus(0);
         }
+        user.setEnabled(Status.EnableStatus.ENABLED.getStatus());
         user = userDao.save(user);
         if (user == null) {
             return RestResp.fail("操作失败");
@@ -128,16 +133,47 @@ public class UserService extends BaseService {
         return RestResp.success("操作成功");
     }
     public RestResp updateUser(User user, ParamType.UpdateUserInfoType uuit) {
+        if(null == user){
+            return RestResp.fail("参数不能为空");
+        }
         if(user.getLoginname()==null){
-            return RestResp.fail("非法参数");
+            return RestResp.fail("用户名不能为空");
         }
         User u = userDao.findByLoginname(user.getLoginname());
+        if(null == u){
+            return RestResp.fail("用户信息不正确");
+        }
         switch (uuit){
             case INFO:
-                u.setImage(user.getImage());
-                u.setDescription(user.getDescription());
+                boolean flag = false;
+                MultipartFile file = user.getFile();
+                if(null != file){
+                    String fileName = file.getOriginalFilename();
+                    String suffix = fileName.substring(fileName.lastIndexOf("."));
+                    String newFileName = tfsConsumer.saveTfsFile(file,u.getId());
+                    u.setImage(newFileName);
+                    flag = true;
+                }
+                if(null!=user.getImage() && !"".equals(user.getImage().trim())) {
+                    String newFileName = tfsConsumer.saveTfsFile(ImageBase64.getImageBytes(user.getImage()),u.getLoginname(),u.getId());
+                    u.setImage(newFileName);
+                    flag = true;
+                }
+                if(null!=user.getDescription() && !"".equals(user.getDescription().trim())) {
+                    u.setDescription(user.getDescription());
+                    flag = true;
+                }
+                if(!flag){
+                    return RestResp.fail("没有需要修改的信息");
+                }
                 break;
             case PWD:
+                if(null==user.getPassword() || "".equals(user.getPassword().trim())){
+                    return RestResp.fail("旧密码不能为空");
+                }
+                if(null==user.getNewPassword() || "".equals(user.getNewPassword().trim())){
+                    return RestResp.fail("新密码不能为空");
+                }
                 if(EncryptUtils.encodeSHA256(user.getPassword()).equals(u.getPassword())){
                     u.setPassword(EncryptUtils.encodeSHA256(user.getNewPassword()));
                 }else {
@@ -148,12 +184,19 @@ public class UserService extends BaseService {
                 u.setFpassword(EncryptUtils.encodeSHA256(user.getFpassword()));
                 break;
             case EMAIL:
+                if(null == user.getEmail() || "".equals(user.getEmail().trim()) || !RegexUtils.match(user.getEmail(),RegexUtils.REGEX_EMAIL)){
+                    return RestResp.fail("请输入正确的邮箱地址");
+                }
                 u.setEmail(user.getEmail());
                 break;
             case PHONE:
+                if(null == user.getMobilephone() || "".equals(user.getMobilephone().trim()) || !RegexUtils.match(user.getMobilephone(),RegexUtils.REGEX_MOBILEPHONE)){
+                    return RestResp.fail("请输入正确的手机号");
+                }
                 u.setMobilephone(user.getMobilephone());
                 break;
                 default:
+                    break;
         }
         reSaveRedis(u, token);
         return save(u);
@@ -173,6 +216,9 @@ public class UserService extends BaseService {
         try{
             Optional<User> optional = findUser(user);
             return optional.map(u -> {
+                if(u.getEnabled().equals(Status.EnableStatus.UNENABLED.getStatus())){
+                    return RestResp.fail("账号未激活");
+                }
                 if(u.getLoginStatus().equals(Status.LoginStatus.LOGIN.getStatus())){
                     return RestResp.fail("用户已经登录");
                 }
@@ -461,6 +507,9 @@ public class UserService extends BaseService {
     }
 
     public RestResp getUser(Long id){
+        if(null == id){
+            return RestResp.fail("参数不能为空");
+        }
         User user = userDao.findOne(id);
         if(user != null){
             user.setPassword(null);
@@ -499,6 +548,16 @@ public class UserService extends BaseService {
     @Value("${themis.frontend.url}")
     private String frontEndUrl;
     public RestResp sendVmail(VerifyCode vcode){
+        if(null == vcode){
+            return RestResp.fail("参数不能为空");
+        }
+        if(null==vcode.getKey()||"".equals(vcode.getKey().trim()) || !vcode.getKey().contains("@")){
+            return RestResp.fail("输入的邮箱格式不正确");
+        }
+        if(null == vcode.getVcode() || "".equals(vcode.getKey().trim())){
+            return RestResp.fail("验证码不能为空");
+        }
+
         String vcodeVal = getVcodeFromRedis(vcode.getKey());
         if (vcodeVal.equals(vcode.getVcode())) {
             String[] to = {vcode.getKey()};
@@ -518,9 +577,11 @@ public class UserService extends BaseService {
 
     public RestResp resetpwd(String resetkey,String password){
         User u = null;
-        boolean flag = false;
-        if(resetkey == null){
-            return RestResp.fail("非法修改");
+        if(resetkey == null || "".equals(resetkey.trim())){
+            return RestResp.fail("账号非法");
+        }
+        if(null == password || "".equals(password.trim())){
+            return RestResp.fail("密码不能为空");
         }
         if(redisTemplate.hasKey(resetkey)){
             return RestResp.fail("链接失效");
@@ -536,6 +597,7 @@ public class UserService extends BaseService {
         if(null !=password){
             u.setPassword(EncryptUtils.encodeSHA256(password));
             userDao.save(u);
+            return RestResp.success("重置密码成功!");
         }
         return RestResp.fail("重置密码失败");
     }

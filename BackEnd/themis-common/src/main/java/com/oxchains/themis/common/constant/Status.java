@@ -59,4 +59,31 @@ public interface Status {
             this.name = name;
         }
     }
+
+    enum EnableStatus {
+        UNENABLED(0,"不可用"),ENABLED(1,"可用");
+        private Integer status;
+        private String name;
+
+        EnableStatus(Integer status, String name) {
+            this.status = status;
+            this.name = name;
+        }
+
+        public Integer getStatus() {
+            return status;
+        }
+
+        public void setStatus(Integer status) {
+            this.status = status;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
 }
