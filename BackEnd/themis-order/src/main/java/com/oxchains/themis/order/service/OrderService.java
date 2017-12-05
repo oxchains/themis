@@ -160,7 +160,7 @@ public class OrderService {
                        userTxDetailDao.save(noticeTx);
                    }
                } catch (Exception e) {
-                   LOG.error("user trasaction detail handle faild :{}",e.getMessage(),e);
+                   LOG.error("user trasaction detail handle faild :{}",e);
                    throw  e;
                }
            }
@@ -188,7 +188,7 @@ public class OrderService {
             }
             ordersInfo.setPayment(paymentRepo.findOne(ordersInfo.getPaymentId()));
         } catch (Exception e) {
-            LOG.error("get order details faild : {}",e.getMessage(),e);
+            LOG.error("get order details faild : {}",e);
             return null;
         }
         return ordersInfo;
@@ -444,7 +444,7 @@ public class OrderService {
                 userTxDetails.setLoginname(this.getLoginNameByUserId(notice.getUserId()));
             }
         } catch (Exception e) {
-            LOG.error("find user transaction and notice  faild : {}",e.getMessage(),e);
+            LOG.error("find user transaction and notice  faild : {}",e);
             return null;
         }
         return userTxDetails;
@@ -482,7 +482,7 @@ public class OrderService {
                 userTxDetails.setMobilePhoneVerify("已验证");
             }
         } catch (Exception e) {
-            LOG.error("find user transaction faild : {}",e.getMessage(),e);
+            LOG.error("find user transaction faild : {}",e);
             return null;
         }
         return userTxDetails;
@@ -547,7 +547,7 @@ public class OrderService {
                 return orders!=null?RestResp.success(ordersInfo):RestResp.fail(remoteError);
             }
         } catch (Exception e) {
-            LOG.error("judge seller public private auth faild : {}",e.getMessage(),e);
+            LOG.error("judge seller public private auth faild : {}",e);
         }
         return RestResp.fail(remoteError);
     };

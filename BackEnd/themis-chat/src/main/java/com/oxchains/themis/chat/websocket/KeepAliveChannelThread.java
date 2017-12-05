@@ -33,7 +33,7 @@ public class KeepAliveChannelThread implements Runnable {
             }
         }
         }catch (Exception e){
-            LOG.error("Keep Alive websocket channel faild : {}",e.getMessage(),e);
+            LOG.error("Keep Alive websocket channel faild : {}",e);
         }
         this.keepAliveScheduler.schedule(this,keepTime, TimeUnit.SECONDS);
 

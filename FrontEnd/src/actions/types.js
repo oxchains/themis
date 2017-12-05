@@ -31,7 +31,7 @@ export const REQUEST_ERROR = 'request_error';                       //http请求
 export const FETCH_VERIFY_CODE = 'request_verifycode';              //注册获取验证码
 export const FETCH_VERIFY_CODE_PHONE = 'request_verifycode_phone';  //修改手机获取验证码
 export const EMAIL_FIND_PSW = 'email_find_psw';                     //邮箱找回密码
-
+export const RESET_PSW = 'reset_psw';                               //重置密码
 
 export const FETCH_ADVERT = 'FETCH_ADVERT';                          //发布广告
 export const FETCH_BUY_BTC = 'fetch_buy_btc';                       //购买比特币

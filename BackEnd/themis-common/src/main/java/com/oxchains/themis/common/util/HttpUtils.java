@@ -38,14 +38,14 @@ public class HttpUtils {
                 result += line;
             }
         } catch (Exception e) {
-            LOG.error("发送GET请求出现异常！{}", e.getMessage());
+            LOG.error("发送GET请求出现异常！{}", e);
         } finally {
             try {
                 if (in != null) {
                     in.close();
                 }
             } catch (Exception e2) {
-                LOG.error(e2.getMessage());
+                LOG.error("关闭输入流异常", e2);
             }
         }
         return result;

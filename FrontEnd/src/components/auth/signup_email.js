@@ -10,22 +10,36 @@ import { connect } from 'react-redux';
 import { EmialsignupUser } from '../../actions/auth';
 import { Route, Redirect } from 'react-router-dom';
 import { Alert } from 'antd';
+import {
+    Modal,
+    ModalHeader,
+    ModalTitle,
+    ModalClose,
+    ModalBody,
+    ModalFooter
+} from 'react-modal-bootstrap';
 class SignupEmial extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isModalOpen: false,
             spin: false,
+            error: null,
+            actionResult: '',
         };
     }
-    handleEmailSubmit({loginname, email, password}) {
-        // e.preventDefault();
-        // const loginname = this.refs.loginname.value;
-        // const email = this.refs.email.value;
-        // const password = this.refs.password.value;
+    hideModal = () => {
+        this.setState({
+            isModalOpen: false
+        });
+    };
+    handleFormSubmit({loginname, email, password}) {
         console.log(loginname, email, password);
-
-        // if (email && password)
-        //     this.props.EmailsigninAction({ email, password }, () => { });
+        if (loginname && email && password){
+            this.props.EmialsignupUser({ loginname, email, password }, err => {
+                this.setState({ isModalOpen: true, error: err, actionResult: err || '注册成功!', spin: false });
+            });
+          }
          }
     renderField({ input, label, type, icon, meta: { touched, error } }) {
         return (
@@ -37,6 +51,7 @@ class SignupEmial extends Component {
     }
     render() {
         const { handleSubmit } = this.props;
+        const url = this.state.error === '操作失败' ? "/signup" : "/signin";
         return (
             <div className="login-box">
                     <div className="signinWay text-center g-pt-50">
@@ -63,6 +78,22 @@ class SignupEmial extends Component {
                             </div>
                         </form>
                     </div>
+                    <Modal isOpen={this.state.isModalOpen} onRequestHide={this.hideModal}>
+                    <ModalHeader>
+                        <ModalClose onClick={this.hideModal} />
+                        <ModalTitle>提示:</ModalTitle>
+                    </ModalHeader>
+                    <ModalBody>
+                        <p className={this.state.error ? 'text-red' : 'text-green'}>
+                            {this.state.actionResult}
+                        </p>
+                    </ModalBody>
+                    <ModalFooter>
+                        <button className='btn btn-default' onClick={this.hideModal}>
+                            <a href={url}>关闭</a>
+                        </button>
+                    </ModalFooter>
+                </Modal>
             </div>);
     }
 }
@@ -83,8 +114,8 @@ const validate = values => {
 
 function mapStateToProps(state) {
     return {
-        loggedIn: state.auth.authenticated,
-        errorMessage: state.auth.error
+        all: state.auth.all,
+        errorMessage: state.auth.error,
     };
 }
 const reduxSignupForm = reduxForm({

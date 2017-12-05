@@ -36,4 +36,9 @@ public class NoticeConstants {
      * 常量 100
      */
     public static final Integer HUNDRED = 100;
+
+    /**
+     * 常量 一亿
+     */
+    public static final Integer ONE_HUNDRED_MILLION = 100000000;
 }

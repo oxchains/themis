@@ -33,7 +33,7 @@ public class KafkaConsumerListener {
                 mongoRepo.save(chatContent);
             }
         }catch (Exception e){
-         LOG.error("faild to save chatContent to mongo : {}",e.getMessage(),e);
+         LOG.error("faild to save chatContent to mongo : {}",e);
          e.printStackTrace();
         }
 

@@ -52,7 +52,7 @@ public class MessageService {
             Message message2 = new Message(successId.intValue() ==  BUYER_SUCCESS?orders.getSellerId():orders.getBuyerId(),faildSave.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message2);
         } catch (Exception e) {
-            LOG.error("MESSAGE -- post a arbitrateUser arbitrate finish message : {}",e.getMessage(),e);
+            LOG.error("MESSAGE -- post a arbitrateUser arbitrate finish message : {}",e);
         }
     }
     //仲裁完成后给双方的站内信
@@ -82,7 +82,7 @@ public class MessageService {
             Message message2 = new Message(falidId,messageText2.getId(),MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message2);
         } catch (Exception e) {
-            LOG.error("MESSAGE -- post this order arbitrate finish message : {}",e.getMessage(),e);
+            LOG.error("MESSAGE -- post this order arbitrate finish message : {}",e);
         }
     }
     //发起仲裁时的给三方的站内信
@@ -113,7 +113,7 @@ public class MessageService {
                 messageRepo.save(abritrateMessage);
             }
         } catch (Exception e) {
-            LOG.error("MESSAGE -- post the seller or buyer start arbitrate message : {}",e.getMessage(),e);
+            LOG.error("MESSAGE -- post the seller or buyer start arbitrate message : {}",e);
         }
     }
     //上传仲裁凭据的站内信
@@ -136,7 +136,7 @@ public class MessageService {
                 messageRepo.save(abritrateMessage);
             }
         } catch (Exception e) {
-            LOG.error("MESSAGE -- post upload arbitrate evidence message : {}",e.getMessage(),e);
+            LOG.error("MESSAGE -- post upload arbitrate evidence message : {}",e);
         }
 
     }
@@ -152,7 +152,7 @@ public class MessageService {
                 return user;
             }
         } catch (Exception e) {
-            LOG.error("get user by id from themis-user faild : {}",e.getMessage(),e);
+            LOG.error("get user by id from themis-user faild : {}",e);
             throw  e;
         }
         return null;

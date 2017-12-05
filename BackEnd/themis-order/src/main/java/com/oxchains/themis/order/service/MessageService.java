@@ -50,7 +50,7 @@ public class MessageService {
             Message message2 = new Message(userId,save1.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message2);
         } catch (Exception e) {
-            LOG.error("MESSAGE -- post add orders faild : {}",e.getMessage(),e);
+            LOG.error("MESSAGE -- post add orders faild : {}",e);
             throw  e;
         }
     }
@@ -63,7 +63,7 @@ public class MessageService {
             Message message1 = new Message(orders.getSellerId(),save.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message1);
         } catch (Exception e) {
-            LOG.error("MESSAGE -- post add public key private key faild : {}",e.getMessage(),e);
+            LOG.error("MESSAGE -- post add public key private key faild : {}",e);
         }
     }
     //卖家上传交易id的站内信
@@ -75,7 +75,7 @@ public class MessageService {
             Message message1 = new Message(orders.getSellerId(),save.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message1);
         } catch (Exception e) {
-            LOG.error("MESSAGE -- post upload tx id faild : {}",e.getMessage(),e);
+            LOG.error("MESSAGE -- post upload tx id faild : {}",e);
         }
     }
     //订单确认的站内信
@@ -92,7 +92,7 @@ public class MessageService {
             Message message2 = new Message(orders.getBuyerId(),save.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message2);
         } catch (Exception e) {
-            LOG.error("MESSAGE -- post confirm orders faild : {}",e.getMessage(),e);
+            LOG.error("MESSAGE -- post confirm orders faild : {}",e);
         }
     }
     /*
@@ -111,7 +111,7 @@ public class MessageService {
             Message message1 = new Message(orders.getBuyerId(),save.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message1);
         } catch (Exception e) {
-            LOG.error("MESSAGE -- post buyer confirm pay faild : {}",e.getMessage(),e);
+            LOG.error("MESSAGE -- post buyer confirm pay faild : {}",e);
         }
 
     }
@@ -131,7 +131,7 @@ public class MessageService {
             Message message1 = new Message(orders.getBuyerId(),save.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message1);
         } catch (Exception e) {
-            LOG.error("MESSAGE -- post seller release BTC faild : {}",e.getMessage(),e);
+            LOG.error("MESSAGE -- post seller release BTC faild : {}",e);
         }
 
     }
@@ -151,7 +151,7 @@ public class MessageService {
             Message message1 = new Message(orders.getBuyerId(),save.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message1);
         } catch (Exception e) {
-            LOG.error("MESSAGE -- post confirm receiver faild : {}",e.getMessage(),e);
+            LOG.error("MESSAGE -- post confirm receiver faild : {}",e);
         }
 
     }
@@ -174,7 +174,7 @@ public class MessageService {
             Message message = new Message(userId,save.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message);
         } catch (Exception e) {
-            LOG.error("MESSAGE -- post cancel orders faild : {}",e.getMessage(),e);
+            LOG.error("MESSAGE -- post cancel orders faild : {}",e);
         }
 
     }
@@ -195,7 +195,7 @@ public class MessageService {
             Message message = new Message(userId,save.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message);
         } catch (Exception e) {
-            LOG.error("MESSAGE -- post cancle order to wait refund  faild : {}",e.getMessage(),e);
+            LOG.error("MESSAGE -- post cancle order to wait refund  faild : {}",e);
         }
     }
 
@@ -215,7 +215,7 @@ public class MessageService {
             Message message = new Message(userId,save.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message);
         } catch (Exception e) {
-            LOG.error("MESSAGE -- post refund money faild : {}",e.getMessage(),e);
+            LOG.error("MESSAGE -- post refund money faild : {}",e);
         }
     }
     //提交评价的通知
@@ -233,7 +233,7 @@ public class MessageService {
             Message message = new Message(userId,save.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(message);
         } catch (Exception e) {
-            LOG.error("MESSAGE -- post comment messaage faild : {}",e.getMessage(),e);
+            LOG.error("MESSAGE -- post comment messaage faild : {}",e);
         }
     }
     /*
@@ -250,7 +250,7 @@ public class MessageService {
             Message messageSeller = new Message(orders.getSellerId(),save.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
             messageRepo.save(messageSeller);
         } catch (Exception e) {
-            LOG.error("MESSAGE -- post finsh orders faild : {}",e.getMessage(),e);
+            LOG.error("MESSAGE -- post finsh orders faild : {}",e);
         }
     }
 }

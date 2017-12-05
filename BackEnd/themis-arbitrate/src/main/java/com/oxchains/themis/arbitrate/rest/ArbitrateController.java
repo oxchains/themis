@@ -103,7 +103,7 @@ public class ArbitrateController {
                 fileNotFound(response);
             }
         } catch (IOException e) {
-            LOG.error("downloadfile faild : {}",e.getMessage(),e);
+            LOG.error("downloadfile faild : {}",e);
         }
     }*/
     private void checkPage(Pojo pojo){

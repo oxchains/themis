@@ -13,6 +13,7 @@ import {
     FETCH_PHONE,
     FETCH_PASSWORD,
     EMAIL_FIND_PSW,
+    RESET_PSW,
     getAuthorizedHeader
 } from './types';
 
@@ -101,11 +102,11 @@ export function signoutUser() {
 }
 
 /**
- * 注册
+ * 手机注册
  */
 
 export function signupUser({ loginname, mobilephone, vcode, password }, callback) {
-    console.log(`注册传送的数据: ${loginname}, ${mobilephone},${vcode}, ${password}`);
+    console.log(`手机注册传送的数据: ${loginname}, ${mobilephone},${vcode}, ${password}`);
     return function (dispatch) {
         axios.post(`${ROOT_URLC}/user/register`, { loginname, mobilephone, vcode, password })
             .then(response => {
@@ -114,6 +115,26 @@ export function signupUser({ loginname, mobilephone, vcode, password }, callback
                     callback();
                 } else {
                     // console.log(response.data.message);
+                    callback(response.data.message);
+                }
+            })
+            .catch((err) => {
+                dispatch(authError(err.message));
+            });
+    };
+}
+/**
+ * 邮箱注册
+ */
+export function EmialsignupUser({ loginname, email, password }, callback) {
+    console.log(`邮箱注册传送的数据: ${loginname}, ${email}, ${password}`);
+    return function (dispatch) {
+        axios.post(`${ROOT_URLC}/user/register`, { loginname, email, password })
+            .then(response => {
+                console.log(response);
+                if (response.data.status == 1) {
+                    callback();
+                } else {
                     callback(response.data.message);
                 }
             })
@@ -210,13 +231,30 @@ export function ChangePasswordSave({ loginname, password, newPassword }, callbac
  * 邮箱找回密码
  */
 
-export function EmialAction({ email}, callback) {
-    console.log("邮箱找回" + email );
+export function EmialAction({ email, vcode}, callback) {
+    console.log("发送至邮箱" + email, vcode );
     return function (dispatch) {
-        axios.get(`${ROOT_URLC}/user/imgVcode?key=${email}`, { headers: getAuthorizedHeader() })
+        axios.get(`${ROOT_URLC}/user/sendVmail?vcode=${vcode}&key=${email}`, { headers: getAuthorizedHeader() })
             .then(response => {
                 console.log(response);
                 dispatch({ type: EMAIL_FIND_PSW, payload: response });
+            })
+            .catch(err => (err.message));
+    };
+}
+
+
+/**
+ * 重置密码
+ */
+
+export function ResetpswAction({resetkey, password}, callback) {
+    console.log("重置密码" + resetkey, password );
+    return function (dispatch) {
+        axios.post(`${ROOT_URLC}/user/resetpwd?resetkey=${resetkey}&&password=${password} `, { headers: getAuthorizedHeader() })
+            .then(response => {
+                console.log(response);
+                dispatch({ type: RESET_PSW, payload: response });
             })
             .catch(err => (err.message));
     };

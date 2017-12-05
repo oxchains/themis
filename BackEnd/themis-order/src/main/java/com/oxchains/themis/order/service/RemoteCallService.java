@@ -69,7 +69,7 @@ public class RemoteCallService {
                 }
             }
         } catch (Exception e) {
-            LOG.error("get user by id from themis-user faild : {}",e.getMessage(),e);
+            LOG.error("get user by id from themis-user faild : {}", e.getMessage(), e);
             return null;
         }
         return null;
@@ -222,7 +222,7 @@ public class RemoteCallService {
             headers.setContentType(type);
             headers.add("Accept", MediaType.APPLICATION_JSON.toString());
         } catch (Exception e) {
-            LOG.error("get http header faild : {}",e.getMessage(),e);
+            LOG.error("get http header faild : {}",e);
         }
         return  headers;
     }
@@ -250,7 +250,7 @@ public class RemoteCallService {
             HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), this.getHttpHeader());
             jsonObject = restTemplate.postForObject(ThemisUserAddress.CHECK_BTC + id, formEntity, JSONObject.class);
         } catch (RestClientException e) {
-            LOG.error("upload txid faild：{}",e.getMessage(),e);
+            LOG.error("upload txid faild：{}",e);
         }
         return jsonObject;
     }
