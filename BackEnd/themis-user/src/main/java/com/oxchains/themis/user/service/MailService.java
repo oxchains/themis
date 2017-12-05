@@ -1,7 +1,8 @@
 package com.oxchains.themis.user.service;
 
 import com.oxchains.themis.common.mail.Email;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
@@ -22,9 +23,10 @@ import java.io.File;
  * @name MailService
  * @desc:
  */
+@Slf4j
 @Component
 public class MailService {
-    private final Logger logger =Logger.getLogger(MailService.class);
+    //private final Logger log =Logger.getLogger(MailService.class);
 
     @Resource
     private JavaMailSender mailSender;
@@ -40,9 +42,9 @@ public class MailService {
         message.setText(email.getContent());
         try {
             mailSender.send(message);
-            logger.info("简单邮件已经发送。");
+            log.info("简单邮件已经发送。");
         } catch (Exception e) {
-            logger.error("发送简单邮件时发生异常！",e);
+            log.error("发送简单邮件时发生异常！",e);
         }
     }
     /**
@@ -60,9 +62,9 @@ public class MailService {
 
         try {
             mailSender.send(message);
-            logger.info("简单邮件已经发送。");
+            log.info("简单邮件已经发送。");
         } catch (Exception e) {
-            logger.error("发送简单邮件时发生异常！",e);
+            log.error("发送简单邮件时发生异常！",e);
         }
     }
 
@@ -84,9 +86,9 @@ public class MailService {
             helper.setText(content, true);
 
             mailSender.send(message);
-            logger.info("html邮件已经发送。");
+            log.info("html邮件已经发送。");
         } catch (MessagingException e) {
-            logger.error("发送html邮件时发生异常！", e);
+            log.error("发送html邮件时发生异常！", e);
         }
     }
 
@@ -113,9 +115,9 @@ public class MailService {
             helper.addAttachment(fileName, file);
 
             mailSender.send(message);
-            logger.info("带附件的邮件已经发送。");
+            log.info("带附件的邮件已经发送。");
         } catch (MessagingException e) {
-            logger.error("发送带附件的邮件时发生异常！", e);
+            log.error("发送带附件的邮件时发生异常！", e);
         }
     }
 
@@ -142,9 +144,9 @@ public class MailService {
             helper.addInline(rscId, res);
 
             mailSender.send(message);
-            logger.info("嵌入静态资源的邮件已经发送。");
+            log.info("嵌入静态资源的邮件已经发送。");
         } catch (MessagingException e) {
-            logger.error("发送嵌入静态资源的邮件时发生异常！", e);
+            log.error("发送嵌入静态资源的邮件时发生异常！", e);
         }
     }
 }
