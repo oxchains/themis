@@ -55,7 +55,7 @@ public class WebSocketServer implements Runnable{
             ChannelFuture f = b.bind(port).sync();
             f.channel().closeFuture().sync();
         }catch (Exception e){
-            LOG.error("websocket start faild : {}",e.getMessage(),e);
+            LOG.error("websocket start faild : {}",e);
         }
         finally {
             workerGroup.shutdownGracefully();

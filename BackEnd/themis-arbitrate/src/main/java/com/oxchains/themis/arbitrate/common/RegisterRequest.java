@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.Size;
+
 /**
  * @author huohuo
  */
@@ -14,6 +16,7 @@ public class RegisterRequest {
   private MultipartFile multipartFile;
   private String id;
   private Long userId;
+  @Size(max = 200,message = "上限200字")
   private String content;
   private String fileName;
   private String image;

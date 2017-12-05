@@ -109,9 +109,9 @@ public class UserService extends BaseService {
         try{
             userTxDetailDao.save(userTxDetail);
         }catch (Exception e){
-            logger.error(e.getMessage());
+            logger.error("保存用户交易详情异常", e);
             userDao.delete(user.getId());
-            return RestResp.fail("操作失败");
+            return RestResp.fail("操作失败", e);
         }
 
         return RestResp.success("操作成功");
@@ -188,7 +188,7 @@ public class UserService extends BaseService {
             userDao.save(user);
             return RestResp.success("操作成功");
         }catch (Exception e){
-            logger.error(e.getMessage());
+            logger.error("保存用户信息异常", e);
             return RestResp.fail("操作失败");
         }
     }

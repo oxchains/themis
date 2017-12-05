@@ -51,12 +51,13 @@ public class ChatService {
             return list;
         }
         catch (Exception e){
-            LOG.error("faild get chat history : {}",e.getMessage(),e);
+            LOG.error("faild get chat history : {}",e);
         }
         return null;
     }
     //从用户中心 根据用户id获取用户信息
     //从用户中心 根据用户id获取用户信息
+    @HystrixCommand(fallbackMethod ="getUserByIdError" )
     public User getUserById(Long userId){
 
         try {
@@ -73,9 +74,12 @@ public class ChatService {
                 }
             }
         } catch (Exception e) {
-            LOG.error("get user by id from themis-user faild : {}",e.getMessage(),e);
+            LOG.error("get user by id from themis-user faild : {}",e);
             throw  e;
         }
+        return null;
+    }
+    public User getUserByIdError(Long userId){
         return null;
     }
     private String getLoginNameByUserId(Long userId){
