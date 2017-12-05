@@ -7,6 +7,7 @@ import com.oxchains.themis.message.common.MessageConst;
 import com.oxchains.themis.message.dao.MessageDao;
 import com.oxchains.themis.message.dao.MessageTextDao;
 import com.oxchains.themis.message.rest.dto.MessageDTO;
+import com.oxchains.themis.message.rest.dto.UnReadSizeDTO;
 import com.oxchains.themis.repo.dao.OrderDao;
 import com.oxchains.themis.repo.dao.UserDao;
 import com.oxchains.themis.repo.entity.Message;
@@ -44,6 +45,9 @@ public class MessageService {
     private final Map<Long, Integer> countPrivateMap = new HashMap<>();
     // 系统未读消息map
     private final Map<Long, Integer> countGlobalMap = new HashMap<>();
+
+    private final UnReadSizeDTO unReadSizeDTO = new UnReadSizeDTO();
+
     // 所有公告
     private final Set<Long> set = new HashSet<>();
 
@@ -233,7 +237,7 @@ public class MessageService {
     public RestResp unReadCount(Long userId, Integer tip){
         try {
             int count = 0;
-            Integer result = invokeDb(userId, tip, count);
+            UnReadSizeDTO result = invokeDb(userId, tip, count);
             return RestResp.success("操作成功", result);
         }catch (Exception e){
             LOG.error("站内信：获取所有未读信息数量异常", e);
@@ -241,30 +245,69 @@ public class MessageService {
         return RestResp.fail("操作失败");
     }
 
-    public Integer invokeDb(Long userId, Integer tip, Integer count) throws InterruptedException {
+    public UnReadSizeDTO invokeDb(Long userId, Integer tip, Integer count) throws InterruptedException {
         // 用户登录后，将所在用户组未读公告信息添加到message表中
         addUnReadMsg(userId);
 
-        // 所有未读信息
-        Integer unReadSize = messageDao.countByReceiverIdAndReadStatus(userId, MessageReadStatus.UN_READ);
-        int cacheCount = countMap.getOrDefault(userId, -1);
+        // 公告未读信息数量
+        Integer noticeUnReadSize = messageDao.countByReceiverIdAndReadStatusAndMessageType(userId, MessageReadStatus.UN_READ, MessageType.PUBLIC);
+        int noticeCacheCount = countNoticeMap.getOrDefault(userId, 0);
+        // 系统未读信息数量
+        Integer globalUnReadSize = messageDao.countByReceiverIdAndReadStatusAndMessageType(userId, MessageReadStatus.UN_READ, MessageType.GLOBAL);
+        int globalCacheCount = countGlobalMap.getOrDefault(userId, 0);
+        // 私信未读信息数量
+        Integer privateUnReadSize = messageDao.countByReceiverIdAndReadStatusAndMessageType(userId, MessageReadStatus.UN_READ, MessageType.PRIVATE_LETTET);
+        int privateCacheCount = countPrivateMap.getOrDefault(userId, 0);
+
+        // 所有未读信息数量
+        // Integer unReadSize = messageDao.countByReceiverIdAndReadStatus(userId, MessageReadStatus.UN_READ);
+        Integer unReadSize = noticeUnReadSize + globalUnReadSize + privateUnReadSize;
+        int cacheCount = countMap.getOrDefault(userId, 0);
+
+        unReadSizeDTO.setAllUnRead(0);
+        unReadSizeDTO.setNoticeUnRead(0);
+        unReadSizeDTO.setGlobalUnRead(0);
+        unReadSizeDTO.setPrivateUnRead(0);
+
         if (tip == 1) {
             // 第一次请求获取未读消息
             countMap.put(userId, unReadSize);
-            return unReadSize;
+            countNoticeMap.put(userId, noticeUnReadSize);
+            countGlobalMap.put(userId, globalUnReadSize);
+            countPrivateMap.put(userId, privateUnReadSize);
+
+            unReadSizeDTO.setAllUnRead(unReadSize);
+            unReadSizeDTO.setNoticeUnRead(noticeUnReadSize);
+            unReadSizeDTO.setGlobalUnRead(globalUnReadSize);
+            unReadSizeDTO.setPrivateUnRead(privateUnReadSize);
+
+            return unReadSizeDTO;
         }
         // 旧值和新值一样，则不返回结果
-        if (cacheCount == unReadSize) {
+        if (noticeCacheCount == noticeUnReadSize && globalCacheCount == globalUnReadSize && privateCacheCount == privateUnReadSize) {
             Thread.sleep(2000);
             // 前台请求15以上，返回的结果还是一样，就返回之前的数量，不走递归
             if (count >= MessageConst.Constant.FIFTEEN.getValue()) {
-                return unReadSize;
+                unReadSizeDTO.setAllUnRead(unReadSize);
+                unReadSizeDTO.setNoticeUnRead(noticeUnReadSize);
+                unReadSizeDTO.setGlobalUnRead(globalUnReadSize);
+                unReadSizeDTO.setPrivateUnRead(privateUnReadSize);
+                return unReadSizeDTO;
             }
             return invokeDb(userId, tip, ++count);
         }
         // 旧值和新值，则更新缓存，返回结果
         countMap.put(userId, unReadSize);
-        return unReadSize;
+        countNoticeMap.put(userId, noticeUnReadSize);
+        countGlobalMap.put(userId, globalUnReadSize);
+        countPrivateMap.put(userId, privateUnReadSize);
+
+        unReadSizeDTO.setAllUnRead(unReadSize);
+        unReadSizeDTO.setNoticeUnRead(noticeUnReadSize);
+        unReadSizeDTO.setGlobalUnRead(globalUnReadSize);
+        unReadSizeDTO.setPrivateUnRead(privateUnReadSize);
+        return unReadSizeDTO;
+
     }
 
     private void addUnReadMsg(Long userId) {
@@ -297,114 +340,5 @@ public class MessageService {
                 }
             }
         }
-    }
-
-
-    /**
-     * 查询公告信息未读数量
-     */
-    public RestResp unReadNoticeCount(Long userId, Integer tip){
-        try {
-            int count = 0;
-            Integer result = queryNoticeMsgUnReadCount(userId, tip, count);
-            return RestResp.success("操作成功", result);
-        }catch (Exception e){
-            LOG.error("站内信：获取未读公告信息数量异常", e);
-        }
-        return RestResp.fail("操作失败");
-    }
-
-    private Integer queryNoticeMsgUnReadCount(Long userId, Integer tip, int count) throws InterruptedException {
-        Integer unReadSize = messageDao.countByReceiverIdAndReadStatusAndMessageType(userId, MessageReadStatus.UN_READ, MessageType.PUBLIC);
-        int noticeCacheCount = countNoticeMap.getOrDefault(userId, -1);
-        // 第一次请求 获取未读公告信息
-        if (tip == 1){
-            countNoticeMap.put(userId, unReadSize);
-            return unReadSize;
-        }
-        // 不是第一次请求，且新值和旧值一样，不返回结果
-        if (noticeCacheCount == unReadSize){
-            Thread.sleep(2000);
-            // 前台请求15以上，返回的结果还是一样，就返回之前的数量，不走递归
-            if (count >= MessageConst.Constant.FIFTEEN.getValue()) {
-                return unReadSize;
-            }
-            return queryNoticeMsgUnReadCount(userId, tip, ++count);
-        }
-        // 不是第一次请求， 且新值和旧值不一样，更新缓存map，立马返回结果
-        countNoticeMap.put(userId, unReadSize);
-        return unReadSize;
-    }
-
-    /**
-     * 查询系统信息未读数量
-     */
-    public RestResp unReadGlobalCount(Long userId, Integer tip){
-        try {
-            int count = 0;
-            Integer result = queryGlobalMsgUnReadCount(userId, tip, count);
-            return RestResp.success("操作成功", result);
-        }catch (Exception e){
-            LOG.error("站内信：获取未读系统信息数量异常", e);
-        }
-        return RestResp.fail("操作失败");
-    }
-
-    private Integer queryGlobalMsgUnReadCount(Long userId, Integer tip, int count) throws InterruptedException {
-        Integer unReadSize = messageDao.countByReceiverIdAndReadStatusAndMessageType(userId, MessageReadStatus.UN_READ, MessageType.GLOBAL);
-        int globalCacheCount = countGlobalMap.getOrDefault(userId, -1);
-        // 第一次请求 获取未读公告信息
-        if (tip == 1){
-            countGlobalMap.put(userId, unReadSize);
-            return unReadSize;
-        }
-        // 不是第一次请求，且新值和旧值一样，不返回结果
-        if (globalCacheCount == unReadSize){
-            Thread.sleep(2000);
-            // 前台请求15以上，返回的结果还是一样，就返回之前的数量，不走递归
-            if (count >= MessageConst.Constant.FIFTEEN.getValue()) {
-                return unReadSize;
-            }
-            return queryGlobalMsgUnReadCount(userId, tip, ++count);
-        }
-        // 不是第一次请求， 且新值和旧值不一样，更新缓存map，立马返回结果
-        countGlobalMap.put(userId, unReadSize);
-        return unReadSize;
-    }
-
-    /**
-     * 查询私信未读数量
-     */
-    public RestResp unReadPrivateCount(Long userId, Integer tip){
-        try {
-            int count = 0;
-            Integer result = queryPrivateMsgUnReadCount(userId, tip, count);
-            return RestResp.success("操作成功", result);
-        }catch (Exception e){
-            LOG.error("站内信：获取未读私信数量异常", e);
-        }
-        return RestResp.fail("操作失败");
-    }
-
-    private Integer queryPrivateMsgUnReadCount(Long userId, Integer tip, int count) throws InterruptedException {
-        Integer unReadSize = messageDao.countByReceiverIdAndReadStatusAndMessageType(userId, MessageReadStatus.UN_READ, MessageType.PRIVATE_LETTET);
-        int privateCacheCount = countPrivateMap.getOrDefault(userId, -1);
-        // 第一次请求 获取未读公告信息
-        if (tip == 1){
-            countPrivateMap.put(userId, unReadSize);
-            return unReadSize;
-        }
-        // 不是第一次请求，且新值和旧值一样，不返回结果
-        if (privateCacheCount == unReadSize){
-            Thread.sleep(2000);
-            // 前台请求15以上，返回的结果还是一样，就返回之前的数量，不走递归
-            if (count >= MessageConst.Constant.FIFTEEN.getValue()) {
-                return unReadSize;
-            }
-            return queryPrivateMsgUnReadCount(userId, tip, ++count);
-        }
-        // 不是第一次请求， 且新值和旧值不一样，更新缓存map，立马返回结果
-        countPrivateMap.put(userId, unReadSize);
-        return unReadSize;
     }
 }

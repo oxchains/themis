@@ -77,4 +77,5 @@ public interface MessageConst {
             return name;
         }
     }
+
 }
