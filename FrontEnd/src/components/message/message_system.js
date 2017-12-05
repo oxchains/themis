@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import {Pagination} from 'antd';
+import {Pagination, Badge} from 'antd';
 import { connect } from 'react-redux';
 import {fetchMessageSystem} from "../../actions/message";
 class MessageSystem extends Component{
@@ -26,6 +26,12 @@ class MessageSystem extends Component{
         const pageSize=this.state.pageSize;
         this.props.fetchMessageSystem({userId, pageNum, pageSize});
     }
+    handleOrderDetail(val) {
+        const userId= localStorage.getItem('userId');
+        const orderData={id:val.orderId, userId:userId, partnerId:val.partnerId, friendUsername:val.friendUsername};
+        localStorage.setItem("partner", JSON.stringify(orderData));
+        window.location.href='/orderprogress';
+    }
     renderList(){
         return this.props.message_system.pageList.map((item, index)=>{
             return(
@@ -37,7 +43,7 @@ class MessageSystem extends Component{
                     </div>
                     <div className="col-xs-10 message-item-content">
                         <div className="message-item-tip"><span>{item.messageType == 2 ? "公告" :""}</span><span>{item.messageText.postDate}</span></div>
-                        <div className="message-item-detail">{item.messageText.message}</div>
+                        <div className={`message-item-detail ${item.readStatus == 2  ? "readed":"" }`} onClick={this.handleOrderDetail.bind(this, item.messageText)}>{item.messageText.message}</div>
                     </div>
                 </li>
             );
@@ -45,6 +51,9 @@ class MessageSystem extends Component{
     }
     render(){
         const totalNum = this.props.message_system && this.props.message_system.rowCount;
+        const noticeUnRead=this.props.message_number && this.props.message_number.noticeUnRead;
+        const globalUnRead=this.props.message_number && this.props.message_number.globalUnRead;
+        const privateUnRead=this.props.message_number && this.props.message_number.privateUnRead;
         return (
             <div className="message-box">
                 <div className="container">
@@ -52,26 +61,29 @@ class MessageSystem extends Component{
                         <div className="col-xs-12 message-list">
                             <ul>
                                 <li className="col-xs-4 text-right">
-                                    <Link className="text-center" to="/messagenotice">公告</Link>
+                                    <Link className="text-center" to="/messagenotice">公告 <Badge count={noticeUnRead} /></Link>
                                 </li>
                                 <li className="col-xs-4 text-center">
-                                    <Link className="text-center active" to="/messagesystem">系统</Link>
+                                    <Link className="text-center active" to="/messagesystem">系统 <Badge count={globalUnRead} /></Link>
                                 </li>
                                 <li className="col-xs-4 text-left">
-                                    <Link className="text-center" to="/messageletter">私信</Link>
+                                    <Link className="text-center" to="/messageletter">私信 <Badge count={privateUnRead} /></Link>
                                 </li>
                             </ul>
                         </div>
                         <div className="col-xs-12 message-item-content">
                             <ul>
-                                { totalNum == 0 || !this.props.message_system  ? <div className="text-center h4">目前没有新消息</div> : this.renderList()}
+                                { totalNum == 0 || !this.props.message_system  ? <li className="text-center h4 no-message">目前没有新消息</li> : this.renderList()}
                             </ul>
                         </div>
-                        <div className="col-xs-12">
-                            <div className="pagecomponent">
-                                <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.handlePagination(e)}/>
-                            </div>
-                        </div>
+                        {
+                            totalNum == 0 || !this.props.message_system?'':
+                                <div className="col-xs-12">
+                                    <div className="pagecomponent">
+                                        <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.handlePagination(e)}/>
+                                    </div>
+                                </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -80,7 +92,8 @@ class MessageSystem extends Component{
 }
 function mapStateToProps(state) {
     return {
-        message_system:state.message.message_system
+        message_system:state.message.message_system,
+        message_number: state.message.message_number
     };
 }
 export default connect(mapStateToProps, {fetchMessageSystem})(MessageSystem);

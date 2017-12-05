@@ -76,6 +76,7 @@ export function fetchOrdersDetails({data}, callback) {
             data: data,
             headers: getAuthorizedHeader()
         }).then((res) => {
+            console.log(res);
             if (res.data.status == 1) {
                 callback(res.data.data);
                 dispatch({

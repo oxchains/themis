@@ -3,7 +3,6 @@
  */
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-// import {Alert} from 'react-bootstrap';
 import Chat from './chat';
 import QRCode from 'qrcode.react';
 import {Upload, Button, Icon, Modal, message, Popconfirm, Alert} from 'antd';
@@ -38,13 +37,13 @@ class OrderProgress extends Component {
             partnerId:'',
             partnerName:''
         };
-        // this.renderDangerAlert = this.renderDangerAlert.bind(this);
         this.renderOrderMessageDetails=this.renderOrderMessageDetails.bind(this);
     }
     componentWillMount() {
         const userId=localStorage.getItem("userId");
         const partner=JSON.parse(localStorage.getItem("partner"));
         const data={id:partner.id, userId:userId};
+        console.log(data);
         this.setState({orderId: partner.id});
         this.props.fetchOrdersDetails({data}, (msg)=>{
             this.setState({orderStatus:msg.orderStatus, partnerId :  msg.sellerId==userId ? msg.buyerId :msg.sellerId, partnerName:msg.friendUsername
@@ -262,6 +261,7 @@ class OrderProgress extends Component {
                  orderId:orderId
              };
              this.props.addPaymentInfo({paymentInfo}, (msg)=>{
+                 console.log(msg);
                  if(msg.status == 1){
                      this.setState({uri:msg.data.uri, error:false, p2shAddress:msg.data.p2shAddress, amount:msg.data.amount, show:false, shownext:true});
                  }

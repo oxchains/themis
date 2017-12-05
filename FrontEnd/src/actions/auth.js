@@ -25,7 +25,6 @@ export function signinAction({ mobilephone, password }) {
         axios.post(`${ROOT_URLC}/user/login`, { mobilephone, password })
             .then(response => {
                 console.log(response);
-
                 if (response.data.status == 1) {
                     localStorage.setItem('token', response.data.data.token);
                     localStorage.setItem('role', response.data.data.role.id);
@@ -42,7 +41,9 @@ export function signinAction({ mobilephone, password }) {
                     dispatch({ type: AUTH_USER });
                     // browserHistory.push('/');
                 } else {
-                    dispatch(authError(response.data.message));
+                    dispatch(
+                        authError(response.data.message)
+                    );
                 }
             })
             .catch((err) => {

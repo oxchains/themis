@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import {Pagination} from 'antd';
+import {Pagination, Badge} from 'antd';
 import { connect } from 'react-redux';
 import {fetchMessageNotice} from "../../actions/message";
 
@@ -38,7 +38,7 @@ class MessageNotice extends Component{
                     </div>
                     <div className="col-xs-10 message-item-content">
                         <div className="message-item-tip"><span>{item.messageType == 2 ? "公告" :""}</span><span>{item.messageText.postDate}</span></div>
-                        <div className="message-item-detail">{item.messageText.message}</div>
+                        <div className={`message-item-detail ${item.readStatus == 2  ? "readed":"" }`}>{item.messageText.message}</div>
                     </div>
                 </li>
             );
@@ -46,6 +46,9 @@ class MessageNotice extends Component{
     }
     render(){
         const totalNum = this.props.message_notice && this.props.message_notice.rowCount;
+        const noticeUnRead=this.props.message_number && this.props.message_number.noticeUnRead;
+        const globalUnRead=this.props.message_number && this.props.message_number.globalUnRead;
+        const privateUnRead=this.props.message_number && this.props.message_number.privateUnRead;
         return (
             <div className="message-box">
                 <div className="container">
@@ -53,27 +56,28 @@ class MessageNotice extends Component{
                         <div className="col-xs-12 message-list">
                             <ul>
                                 <li className="col-xs-4 text-right">
-                                    <Link className="text-center active" to="/messagenotice">公告</Link>
+                                    <Link className="text-center active" to="/messagenotice">公告<Badge count={noticeUnRead} /></Link>
                                 </li>
                                 <li className="col-xs-4 text-center">
-                                    <Link className="text-center" to="/messagesystem">系统</Link>
+                                    <Link className="text-center" to="/messagesystem">系统 <Badge count={globalUnRead}/></Link>
                                 </li>
                                 <li className="col-xs-4 text-left">
-                                    <Link className="text-center" to="/messageletter">私信</Link>
+                                    <Link className="text-center" to="/messageletter">私信 <Badge count={privateUnRead}/></Link>
                                 </li>
                             </ul>
                         </div>
                         <div className="col-xs-12 message-item-content">
                            <ul>
-
-                               { !this.props.message_notice || totalNum == 0 ? <div className="text-center h4">目前没有新消息</div> : this.renderList()}
+                               {!this.props.message_notice || totalNum == 0 ? <li className="text-center h4 no-message">目前没有新消息</li> : this.renderList()}
                            </ul>
                         </div>
-                        <div className="col-xs-12">
-                            <div className="pagecomponent">
-                                <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.handlePagination(e)}/>
+                        {!this.props.message_notice || totalNum == 0  ?
+                           '': <div className="col-xs-12">
+                                <div className="pagecomponent">
+                                    <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.handlePagination(e)}/>
+                                </div>
                             </div>
-                        </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -83,6 +87,7 @@ class MessageNotice extends Component{
 function mapStateToProps(state) {
     return {
         message_notice:state.message.message_notice,
+        message_number: state.message.message_number
     };
 }
 export default connect(mapStateToProps, {fetchMessageNotice})(MessageNotice);

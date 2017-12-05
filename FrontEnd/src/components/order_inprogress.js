@@ -4,8 +4,8 @@
 import React, { Component }from 'react';
 import {connect} from 'react-redux';
 import { Link } from 'react-router-dom';
-import {Pagination, Alert, Upload, Button, Icon, Modal, Popconfirm} from 'antd';
-// import {Alert, Upload, Button, Icon, Modal} from 'antd';
+import {Alert, Upload, Button, Icon, Modal, Popconfirm} from 'antd';
+import {Pagenation} from 'nl-design';
 import {ROOT_ARBITRATE} from '../actions/types';
 import {uploadEvidence} from '../actions/arbitrate';
 import {fetchNoCompletedOrders} from '../actions/order';
@@ -15,11 +15,10 @@ class OrderInProgress extends Component {
         super(props);
         this.state = {
             visible:false,
-            evidenceOFile:[],
             id:1,
             alertVisible:false,
             isEvidenceFileDone:false,
-            pageSize:8, //每页显示的条数8条
+            pageSize:10, //每页显示的条数8条
             fileList:[],
             uploading:false,
         };
@@ -74,6 +73,7 @@ class OrderInProgress extends Component {
         }
     }
     handlePagination(pageNum) {
+        console.log(pageNum);
         const userId= localStorage.getItem('userId');
         const formData={
             userId:userId,
@@ -94,7 +94,6 @@ class OrderInProgress extends Component {
                     <td>{item.createTime}</td>
                     <td>{item.orderStatusName}<span>{item.arbitrate == 1 ? "(仲裁中)": ""}</span></td>
                     <td><button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleOrderDetail.bind(this, item)}>详情</button></td>
-                    {/*<td><Link className="ant-btn ant-btn-primary ant-btn-lg" to={`/orderprogress:${item.id}`}>详情</Link></td>*/}
                     <td>{item.orderStatus == 3 || item.orderStatus == 8 ?
                         <Popconfirm title="是否要申请仲裁?" onConfirm={this.handleEvidence.bind(this, item.id)}  okText="确定" cancelText="取消">
                             <button className="ant-btn ant-btn-primary ant-btn-lg">THEMIS仲裁</button>
@@ -110,12 +109,15 @@ class OrderInProgress extends Component {
         window.location.href='/orderprogress';
     }
     render() {
+
         let close = () => {
             this.setState({visible:false});
         };
         const not_completed_orders = this.props.not_completed_orders;
         const totalNum = not_completed_orders && not_completed_orders.pageCount;
+        // console.log(totalNum);
         const data=not_completed_orders && not_completed_orders.data;
+        console.log(not_completed_orders);
         const { uploading, visible} = this.state;
         const props = {
             action:`${ROOT_ARBITRATE}/arbitrate/uploadEvidence`,
@@ -152,7 +154,7 @@ class OrderInProgress extends Component {
                                 <thead>
                                 <tr>
                                     <th>交易伙伴</th>
-                                    <th>订单编号</th>
+                                    <th>交易编号</th>
                                     <th>类型</th>
                                     <th>交易金额</th>
                                     <th>交易数量</th>
@@ -161,16 +163,16 @@ class OrderInProgress extends Component {
                                     <th>操作</th>
                                 </tr>
                                 </thead>
-                                <tbody>
-                                { !not_completed_orders || totalNum == 0  ? <tr><td className="text-center h5" colSpan={8}>暂无订单</td></tr> : this.renderrow()}
+                                <tbody>{ !not_completed_orders || totalNum == 0  ? <tr><td className="text-center h5" colSpan={8}>暂无订单</td></tr> : this.renderrow()}
                                 </tbody>
                             </table>
+                             {/*<Table columns={columns} dataSource={data} tableStyle={style.tableStyle} tableClass={style.tableProps} />*/}
                         </div>
                     </div>
-                    <div className="pagecomponent">
-                        <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.handlePagination(e)}/>
-                    </div>
-                    {/*<Pagination defaultPageSize={1} total = {200}/>*/}
+                    { !not_completed_orders || totalNum == 0  ? '':
+                        <div className="pagecomponent">
+                        <Pagenation  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.handlePagination(e)}/>
+                    </div>}
                     <Modal visible={visible} title="证据存根" onOk={this.handleEvidenceSubmit} onCancel={close}
                         footer={[<Button key="back" size="large" onClick={close}>取消</Button>,
                             <Button key="submit" size="large" className="upload-demo-start" type="primary" onClick={this.handleEvidenceSubmit.bind(this)} disabled={this.state.fileList.length === 0} loading={uploading}>
@@ -198,5 +200,4 @@ function mapStateToProps(state) {
         not_completed_orders: state.order.not_completed_orders
     };
 }
-
 export default connect(mapStateToProps, {fetchNoCompletedOrders, uploadEvidence})(OrderInProgress);

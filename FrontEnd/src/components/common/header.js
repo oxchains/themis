@@ -21,6 +21,7 @@ class Header extends Component {
     }
     renderUserInfo() {
         const role = localStorage.getItem('role');
+        let allUnRead=this.props.message_number && this.props.message_number.allUnRead;
         if (this.props.authenticated) {
             const loginname = localStorage.getItem('loginname');
             return (
@@ -29,7 +30,7 @@ class Header extends Component {
                         {role == 3 ? <li className="order-style" style={{ width: "135px" }}><Link to="/refereelist">仲裁列表</Link></li> : ""}
                         <li className="order-style">
                             <Link to="/messagenotice">
-                                消息{this.props.message_number != undefined && this.props.message_number > 0 ? <Badge count={this.props.message_number} /> : ""}
+                                消息<Badge count={allUnRead} />
                             </Link>
                         </li>
                         <li className="order-style"><Link to="/orderinprogress">订单</Link></li>

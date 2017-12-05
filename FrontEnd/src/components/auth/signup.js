@@ -8,7 +8,6 @@ import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import { signupUser, GetverifyCode } from '../../actions/auth';
 import { Alert } from 'antd';
-
 import {
     Modal,
     ModalHeader,

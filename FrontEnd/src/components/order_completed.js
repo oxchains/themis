@@ -13,7 +13,6 @@ class OrderCompleted extends Component {
         this.renderrow = this.renderrow.bind(this);
         this.state={
             pageSize:8, //每页显示的条数8条
-            totalNum:0
         };
     }
     componentWillMount() {
@@ -28,6 +27,7 @@ class OrderCompleted extends Component {
     componentWillReceiveProps(nextProps){
     }
     handlePagination(pageNum) {
+        console.log(pageNum);
         const userIdInfo= localStorage.getItem('userId');
         const userId={
             userId:userIdInfo,
@@ -62,6 +62,7 @@ class OrderCompleted extends Component {
     render() {
         const completed_orders = this.props.completed_orders;
         const totalNum = completed_orders && completed_orders.pageCount;
+        console.log(totalNum);
         return (
             <div className="container g-pb-150">
                 <div className="orderType text-center g-pt-50 g-pb-50">
@@ -91,9 +92,11 @@ class OrderCompleted extends Component {
                         </table>
                     </div>
                 </div>
-                <div className="pagecomponent">
+                { !completed_orders || totalNum == 0  ? '' :
+                    <div className="pagecomponent">
                     <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.handlePagination(e)}/>
-                </div>
+                </div>}
+
             </div>
         );
     }

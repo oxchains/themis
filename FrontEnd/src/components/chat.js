@@ -18,9 +18,9 @@ class Chat extends Component{
         let receiverName=partner.friendUsername ;//   当前接收者name
         let ws = new WebSocket(`${ROOT_SOCKET}/ws?`+partner.userId +"_"+receiverId+"_"+partner.id); //链接websocket
         let flag=true;
-        let reconnect = new Date().getTime(), time;
-        let timeFlag=true;
-
+        let reconnect = new Date().getTime();
+        let timeFlag1=true, timeFlag2=true;
+        let connect=true;
         $(".getMore").on("click", function(){
             if(flag){
                 //获取聊天记录
@@ -65,21 +65,32 @@ class Chat extends Component{
                     ws.send(heart);
                 }, 2000);
             }
-            document.onkeydown = (e) => {
-                if (e && e.keyCode == 13) {
-                    sendMessageBtn(partner);
-                }
-            };
+            if(connect){
+                document.onkeydown = (e) => {
+                    if (e && e.keyCode == 13) {
+                        sendMessageBtn(partner);
+                    }
+                };
+            }
         };
         //监听 messages
         ws.onmessage = (e) => {
             var data=JSON.parse(e.data);
             // 收到消息，重置定时器
             clearTimeout(ws.receiveMessageTimer);
+            clearTimeout(ws.time1);
             switch (data.msgType) {
                 case 1:
                     //聊天消息
                     if (data.receiverId == senderId && data.senderId == receiverId) {
+                        if(timeFlag1){
+                            showTime();
+                            scrollTop();
+                            timeFlag1 = false;
+                            ws.time1=setTimeout(()=>{
+                                timeFlag1 = true;
+                            }, 600000);
+                        }
                         receiveMessage(data.senderName, data.chatContent);
                         scrollTop();
                     }
@@ -99,9 +110,11 @@ class Chat extends Component{
         };
         //监听errors
         ws.onerror = () => {
+            reconnect=false;
             console.log('onerror');
         };
         ws.onclose = () => {
+            reconnect=false;
             clearTimeout(ws.receiveMessageTimer);
             clearInterval(ws.keepAliveTimer);
             let tempWs = ws; // 保存ws对象
@@ -110,26 +123,26 @@ class Chat extends Component{
                 ws.close();
                 $(".chat-head").html("连接断开");
             } else {
-
                 $(".chat-head").html("重新连接中...");
                 let ws = new WebSocket(`${ROOT_SOCKET}/ws?`+partner.userId +"_"+receiverId+"_"+partner.id); //链接websocket
                 ws.onopen = tempWs.onopen;
                 ws.onmessage = tempWs.onmessage;
                 ws.onerror = tempWs.onerror;
                 ws.onclose = tempWs.onclose;
+                reconnect=true;
             }
         };
         const sendMessageBtn = (partner)=>{
-            clearTimeout(time);
+            clearTimeout(ws.time2);
             //发送一个文本消息
             var chatContent = $(".message").val();
             if(chatContent){
-                if(timeFlag){
+                if(timeFlag2){
                     showTime();
                     scrollTop();
-                    timeFlag = false;
-                    time=setTimeout(function(){
-                        timeFlag=true;
+                    timeFlag2 = false;
+                    ws.time2=setTimeout(()=>{
+                        timeFlag2 = true;
                     }, 600000);
                 }
                 var message = JSON.stringify({msgType:1, senderId: senderId, senderName: senderName, receiverId: receiverId, chatContent: chatContent, orderId:partner.id});

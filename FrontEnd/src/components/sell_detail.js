@@ -63,9 +63,9 @@ class Selldetail extends Component {
             amount: this.state.messnum
         };
         if(this.props.authenticated){
-        this.props.fetctSellnow({ formdata }, err => {
-            this.setState({ isModalOpen: true, error: err, actionResult: err || '下单成功!' });
-        });
+            this.props.fetctSellnow({ formdata }, err => {
+                this.setState({ isModalOpen: true, error: err, actionResult: err || '下单成功!' });
+            });
         }else {
             alert("请先登录!");
         }
@@ -191,7 +191,8 @@ class Selldetail extends Component {
 function mapStateToProps(state) {
     return {
         data: state.advert.data,     //点击出售返回的data
-        all: state.advert.all        //广告详情页面加载时的数据
+        all: state.advert.all,        //广告详情页面加载时的数据
+        authenticated:state.auth.authenticated
     };
 }
 export default connect(mapStateToProps, { fetctSellBtcDetail, fetctSellnow })(Selldetail);
