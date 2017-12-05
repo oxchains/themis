@@ -28,7 +28,6 @@
         <module>bitcoin-rpc-client</module>
         <module>themis-zuul</module>
         <module>themis-eureka</module>
-        <module>themis-files</module>
         <module>themis-file</module>
         <module>themis-config</module>
     </modules>
