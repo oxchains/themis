@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <!--<property name="LOG_DIR" value="/root/oxchains/themis-user"/>-->
-    <property name="LOG_DIR" value="D:/logs/themis-user"/>
+    <property name="LOG_DIR" value="/root/oxchains/themis-user"/>
+    <!--<property name="LOG_DIR" value="D:/logs/themis-user"/>-->
     <springProperty scope="context" name="logLevel" source="log.level"/>
     <appender name="rollingFileINFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_DIR}/themis-user.log</file>
@@ -33,7 +33,7 @@
         <destination>192.168.1.192:4560</destination>
         <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder">
             <!--应用的名称，每个应用最好区分开-->
-            <customFields>{"themis-user":"themis-user"}</customFields>
+            <customFields>{"appname":"themis-user"}</customFields>
         </encoder>
         <connectionStrategy>
             <roundRobin>

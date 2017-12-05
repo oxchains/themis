@@ -1,7 +1,6 @@
 package com.oxchains.basicService.files.tfsService;
 import com.oxchains.basicService.files.entity.FileInfos;
 import com.oxchains.basicService.files.exception.SaveFileExecption;
-import com.taobao.common.tfs.packet.FileInfo;
 
 /**
  * Created by xuqi on 2017/12/1.
