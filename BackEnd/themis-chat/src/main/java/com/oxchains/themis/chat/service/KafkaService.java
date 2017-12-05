@@ -23,7 +23,7 @@ public class KafkaService {
         try {
             kafkaTemplate.send(topic,message);
         }catch (Exception e){
-            LOG.error("faild to send message : {}",e.getMessage(),e);
+            LOG.error("faild to send message : {}",e);
         }
     }
 }

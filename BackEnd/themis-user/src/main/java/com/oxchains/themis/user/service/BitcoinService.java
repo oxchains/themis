@@ -41,8 +41,7 @@ public class BitcoinService {
             URL url = new URL(urlStr);
             client = new BitcoinJSONRPCClient(url);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
+            logger.error("BitcoinJSONRPCClient异常", e);
         }
     }
 
@@ -95,8 +94,8 @@ public class BitcoinService {
             return RestResp.success(new ScriptHash(p2shAddress,redeemScript,"bitcoin:"+p2shAddress+"?amount="+amount));
 
         }catch (Exception e){
-            logger.error(e.getMessage());
-            return RestResp.fail(e.getMessage());
+            logger.error("获取脚本Hash异常", e);
+            return RestResp.fail("操作失败", e);
         }
     }
 
@@ -113,8 +112,8 @@ public class BitcoinService {
             }
             return RestResp.fail("订单不存在");
         }catch (Exception e){
-            logger.error(e.getMessage());
-            return RestResp.fail("交易不成立,请重新发送比特币到合约地址",e.getMessage());
+            logger.error("添加TXID失败", e);
+            return RestResp.fail("交易不成立,请重新发送比特币到合约地址",e);
         }
     }
 
@@ -156,8 +155,8 @@ public class BitcoinService {
             }
 
         }catch (Exception e){
-            logger.error("订单 {},状态查询出错: {}",orderId,e.getMessage());
-            return RestResp.fail(e.getMessage());
+            logger.error("订单 {},状态查询出错: {}",orderId,e);
+            return RestResp.fail("操作失败", e);
         }
 
     }
@@ -210,8 +209,8 @@ public class BitcoinService {
             }
             return RestResp.fail("支付比特币到买家失败");
         }catch (Exception e){
-            logger.error(e.getMessage());
-            return RestResp.fail(e.getMessage());
+            logger.error("支付失败", e);
+            return RestResp.fail("支付异常", e);
         }
     }
 
@@ -267,8 +266,8 @@ public class BitcoinService {
             }
             return RestResp.fail("支付比特币到买家失败");
         }catch (Exception e){
-            logger.error(e.getMessage());
-            return RestResp.fail(e.getMessage());
+            logger.error("支付费用失败", e);
+            return RestResp.fail("操作失败", e);
         }
     }
 
@@ -325,8 +324,8 @@ public class BitcoinService {
             return RestResp.success(order);
 
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            return RestResp.fail(e.getMessage());
+            logger.error("创建交易失败", e);
+            return RestResp.fail("操作失败", e);
         }
     }
 
@@ -369,8 +368,8 @@ public class BitcoinService {
             transactionDao.save(order);
             return RestResp.success(message);
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            return RestResp.fail(e.getMessage());
+            logger.error("确认交易失败", e);
+            return RestResp.fail("操作失败", e);
         }
     }
 

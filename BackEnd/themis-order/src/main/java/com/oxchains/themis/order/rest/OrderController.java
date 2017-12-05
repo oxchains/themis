@@ -3,6 +3,7 @@ import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.order.common.Pojo;
 import com.oxchains.themis.order.common.RestRespPage;
 import com.oxchains.themis.order.entity.ValidaPojo.AddOrderPojo;
+import com.oxchains.themis.order.entity.ValidaPojo.SaveAddresskeyPojo;
 import com.oxchains.themis.order.entity.ValidaPojo.UploadTxIdPojo;
 import com.oxchains.themis.order.entity.vo.OrdersInfo;
 import com.oxchains.themis.order.entity.vo.UserTxDetails;
@@ -35,11 +36,11 @@ public class OrderController {
     * 二 ：卖家上传公私钥
     * */
     @RequestMapping("/order/saveAddresskey")
-    public RestResp saveAddresskey(@Valid @RequestBody OrderAddresskeys orderAddresskeys,BindingResult bindingResult){
+    public RestResp saveAddresskey(@Valid @RequestBody SaveAddresskeyPojo saveAddresskeyPojo, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             return RestResp.fail(bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
-        return orderService.saveAddresskey(orderAddresskeys);
+        return orderService.saveAddresskey(saveAddresskeyPojo);
     }
     /*
     * 三 ：卖家上传交易凭据
@@ -109,7 +110,10 @@ public class OrderController {
     * 十四 ：提交评论
     * */
     @RequestMapping("/order/saveComment")
-    public RestResp saveComment(@RequestBody Pojo pojo){
+    public RestResp saveComment(@Valid @RequestBody Pojo pojo,BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return RestResp.fail(bindingResult.getAllErrors().get(0).getDefaultMessage());
+        }
         return orderService.saveComment(pojo);
     }
 
@@ -119,7 +123,7 @@ public class OrderController {
     @RequestMapping("/order/findOrdersDetails")
     public RestResp findOrdersDetails(@RequestBody Pojo pojo){
         OrdersInfo o = orderService.findOrdersDetails(pojo);
-     return o!=null?RestResp.success(o): RestResp.fail();
+     return o!=null?RestResp.success(o): RestResp.fail("服务器繁忙,请稍后再试!");
     }
     /*
     * 根据id查询自己已完成的的订单

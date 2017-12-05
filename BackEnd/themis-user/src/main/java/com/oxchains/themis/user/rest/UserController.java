@@ -10,6 +10,7 @@ import com.oxchains.themis.common.param.ParamType;
 import com.oxchains.themis.common.param.VerifyCode;
 import com.oxchains.themis.common.util.ImageBase64;
 import com.oxchains.themis.common.util.JsonUtil;
+import com.oxchains.themis.common.util.RegexUtils;
 import com.oxchains.themis.common.util.VerifyCodeUtils;
 
 import com.oxchains.themis.repo.entity.User;
@@ -52,9 +53,6 @@ public class UserController {
 
     @Value("${user.info.image}")
     private String imageUrl;
-
-    @Resource
-    TFSConsumer tfsConsumer;
 
     @PostMapping(value = "/register")
     public RestResp register(@RequestBody User user){
@@ -101,24 +99,22 @@ public class UserController {
         }
         MultipartFile file = user.getFile();
         if(null != file){
-//            String fileName = file.getOriginalFilename();
-//            String suffix = fileName.substring(fileName.lastIndexOf("."));
-//            String newFileName = user.getLoginname() + suffix;
-//            String pathName = imageUrl + newFileName;
-//            File f =new File(pathName);
-//            if(f.exists()){
-//                f.delete();
-//            }
-//            file.transferTo(new File(pathName));
-            String newFileName = tfsConsumer.saveTfsFile(file);
+            String fileName = file.getOriginalFilename();
+            String suffix = fileName.substring(fileName.lastIndexOf("."));
+            String newFileName = user.getLoginname() + suffix;
+            String pathName = imageUrl + newFileName;
+            File f =new File(pathName);
+            if(f.exists()){
+                f.delete();
+            }
+            file.transferTo(new File(pathName));
             user.setImage(newFileName);
             return userService.updateUser(user,ParamType.UpdateUserInfoType.INFO);
         }
 
         String image = user.getLoginname()+".jpg";
         if(null != user.getImage() && !"undefined".equals(user.getImage())) {
-            //ImageBase64.generateImage(user.getImage(), imageUrl + image);
-            image = tfsConsumer.saveTfsFile(ImageBase64.getImageBytes(user.getImage()),null);
+            ImageBase64.generateImage(user.getImage(), imageUrl + image);
             user.setImage(image);
         }
         return userService.updateUser(user,ParamType.UpdateUserInfoType.INFO);
@@ -154,16 +150,31 @@ public class UserController {
         return userService.updateUser(user, ParamType.UpdateUserInfoType.FPWD);
     }
 
+    /**
+     * 修改电子邮箱
+     * @param user
+     * @return
+     */
     @PostMapping(value = "/email")
     public RestResp email(@RequestBody User user){
         return userService.updateUser(user, ParamType.UpdateUserInfoType.EMAIL);
     }
 
+    /**
+     * 修改手机号
+     * @param user
+     * @return
+     */
     @PostMapping(value = "/phone")
     public RestResp phone(@RequestBody User user){
         return userService.updateUser(user, ParamType.UpdateUserInfoType.PHONE);
     }
 
+    /**
+     * 修改密码
+     * @param user
+     * @return
+     */
     @PostMapping(value = "/password")
     public RestResp password(@RequestBody User user){
         return userService.updateUser(user, ParamType.UpdateUserInfoType.PWD);
@@ -208,8 +219,15 @@ public class UserController {
     @Resource
     DefaultKaptcha defaultKaptcha;
 
+    /**
+     * 图片验证码
+     */
     @RequestMapping(value = "/imgVcode")
     public void defaultKaptcha(VerifyCode vcode,HttpServletRequest request, HttpServletResponse response) throws Exception{
+        if(null == vcode || vcode.getKey()==null || "".equals(vcode.getKey().trim())){
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
         byte[] captchaChallengeAsJpeg = null;
         ByteArrayOutputStream jpegOutputStream = new ByteArrayOutputStream();
         try {
@@ -239,23 +257,39 @@ public class UserController {
         responseOutputStream.close();
     }
 
+    /**
+     *
+     */
     @RequestMapping(value = "/phoneVcode")
-    public RestResp phoneVcode(VerifyCode vcode,HttpServletRequest request) throws Exception{
+    public RestResp phoneVcode(String loginname,String mobilephone,HttpServletRequest request) throws Exception{
+        if(null == mobilephone || "".equals(mobilephone.trim())){
+            return RestResp.fail("手机号不能为空");
+        }
+        if(!RegexUtils.match(mobilephone,RegexUtils.REGEX_MOBILEPHONE)){
+            return RestResp.fail("请输入正确的手机号");
+        }
         try {
             //生产验证码字符串并保存到session中
             String createText = defaultKaptcha.createText();
-            if(!userService.saveVcode(vcode.getKey(),createText)){
-                request.getSession().setAttribute(vcode.getKey(), createText);
+            if(!userService.saveVcode(mobilephone,createText)){
+                request.getSession().setAttribute(mobilephone, createText);
             }
             //手机发送
+            //TODO
             return RestResp.success(createText);
         } catch (IllegalArgumentException e) {
             return RestResp.fail("404");
         }
     }
 
+    /**
+     * 验证验证码
+     */
     @RequestMapping("/verifyICode")
     public RestResp verifytKaptchaCode(VerifyCode vcode, HttpServletRequest request, HttpServletResponse response){
+        if(null == vcode || null == vcode.getKey() || null == vcode.getVcode() || "".equals(vcode.getKey().trim()) || "".equals(vcode.getVcode().trim())){
+            return RestResp.fail("参数不能为空");
+        }
         String vcodeVal = userService.getVcodeFromRedis(vcode.getKey());
 //        String captchaId = (String) request.getSession().getAttribute("vcode");
 //        String parameter = request.getParameter("vcode");
@@ -266,13 +300,31 @@ public class UserController {
         return RestResp.fail("验证码错误");
     }
 
+    /**
+     * 发送邮件
+     * @return
+     */
     @RequestMapping(value = "/sendVmail")
     public RestResp sendVerifyMail(VerifyCode vcode){
         return userService.sendVmail(vcode);
     }
 
+    /**
+     * 重置密码
+     */
     @PostMapping(value = "/resetpwd")
     public RestResp resetpwd(String resetkey,String password){
         return userService.resetpwd(resetkey,password);
     }
+
+    @GetMapping(value = "/active")
+    public RestResp activeUser(String email){
+        return userService.active(email);
+    }
+
+    @PostMapping(value = "/mail")
+    public RestResp sendMail(String email, String subject,String content){
+        return userService.sendMail(email,subject,content);
+    }
+
 }

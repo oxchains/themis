@@ -54,7 +54,7 @@ public class UserChat implements InfoStrategy{
             }
             kafkaService.send(message);
         } catch (Exception e) {
-            LOG.error("caht disposeInfo faild : {}",e.getMessage(),e);
+            LOG.error("caht disposeInfo faild : {}",e);
         }
     }
 }

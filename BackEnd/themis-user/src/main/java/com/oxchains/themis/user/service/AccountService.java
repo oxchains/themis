@@ -35,8 +35,7 @@ public class AccountService {
             URL url = new URL("http://admin1:123@192.168.1.195:8332/");
             client = new BitcoinJSONRPCClient(url);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
+            logger.error("链接BitcoinJSONRPCClient异常", e);
         }
     }
 
@@ -89,7 +88,7 @@ public class AccountService {
             balance = client.getBalance(accountName);
             return balance;
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error("获取余额失败", e);
             return balance;
         }
     }
@@ -101,7 +100,7 @@ public class AccountService {
             logger.info(address);
             return address;
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error("获取地址异常", e);
             return address;
         }
     }
@@ -140,8 +139,8 @@ public class AccountService {
             order = transactionDao.save(order);
             return RestResp.success(order);
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            return RestResp.fail(e.getMessage());
+            logger.error("创建交易异常", e);
+            return RestResp.fail("操作失败", e);
         }
     }
 
@@ -166,8 +165,8 @@ public class AccountService {
                 return RestResp.success("交易成功");
             }
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            return RestResp.fail(e.getMessage());
+            logger.error("确认交易失败", e);
+            return RestResp.fail("确认交易异常", e);
         }
     }
 
@@ -286,7 +285,7 @@ public class AccountService {
         try {
             rawTransaction = client.getRawTransaction(txId);
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error("获取原始交易失败", e);
         }
 
     }
@@ -296,7 +295,7 @@ public class AccountService {
             BitcoindRpcClient.AddressValidationResult result = client.validateAddress(address);
             return result.pubKey();
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error("获取公钥失败", e);
         }
         return null;
     }
@@ -305,7 +304,7 @@ public class AccountService {
         try {
             return client.dumpPrivKey(address);
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error("获取私钥失败", e);
         }
         return null;
     }

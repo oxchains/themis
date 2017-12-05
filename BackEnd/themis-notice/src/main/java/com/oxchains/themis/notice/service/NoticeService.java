@@ -82,6 +82,12 @@ public class NoticeService {
             if (notice.getPremium() < 0){
                 return RestResp.fail("溢价比例最小为：0");
             }
+            if (notice.getMinTxLimit().doubleValue() < 0){
+                return RestResp.fail("最小交易限额：0");
+            }
+            if (notice.getMaxTxLimit().doubleValue() > NoticeConstants.ONE_HUNDRED_MILLION){
+                return RestResp.fail("最大交易限额：1亿");
+            }
             if (ArithmeticUtils.minus(notice.getMaxTxLimit().doubleValue(), notice.getMinTxLimit().doubleValue()) < 0){
                 return RestResp.fail("最大限额不能低于最小限额");
             }
