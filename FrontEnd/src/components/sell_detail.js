@@ -137,9 +137,9 @@ class Selldetail extends Component {
                                 <li>付款期限 : &#x3000;&#x3000;&#x3000;{time}分钟</li>
                             </ul>
                             <h4 className="sellwhat">你想出售多少？</h4>
-                            <input type="text" className="inputmoney sellmoney" onChange={this.handelChange} name="money" value={messmoney} placeholder="请输入你想出售的金额" />
+                            <input type="text" className="input inputmoney sellmoney" onChange={this.handelChange} name="money" value={messmoney} placeholder="请输入你想出售的金额" />
                             <i className="fa fa-exchange" aria-hidden="true"></i>
-                            <input type="text" className="inputmoney sellmoney" onChange={this.handelChange} name="btc" value={messnum} placeholder="请输入你想出售的数量" />
+                            <input type="text" className="input inputmoney sellmoney" onChange={this.handelChange} name="btc" value={messnum} placeholder="请输入你想出售的数量" />
                             <button className="form-sell" onClick={this.handleSubmit}>立刻出售</button>
                         </div>
                     </div>

@@ -84,12 +84,12 @@ class Safeset extends Component {
             }.bind(this), 1000);
         }
         const loginname = localStorage.getItem("loginname");
-        const phonenum = localStorage.getItem("phonenum");
-        this.props.GetverifyCodePhone({ loginname, phonenum }, () => { });
+        const mobilephone = localStorage.getItem("mobilephone");
+        this.props.GetverifyCodePhone({ loginname, mobilephone }, () => { });
     }
     phoneChange(e) {
         // console.log(e.target.value);
-        const phonenum = localStorage.setItem("phonenum", e.target.value);
+        const mobilephone = localStorage.setItem("mobilephone", e.target.value);
         var regex = /^1[3|4|5|7|8][0-9]\d{4,8}$/;
         if (regex.test(e.target.value)) {
         } else {

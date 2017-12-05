@@ -22,7 +22,6 @@ div {
 }
 .input
 {
-    width: 100%;
     height: 40px;
     border:1px solid #ccc;
     border-radius:1px;
@@ -30,28 +29,23 @@ div {
     padding: 0 10px;
     font-size: 16px;
     background-color: #fff;
+}
+.inputwidth
+{
+    width: 100%;
 }
 .vcode
 {
     width: 65%;
-    height: 40px;
-    border:1px solid #ccc;
-    border-radius:1px;
-    margin-bottom: 20px;
-    padding: 0 10px;
-    font-size: 16px;
-    background-color: #fff;
+}
+.registervcode
+{
+    width: 52%;
 }
 .inputmoney
 {
     width: 41%;
-    height: 40px;
-    border:1px solid #ccc;
-    border-radius:1px;
-    margin-bottom: 20px;
-    padding: 0 10px;
     font-size: 13px;
-    background-color: #fff;
 }
 .form-style
 {
@@ -157,15 +151,19 @@ div {
 .form-control
 {
     display:block;
-    width:100%!important;
+    width:85%!important;
     height: 40px;
     margin-bottom: 15px;
     border-radius:1px;
 }
+.form-control-email
+{
+    width:81%!important;
+}
 .form-register
 {
     display:block;
-    width:100%!important;
+    width:95%!important;
     height: 36px;
     margin-bottom: 15px;
     border-radius:3px;
@@ -1683,4 +1681,25 @@ td {
     height: 300px;
     padding: 80px 20px 20px 20px;
     box-shadow: 0 0 10px #bbbbbb;
+}
+.islivetip
+{
+    width: 400px;
+    margin: 7% auto;
+    display: flex;
+    justify-content: center;
+    height: 300px;
+    padding: 80px 20px 20px 20px;
+}
+.gologin
+{
+   margin-top: 60px;
+   cursor: pointer;
+}
+.gologin>a,.gologin>a:hover,.gologin>a:active
+{
+    color: #16F6EA;
+    font-size: 18px;
+    font-weight: 500;
+    text-decoration: underline;
 }

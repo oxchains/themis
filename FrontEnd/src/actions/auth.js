@@ -14,6 +14,9 @@ import {
     FETCH_PASSWORD,
     EMAIL_FIND_PSW,
     RESET_PSW,
+    PHONE_FIND_PSW,
+    EMAIL_SIGNUP_USER,
+    EMAIL_ISLIVE,
     getAuthorizedHeader
 } from './types';
 
@@ -137,6 +140,7 @@ export function EmialsignupUser({ loginname, email, password }, callback) {
                 } else {
                     callback(response.data.message);
                 }
+                dispatch({ type: EMAIL_SIGNUP_USER, payload: response });
             })
             .catch((err) => {
                 dispatch(authError(err.message));
@@ -144,13 +148,13 @@ export function EmialsignupUser({ loginname, email, password }, callback) {
     };
 }
 /**
- * 注册获取验证码
+ * 注册获取验证码 && 手机找回获取验证码
  */
 
-export function GetverifyCode({ phonenum }) {
-    console.log("点击发送验证码带过来的手机号" + phonenum);
+export function GetverifyCode({ mobilephone }) {
+    console.log("点击发送验证码带过来的手机号" + mobilephone);
     return function (dispatch) {
-        axios.get(`${ROOT_URLC}/verifyCode`, { phonenum })
+        axios.get(`${ROOT_URLC}/user/phoneVcode?mobilephone=${mobilephone}`, { headers: getAuthorizedHeader() })
             .then(response => {
                 // console.log("获取验证码的接口通了");
                 // console.log(response);
@@ -160,18 +164,14 @@ export function GetverifyCode({ phonenum }) {
             .catch(err => (err.message));
     };
 }
-
-
-
-
 /**
  * 修改手机号获取验证码
  */
 
-export function GetverifyCodePhone({ loginname, phonenum }) {
-    console.log("修改手机号" + phonenum, loginname);
+export function GetverifyCodePhone({ loginname, mobilephone }) {
+    console.log("修改手机号" + mobilephone, loginname);
     return function (dispatch) {
-        axios.get(`${ROOT_URLC}/user/verifyCode`, { loginname, phonenum }, { headers: getAuthorizedHeader() })
+        axios.get(`${ROOT_URLC}/user/phoneVcode?loginname=${loginname}&mobilephone=${mobilephone}`, { headers: getAuthorizedHeader() })
             .then(response => {
                 // console.log("修改手机号获取验证码的接口通了");
                 console.log(response);
@@ -242,6 +242,21 @@ export function EmialAction({ email, vcode}, callback) {
             .catch(err => (err.message));
     };
 }
+/**
+ * 手机找回密码
+ */
+
+export function PhoneAction({ mobilephone, vcode}, callback) {
+    console.log("手机找回密码" + mobilephone, vcode );
+    return function (dispatch) {
+        axios.get(`${ROOT_URLC}/user/sendVmail?vcode=${vcode}&key=${mobilephone}`, { headers: getAuthorizedHeader() })
+            .then(response => {
+                console.log(response);
+                dispatch({ type: PHONE_FIND_PSW, payload: response });
+            })
+            .catch(err => (err.message));
+    };
+}
 
 
 /**
@@ -259,3 +274,20 @@ export function ResetpswAction({resetkey, password}, callback) {
             .catch(err => (err.message));
     };
 }
+
+/**
+ * 邮箱注册提示激活成功与否
+ */
+
+export function RegisterJumptipAction({email}, callback) {
+    console.log("邮箱注册是否激活提示" + email);
+    return function (dispatch) {
+        axios.get(`${ROOT_URLC}/user/active?email=${email} `, { headers: getAuthorizedHeader() })
+            .then(response => {
+                console.log(response);
+                dispatch({ type: EMAIL_ISLIVE, payload: response });
+            })
+            .catch(err => (err.message));
+    };
+}
+
