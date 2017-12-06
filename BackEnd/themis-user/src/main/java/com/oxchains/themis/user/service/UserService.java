@@ -14,8 +14,8 @@ import com.oxchains.themis.repo.dao.*;
 import com.oxchains.themis.repo.entity.*;
 import com.oxchains.themis.user.domain.UserRelationInfo;
 import com.oxchains.themis.user.domain.UserTrust;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -38,10 +38,11 @@ import static com.google.common.collect.Lists.newArrayList;
  */
 
 //@Transactional
+@Slf4j
 @Service
 public class UserService extends BaseService {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+    //private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     @Resource
     private UserDao userDao;
@@ -76,7 +77,27 @@ public class UserService extends BaseService {
 //    AccountService accountService;
 
     public RestResp addUser(User user) {
-        user.setPassword(EncryptUtils.encodeSHA256(user.getPassword()));
+        boolean mail = false;
+        if(null == user){
+            return RestResp.fail("请正确提交的注册信息");
+        }
+        if(null == user.getLoginname() || !RegexUtils.match(user.getLoginname(),RegexUtils.REGEX_NAME_LEN32)){
+            return RestResp.fail("请正确填写登录名，只能包含字母、数字、下划线，且只能以字母开头");
+        }
+        if(null != user.getMobilephone()){
+            if(!RegexUtils.match(user.getMobilephone(),RegexUtils.REGEX_MOBILEPHONE)){
+                return RestResp.fail("请正确填写手机号");
+            }
+        }
+        if(null != user.getEmail()){
+            if(!RegexUtils.match(user.getEmail(),RegexUtils.REGEX_EMAIL)){
+                return RestResp.fail("请正确填写邮箱地址");
+            }
+            user.setEnabled(Status.EnableStatus.UNENABLED.getStatus());
+            mail = true;
+        }else {
+            user.setEnabled(Status.EnableStatus.ENABLED.getStatus());
+        }
         Optional<User> optional = getUser(user);
         if (optional.isPresent()) {
             User u = optional.get();
@@ -91,6 +112,10 @@ public class UserService extends BaseService {
             }
             return RestResp.fail("注册用户已经存在");
         }
+        if(null==user.getPassword() || "".equals(user.getPassword().trim())){
+            return RestResp.fail("请正确填写登录密码");
+        }
+        user.setPassword(EncryptUtils.encodeSHA256(user.getPassword()));
         if(null == user.getCreateTime()){
             user.setCreateTime(DateUtil.getPresentDate());
         }
@@ -100,7 +125,7 @@ public class UserService extends BaseService {
         if (null == user.getLoginStatus()){
             user.setLoginStatus(0);
         }
-        user.setEnabled(Status.EnableStatus.ENABLED.getStatus());
+
         user = userDao.save(user);
         if (user == null) {
             return RestResp.fail("操作失败");
@@ -112,25 +137,36 @@ public class UserService extends BaseService {
         try{
             userTxDetailDao.save(userTxDetail);
         }catch (Exception e){
-            logger.error("保存用户交易详情异常", e);
+            log.error("保存用户交易详情异常", e);
             userDao.delete(user.getId());
-            return RestResp.fail("操作失败", e);
+            return RestResp.fail("注册失败", e);
         }
-
-        return RestResp.success("操作成功");
+        if(mail){
+            String url = "http://"+frontEndUrl+"/islive?email="+user.getEmail();
+            try {
+                mailService.sendHtmlMail(user.getEmail(),"账号激活","请点击以下链接进行账号激活操作：\n" +
+                        "<a href='"+url+"'>点击这里</a>");
+                return RestResp.success("注册成功，验证信息已经发送到邮箱："+user.getEmail()+"中，请前往操作",null);
+            }catch (Exception e){
+                log.error("邮件发送异常",e);
+                return RestResp.fail("邮件发送失败,请重新操作");
+            }
+        }else {
+            return RestResp.success("注册成功",null);
+        }
     }
 
     public RestResp updateUser(User user) {
         User u = userDao.findByLoginname(user.getLoginname());
         if(u==null){
-            return RestResp.fail("操作失败");
+            return RestResp.fail("提交信息有误");
         }
         u.setUsername(user.getUsername());
         user = userDao.save(u);
         if (user == null) {
             return RestResp.fail("操作失败");
         }
-        return RestResp.success("操作成功");
+        return RestResp.success("操作成功",null);
     }
     public RestResp updateUser(User user, ParamType.UpdateUserInfoType uuit) {
         if(null == user){
@@ -151,11 +187,16 @@ public class UserService extends BaseService {
                     String fileName = file.getOriginalFilename();
                     String suffix = fileName.substring(fileName.lastIndexOf("."));
                     String newFileName = tfsConsumer.saveTfsFile(file,u.getId());
+                    if(null == newFileName){
+                        return RestResp.fail("头像上传失败");
+                    }
                     u.setImage(newFileName);
                     flag = true;
-                }
-                if(null!=user.getImage() && !"".equals(user.getImage().trim())) {
+                }else if(null!=user.getImage() && !"".equals(user.getImage().trim())) {
                     String newFileName = tfsConsumer.saveTfsFile(ImageBase64.getImageBytes(user.getImage()),u.getLoginname(),u.getId());
+                    if(null == newFileName){
+                        return RestResp.fail("头像上传失败");
+                    }
                     u.setImage(newFileName);
                     flag = true;
                 }
@@ -204,9 +245,9 @@ public class UserService extends BaseService {
     private RestResp save(User user){
         try {
             userDao.save(user);
-            return RestResp.success("操作成功");
+            return RestResp.success("操作成功",null);
         }catch (Exception e){
-            logger.error("保存用户信息异常", e);
+            log.error("保存用户信息异常", e);
             return RestResp.fail("操作失败");
         }
     }
@@ -227,8 +268,12 @@ public class UserService extends BaseService {
 
                 Role role = roleDao.findById(u.getRoleId());
                 UserTxDetail userTxDetail = findUserTxDetailByUserId(u.getId());
-
-                logger.info("token = " + token);
+                if(userTxDetail==null){
+                    userTxDetail =new UserTxDetail(true);
+                    userTxDetail.setUserId(u.getId());
+                    userTxDetailDao.save(userTxDetail);
+                }
+                log.info("token = " + token);
                 User userInfo = new User(u);
                 userInfo.setRole(role);
                 userInfo.setPassword(null);
@@ -238,20 +283,19 @@ public class UserService extends BaseService {
 
                 u.setLoginStatus(Status.LoginStatus.LOGOUT.getStatus());
                 User save = userDao.save(u);
-
                 // redis 存储
                 boolean keyExist = redisTemplate.hasKey(save.getId().toString());
                 if (!keyExist){
-                    logger.info("保存 TOKEN 到 REDIS");
+                    log.info("保存 TOKEN 到 REDIS");
                     saveRedis(save ,originToken);
                 }
-
                 ConstantUtils.USER_TOKEN.put(u.getLoginname(), token);
 
                 //new UserToken(u.getUsername(),token)
                 return RestResp.success("登录成功", userInfo);
             }).orElse(RestResp.fail("登录账号或密码错误"));
         }catch (Exception e){
+            log.error("用户信息异常",e);
             return RestResp.fail("用户信息异常");
         }
     }
@@ -270,7 +314,7 @@ public class UserService extends BaseService {
     }
 
     private void reSaveRedis(User save, String originToken){
-        logger.info("重新保存 TOKEN 到 REDIS ");
+        log.info("重新保存 TOKEN 到 REDIS ");
         redisTemplate.delete(save.getId().toString());
         saveRedis(save, originToken);
     }
@@ -281,7 +325,7 @@ public class UserService extends BaseService {
             u.setLoginStatus(Status.LoginStatus.LOGOUT.getStatus());
             userDao.save(u);
             redisTemplate.delete(u.getId().toString());
-            return RestResp.success("退出成功");
+            return RestResp.success("退出成功",null);
         }else {
             return RestResp.fail("退出失败");
         }
@@ -456,7 +500,7 @@ public class UserService extends BaseService {
             }else {
                 userRelationDao.save(relation);
             }
-            return RestResp.success("操作成功");
+            return RestResp.success("操作成功",null);
         }catch (Exception e){
             return RestResp.fail("操作失败");
         }
@@ -489,9 +533,9 @@ public class UserService extends BaseService {
         try{
             String[] to = {body.getEmail()};
             mailService.send(new Email(to,"密码重置","密码重置为:123456,请尽快登录修改!"));
-            return RestResp.success("操作成功");
+            return RestResp.success("操作成功",null);
         }catch (Exception e){
-            logger.error("操作失败: {}",e);
+            log.error("操作失败: {}",e);
             return RestResp.fail("操作失败");
         }
     }
@@ -508,7 +552,7 @@ public class UserService extends BaseService {
 
     public RestResp getUser(Long id){
         if(null == id){
-            return RestResp.fail("参数不能为空");
+            return RestResp.fail("用户id不能为空");
         }
         User user = userDao.findOne(id);
         if(user != null){
@@ -523,7 +567,7 @@ public class UserService extends BaseService {
             ops.set(key, vcode, 5L, TimeUnit.MINUTES);
             return true;
         }catch (Exception e){
-            logger.error("Redis 操作异常:" ,e);
+            log.error("Redis 操作异常:" ,e);
             return false;
         }
     }
@@ -540,7 +584,7 @@ public class UserService extends BaseService {
             redisTemplate.delete(key);
             return val;
         }catch (Exception e){
-            logger.error("Redis 操作异常", e);
+            log.error("Redis 操作异常", e);
             return null;
         }
     }
@@ -566,9 +610,9 @@ public class UserService extends BaseService {
                 //mailService.send(new Email(to,"修改密码","请点击以下链接进行密码修改操作：\n" +  url));
                 mailService.sendHtmlMail(vcode.getKey(),"修改密码","请点击以下链接进行密码修改操作：\n" +
                         "<a href='"+url+"'>点击这里</a>");
-                return RestResp.success("邮件已发送到："+vcode.getKey()+"，请尽快修改您的密码");
+                return RestResp.success("邮件已发送到："+vcode.getKey()+"，请尽快修改您的密码",null);
             }catch (Exception e){
-                logger.error("邮件发送异常",e);
+                log.error("邮件发送异常",e);
                 return RestResp.fail("邮件发送失败,请重新操作");
             }
         }
@@ -597,8 +641,61 @@ public class UserService extends BaseService {
         if(null !=password){
             u.setPassword(EncryptUtils.encodeSHA256(password));
             userDao.save(u);
-            return RestResp.success("重置密码成功!");
+            return RestResp.success("重置密码成功!",null);
         }
         return RestResp.fail("重置密码失败");
+    }
+
+    public RestResp active(String email){
+        if(email==null || "".equals(email) || !RegexUtils.match(email,RegexUtils.REGEX_EMAIL)){
+            return RestResp.fail("邮箱格式不正确，激活失败");
+        }
+        User user = userDao.findByEmail(email);
+        if(null == user){
+            return RestResp.fail("该邮箱未注册，无法激活");
+        }
+        if(user.getEnabled().equals(Status.EnableStatus.ENABLED.getStatus())){
+            return RestResp.fail("账号已经激活，请勿重复操作");
+        }else {
+            user.setEnabled(Status.EnableStatus.ENABLED.getStatus());
+            userDao.save(user);
+            return RestResp.success("账号激活成功",null);
+        }
+    }
+    public RestResp sendMail(String email ,String subject,String content){
+        if(email==null || "".equals(email) || !RegexUtils.match(email,RegexUtils.REGEX_EMAIL)){
+            return RestResp.fail("请正确填写邮箱");
+        }
+        if(content==null || "".equals(content.trim()) ){
+            return RestResp.fail("发送内容不能为空");
+        }
+        try {
+            mailService.sendHtmlMail(email,subject,content);
+            return RestResp.success("邮件已发送到："+email+"，请前往查收",null);
+        }catch (Exception e){
+            log.error("邮件发送异常",e);
+            return RestResp.fail("邮件发送失败,请重新操作");
+        }
+    }
+
+    public RestResp addBitcoinAddress(String loginname,String firstAddress){
+        if(null == loginname || "".equals(loginname.trim())){
+            return RestResp.fail("用户名不正确");
+        }
+        if(null == firstAddress || "".equals(firstAddress.trim()) || firstAddress.length()<26 || firstAddress.length()>34){
+            return RestResp.fail("未正确填写收款地址,请重新填写");
+        }
+        firstAddress = firstAddress.trim();
+        User user = userDao.findByLoginname(loginname);
+        if(null == user){
+            return RestResp.fail("用户名不正确");
+        }
+        if(firstAddress.equals(user.getFirstAddress())){
+            return RestResp.fail("您未修改地址");
+        }
+        user.setFirstAddress(firstAddress);
+        userDao.save(user);
+        return RestResp.success("操作成功",firstAddress);
+
     }
 }

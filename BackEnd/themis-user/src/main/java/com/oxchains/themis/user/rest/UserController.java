@@ -316,4 +316,20 @@ public class UserController {
     public RestResp resetpwd(String resetkey,String password){
         return userService.resetpwd(resetkey,password);
     }
+
+    @GetMapping(value = "/active")
+    public RestResp activeUser(String email){
+        return userService.active(email);
+    }
+
+    @PostMapping(value = "/mail")
+    public RestResp sendMail(String email, String subject,String content){
+        return userService.sendMail(email,subject,content);
+    }
+
+    @PostMapping(value = "/btcaddress")
+    public RestResp addBitcoinAddress(String loginname, String firstAddress){
+        return userService.addBitcoinAddress(loginname,firstAddress);
+    }
+
 }

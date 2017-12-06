@@ -15,6 +15,7 @@ import com.oxchains.themis.repo.dao.UserDao;
 import com.oxchains.themis.repo.dao.UserTxDetailDao;
 import com.oxchains.themis.repo.entity.*;
 import com.oxchains.themis.repo.entity.UserTxDetail;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -54,6 +55,13 @@ public class NoticeService {
 
     public RestResp broadcastNotice(Notice notice){
         try {
+            // 判断用于信息是否完善（收货地址）
+            Long userId = notice.getUserId();
+            User user = userDao.findOne(userId);
+            String firstAddress = user.getFirstAddress();
+            if (StringUtils.isBlank(firstAddress)){
+                return RestResp.fail("请完善用户信息：收货地址");
+            }
             // 必填项判断
             if (null == notice.getNoticeType()){
                 return RestResp.fail("请选择广告类型");

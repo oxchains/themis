@@ -19,8 +19,8 @@
         </dependency>
         <dependency>
             <groupId>com.oxchains</groupId>
-            <artifactId>oxchains-fileAPI</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <artifactId>themis-common</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.dubbo.springboot</groupId>

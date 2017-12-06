@@ -7,6 +7,7 @@ import com.oxchains.themis.message.common.MessageConst;
 import com.oxchains.themis.message.dao.MessageDao;
 import com.oxchains.themis.message.dao.MessageTextDao;
 import com.oxchains.themis.message.rest.dto.MessageDTO;
+import com.oxchains.themis.message.rest.dto.PageDTO;
 import com.oxchains.themis.message.rest.dto.UnReadSizeDTO;
 import com.oxchains.themis.repo.dao.OrderDao;
 import com.oxchains.themis.repo.dao.UserDao;
@@ -71,6 +72,9 @@ public class MessageService {
                 // 默认将公告发送给所有人
                 messageText.setUserGroup(4L);
             }
+            if (messageText.getOrderId() == null){
+                messageText.setOrderId("");
+            }
 
             // 保存messageText
             String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
@@ -91,107 +95,14 @@ public class MessageService {
      * 查询系统信息
      */
     public RestResp queryGlobalMsg(Long userId, Integer pageNum, Integer pageSize){
-        try {
-            Pageable pageable = new PageRequest(pageNum - 1, pageSize, new Sort(Sort.Direction.DESC, "id"));
-            Page<Message> page = messageDao.findByReceiverIdAndMessageType(userId, MessageType.GLOBAL, pageable);
-            List<Message> mList = new ArrayList<>();
-            for (Message message : page.getContent()) {
-                MessageText messageText = messageTextDao.findByIdAndMessageType(message.getMessageTextId(), MessageType.GLOBAL);
-                message.setMessageText(messageText);
-
-                // 点击系统消息按钮，将所有返回数据的状态修改为已读，接受者id修改为自己的id
-                message.setReadStatus(MessageReadStatus.READ);
-                message.setReceiverId(userId);
-
-                // 获取订单相关信息
-                boolean isSuccess = getOrderInfo(userId, messageText);
-                if (!isSuccess){
-                    return RestResp.fail("站内信：获取订单信息失败");
-                }
-                message.setMessageText(messageText);
-                messageDao.save(message);
-
-                mList.add(message);
-            }
-
-            MessageDTO messageDTO = new MessageDTO<>();
-            messageDTO.setPageList(mList);
-            messageDTO.setRowCount(page.getTotalElements());
-            messageDTO.setTotalPage(page.getTotalPages());
-            messageDTO.setPageNum(pageNum);
-            messageDTO.setPageSize(pageSize);
-
-            return RestResp.success("操作成功", messageDTO);
-        }catch (Exception e){
-            LOG.error("站内信：获取系统信息失败", e);
-        }
-        return RestResp.fail("操作失败");
+        return queryMessage(userId, pageNum, pageSize, MessageType.GLOBAL, true);
     }
 
     /**
      * 查询私信
      */
     public RestResp queryPrivateMsg(Long userId, Integer pageNum, Integer pageSize){
-        try {
-            Pageable pageable = new PageRequest(pageNum - 1, pageSize, new Sort(Sort.Direction.DESC, "id"));
-            Page<Message> page = messageDao.findByReceiverIdAndMessageType(userId, MessageType.PRIVATE_LETTET, pageable);
-            Iterator<Message> it = page.iterator();
-            List<Message> mList = new ArrayList<>();
-            while (it.hasNext()){
-                Message message = it.next();
-                MessageText messageText = messageTextDao.findByIdAndMessageType(message.getMessageTextId(), MessageType.PRIVATE_LETTET);
-
-                // 点击私信按钮，将所有返回数据的状态修改为已读，接受者id修改为自己的id
-                message.setReadStatus(MessageReadStatus.READ);
-                message.setReceiverId(userId);
-
-                // 获取订单相关信息
-                boolean isSuccess = getOrderInfo(userId, messageText);
-                if (!isSuccess){
-                    return RestResp.fail("站内信：获取订单信息失败");
-                }
-
-                message.setMessageText(messageText);
-                messageDao.save(message);
-
-                mList.add(message);
-            }
-
-            MessageDTO messageDTO = new MessageDTO<>();
-            messageDTO.setPageList(mList);
-            messageDTO.setRowCount(page.getTotalElements());
-            messageDTO.setTotalPage(page.getTotalPages());
-            messageDTO.setPageNum(pageNum);
-            messageDTO.setPageSize(pageSize);
-
-            return RestResp.success("操作成功", messageDTO);
-        }catch (Exception e){
-            LOG.error("站内信：获取私信信息异常");
-        }
-        return RestResp.fail("操作失败");
-    }
-
-    /**
-     * 获取订单相关信息
-     */
-    private boolean getOrderInfo(Long userId, MessageText messageText) {
-        String orderId = messageText.getOrderId();
-        Order orders = orderDao.findById(orderId);
-        Long buyerId = orders.getBuyerId();
-        Long sellerId = orders.getSellerId();
-        if (userId.equals(buyerId)){
-            messageText.setPartnerId(sellerId);
-            User user = userDao.findOne(sellerId);
-            messageText.setFriendUsername(user.getLoginname());
-            return true;
-        }else if (userId.equals(sellerId)){
-            messageText.setPartnerId(buyerId);
-            User user = userDao.findOne(buyerId);
-            messageText.setFriendUsername(user.getLoginname());
-            return true;
-        }else {
-            return false;
-        }
+        return queryMessage(userId, pageNum, pageSize, MessageType.PRIVATE_LETTET, true);
     }
 
     /**
@@ -199,13 +110,14 @@ public class MessageService {
      */
     public RestResp queryNoticeMsg(Long userId, Integer pageNum, Integer pageSize){
         try {
-            // 获取自己所在用户组
+            // 获取自己所在的用户组
             User user = userDao.findOne(userId);
             Long userGroup = user.getRoleId();
+
             Pageable pageable = new PageRequest(pageNum - 1, pageSize, new Sort(Sort.Direction.DESC, "id"));
             Page<Message> page = messageDao.findByReceiverIdAndMessageType(userId, MessageType.PUBLIC, pageable);
-            Iterator<Message> it = page.iterator();
-            List<Message> mList = new ArrayList<>();
+            Iterator<Message>it = page.iterator();
+            List<MessageDTO> mList = new ArrayList<>();
             while (it.hasNext()){
                 Message message = it.next();
                 MessageText messageText = messageTextDao.findByIdAndMessageType(message.getMessageTextId(), MessageType.PUBLIC);
@@ -216,15 +128,15 @@ public class MessageService {
                 message.setReceiverId(userId);
                 messageDao.save(message);
 
-                mList.add(message);
+                mList.add(new MessageDTO(message));
             }
-            MessageDTO messageDTO = new MessageDTO();
-            messageDTO.setPageList(mList);
-            messageDTO.setRowCount(page.getTotalElements());
-            messageDTO.setPageSize(pageSize);
-            messageDTO.setPageNum(pageNum);
-            messageDTO.setTotalPage(page.getTotalPages());
-            return RestResp.success("操作成功", messageDTO);
+            PageDTO<MessageDTO> pageDTO = new PageDTO<>();
+            pageDTO.setPageList(mList);
+            pageDTO.setRowCount(page.getTotalElements());
+            pageDTO.setTotalPage(page.getTotalPages());
+            pageDTO.setPageNum(pageNum);
+            pageDTO.setPageSize(pageSize);
+            return RestResp.success("操作成功", pageDTO);
         }catch (Exception e){
             LOG.error("站内信：获取公告信息异常", e);
         }
@@ -315,6 +227,7 @@ public class MessageService {
         User user = userDao.findOne(userId);
         if (user != null) {
             Long userGroup = user.getRoleId();
+            // TODO 待修改，只能查找指定用户组，如果当前userGroup是2（仲裁），不能查找4（所有人，包括2）的
             List<MessageText> messageTextList = messageTextDao.findByMessageTypeAndUserGroup(MessageType.PUBLIC, userGroup);
 
             if (messageTextList.size() != 0) {
@@ -340,5 +253,68 @@ public class MessageService {
                 }
             }
         }
+    }
+
+    /**
+     * 获取订单相关信息
+     */
+    private boolean getOrderInfo(Long userId, MessageText messageText) {
+        String orderId = messageText.getOrderId();
+        Order orders = orderDao.findById(orderId);
+        Long buyerId = orders.getBuyerId();
+        Long sellerId = orders.getSellerId();
+        if (userId.equals(buyerId)){
+            messageText.setPartnerId(sellerId);
+            User user = userDao.findOne(sellerId);
+            messageText.setFriendUsername(user.getLoginname());
+            return true;
+        }else if (userId.equals(sellerId)){
+            messageText.setPartnerId(buyerId);
+            User user = userDao.findOne(buyerId);
+            messageText.setFriendUsername(user.getLoginname());
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    private RestResp queryMessage(Long userId, Integer pageNum, Integer pageSize, int messageType, boolean needOrder) {
+        try {
+            Pageable pageable = new PageRequest(pageNum - 1, pageSize, new Sort(Sort.Direction.DESC, "id"));
+            Page<Message> page = messageDao.findByReceiverIdAndMessageType(userId, messageType, pageable);
+            Iterator<Message> it = page.iterator();
+            List<MessageDTO> mList = new ArrayList<>();
+            while (it.hasNext()){
+                Message message = it.next();
+                MessageText messageText = messageTextDao.findByIdAndMessageType(message.getMessageTextId(), messageType);
+
+                if (needOrder){
+                    boolean isSuccess = getOrderInfo(userId, messageText);
+                    if (!isSuccess){
+                        return RestResp.fail("站内信：获取订单信息失败");
+                    }
+                }
+
+                message.setMessageText(messageText);
+                mList.add(new MessageDTO(message));
+
+                // 点击私信按钮，将所有返回数据的状态修改为已读，接受者id修改为自己的id
+                message.setReadStatus(MessageReadStatus.READ);
+                message.setReceiverId(userId);
+                messageDao.save(message);
+            }
+
+            PageDTO<MessageDTO> pageDTO = new PageDTO<>();
+            pageDTO.setPageList(mList);
+            pageDTO.setRowCount(page.getTotalElements());
+            pageDTO.setTotalPage(page.getTotalPages());
+            pageDTO.setPageNum(pageNum);
+            pageDTO.setPageSize(pageSize);
+
+            return RestResp.success("操作成功", pageDTO);
+        }catch (Exception e){
+            LOG.error("站内信：获取私信信息异常");
+        }
+        return RestResp.fail("操作失败");
     }
 }

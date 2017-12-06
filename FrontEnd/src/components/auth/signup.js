@@ -76,8 +76,8 @@ class Signup extends Component {
                 });
             }.bind(this), 1000);
         }
-        const phonenum = localStorage.getItem("phonenum");
-        this.props.GetverifyCode({ phonenum }, () => { });
+        const mobilephone = localStorage.getItem("mobilephone");
+        this.props.GetverifyCode({ mobilephone }, () => { });
     }
     handleChange(e) {
         let { index } = this.state;
@@ -94,7 +94,7 @@ class Signup extends Component {
     }
     phoneChange(e) {
         console.log(e.target.value);
-        const phonenum = localStorage.setItem("phonenum", e.target.value);
+     localStorage.setItem("mobilephone", e.target.value);
 
         var regex = /^1[3|4|5|7|8][0-9]\d{4,8}$/;
         if (regex.test(e.target.value)) {
