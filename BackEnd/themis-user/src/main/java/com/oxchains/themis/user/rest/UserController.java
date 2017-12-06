@@ -327,4 +327,9 @@ public class UserController {
         return userService.sendMail(email,subject,content);
     }
 
+    @PostMapping(value = "/btcaddress")
+    public RestResp addBitcoinAddress(String loginname, String firstAddress){
+        return userService.addBitcoinAddress(loginname,firstAddress);
+    }
+
 }

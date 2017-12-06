@@ -1,6 +1,7 @@
 package com.oxchains.themis.common.exception;
 
 import com.oxchains.themis.common.model.RestResp;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -11,10 +12,12 @@ import org.springframework.web.bind.annotation.*;
  */
 @ControllerAdvice(annotations = RestController.class)
 @ResponseBody
+@Slf4j
 public class RestExceptionHandler {
     @ExceptionHandler
     @ResponseStatus
     public RestResp runtimeExceptionHandler(Exception e){
-        return RestResp.success("服务器繁忙,请稍后再试!",null);
+        log.error("Runtime exception: ", e.getMessage(), e);
+        return RestResp.fail("服务器繁忙,请稍后再试!",null);
     }
 }
