@@ -73,6 +73,8 @@ export const ARBITRATE_RESULT = 'arbitrate_result';                       //仲�
 export const FETCH_OFF_MYBTC = 'fetch_off_mybtc';                         //下架我的广告
 export const FETCH_BASE_INFO = 'fetch_base_info';                         //用户中心基本信息
 export const FETCH_TRUSTED = 'fetch_trusted';                             //用户中心受信任的
+export const FETCH_ADDRESS_PAY = 'fetch_address_pay';                    //用户中心收款地址
+
 export const FETCH_PHONE = 'fetch_phone';                                 //用户中心修改手机号
 export const FETCH_PASSWORD = 'fetch_password';                           //用户中心修改密码
 export const FETCH_MESSAGES_NUMBER = 'fetch_messages_number';             //获取未读消息
