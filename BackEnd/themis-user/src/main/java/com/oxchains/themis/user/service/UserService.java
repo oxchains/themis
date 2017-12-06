@@ -192,8 +192,7 @@ public class UserService extends BaseService {
                     }
                     u.setImage(newFileName);
                     flag = true;
-                }
-                if(null!=user.getImage() && !"".equals(user.getImage().trim())) {
+                }else if(null!=user.getImage() && !"".equals(user.getImage().trim())) {
                     String newFileName = tfsConsumer.saveTfsFile(ImageBase64.getImageBytes(user.getImage()),u.getLoginname(),u.getId());
                     if(null == newFileName){
                         return RestResp.fail("头像上传失败");
@@ -269,7 +268,11 @@ public class UserService extends BaseService {
 
                 Role role = roleDao.findById(u.getRoleId());
                 UserTxDetail userTxDetail = findUserTxDetailByUserId(u.getId());
-
+                if(userTxDetail==null){
+                    userTxDetail =new UserTxDetail(true);
+                    userTxDetail.setUserId(u.getId());
+                    userTxDetailDao.save(userTxDetail);
+                }
                 log.info("token = " + token);
                 User userInfo = new User(u);
                 userInfo.setRole(role);
@@ -280,14 +283,12 @@ public class UserService extends BaseService {
 
                 u.setLoginStatus(Status.LoginStatus.LOGOUT.getStatus());
                 User save = userDao.save(u);
-
                 // redis 存储
                 boolean keyExist = redisTemplate.hasKey(save.getId().toString());
                 if (!keyExist){
                     log.info("保存 TOKEN 到 REDIS");
                     saveRedis(save ,originToken);
                 }
-
                 ConstantUtils.USER_TOKEN.put(u.getLoginname(), token);
 
                 //new UserToken(u.getUsername(),token)
@@ -675,5 +676,22 @@ public class UserService extends BaseService {
             log.error("邮件发送异常",e);
             return RestResp.fail("邮件发送失败,请重新操作");
         }
+    }
+
+    public RestResp addBitcoinAddress(String loginname,String firstAddress){
+        if(null == loginname || "".equals(loginname.trim())){
+            return RestResp.fail("用户名不正确");
+        }
+        if(null == firstAddress || "".equals(firstAddress.trim()) || firstAddress.length()<26 || firstAddress.length()>34){
+            return RestResp.fail("未正确填写收款地址,请重新填写");
+        }
+        User user = userDao.findByLoginname(loginname);
+        if(null == user){
+            return RestResp.fail("用户名不正确");
+        }
+        user.setFirstAddress(firstAddress);
+        userDao.save(user);
+        return RestResp.success("操作成功",null);
+
     }
 }
