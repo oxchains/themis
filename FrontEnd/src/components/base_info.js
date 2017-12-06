@@ -64,7 +64,7 @@ class Baseinfo extends Component {
         const sellAmount = localStorage.getItem('sellAmount'); //出售的累计交易数量
         const buyAmount = localStorage.getItem('buyAmount'); //购买的累计交易数量
         const imageUrl = this.state.imageUrl;
-        const actionUrl = "http://47.93.163.113:8081/user/info?loginname=" + loginname;
+        const actionUrl = "http://192.168.1.111:8081/user/info?loginname=" + loginname;
         return (
             <div>
                 <div className="maininfo">
