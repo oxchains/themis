@@ -81,6 +81,9 @@ public class UserService extends BaseService {
         if(null == user){
             return RestResp.fail("请正确提交的注册信息");
         }
+        if(null == user.getLoginname() || !RegexUtils.match(user.getLoginname(),RegexUtils.REGEX_NAME_LEN32)){
+            return RestResp.fail("请正确填写登录名，只能包含字母、数字、下划线，且只能以字母开头");
+        }
         if(null != user.getMobilephone()){
             if(!RegexUtils.match(user.getMobilephone(),RegexUtils.REGEX_MOBILEPHONE)){
                 return RestResp.fail("请正确填写手机号");
