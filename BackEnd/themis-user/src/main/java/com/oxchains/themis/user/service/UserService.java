@@ -685,13 +685,17 @@ public class UserService extends BaseService {
         if(null == firstAddress || "".equals(firstAddress.trim()) || firstAddress.length()<26 || firstAddress.length()>34){
             return RestResp.fail("未正确填写收款地址,请重新填写");
         }
+        firstAddress = firstAddress.trim();
         User user = userDao.findByLoginname(loginname);
         if(null == user){
             return RestResp.fail("用户名不正确");
         }
+        if(firstAddress.equals(user.getFirstAddress())){
+            return RestResp.fail("您未修改地址");
+        }
         user.setFirstAddress(firstAddress);
         userDao.save(user);
-        return RestResp.success("操作成功",null);
+        return RestResp.success("操作成功",firstAddress);
 
     }
 }
