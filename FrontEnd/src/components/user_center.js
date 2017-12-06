@@ -6,6 +6,8 @@ import React, { Component } from 'react';
 import Base from './base_info';
 import Safe from './safe_set';
 import Trust from './trusts';
+import Address from './address_pay';
+
 class Usercenter extends Component {
     constructor(props) {
         super(props);
@@ -26,6 +28,9 @@ class Usercenter extends Component {
                     </Tab>
                     <Tab name="受信任的">
                         <div><Trust /></div>
+                    </Tab>
+                    <Tab name="收款地址">
+                        <div><Address /></div>
                     </Tab>
                 </TabsControl>
             </div>

@@ -293,7 +293,7 @@ div {
     border-bottom: 1px solid #E9E9E9;
 }
 
-.liheight:nth-child(3)
+.liheight:nth-child(4)
 {
     border-bottom:none;
 }
@@ -1702,4 +1702,12 @@ td {
     font-size: 18px;
     font-weight: 500;
     text-decoration: underline;
+}
+.address_pay
+{
+    padding: 60px;
+}
+.changeAddress
+{
+    margin: 30px auto;
 }
