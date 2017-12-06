@@ -25,24 +25,18 @@ class MessageLetter extends Component{
         const pageSize=this.state.pageSize;
         this.props.fetchMessageLetter({userId, pageNum, pageSize});
     }
-    handleOrder(val){
-        const userId= localStorage.getItem('userId');
-        const orderData={id:val.orderId, userId:userId, partnerId:val.partnerId, friendUsername:val.friendUsername};
-        localStorage.setItem("partner", JSON.stringify(orderData));
-        window.location.href='/orderprogress';
-    }
     renderList(){
         return this.props.message_letter.pageList.map((item, index)=>{
             return(
                 <li className="message-item-list clearfix" key={index}>
                     <div className="col-xs-2">
                         <div className="photo pull-right">
-                            <img src="../public/img/touxiang.png" alt=""/>
+                            <img src="/public/img/touxiang.png" alt=""/>
                         </div>
                     </div>
-                    <div className="col-xs-10 message-item-content" onClick={this.handleOrder.bind(this, item.messageText)}>
-                        <div className="message-item-tip"><span>{item.messageType == 1 ? item.messageText.friendUsername:""}</span><span>{item.messageText.postDate}</span></div>
-                        <div className={`message-item-detail ${item.readStatus == 2  ? "readed":"" }`}>{item.messageText.message}</div>
+                    <div className="col-xs-10 message-item-content">
+                        <div className="message-item-tip"><span className="h5 g-pr-10">{item.messageType == 1 ? item.friendUsername:""}</span><span>{item.postDate}</span></div>
+                        <Link className={`message-item-detail ${item.readStatus == 2  ? "readed":"" }`} to={`/orderprogress/${item.orderId}`}>{item.content}</Link>
                     </div>
                 </li>
             );
@@ -60,13 +54,13 @@ class MessageLetter extends Component{
                         <div className="col-xs-12 message-list">
                             <ul>
                                 <li className="col-xs-4 text-right">
-                                    <Link className="text-center" to="/messagenotice">公告<Badge count={noticeUnRead} /></Link>
+                                    <Link className="text-center" to="/message/notice">公告<Badge count={noticeUnRead} /></Link>
                                 </li>
                                 <li className="col-xs-4 text-center">
-                                    <Link className="text-center" to="/messagesystem">系统 <Badge count={globalUnRead} /></Link>
+                                    <Link className="text-center" to="/message/system">系统 <Badge count={globalUnRead} /></Link>
                                 </li>
                                 <li className="col-xs-4 text-left">
-                                    <Link className="text-center active" to="/messageletter">私信 <Badge count={privateUnRead} /></Link>
+                                    <Link className="text-center active" to="/message/letter">私信 <Badge count={privateUnRead} /></Link>
                                 </li>
                             </ul>
                         </div>

@@ -52,10 +52,11 @@ public class MessageController {
     }
 
     /**
-     * 未读信息数量
+     * 所有未读信息数量
      */
     @GetMapping(value = "/query/unReadCount")
     public RestResp unReadCount(@RequestParam Long userId, @RequestParam Integer tip){
         return messageService.unReadCount(userId, tip);
     }
+
 }

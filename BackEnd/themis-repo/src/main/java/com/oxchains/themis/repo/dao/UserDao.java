@@ -22,6 +22,8 @@ public interface UserDao extends CrudRepository<User,Long> {
      */
     User findByLoginname(String loginname);
 
+    User findByEmail(String email);
+
     /**
      * 通过手机查找
      * @param mobilephone
@@ -36,6 +38,7 @@ public interface UserDao extends CrudRepository<User,Long> {
      * @return Optional<User>
      */
     Optional<User> findByLoginnameAndPassword(String loginname, String password);
+    Optional<User> findByLoginnameAndPasswordAndEnabled(String loginname, String password,Integer enabled);
 
     /**
      * find by email and password
@@ -44,6 +47,7 @@ public interface UserDao extends CrudRepository<User,Long> {
      * @return Optional<User>
      */
     Optional<User> findByEmailAndPassword(String loginname, String password);
+    Optional<User> findByEmailAndPasswordAndEnabled(String loginname, String password, Integer enabled);
 
     /**
      * find by phone and password
@@ -52,6 +56,7 @@ public interface UserDao extends CrudRepository<User,Long> {
      * @return Optional<User>
      */
     Optional<User> findByMobilephoneAndPassword(String loginname, String password);
+    Optional<User> findByMobilephoneAndPasswordAndEnabled(String loginname, String password,Integer enabled);
 
     /**
      * findByRoleId

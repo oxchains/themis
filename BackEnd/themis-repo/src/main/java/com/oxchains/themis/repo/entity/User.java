@@ -25,13 +25,13 @@ public class User {
     @Column(length = 32)
     private String username;
 
-    @Column(length = 32)
+    @Column(length = 32,unique = true)
     private String loginname;
 
-    @Column(length = 32)
+    @Column(length = 32,unique = true)
     private String email;
 
-    @Column(length = 11)
+    @Column(length = 11,unique = true)
     private String mobilephone;
 
     //@JsonIgnore
@@ -53,6 +53,9 @@ public class User {
 
     @Column(length = 128)
     private String fpassword;
+
+    @Column
+    private Integer enabled;
 
     public Long getId() {
         return id;
@@ -227,6 +230,14 @@ public class User {
         this.newPassword = newPassword;
     }
 
+    public Integer getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Integer enabled) {
+        this.enabled = enabled;
+    }
+
     public User(User user){
         setRole(user.getRole());
         setRoleId(user.getRoleId());
@@ -239,6 +250,7 @@ public class User {
         setLoginStatus(user.getLoginStatus());
         setCreateTime(user.getCreateTime());
 
+        setEnabled(user.getEnabled());
         setUserTxDetail(user.getUserTxDetail());
 
         setImage(user.getImage());

@@ -1,5 +1,6 @@
 package com.oxchains.themis.order.service;
 import com.alibaba.fastjson.JSONObject;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.oxchains.themis.common.constant.ThemisUserAddress;
 import com.oxchains.themis.common.model.AddressKeys;
 import com.oxchains.themis.common.model.OrdersKeyAmount;
@@ -8,6 +9,9 @@ import com.oxchains.themis.common.util.DateUtil;
 import com.oxchains.themis.common.util.JsonUtil;
 import com.oxchains.themis.order.common.*;
 import com.oxchains.themis.order.entity.*;
+import com.oxchains.themis.order.entity.ValidaPojo.AddOrderPojo;
+import com.oxchains.themis.order.entity.ValidaPojo.SaveAddresskeyPojo;
+import com.oxchains.themis.order.entity.ValidaPojo.UploadTxIdPojo;
 import com.oxchains.themis.order.entity.vo.OrdersInfo;
 import com.oxchains.themis.order.entity.vo.UserTxDetails;
 import com.oxchains.themis.order.repo.OrderCommentRepo;
@@ -24,8 +28,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
@@ -57,7 +59,8 @@ public class OrderService {
     @Resource
     private MessageService messageService;
     @Resource
-    RestTemplate restTemplate;
+    private RestTemplate restTemplate;
+    private static final String remoteError = "服务器繁忙,请稍后重试!";
 
     /*
     * 查询所有订单  用来测试
@@ -67,16 +70,25 @@ public class OrderService {
     }
     /*
     * 对发布的公告 下一个订单 生成订单信息
+    * @param userId 当前用户的id
+    * @param noticeId 当前公告的id
+    * @param amount 交易数量
+    * @param money 总价
     * */
-    public RestResp addOrders(Pojo pojo){
+    public RestResp addOrders(AddOrderPojo pojo){
         Orders orders = null;
         try {
             Notice notice = callService.findNoticeById(pojo.getNoticeId());
+            AddressKeys addressKeys = callService.getAddressKeys();
+            List<User> userList = callService.getArbitrateUser();
+            if(userList == null || addressKeys == null || notice == null){
+                return RestResp.fail(remoteError);
+            }
             //生成一条订单信息 订单状态为1 是否仲裁为0
             orders = new Orders(DateUtil.getOrderId(),
                     pojo.getMoney(),
                     DateUtil.getPresentDate(),
-                    new BigDecimal(pojo.getAmount()),
+                    pojo.getAmount(),
                     notice.getPayType(), ParamType.VcurrencyStatus.BTC.getId(),
                     notice.getCurrency(),
                     notice.getNoticeType().longValue()== ParamType.NoticeStatus.BUY.getStatus()?notice.getUserId():pojo.getUserId(),
@@ -89,13 +101,12 @@ public class OrderService {
             messageService.postAddOrderMessage(orders,pojo.getUserId(),notice.getUserId());
             //生成买家用户的公私匙 存到 order_address_key table 每个订单对应一条
             //生成仲裁者用户的公私匙 存到 订单买家卖家仲裁者表里 order_address_key 每个订单对应一条
-            AddressKeys addressKeys = callService.getAddressKeys();
+
             OrderAddresskeys orderAddresskeys = new OrderAddresskeys(orders.getId(),addressKeys.getPublicKey(),addressKeys.getPrivateKey(),addressKeys.getPublicKey(),addressKeys.getPrivateKey());
             orderAddresskeys = orderAddresskeyRepo.save(orderAddresskeys);
 
             //将仲裁者用户的私匙 分为三个密匙碎片分别分给三个人 存储在 订单仲裁表里面 每个订单对应三条信息
             String[] strArr = ShamirUtil.splitAuth(orderAddresskeys.getUserPriAuth());
-            List<User> userList = callService.getArbitrateUser();
             List<OrderArbitrate> arbitrateList = new ArrayList<>(ShamirUtil.N);
             OrderArbitrate orderArbitrate = null;
             for(int i = 0;i<strArr.length;i++){
@@ -107,9 +118,9 @@ public class OrderService {
             this.handleUserTxDetail(pojo.getUserId(),notice.getUserId(),ParamType.UserTxDetailHandle.FIRST_BUY_TIME.getStatus(),null);
         }catch (Exception e){
             LOG.error("add orders faild : {}",e.getMessage(),e);
-            return RestResp.fail("请正确填写订单信息");
+            return RestResp.fail(remoteError);
         }
-        return orders!=null?RestResp.success(new OrdersInfo(orders)):RestResp.fail("请正确填写订单信息");
+        return orders!=null?RestResp.success(new OrdersInfo(orders)):RestResp.fail(remoteError);
     }
            private void handleUserTxDetail(Long userId,Long ortherUserId,Integer status,Pojo pojo){
                try {
@@ -149,7 +160,7 @@ public class OrderService {
                        userTxDetailDao.save(noticeTx);
                    }
                } catch (Exception e) {
-                   LOG.error("user trasaction detail handle faild :{}",e.getMessage(),e);
+                   LOG.error("user trasaction detail handle faild :{}",e);
                    throw  e;
                }
            }
@@ -169,15 +180,15 @@ public class OrderService {
             }
             if(ordersInfo.getBuyerId().longValue() == pojo.getUserId()){
                 ordersInfo.setOrderType("购买");
-                ordersInfo.setFriendUsername(callService.getUserById(o.getSellerId()).getLoginname());
+                ordersInfo.setFriendUsername(this.getLoginNameByUserId(o.getSellerId()));
             }
             else{
                 ordersInfo.setOrderType("出售");
-                ordersInfo.setFriendUsername(callService.getUserById(o.getBuyerId()).getLoginname());
+                ordersInfo.setFriendUsername(this.getLoginNameByUserId(o.getBuyerId()));
             }
             ordersInfo.setPayment(paymentRepo.findOne(ordersInfo.getPaymentId()));
         } catch (Exception e) {
-            LOG.error("get order details faild : {}",e.getMessage(),e);
+            LOG.error("get order details faild : {}",e);
             return null;
         }
         return ordersInfo;
@@ -186,7 +197,7 @@ public class OrderService {
    * 根据id查询自己已完成的的订单
    * */
     public RestRespPage findCompletedOrdersById(Pojo pojo){
-        Pageable pageable = new PageRequest(pojo.getPageNum()-1,pojo.getPageSize(),new Sort(Sort.Direction.DESC,"id"));
+        Pageable pageable = new PageRequest(pojo.getPageNum()-1,pojo.getPageSize(),new Sort(Sort.Direction.DESC,"createTime"));
         List<OrdersInfo> ordersInfoList = null;
         OrdersInfo ordersInfo = null;
         Page<Orders> ordersPage = null;
@@ -201,26 +212,26 @@ public class OrderService {
                 ordersInfo.setNotice(callService.findNoticeById(o.getNoticeId()));
                 if(o.getBuyerId().longValue() == pojo.getUserId()){
                     ordersInfo.setOrderType("购买");
-                    ordersInfo.setFriendUsername(callService.getUserById(o.getSellerId()).getLoginname());
+                    ordersInfo.setFriendUsername(this.getLoginNameByUserId(o.getSellerId()));
                 }
                 else{
                     ordersInfo.setOrderType("出售");
-                    ordersInfo.setFriendUsername(callService.getUserById(o.getBuyerId()).getLoginname());
+                    ordersInfo.setFriendUsername(this.getLoginNameByUserId(o.getBuyerId()));
                 }
                 this.setOrderStatusName(ordersInfo);
                 ordersInfoList.add(ordersInfo);
             }
         } catch (Exception e) {
             LOG.error("query complete order faild : {}",e.getMessage(),e);
-            return RestRespPage.fail("未知错误");
+            return RestRespPage.fail(remoteError);
         }
-        return RestRespPage.success(ordersInfoList,ordersPage.getTotalPages());
+        return RestRespPage.success(ordersInfoList,ordersPage.getTotalElements());
     }
     /*
    * 根据id查询自己未完成的的订单
    * */
     public RestRespPage findNoCompletedOrdersById(Pojo pojo){
-        Pageable pageable = new PageRequest(pojo.getPageNum()-1,pojo.getPageSize(),new Sort(Sort.Direction.DESC,"id"));
+        Pageable pageable = new PageRequest(pojo.getPageNum()-1,pojo.getPageSize(),new Sort(Sort.Direction.DESC,"createTime"));
         List<OrdersInfo> ordersInfoList = null;
         OrdersInfo ordersInfo = null;
         Page<Orders> ordersPage = null;
@@ -235,21 +246,21 @@ public class OrderService {
                 ordersInfo.setNotice(callService.findNoticeById(o.getNoticeId()));
                 if(o.getBuyerId().longValue() == pojo.getUserId()){
                     ordersInfo.setOrderType("购买");
-                    ordersInfo.setFriendUsername(callService.getUserById(o.getSellerId()).getLoginname());
+                    ordersInfo.setFriendUsername(this.getLoginNameByUserId(o.getSellerId()));
 
                 }
                 else{
                     ordersInfo.setOrderType("出售");
-                    ordersInfo.setFriendUsername(callService.getUserById(o.getBuyerId()).getLoginname());
+                    ordersInfo.setFriendUsername(this.getLoginNameByUserId(o.getBuyerId()));
                 }
                 this.setOrderStatusName(ordersInfo);
                 ordersInfoList.add(ordersInfo);
             }
         } catch (Exception e) {
             LOG.error("query noComplete order faild : {}",e.getMessage(),e);
-            return RestRespPage.fail("未知错误");
+            return RestRespPage.fail(remoteError);
         }
-        return RestRespPage.success(ordersInfoList,ordersPage.getTotalPages());
+        return RestRespPage.success(ordersInfoList,ordersPage.getTotalElements());
     }
     /*
     * 取消订单
@@ -259,6 +270,7 @@ public class OrderService {
         OrdersInfo ordersInfo = null;
         try {
             Orders orders = orderRepo.findOne(id);
+
             if(orders.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_CONFIRM.getStatus()){
                 //当订单状态为1 时 买家已拍下 但商家还未确认 可以直接取消订单 不采取任何操作
                 orders.setOrderStatus(ParamType.OrderStatus.CANCEL.getStatus());
@@ -266,12 +278,16 @@ public class OrderService {
                 messageService.postCancelOrder(orders,userId);
             }
             if(orders.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_PAY.getStatus()){
+                User user = callService.getUserById(orders.getSellerId());
+                if(user == null){
+                    return RestResp.fail("Network error : get user info faild");
+                }
                 //买家的私匙给卖家
                 OrderAddresskeys orderAddresskeys = orderAddresskeyRepo.findOrderAddresskeysByOrderId(id);
                 orderAddresskeys.setSellerBuyerPriAuth(orderAddresskeys.getBuyerPriAuth());
                 //将卖家的BTC从协商地址转回到 买家账户
                 String s = orderAddresskeys.getBuyerPriAuth()+","+orderAddresskeys.getSellerPriAuth();
-                OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orders.getId(),s,orders.getAmount().doubleValue(),callService.getUserById(orders.getSellerId()).getFirstAddress());
+                OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orders.getId(),s,orders.getAmount().doubleValue(),user.getFirstAddress());
                 HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), callService.getHttpHeader());
                 JSONObject jsonObject = restTemplate.postForObject(ThemisUserAddress.MOVE_BTC,formEntity,JSONObject.class);
                 Integer status = (Integer) jsonObject.get("status");
@@ -290,7 +306,7 @@ public class OrderService {
             this.setOrderStatusName(ordersInfo);
         } catch (Exception e) {
             LOG.error("cancel orders faild : {}",e.getMessage(),e);
-            return RestResp.fail("未知错误");
+            return RestResp.fail(remoteError);
         }
         return orders1!=null?RestResp.success(ordersInfo):RestResp.fail();
     }
@@ -302,7 +318,6 @@ public class OrderService {
         OrdersInfo ordersInfo = null;
         try {
             Orders o = orderRepo.findOne(pojo.getId());
-            Notice notice = callService.findNoticeById(o.getNoticeId());
                 //查询BTC有没有到协商地址如果到了地址
                 JSONObject restResp = restTemplate.getForObject(ThemisUserAddress.CHECK_BTC+pojo.getId(), JSONObject.class);
                 Integer status  = (Integer) restResp.get("status");
@@ -319,7 +334,7 @@ public class OrderService {
                 }
         } catch (Exception e) {
             LOG.error("confirm order faild : {}",e.getMessage(),e);
-            return RestResp.fail("未知错误");
+            return RestResp.fail(remoteError);
         }
     }
     /*
@@ -330,14 +345,18 @@ public class OrderService {
         try {
             Orders orders = orderRepo.findOne(pojo.getId());
             if(orders.getBuyerId().longValue() == pojo.getUserId() && orders.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_REFUND.getStatus()){
+                User user = callService.getUserById(orders.getSellerId());
+                if(user == null){
+                    return RestResp.fail("Network error:get user inof faild  by confirmReceiveRefund");
+                }
                 OrderAddresskeys orderAddresskeys = orderAddresskeyRepo.findOrderAddresskeysByOrderId(orders.getId());
                 orderAddresskeys.setSellerBuyerPriAuth(orderAddresskeys.getBuyerPriAuth());
                 orderAddresskeyRepo.save(orderAddresskeys);
                 //将卖家的BTC从写上地址转回到 买家账户
                 String s = orderAddresskeys.getBuyerPriAuth()+","+orderAddresskeys.getSellerPriAuth();
-                OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orders.getId(),s,orders.getAmount().doubleValue(),callService.getUserById(orders.getSellerId()).getFirstAddress());
-                HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), callService.getHttpHeader());
-                JSONObject jsonObject = restTemplate.postForObject(ThemisUserAddress.MOVE_BTC,formEntity,JSONObject.class);
+                OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orders.getId(),s,orders.getAmount().doubleValue(),user.getFirstAddress());
+                JSONObject jsonObject = callService.moveBTC(ordersKeyAmount);
+                if(jsonObject != null){
                 Integer status = (Integer) jsonObject.get("status");
                 if(status == 1){
                     orders.setOrderStatus(ParamType.OrderStatus.CANCEL.getStatus());
@@ -347,16 +366,22 @@ public class OrderService {
                 }
                 ordersInfo = new OrdersInfo(orders);
                 this.setOrderStatusName(ordersInfo);
-                return orders!=null?RestResp.success(ordersInfo):RestResp.fail("未知错误");
+                }
+                return orders!=null?RestResp.success(ordersInfo):RestResp.fail(remoteError);
             }
         } catch (Exception e) {
             LOG.error("confirm receive refund faild : {}",e.getMessage(),e);
-            return RestResp.fail("未知错误");
+            return RestResp.fail(remoteError);
         }
-        return RestResp.fail("未知错误");
+        return RestResp.fail(remoteError);
     }
-    //卖家上传公私钥
-    public RestResp saveAddresskey(OrderAddresskeys orderAddresskeys){
+    /*
+    * 卖家上传公私钥
+    * @Param orderId  订单id
+    * @Param sellerPubAuth 卖家公钥
+    * @Param sellerPriAuth 卖家私钥
+    * */
+    public RestResp saveAddresskey(SaveAddresskeyPojo orderAddresskeys){
         OrderAddresskeys orderAddresskeys1 = null;
         OrdersInfo ordersInfo = null;
         try {
@@ -370,30 +395,32 @@ public class OrderService {
             sb.append(orderAddresskeys.getSellerPubAuth());
             sb.append(",");
             sb.append(orderAddresskeys1.getUserPubAuth());
-
             OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orderAddresskeys1.getOrderId(),sb.toString(),orders.getAmount().doubleValue());
-            HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), callService.getHttpHeader());
-            JSONObject jsonObject = restTemplate.postForObject(ThemisUserAddress.CREATE_CENTET_ADDRESS,formEntity,JSONObject.class);
-            Integer status =  (Integer) jsonObject.get("status");
-            if(status == 1){
-                orderAddresskeys1.setSellerPubAuth(orderAddresskeys.getSellerPubAuth());
-                orderAddresskeys1.setSellerPriAuth(orderAddresskeys.getSellerPriAuth());
-                orderAddresskeyRepo.save(orderAddresskeys1);
-                ordersInfo = new OrdersInfo(orders);
-                LinkedHashMap data = (LinkedHashMap) jsonObject.get("data");
-                ordersInfo.setP2shAddress((String) data.get("address"));
-                ordersInfo.setUri((String)data.get("URI"));
-                orders.setUri((String)data.get("URI"));
-                orderRepo.save(orders);
-                messageService.postAddAddressKey(orders);
-                return orders!=null?RestResp.success(ordersInfo):RestResp.fail("请输入正确的公私匙");
+            JSONObject jsonObject = callService.createCenterAddress(ordersKeyAmount);
+            if(jsonObject != null){
+                Integer status = (Integer) jsonObject.get("status");
+                if(status == 1){
+                    orderAddresskeys1.setSellerPubAuth(orderAddresskeys.getSellerPubAuth());
+                    orderAddresskeys1.setSellerPriAuth(orderAddresskeys.getSellerPriAuth());
+                    orderAddresskeyRepo.save(orderAddresskeys1);
+                    ordersInfo = new OrdersInfo(orders);
+                    LinkedHashMap data = (LinkedHashMap) jsonObject.get("data");
+                    ordersInfo.setP2shAddress((String) data.get("address"));
+                    ordersInfo.setUri((String)data.get("URI"));
+                    orders.setUri((String)data.get("URI"));
+                    orderRepo.save(orders);
+                    messageService.postAddAddressKey(orders);
+                    return RestResp.success(ordersInfo);
+                }else{
+                    return RestResp.fail("公钥验证失败,请输入正确的公私钥");
+                }
             }
+
         } catch (Exception e) {
             LOG.error("save address key faild : {}",e.getMessage(),e);
-            return RestResp.fail("请输入正确的公私匙");
+            return RestResp.fail(remoteError);
         }
-        return  RestResp.fail("请输入正确的公私匙");
-
+        return RestResp.fail(remoteError);
     }
     /*
     * 这是一个工具类方法  为了给要返回到前台的orders 附上订单状态值
@@ -410,18 +437,22 @@ public class OrderService {
         UserTxDetails userTxDetails = null;
         try {
             Notice notice = callService.findNoticeById(pojo.getNoticeId());
-            pojo.setUserId(notice.getUserId());
+            pojo.setUserId(notice!=null?notice.getUserId():null);
             userTxDetails = this.findUserTxDetails(pojo);
-            userTxDetails.setNotice(notice);
-            userTxDetails.setLoginname(callService.getUserById(notice.getUserId()).getLoginname());
+            if(userTxDetails!=null){
+                userTxDetails.setNotice(notice);
+                userTxDetails.setLoginname(this.getLoginNameByUserId(notice.getUserId()));
+            }
         } catch (Exception e) {
-            LOG.error("find user transaction and notice  faild : {}",e.getMessage(),e);
+            LOG.error("find user transaction and notice  faild : {}",e);
             return null;
         }
         return userTxDetails;
     }
     public UserTxDetails findUserTxDetails(Pojo pojo){
-
+        if(pojo.getUserId() == null){
+            return null;
+        }
         UserTxDetails userTxDetails = null;
         try {
             UserTxDetail userTxDetail = userTxDetailDao.findByUserId(pojo.getUserId());
@@ -438,9 +469,9 @@ public class OrderService {
             userTxDetails.setEmailVerify("未验证");
             userTxDetails.setUsernameVerify("未验证");
             userTxDetails.setMobilePhoneVerify("未验证");
-            userTxDetails.setCreateTime(user.getCreateTime());
+            userTxDetails.setCreateTime(user!=null?user.getCreateTime():null);
             userTxDetails.setGoodDegree(goodDegree);
-            userTxDetails.setLoginname(callService.getUserById(pojo.getUserId()).getLoginname());
+            userTxDetails.setLoginname(user!=null?user.getLoginname():null);
             if(user.getEmail()!=null){
                 userTxDetails.setEmailVerify("已验证");
             }
@@ -451,7 +482,7 @@ public class OrderService {
                 userTxDetails.setMobilePhoneVerify("已验证");
             }
         } catch (Exception e) {
-            LOG.error("find user transaction faild : {}",e.getMessage(),e);
+            LOG.error("find user transaction faild : {}",e);
             return null;
         }
         return userTxDetails;
@@ -460,23 +491,26 @@ public class OrderService {
 
     /*
     * 卖家上传交易凭据 txid
+    * @Param id 订单id
+    * @Param txid 交易id
     * */
-    public RestResp uploadTxId(Pojo pojo){
+    public RestResp uploadTxId(UploadTxIdPojo pojo){
         try {
             OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount();
             ordersKeyAmount.setTxId(pojo.getTxId());
-            HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), callService.getHttpHeader());
-            JSONObject jsonObject = restTemplate.postForObject(ThemisUserAddress.CHECK_BTC + pojo.getId(), formEntity, JSONObject.class);
-            Integer status = (Integer) jsonObject.get("status");
-            if(status == 1){
-                messageService.postUploadTxId(orderRepo.findOne(pojo.getId()));
-                return RestResp.success();
+            JSONObject jsonObject = callService.uploadTxId(ordersKeyAmount, pojo.getId());
+            if(jsonObject != null){
+                Integer status = (Integer) jsonObject.get("status");
+                if(status == 1){
+                    messageService.postUploadTxId(orderRepo.findOne(pojo.getId()));
+                    return RestResp.success();
+                }
             }
         } catch (Exception e) {
             LOG.error("faild upload tx id : {}",e.getMessage(),e);
-            return RestResp.fail("未知错误");
+            return RestResp.fail(remoteError);
         }
-        return RestResp.fail("请输入正确的交易id");
+        return RestResp.fail(remoteError);
     }
     /*
     * 买家确认付款
@@ -490,13 +524,13 @@ public class OrderService {
                 orders = orderRepo.save(orders);
                 ordersInfo = new OrdersInfo(orders);
                 messageService.postConfirmSendMoney(orders);
-                return orders!=null?RestResp.success(ordersInfo):RestResp.fail("未知错误");
+                return orders!=null?RestResp.success(ordersInfo):RestResp.fail(remoteError);
             }
         } catch (Exception e) {
             LOG.error("confirm send money faild : {}",e.getMessage(),e);
-            return RestResp.fail("未知错误");
+            return RestResp.fail(remoteError);
         }
-        return RestResp.fail("未知错误");
+        return RestResp.fail(remoteError);
     }
     /*
     *判断卖家有没有上传公私钥并且生成协商地址
@@ -510,18 +544,22 @@ public class OrderService {
                 String address = callService.getP2shAddressByOrderId(orders.getId());
                 ordersInfo = new OrdersInfo(orders);
                 ordersInfo.setP2shAddress(address);
-                return orders!=null?RestResp.success(ordersInfo):RestResp.fail();
+                return orders!=null?RestResp.success(ordersInfo):RestResp.fail(remoteError);
             }
         } catch (Exception e) {
-            LOG.error("judge seller public private auth faild : {}",e.getMessage(),e);
+            LOG.error("judge seller public private auth faild : {}",e);
         }
-        return RestResp.fail();
+        return RestResp.fail(remoteError);
     };
     public RestResp releaseBTC(Pojo pojo){
         OrderAddresskeys save = null;
         try {
             OrderAddresskeys orderAddresskeys = orderAddresskeyRepo.findOrderAddresskeysByOrderId(pojo.getId());
             Orders orders = orderRepo.findOne(pojo.getId());
+            User user = callService.getUserById(orders.getBuyerId());
+            if(user == null){
+                return RestResp.fail("Network error,Please click retry");
+            }
             //只有卖家可以释放BTC
             if(orders.getSellerId().longValue() == pojo.getUserId()){
                 //将卖家的私匙给买家
@@ -529,25 +567,23 @@ public class OrderService {
                 save = orderAddresskeyRepo.save(orderAddresskeys);
                 //将卖家的BTC从协商地址转回到 买家账户
                 String s = save.getBuyerPriAuth()+","+save.getBuyerSellerPriAuth();
-                OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orders.getId(),s,orders.getAmount().doubleValue(),callService.getUserById(orders.getBuyerId()).getFirstAddress());
-                HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), callService.getHttpHeader());
-                JSONObject jsonObject = restTemplate.postForObject(ThemisUserAddress.MOVE_BTC,formEntity,JSONObject.class);
-                Integer status = (Integer) jsonObject.get("status");
-                if(status == 1){
-                    orders.setOrderStatus(ParamType.OrderStatus.WAIT_RECIVE.getStatus());
-                    orders = orderRepo.save(orders);
-                    messageService.postReleaseBtc(orders);
-                    return save!=null?RestResp.success(save):RestResp.fail("哎呦，网络有点差，请稍后重试");
-                }
-                else{
-                    return RestResp.fail("哎呦，网络有点差，请稍后重试");
+                OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orders.getId(),s,orders.getAmount().doubleValue(),user.getFirstAddress());
+                JSONObject jsonObject = callService.moveBTC(ordersKeyAmount);
+                if(jsonObject != null){
+                    Integer status = (Integer) jsonObject.get("status");
+                    if(status == 1){
+                        orders.setOrderStatus(ParamType.OrderStatus.WAIT_RECIVE.getStatus());
+                        orders = orderRepo.save(orders);
+                        messageService.postReleaseBtc(orders);
+                        return save!=null?RestResp.success(save):RestResp.fail(remoteError);
+                    }
                 }
             }
         } catch (Exception e) {
             LOG.error("release BTC faild : {}",e.getMessage(),e);
-            return RestResp.fail("未知错误");
+            return RestResp.fail(remoteError);
         }
-        return  RestResp.fail("未知错误");
+        return  RestResp.fail(remoteError);
     };
     public boolean sellerReleaseBTCIsOrNot(Pojo pojo){
         return orderAddresskeyRepo.findOrderAddresskeysByOrderId(pojo.getId()).getBuyerSellerPriAuth()!=null?true:false;
@@ -565,10 +601,10 @@ public class OrderService {
             }
         } catch (RestClientException e) {
             LOG.error("confirm recive BTC faild : {} ",e.getMessage(),e);
-            return RestResp.fail("未知错误");
+            return RestResp.fail(remoteError);
         }
         ordersInfo = new OrdersInfo(orders);
-        return orders!=null?RestResp.success(ordersInfo):RestResp.fail("未知错误");
+        return orders!=null?RestResp.success(ordersInfo):RestResp.fail(remoteError);
     }
     //上传评价
     public RestResp saveComment(Pojo pojo){
@@ -610,21 +646,12 @@ public class OrderService {
             }
         } catch (Exception e) {
             LOG.error("faild save comment : {}",e.getMessage(),e);
-            return RestResp.fail("未知错误");
+            return RestResp.fail(remoteError);
         }
-        return orderComment1!=null?RestResp.success(orderComment1):RestResp.fail();
+        return orderComment1!=null?RestResp.success(orderComment1):RestResp.fail(remoteError);
     }
-    public Orders updateOrderStatus(String orderId,Long status){
-        Orders o = null;
-        try {
-            o = orderRepo.findOne(orderId);
-            o.setOrderStatus(status);
-            o = orderRepo.save(o);
-
-        } catch (Exception e) {
-            LOG.error("update order status faild : {}",e.getMessage(),e);
-        }
-        return o;
+    private String getLoginNameByUserId(Long userId){
+        User userById = callService.getUserById(userId);
+        return userById != null?userById.getLoginname():null;
     }
-
 }

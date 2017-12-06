@@ -29,9 +29,20 @@ ul{list-style: none;}
     font-size: 16px;
     background-color: #fff;
 }
+.vcode
+{
+    width: 65%;
+    height: 40px;
+    border:1px solid #ccc;
+    border-radius:1px;
+    margin-bottom: 20px;
+    padding: 0 10px;
+    font-size: 16px;
+    background-color: #fff;
+}
 .inputmoney
 {
-    width: 40%;
+    width: 41%;
     height: 40px;
     border:1px solid #ccc;
     border-radius:1px;
@@ -882,7 +893,7 @@ ul{list-style: none;}
 .form-sell
 {
     display:block;
-    width:95%!important;
+    width:88.5%!important;
     height: 36px;
     margin-bottom: 15px;
     border-radius:3px;
@@ -1222,7 +1233,7 @@ html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
 {
     text-align: center;
     background-color: #2ad0e9;
-    border:1px solid  #2ad0e9 ;
+    /* border:1px solid  #2ad0e9 ; */
 }
 .info-style>a
 {
@@ -1274,8 +1285,8 @@ html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
 {
     height: 36px;
     text-align: center;
-    padding: 6px 0;
-    margin-top: 10px;
+    /* padding: 6px 0; */
+    margin-top: 16px;
 }
 .ordermenu-style>a
 {
@@ -1495,6 +1506,7 @@ html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
 .nav>li>a
 {
     padding: 0!important;
+    height: 100%;
 }
 .navbar-nav
 {
@@ -1515,9 +1527,6 @@ html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
 
 {
     box-shadow: 0 0 20px #bbbbbb;
-}
-.table a{
-    line-height: 30px;
 }
 td {
     word-break: keep-all; /* 不换行 */
@@ -1665,5 +1674,23 @@ td {
     cursor: pointer;
     color: #313131;
 }
-
-
+.imgVcode
+{
+    width: 80px;
+    height: 30px;
+    margin-left: 30px;
+    position: relative;
+    top: 10px;
+    cursor: pointer;
+    /* background-color: pink; */
+}
+.jumptip
+{
+    width: 350px;
+    margin: 7% auto;
+    display: flex;
+    justify-content: center;
+    height: 300px;
+    padding: 80px 20px 20px 20px;
+    box-shadow: 0 0 10px #bbbbbb;
+}

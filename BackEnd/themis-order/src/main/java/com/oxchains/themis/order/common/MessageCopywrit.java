@@ -12,10 +12,10 @@ public class MessageCopywrit {
     public static final String CONFIRM_SEND_MONEY = "你的订单 {0} 已经确认付款";
     public static final String REALEAS_BTC = "你的订单 {0} 已经释放BTC";
     public static final String CONFIRM_RECEIVE_BTV = "你的订单 {0} 已经确认收货";
-    public static final String BY_CANCEL_ORDERS = "你的订单 {} 已经被对方取消";
-    public static final String CANCEL_ORDERS = "你已取消订单 {}";
-    public static final String CANCEL_REFUND = "你的订单 {} 被申请取消,请及时处理";
-    public static final String CANCEL_WAIT_REFUND = "你对订单 {} 发起了取消请求";
+    public static final String BY_CANCEL_ORDERS = "你的订单 {0} 已经被对方取消";
+    public static final String CANCEL_ORDERS = "你已取消订单 {0}";
+    public static final String CANCEL_REFUND = "你的订单 {0} 被申请取消,请及时处理";
+    public static final String CANCEL_WAIT_REFUND = "你对订单 {0} 发起了取消请求";
     public static final String BY_REFUND_MONEY = "你的订单 {0} 对方确认收到退款";
     public static final String REFUND_MONEY = "你的订单 {0} 你确认收到退款";
     public static final String BY_COMMENT_ORDERS = "你的订单 {0} 对方已评价";

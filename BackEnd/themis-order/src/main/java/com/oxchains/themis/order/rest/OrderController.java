@@ -2,14 +2,18 @@ package com.oxchains.themis.order.rest;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.order.common.Pojo;
 import com.oxchains.themis.order.common.RestRespPage;
+import com.oxchains.themis.order.entity.ValidaPojo.AddOrderPojo;
+import com.oxchains.themis.order.entity.ValidaPojo.SaveAddresskeyPojo;
+import com.oxchains.themis.order.entity.ValidaPojo.UploadTxIdPojo;
 import com.oxchains.themis.order.entity.vo.OrdersInfo;
 import com.oxchains.themis.order.entity.vo.UserTxDetails;
 import com.oxchains.themis.order.service.OrderService;
 import com.oxchains.themis.repo.entity.OrderAddresskeys;
-import com.oxchains.themis.repo.entity.Orders;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
+import javax.validation.Valid;
 /**
  * Created by huohuo on 2017/10/23.
  * @author huohuo
@@ -22,26 +26,41 @@ public class OrderController {
    * 一 ：添加订单
    * */
     @RequestMapping("/order/addOrder")
-    public RestResp addOrder(@RequestBody Pojo pojo){
+    public RestResp addOrder(@Valid @RequestBody AddOrderPojo pojo,BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return RestResp.fail(bindingResult.getAllErrors().get(0).getDefaultMessage());
+        }
         return orderService.addOrders(pojo);
     }
     /*
     * 二 ：卖家上传公私钥
     * */
     @RequestMapping("/order/saveAddresskey")
-    public RestResp saveAddresskey(@RequestBody OrderAddresskeys orderAddresskeys){
-        return orderService.saveAddresskey(orderAddresskeys);
+    public RestResp saveAddresskey(@Valid @RequestBody SaveAddresskeyPojo saveAddresskeyPojo, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return RestResp.fail(bindingResult.getAllErrors().get(0).getDefaultMessage());
+        }
+        return orderService.saveAddresskey(saveAddresskeyPojo);
     }
     /*
     * 三 ：卖家上传交易凭据
     * */
     @RequestMapping("/order/uploadTxId")
-    public RestResp uploadTxId(@RequestBody Pojo pojo){
+    public RestResp uploadTxId(@Valid @RequestBody UploadTxIdPojo pojo, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return RestResp.fail(bindingResult.getAllErrors().get(0).getDefaultMessage());
+        }
         return orderService.uploadTxId(pojo);
     }
     //移动端
+    /*
+    * 移动端 卖家扫完付款 上传交易凭据
+    * */
     @RequestMapping("/order/uploadTxIdMove")
-    public RestResp uploadTxIdMove(@RequestBody Pojo pojo){
+    public RestResp uploadTxIdMove(@Valid @RequestBody UploadTxIdPojo pojo, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return RestResp.fail(bindingResult.getAllErrors().get(0).getDefaultMessage());
+        }
         return orderService.uploadTxId(pojo);
     }
     /*
@@ -91,7 +110,10 @@ public class OrderController {
     * 十四 ：提交评论
     * */
     @RequestMapping("/order/saveComment")
-    public RestResp saveComment(@RequestBody Pojo pojo){
+    public RestResp saveComment(@Valid @RequestBody Pojo pojo,BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return RestResp.fail(bindingResult.getAllErrors().get(0).getDefaultMessage());
+        }
         return orderService.saveComment(pojo);
     }
 
@@ -101,7 +123,7 @@ public class OrderController {
     @RequestMapping("/order/findOrdersDetails")
     public RestResp findOrdersDetails(@RequestBody Pojo pojo){
         OrdersInfo o = orderService.findOrdersDetails(pojo);
-     return o!=null?RestResp.success(o): RestResp.fail();
+     return o!=null?RestResp.success(o): RestResp.fail("服务器繁忙,请稍后再试!");
     }
     /*
     * 根据id查询自己已完成的的订单
@@ -134,7 +156,7 @@ public class OrderController {
     @RequestMapping("/order/findUserTxDetailAndNotice")
     public RestResp findUserTxDetailsAndNotice(@RequestBody Pojo pojo){
         UserTxDetails UserTxDetailsAndNotice = orderService.findUserTxDetailsAndNotice(pojo);
-        return UserTxDetailsAndNotice==null?RestResp.fail("未知错误"):RestResp.success(UserTxDetailsAndNotice);
+        return RestResp.success(UserTxDetailsAndNotice);
     }
     /*
     * 判断卖家有没有上传公私匙
@@ -167,14 +189,6 @@ public class OrderController {
         if(pojo.getPageNum() == null){
             pojo.setPageNum(1);
         }
-    }
-    /*
-    * 张晓晶 调试状态用
-    * */
-    @RequestMapping("/{orderid}/{status}")
-    public RestResp updateOrderStatus(@PathVariable("orderid") String orderId,@PathVariable("status") Long status){
-        Orders o = orderService.updateOrderStatus(orderId,status);
-        return o==null?RestResp.fail():RestResp.success(o);
     }
 }
 

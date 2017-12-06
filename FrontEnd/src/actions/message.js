@@ -47,7 +47,6 @@ export function fetchMessageSystem({userId, pageNum, pageSize}){
     return function(dispatch) {
         axios.get(`${ROOT_MESSAGE}/message/query/globalMsg?userId=${userId}&pageNum=${pageNum}&pageSize=${pageSize}`, { headers: getAuthorizedHeader() })
             .then(response => {
-                console.log(response);
                 dispatch({type: FETCH_MESSAGE_SYSTEM, payload: response.data.data});
             })
             .catch(err => dispatch(requestError(err.message)));
@@ -60,7 +59,6 @@ export function fetchMessageLetter({userId, pageNum, pageSize}){
     return function(dispatch) {
         axios.get(`${ROOT_MESSAGE}/message/query/privateMsg?userId=${userId}&pageNum=${pageNum}&pageSize=${pageSize}`, { headers: getAuthorizedHeader() })
             .then(response => {
-                console.log(response);
                 dispatch({type: FETCH_MESSAGE_LETTER, payload: response.data.data});
             }).catch((err) => {
                 dispatch(requestError(err.message));

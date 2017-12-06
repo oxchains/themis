@@ -1,7 +1,6 @@
 /**
  * Created by oxchain on 2017/10/18.
  */
-//
 export const ROOT_URLC = 'http://192.168.1.111:8081';
 export const ROOT_CHAT = 'http://192.168.1.112:8881';
 export const ROOT_SOCKET = 'ws://192.168.1.112:9999';
@@ -22,6 +21,7 @@ export const ROOT_MESSAGE = 'http://192.168.1.185:9491';
 
 
 
+
 export const AUTH_USER = 'auth_user';                               //登录
 export const UNAUTH_USER = 'unauth_user';                           //退出登录
 export const AUTH_ERROR = 'auth_error';                             //登录失败
@@ -29,7 +29,8 @@ export const REQUEST_SUCCESS = 'request_success';                   //http请求
 export const REQUEST_ERROR = 'request_error';                       //http请求返回错误
 export const FETCH_VERIFY_CODE = 'request_verifycode';              //注册获取验证码
 export const FETCH_VERIFY_CODE_PHONE = 'request_verifycode_phone';  //修改手机获取验证码
-
+export const EMAIL_FIND_PSW = 'email_find_psw';                     //邮箱找回密码
+export const RESET_PSW = 'reset_psw';                               //重置密码
 
 export const FETCH_ADVERT = 'FETCH_ADVERT';                          //发布广告
 export const FETCH_BUY_BTC = 'fetch_buy_btc';                       //购买比特币

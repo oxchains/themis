@@ -1,5 +1,7 @@
 package com.oxchains.themis.arbitrate.service;
-import com.alibaba.fastjson.JSONObject;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.oxchains.basicService.files.entity.FileInfos;
+import com.oxchains.basicService.files.tfsService.TFSConsumer;
 import com.oxchains.themis.arbitrate.common.*;
 import com.oxchains.themis.arbitrate.entity.OrderEvidence;
 import com.oxchains.themis.arbitrate.entity.vo.OrdersInfo;
@@ -12,12 +14,15 @@ import com.oxchains.themis.repo.dao.OrderRepo;
 import com.oxchains.themis.repo.dao.PaymentRepo;
 import com.oxchains.themis.repo.dao.UserTxDetailDao;
 import com.oxchains.themis.repo.entity.*;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -26,11 +31,10 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
+
 /**
  * Created by huohuo on 2017/10/25.
  * @author huohuo
@@ -53,9 +57,17 @@ public class ArbitrateService {
     private MessageService messageService;
     @Resource
     UserTxDetailDao userTxDetailDao;
-
+    @Resource
+    HashOperations hashOperations;
+    @Resource
+    TFSConsumer tfsConsumer;
+    @Value("${themis.user.redisInfo.hk}")
+    private String userHK;
+    @Value("${themis.notice.redisInfo.hk}")
+    private String noticeHk;
     public static final Integer BUYER_SUCCESS = 1;
     public static final Integer SELLER_SUCCESS = 2;
+    private static final String remoteError = "服务器繁忙,请稍后重试!";
     /*
    * 根据仲裁者id查找哪些订单可以被自己仲裁的订单列表
    * */
@@ -69,16 +81,15 @@ public class ArbitrateService {
             ordersInfoList = new ArrayList<>();
             for (OrderArbitrate o: orderArbitratePage.getContent()) {
                 ordersInfo = this.findOrdersDetails(o.getOrderId());
-                ordersInfo.setBuyerUsername(this.getUserById(ordersInfo.getBuyerId()).getLoginname());
-                ordersInfo.setSellerUsername(this.getUserById(ordersInfo.getSellerId()).getLoginname());
+                ordersInfo.setBuyerUsername(this.getLoginNameByUserId(ordersInfo.getBuyerId()));
+                ordersInfo.setSellerUsername(this.getLoginNameByUserId(ordersInfo.getSellerId()));
                 this.setOrderStatusName(ordersInfo);
                 ordersInfo.setStatus(o.getStatus());
                 ordersInfoList.add(ordersInfo);
-
             }
         } catch (Exception e) {
             LOG.error("find arbitrate order faild : {}",e.getMessage(),e);
-            return RestResp.fail("未知错误");
+            return RestResp.fail(remoteError);
         }
         return RestRespPage.success(ordersInfoList,orderArbitratePage.getTotalPages());
     }
@@ -96,7 +107,7 @@ public class ArbitrateService {
             ordersInfo.setPayment(paymentRepo.findOne(ordersInfo.getPaymentId()));
             return ordersInfo;
         } catch (Exception e) {
-            LOG.error("get order details faild : {}",e.getMessage(),e);
+            LOG.error("get order details faild : {}",e);
         }
         return ordersInfo;
     }
@@ -111,7 +122,7 @@ public class ArbitrateService {
             }
         }
     }
-    public RestResp uploadEvidence(RegisterRequest pojo,String imageUrl){
+    public RestResp uploadEvidence(RegisterRequest pojo){
         OrderEvidence orderEvidence = null;
         try {
 
@@ -151,11 +162,9 @@ public class ArbitrateService {
             for(MultipartFile mf:multipartFileList){
                 String filename = mf.getOriginalFilename();
                 String suffix = filename.substring(filename.lastIndexOf("."));
-                UUID uuid = UUID.randomUUID();
-                String newFileName = uuid.toString() + suffix;
-                mf.transferTo(new File(imageUrl+newFileName));
+                String fileName = tfsConsumer.saveTfsFile(mf,pojo.getUserId());
                 imageName.append(",");
-                imageName.append(newFileName);
+                imageName.append(fileName);
             }
             if(orders.getBuyerId() == pojo.getUserId().longValue()){
                 orderEvidence.setBuyerContent(orderEvidence.getBuyerContent()!=null?orderEvidence.getBuyerContent()+"."+pojo.getContent():pojo.getContent());
@@ -168,7 +177,7 @@ public class ArbitrateService {
             orderEvidence = orderEvidenceRepo.save(orderEvidence);
             messageService.postUploadEvidence(orders,pojo.getUserId());
         } catch (Exception e) {
-            LOG.error("upload evidence faild : {}",e.getMessage(),e);
+            LOG.error("upload evidence faild : {}",e);
             return RestResp.fail("申请仲裁失败");
         }
         return  orderEvidence!=null? RestResp.success():RestResp.fail();
@@ -195,7 +204,7 @@ public class ArbitrateService {
                 messageService.postArbitrateMessage(orders,pojo.getUserId(),pojo.getSuccessId());
             }
         } catch (Exception e) {
-            LOG.error("arbitrate orders to user faild : {}",e.getMessage(),e);
+            LOG.error("arbitrate orders to user faild : {}",e);
             return RestResp.fail("仲裁失败请稍后重试");
         }
         return orderArbitrate!=null?RestResp.success(orderArbitrate):RestResp.fail();
@@ -208,7 +217,7 @@ public class ArbitrateService {
             headers.setContentType(type);
             headers.add("Accept", MediaType.APPLICATION_JSON.toString());
         } catch (Exception e) {
-            LOG.error("get http header faild : {}",e.getMessage(),e);
+            LOG.error("get http header faild : {}",e);
         }
         return  headers;
     }
@@ -222,58 +231,58 @@ public class ArbitrateService {
         return RestResp.success();
     }
     //从用户中心 根据用户id获取用户信息
+    @HystrixCommand(fallbackMethod = "getUserByIdError")
     public User getUserById(Long userId){
-        User user = null;
         try {
-            JSONObject str = restTemplate.getForObject(ThemisUserAddress.GET_USER+userId, JSONObject.class);
+            System.out.println(userId);
+            String userInfo = (String) hashOperations.get(userHK, userId.toString());
+            System.out.println(userInfo);
+            if(StringUtils.isNotBlank(userInfo)){
+                return JsonUtil.jsonToEntity(userInfo,User.class);
+            }
+            String str = restTemplate.getForObject(ThemisUserAddress.GET_USER+userId, String.class);
             if(null != str){
-                Integer status = (Integer) str.get("status");
-                if(status == 1){
-                    Object data = str.get("data");
-                    String userStr = JsonUtil.toJson(data);
-                    user = JsonUtil.jsonToEntity(userStr, User.class);
+                RestResp restResp = JsonUtil.jsonToEntity(str, RestResp.class);
+                if(null != restResp && restResp.status == 1){
+                    hashOperations.put(userHK,userId.toString(),JsonUtil.toJson(restResp.data));
+                    return JsonUtil.objectToEntity(restResp.data,User.class);
                 }
-                return user;
             }
         } catch (Exception e) {
             LOG.error("get user by id from themis-user faild : {}",e.getMessage(),e);
-            throw  e;
+            return null;
         }
         return null;
     }
-    //操作订单状态时 修改公告状态
-    public Notice saveNotice(Long id,Integer sta){
-        try {
-            JSONObject forObject = restTemplate.getForObject(ThemisUserAddress.SAVE_NOTICE + id + "/" + sta, JSONObject.class);
-            Integer status = (Integer) forObject.get("status");
-            if(status == 1){
-                Object data = forObject.get("data");
-                String str = JsonUtil.toJson(data);
-                Notice notice = JsonUtil.jsonToEntity(str,Notice.class);
-                return notice;
-            }
-        } catch (RestClientException e) {
-            LOG.error("update notice status faild:{}",e.getMessage(),e);
-            throw  e;
-        }
+    public User getUserByIdError(Long userId){
         return null;
-
     }
     //从公告系统 获取公告
+    @HystrixCommand(fallbackMethod = "remoteNoticeError")
     public Notice findNoticeById(Long id){
+        Notice notice1 = null;
         try {
-            JSONObject forObject = restTemplate.getForObject(ThemisUserAddress.GET_NOTICE + id, JSONObject.class);
-            Integer status = (Integer) forObject.get("status");
-            if(status == 1){
-                Object data = forObject.get("data");
-                String str = JsonUtil.toJson(data);
-                Notice notice = JsonUtil.jsonToEntity(str, Notice.class);
-                return notice;
+            String noticeStrs = (String) hashOperations.get(noticeHk, id.toString());
+            if(StringUtils.isNotBlank(noticeStrs)){
+                return JsonUtil.jsonToEntity(noticeStrs,Notice.class);
+            }
+            String noticeStr = restTemplate.getForObject(ThemisUserAddress.GET_NOTICE + id, String.class);
+            if(noticeStr != null){
+                RestResp restResp = JsonUtil.jsonToEntity(noticeStr, RestResp.class);
+                if(null != restResp && restResp.status == 1){
+                    notice1 = JsonUtil.objectToEntity(restResp.data, Notice.class);
+                }
+                hashOperations.put(noticeHk,id.toString(),JsonUtil.toJson(restResp.data));
+                return notice1;
             }
         } catch (RestClientException e) {
-            LOG.error("get notice faild : {}",e.getMessage(),e);
-            throw  e;
+            LOG.error("get notice faild : {}", e.getMessage(), e);
+            return null;
         }
+        return null;
+    }
+
+    private String remoteNoticeError(Long noticeId){
         return null;
     }
     public void userTxDetailHandle(Orders orders){
@@ -285,5 +294,18 @@ public class ArbitrateService {
         noticeTx.setTxNum(noticeTx.getTxNum()+1);
         noticeTx.setSuccessCount(noticeTx.getSuccessCount()+orders.getAmount().doubleValue());
         userTxDetailDao.save(noticeTx);
+    }
+    private String getLoginNameByUserId(Long userId){
+        User userById = this.getUserById(userId);
+        return userById != null?userById.getLoginname():null;
+    }
+    public FileInfos getFile(String filename){
+        FileInfos tfsFile = null;
+        try {
+            tfsFile = tfsConsumer.getTfsFile(filename);
+        } catch (Exception e) {
+            LOG.error("get file faild：{}",e.getMessage(),e);
+        }
+        return tfsFile;
     }
 }

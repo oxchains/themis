@@ -25,9 +25,9 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class ParseService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ParseService.class);
+    private final Logger LOG = LoggerFactory.getLogger(ParseService.class);
 
-    private static PublicKey publicKey;
+    private PublicKey publicKey;
 
     @Resource
     private TokenKeyDao tokenKeyDao;
@@ -59,15 +59,14 @@ public class ParseService {
             if (token.equals(redisToken)){
                 LOG.info("TOKEN 验证成功");
                 // 给当前访问token重新设置失效时间
-                redisTemplate.expire(subject, 7, TimeUnit.DAYS);
+                // redisTemplate.expire(subject, 7, TimeUnit.DAYS);
                 return true;
             } else {
                 LOG.info("TOKEN 验证失败");
                 return false;
             }
         } catch (Exception e){
-            e.printStackTrace();
-            LOG.error("解析Token异常", e.getMessage());
+            LOG.error("解析Token异常", e);
         }
         return false;
     }

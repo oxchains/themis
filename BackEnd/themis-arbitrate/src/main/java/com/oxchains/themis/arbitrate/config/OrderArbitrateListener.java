@@ -75,7 +75,6 @@ public class OrderArbitrateListener {
                     JSONObject jsonObject = restTemplate.postForObject(ThemisUserAddress.MOVE_BTC,formEntity,JSONObject.class);
                     Integer status = (Integer) jsonObject.get("status");
                     if(status==1){
-                        arbitrateService.saveNotice(orders.getNoticeId(),buyerList.size()>=ShamirUtil.K?ParamType.NoticeTxStatus.TXEND.getStatus():ParamType.NoticeTxStatus.NOTX.getStatus());
                         orders.setArbitrate(ParamType.ArbitrateStatus.ARBITRATEEND.getStatus());
                         orders.setFinishTime(DateUtil.getPresentDate());
                         Orders save = orderRepo.save(orders);
@@ -93,7 +92,7 @@ public class OrderArbitrateListener {
 
             }
         } catch (RestClientException e) {
-            LOG.error("Order Arbitrate Monitor faild :{}",e.getMessage(),e);
+            LOG.error("Order Arbitrate Monitor faild :{}",e);
         }
     }
     private HttpHeaders getHttpHeader(){
@@ -104,7 +103,7 @@ public class OrderArbitrateListener {
             headers.setContentType(type);
             headers.add("Accept", MediaType.APPLICATION_JSON.toString());
         } catch (Exception e) {
-            LOG.error("get http header faild : {}",e.getMessage(),e);
+            LOG.error("get http header faild : {}",e);
         }
         return  headers;
     }

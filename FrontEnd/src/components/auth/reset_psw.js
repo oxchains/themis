@@ -1,23 +1,42 @@
 /**
  * Created by oxchain on 2017/11/09.
  */
-
-
 import React, { Component } from 'react';
 import { Field } from 'redux-form';
 import { connect } from 'react-redux';
-import { signinAction } from '../../actions/auth';
+import { ResetpswAction } from '../../actions/auth';
 import { Modal, Button } from 'antd';
-
-
+import { Alert } from 'antd';
+import { Route, Redirect } from 'react-router-dom';
 
 class Resetpsw extends Component {
-
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
     handleEmailSubmit() {
-        const email = this.refs.email.value;
+        const resetkey = localStorage.getItem("email");
+        // console.log(resetkey);
+        const newpassword = this.refs.newpassword.value;
         const password = this.refs.password.value;
-        if (email && password)
-            this.props.signinAction({ email, password }, () => { });
+        if (newpassword === password){
+            this.props.ResetpswAction({ resetkey, password });
+        }else{
+            alert("两次密码输入不一致");
+        }
+    }
+    renderAlert(){
+        const data = this.props.all || [];
+        const { from } =  { from: { pathname: '/signin' } };
+        if(data.status == 1){
+            return(
+                <Redirect to={from} />
+            );
+        }else if(data.status == -1 ){
+            return(
+                <Alert message= {data.message} type="error" showIcon />
+            );
+        }
     }
     render() {
         return (
@@ -28,16 +47,14 @@ class Resetpsw extends Component {
                     </div>
                     <div className="form-style">
                         <div className="form-signin" >
-                            <input className="input form-group" type="text" placeholder="请输入新密码" ref="email" /> <br />
+                            <input className="input form-group" type="password" placeholder="请输入新密码" ref="newpassword" /> <br />
                             <input className="input form-group" type="password" placeholder="请再次输入新密码" ref="password" /><br />
                             <div className="form-group">
                                 <button className="btn form-login" onClick={this.handleEmailSubmit.bind(this)}>确定</button>
                             </div>
-
-
-
                         </div>
                     </div>
+                    {this.renderAlert()}
                 </div>
             </div>);
     }
@@ -46,8 +63,7 @@ class Resetpsw extends Component {
 
 function mapStateToProps(state) {
     return {
-        success: state.auth.authenticated,
-        errorMessage: state.auth.error
+        all: state.auth.all
     };
 }
-export default connect(mapStateToProps, { signinAction })(Resetpsw);
+export default connect(mapStateToProps, { ResetpswAction })(Resetpsw);

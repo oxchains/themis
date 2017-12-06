@@ -6,20 +6,62 @@
 import React, { Component } from 'react';
 import { Field } from 'redux-form';
 import { connect } from 'react-redux';
-import { signinAction } from '../../actions/auth';
-
-
-
-
+import { Route, Redirect } from 'react-router-dom';
+import { EmialAction } from '../../actions/auth';
+import { ROOT_URLC } from '../../actions/types';
+import { Alert } from 'antd';
 class Emialforget extends Component {
-
+    constructor(props) {
+        super(props);
+        this.state = {
+            Imgurl:''
+        };
+        this.handleSendEmail = this.handleSendEmail.bind(this);
+    }
     handleEmailSubmit() {
         const email = this.refs.email.value;
-        const password = this.refs.password.value;
-        if (email && password)
-            this.props.signinAction({ email, password }, () => { });
-    }
+        localStorage.setItem('email', email);
+
+        console.log(email);
+        if (email){
+            var timestamp = Date.parse(new Date());
+            this.setState({
+                Imgurl : `${ROOT_URLC}/user/imgVcode?key=${email}&t=${timestamp}`
+            });
+           }else{
+               alert('请先输入邮箱地址');
+           }
+        }
+
+        handleSendEmail(e){
+            // e.preventDeafult();
+            const email = this.refs.email.value;
+            const vcode = this.refs.vcode.value;
+            this.props.EmialAction({ email, vcode }, () => { });
+        }
+        renderAlert(){
+            // const vcode = this.refs.vcode.value;
+            const data = this.props.all || [];
+            const { from } =  { from: { pathname: '/jumptip' } };
+            if(data.status == 1){
+                return(
+                    <Redirect to={from} />
+                );
+            }else if(data.status == -1 ){
+                return(
+                    <Alert message= {data.message} type="error" showIcon />
+                );
+            }
+        }
     render() {
+        const data = this.props.all || [];
+
+        localStorage.setItem("tip", data.data);
+        localStorage.setItem("message", data.message);
+        localStorage.setItem("tipstatus", data.status);
+
+        const srcurl =  this.state.Imgurl;
+
         return (
             <div className="login-box">
                 <div className="login-box-body">
@@ -32,13 +74,14 @@ class Emialforget extends Component {
                     <div className="form-style">
                         <div className="form-signin" >
                             <input className="input form-group" type="text" placeholder="请输入邮箱地址" ref="email" /> <br />
-                            <input className="input form-group" type="password" placeholder="请输入密码" ref="password" /><br />
+                            <input className="vcode form-group" type="text" placeholder="请输入验证码" ref="vcode" />
+                            <img src={srcurl ? srcurl : "./public/img/touxiang.png"} className="imgVcode" onClick={this.handleEmailSubmit.bind(this)} alt="" />
                             <div className="form-group">
-                                <button className="btn form-login" onClick={this.handleEmailSubmit.bind(this)}><a
-                                    href="/resetpsw">下一步</a></button>
+                                <button className="btn form-login" onClick={this.handleSendEmail}>发送</button>
                             </div>
                         </div>
                     </div>
+                    {this.renderAlert()}
                 </div>
             </div>);
     }
@@ -46,9 +89,9 @@ class Emialforget extends Component {
 
 
 function mapStateToProps(state) {
+    // console.log(state.auth.all);
     return {
-        success: state.auth.authenticated,
-        errorMessage: state.auth.error
+        all: state.auth.all
     };
 }
-export default connect(mapStateToProps, { signinAction })(Emialforget);
+export default connect(mapStateToProps, { EmialAction })(Emialforget);

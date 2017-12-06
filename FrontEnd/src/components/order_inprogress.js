@@ -61,7 +61,7 @@ class OrderInProgress extends Component {
                         fileList: [],
                         uploading: false,
                     });
-                    window.location.href='/orderinprogress';
+                    window.location.href='/order/inprogress';
                 }
                 else{
                     this.setState({
@@ -86,14 +86,14 @@ class OrderInProgress extends Component {
         return this.props.not_completed_orders.data.map((item, index) =>{
             return(
                 <tr key={index} >
-                    <td>{item.friendUsername}</td>
+                    <td> <Link to={`/otherInfodetail/${item.partnerUserId}`}>{item.friendUsername}</Link></td>
                     <td>{item.id}</td>
                     <td>{item.orderType}</td>
                     <td>{item.money}</td>
                     <td>{item.amount}</td>
                     <td>{item.createTime}</td>
                     <td>{item.orderStatusName}<span>{item.arbitrate == 1 ? "(仲裁中)": ""}</span></td>
-                    <td><button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleOrderDetail.bind(this, item)}>详情</button></td>
+                    <td><Link className="ant-btn ant-btn-primary ant-btn-lg" to={`/order/progress/${item.id}`}>详情</Link></td>
                     <td>{item.orderStatus == 3 || item.orderStatus == 8 ?
                         <Popconfirm title="是否要申请仲裁?" onConfirm={this.handleEvidence.bind(this, item.id)}  okText="确定" cancelText="取消">
                             <button className="ant-btn ant-btn-primary ant-btn-lg">THEMIS仲裁</button>
@@ -102,12 +102,6 @@ class OrderInProgress extends Component {
                 );
         });
     }
-    handleOrderDetail(item){
-        const userId= localStorage.getItem('userId');
-        const orderData={id:item.id, userId:userId, partnerId:item.sellerId == userId ? item.buyerId : item.sellerId, friendUsername:item.friendUsername};
-        localStorage.setItem("partner", JSON.stringify(orderData));
-        window.location.href='/orderprogress';
-    }
     render() {
 
         let close = () => {
@@ -115,9 +109,7 @@ class OrderInProgress extends Component {
         };
         const not_completed_orders = this.props.not_completed_orders;
         const totalNum = not_completed_orders && not_completed_orders.pageCount;
-        // console.log(totalNum);
         const data=not_completed_orders && not_completed_orders.data;
-        console.log(not_completed_orders);
         const { uploading, visible} = this.state;
         const props = {
             action:`${ROOT_ARBITRATE}/arbitrate/uploadEvidence`,
@@ -144,8 +136,8 @@ class OrderInProgress extends Component {
                 <div className="container g-pb-150">
                     <div className="orderType text-center g-pt-50 g-pb-50">
                         <ul className="row">
-                            <li className="col-xs-6"> <Link className="orderTypeBar g-pb-3" to="/orderinprogress">进行中的交易</Link></li>
-                            <li className="col-xs-6"><Link className="g-pb-3" to="/ordercompleted">已完成的交易</Link></li>
+                            <li className="col-xs-6"> <Link className="orderTypeBar g-pb-3" to="/order/inprogress">进行中的交易</Link></li>
+                            <li className="col-xs-6"><Link className="g-pb-3" to="/order/completed">已完成的交易</Link></li>
                         </ul>
                     </div>
                     <div className="table-responsive">

@@ -38,7 +38,7 @@ import java.util.List;
 @Transactional
 public class NoticeService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NoticeService.class);
+    private final Logger LOG = LoggerFactory.getLogger(NoticeService.class);
 
     @Resource private NoticeDao noticeDao;
     @Resource private BTCTickerDao btcTickerDao;
@@ -79,36 +79,30 @@ public class NoticeService {
             if (null == notice.getPayType()){
                 return RestResp.fail("请选择收款/付款方式");
             }
-
-            // 选填项(最低价)判断-11.1中国又禁止一部分btc相关平台，此价格获取失败
-            List<BTCTicker> btcTickerList = btcTickerDao.findBySymbol("btccny");
-            if (btcTickerList.size() != 0){
-                for (BTCTicker btcTicker : btcTickerList) {
-                    Double low = btcTicker.getLow().doubleValue();
-                    Double minPrice = notice.getMinPrice().doubleValue();
-                    if (null == notice.getMinPrice()){
-                        notice.setMinPrice(btcTicker.getLow());
-                    }else { // 市场价低于定义的最低价，那么价格就是自己定义的最低价
-                        if (ArithmeticUtils.minus(low, minPrice) < 0) {
-                            notice.setPrice(notice.getMinPrice());
-                        }
-                    }
+            if (notice.getPremium() < 0){
+                return RestResp.fail("溢价比例最小为：0");
+            }
+            if (notice.getMinTxLimit().doubleValue() < 0){
+                return RestResp.fail("最小交易限额：0");
+            }
+            if (notice.getMaxTxLimit().doubleValue() > NoticeConstants.ONE_HUNDRED_MILLION){
+                return RestResp.fail("最大交易限额：1亿");
+            }
+            if (ArithmeticUtils.minus(notice.getMaxTxLimit().doubleValue(), notice.getMinTxLimit().doubleValue()) < 0){
+                return RestResp.fail("最大限额不能低于最小限额");
+            }
+            if (notice.getPrice().doubleValue() <= 0){
+                return RestResp.fail("价格异常，请联系管理员");
+            }
+            // 选填项（最低价判断）
+            if (notice.getMinPrice() != null){
+                if (notice.getMinPrice().doubleValue() < 0){
+                    return RestResp.fail("最低价最小为：0");
                 }
-            }else {
-                // 选填项（最低价判断）
-                CNYDetail cnyDetail = cnyDetailDao.findBySymbol("¥");
-                if (cnyDetail != null){
-                    if (null == notice.getMinPrice()){
-                        notice.setMinPrice(new BigDecimal(cnyDetail.getLast()));
-                    }else {
-                        Double low = Double.valueOf(cnyDetail.getLast());
-                        Double minPrice = notice.getMinPrice().doubleValue();
-                        if (ArithmeticUtils.minus(low, minPrice) < 0){
-                            notice.setPrice(notice.getMinPrice());
-                        }
-                    }
-                }else {
-                    return RestResp.fail("比特币价格获取失败，请联系管理员");
+                Double marketLow = notice.getPrice().doubleValue();
+                Double minPrice = notice.getMinPrice().doubleValue();
+                if (ArithmeticUtils.minus(marketLow, minPrice) < 0){
+                    notice.setPrice(notice.getMinPrice());
                 }
             }
 
@@ -123,8 +117,7 @@ public class NoticeService {
             Notice n = noticeDao.save(notice);
             return RestResp.success("操作成功", n);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("发布公告异常", e.getMessage());
+            LOG.error("发布公告异常", e);
         }
         return RestResp.fail("操作失败");
     }
@@ -169,8 +162,7 @@ public class NoticeService {
             }
             return RestResp.success("操作成功", partList);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("获取4条随机公告异常", e.getMessage());
+            LOG.error("获取4条随机公告异常", e);
 
         }
         return RestResp.fail("操作失败");
@@ -185,8 +177,7 @@ public class NoticeService {
                 return RestResp.fail("操作失败");
             }
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("查询所有公告异常", e.getMessage());
+            LOG.error("查询所有公告异常", e);
         }
         return RestResp.fail("操作失败");
     }
@@ -222,8 +213,7 @@ public class NoticeService {
             }
             return RestResp.success("操作成功", pageDTO);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("查询我的公告异常", e.getMessage());
+            LOG.error("查询我的公告异常", e);
         }
         return RestResp.fail("操作失败");
     }
@@ -241,8 +231,7 @@ public class NoticeService {
                 return RestResp.fail("操作失败");
             }
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("查询BTC价格异常", e.getMessage());
+            LOG.error("查询BTC价格异常", e);
         }
         return RestResp.fail("操作失败");
     }
@@ -272,8 +261,7 @@ public class NoticeService {
             btcResult.setDatas(btcMarket);
             return RestResp.success("操作成功", btcResultList);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("查询BTC深度行情异常", e.getMessage());
+            LOG.error("查询BTC深度行情异常", e);
         }
         return RestResp.fail("操作失败");
     }
@@ -287,8 +275,7 @@ public class NoticeService {
                 return RestResp.fail("操作失败");
             }
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("获取BTC价格异常", e.getMessage());
+            LOG.error("获取BTC价格异常", e);
         }
         return RestResp.fail("操作失败");
     }
@@ -364,8 +351,7 @@ public class NoticeService {
             pageDTO.setPageList(resultList);
             return RestResp.success("操作成功", pageDTO);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("搜索购买公告异常", e.getMessage());
+            LOG.error("搜索购买公告异常", e);
         }
         return RestResp.fail("操作失败");
     }
@@ -437,8 +423,7 @@ public class NoticeService {
             pageDTO.setPageList(resultList);
             return RestResp.success("操作成功", pageDTO);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("搜索出售公告异常", e.getMessage());
+            LOG.error("搜索出售公告异常", e);
         }
         return RestResp.fail("操作失败");
     }
@@ -462,8 +447,7 @@ public class NoticeService {
             }
             return RestResp.success("操作成功");
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("下架公告异常", e.getMessage());
+            LOG.error("下架公告异常", e);
         }
         return RestResp.fail("操作失败");
     }
@@ -473,8 +457,7 @@ public class NoticeService {
             Notice notice = noticeDao.findOne(id);
             return RestResp.success("操作成功", notice);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("根据公告ID查找异常", e.getMessage());
+            LOG.error("根据公告ID查找异常", e);
         }
         return RestResp.fail("操作失败");
     }
@@ -486,8 +469,7 @@ public class NoticeService {
             Notice n = noticeDao.save(notice);
             return RestResp.success("操作成功", n);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("修改公告交易状态异常", e.getMessage());
+            LOG.error("修改公告交易状态异常", e);
         }
         return RestResp.fail("操作失败");
     }
@@ -514,8 +496,7 @@ public class NoticeService {
                 return RestResp.fail("操作失败");
             }
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("查询状态异常", e.getMessage());
+            LOG.error("查询状态异常", e);
         }
         return RestResp.fail("操作失败");
     }

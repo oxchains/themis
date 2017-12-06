@@ -41,7 +41,7 @@ public class OrderListener {
                 }
             }
         } catch (RestClientException e) {
-            LOG.error("check orders is or not  faild : {}",e.getMessage(),e);
+            LOG.error("check orders is or not  faild : {}",e);
         }
     }
 

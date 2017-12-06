@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 import { Badge } from 'antd';
 import { connect } from 'react-redux';
 import { fetchMessageNumber } from "../../actions/message";
+import { signinAction } from '../../actions/auth';
+
 class Header extends Component {
     constructor(props) {
         super(props);
@@ -29,12 +31,12 @@ class Header extends Component {
                     <ul className="nav navbar-nav">
                         {role == 3 ? <li className="order-style" style={{ width: "135px" }}><Link to="/refereelist">仲裁列表</Link></li> : ""}
                         <li className="order-style">
-                            <Link to="/messagenotice">
+                            <Link to="/message/notice">
                                 消息<Badge count={allUnRead} />
                             </Link>
                         </li>
-                        <li className="order-style"><Link to="/orderinprogress">订单</Link></li>
-                        <li className="order-style"><Link to="/orderinprogress">钱包</Link></li>
+                        <li className="order-style"><Link to="/order/inprogress">订单</Link></li>
+                        <li className="order-style"><Link to="/order/inprogress">钱包</Link></li>
                         <li className="ordermenu-style dropdown user user-menu">
                             <a href="#" className="dropdown-toggle" data-toggle="dropdown">
                                 <span className="hidden-xs">{loginname}</span>
@@ -65,7 +67,7 @@ class Header extends Component {
                 <nav className="header ">
                     <div className="header-position">
                         <div className="navdivimg">
-                            <img src="./public/img/logo4.png" className="navimg" alt="" />
+                            <img src="/public/img/logo4.png" className="navimg" alt="" />
                         </div>
                         <ul className="headerul" >
                             <li><a href="/" >首页</a></li>
@@ -95,4 +97,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { fetchMessageNumber })(Header);
+export default connect(mapStateToProps, { fetchMessageNumber, signinAction })(Header);

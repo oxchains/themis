@@ -9,7 +9,9 @@ import {
     FETCH_VERIFY_CODE,
     FETCH_VERIFY_CODE_PHONE,
     FETCH_PHONE,
-    FETCH_PASSWORD
+    FETCH_PASSWORD,
+    EMAIL_FIND_PSW,
+    RESET_PSW
 } from '../actions/types';
 
 const INITIAL_STATE = { all: null, array: [], data: null };
@@ -30,6 +32,12 @@ export default function (state = INITIAL_STATE, action) {
             return { ...state, data: action.payload.data.data };
         case FETCH_PASSWORD:
             return { ...state, error: '', authenticated: false };
+        case EMAIL_FIND_PSW:
+            return { ...state, all: action.payload.data };
+        case RESET_PSW:
+            return { ...state, all: action.payload.data };
+
+
     }
 
     return state;

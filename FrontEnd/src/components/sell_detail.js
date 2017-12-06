@@ -89,7 +89,7 @@ class Selldetail extends Component {
         const userId = localStorage.getItem('userId');
         const orderData = { id: item.id, userId: userId, partnerId: item.sellerId == userId ? item.buyerId : item.sellerId };
         localStorage.setItem("partner", JSON.stringify(orderData));
-        window.location.href = '/orderprogress';
+        window.location.href = '/order/progress';
     }
     render() {
         const userId = localStorage.getItem("userId");
@@ -176,7 +176,8 @@ class Selldetail extends Component {
                     <ModalFooter>
                         <button className='btn btn-default' onClick={this.hideModal}>
                             {/*<a href="/myadvert" >关闭</a>*/}
-                            <div className="close-modal" onClick={this.showOrderDetail.bind(this, this.props.data)}>关闭</div>
+                            <Link className="close-modal" to={`/order/progress/${this.props.data.id}`}>关闭</Link>
+                            {/*<div className="close-modal" onClick={this.showOrderDetail.bind(this, this.props.data)}>关闭</div>*/}
                             {/*<a className="close-modal" href="/orderprogress" >关闭</a>*/}
                         </button>
                     </ModalFooter>
@@ -191,8 +192,8 @@ class Selldetail extends Component {
 function mapStateToProps(state) {
     return {
         data: state.advert.data,     //点击出售返回的data
-        all: state.advert.all,        //广告详情页面加载时的数据
-        authenticated:state.auth.authenticated
+        all: state.advert.all,       //广告详情页面加载时的数据
+        authenticated: state.auth.authenticated
     };
 }
 export default connect(mapStateToProps, { fetctSellBtcDetail, fetctSellnow })(Selldetail);

@@ -82,7 +82,7 @@ public class GoogleAuthenticator {
                 // Yes, this is bad form - but
                 // the exceptions thrown would be rare and a static configuration problem
                 e.printStackTrace();
-                throw new RuntimeException(e.getMessage());
+                throw new RuntimeException("验证码异常", e);
                 //return false;
             }
             if (hash == code) {
