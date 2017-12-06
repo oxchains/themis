@@ -7,7 +7,7 @@
     <appender name="rollingFileINFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_DIR}/${APP_NAME}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_DIR}/${APP_NAME}.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${LOG_DIR}/${APP_NAME}.%d{yyyy-MM-dd HH}.log</fileNamePattern>
             <!-- 30 day -->
             <maxHistory>30</maxHistory>
         </rollingPolicy>
@@ -15,7 +15,7 @@
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%p] - %msg %n</pattern>
         </encoder>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>debug</level>
+            <level>DEBUG</level>
         </filter>
     </appender>
 
@@ -45,7 +45,8 @@
 
     <root level="DEBUG">
         <appender-ref ref="console"/>
-        <appender-ref ref="logstash"/>
+        <!--<appender-ref ref="logstash"/>-->
+        <appender-ref ref="rollingFileINFO"/>
     </root>
 
 </configuration>

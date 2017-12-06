@@ -3,9 +3,10 @@
  */
 import {
     FETCH_MESSAGES_NUMBER,
-    FETCH_MESSAGES_NOTICE,
+    FETCH_MESSAGE_NOTICE,
     FETCH_MESSAGE_SYSTEM,
-    FETCH_MESSAGE_LETTER
+    FETCH_MESSAGE_LETTER,
+    REQUEST_ERROR
 } from '../actions/types';
 
 
@@ -15,12 +16,14 @@ export default function (state = INITIAL_STATE, action) {
     switch (action.type) {
         case FETCH_MESSAGES_NUMBER:
             return {...state, message_number: action.payload};
-        case FETCH_MESSAGES_NOTICE:
+        case FETCH_MESSAGE_NOTICE:
             return {...state, message_notice: action.payload};
         case FETCH_MESSAGE_SYSTEM:
             return {...state, message_system: action.payload};
         case FETCH_MESSAGE_LETTER:
             return {...state, message_letter: action.payload};
+        case REQUEST_ERROR:
+            return{...state, error: action.payload};
     }
     return state;
 }

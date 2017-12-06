@@ -9,7 +9,6 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { signupUser, GetverifyCode } from '../../actions/auth';
 import { Alert } from 'antd';
-
 import {
     Modal,
     ModalHeader,

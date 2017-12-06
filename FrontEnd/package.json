@@ -26,6 +26,8 @@
     "bootstrap": "^3.3.7",
     "jquery": "^3.2.1",
     "moment": "^2.19.1",
+    "nl-design": "^1.0.4",
+    "punycode": "^2.1.0",
     "qrcode.react": "^0.7.2",
     "react": "^15.6.2",
     "react-bootstrap": "^0.31.3",
