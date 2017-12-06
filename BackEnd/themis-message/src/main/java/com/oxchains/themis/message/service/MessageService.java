@@ -95,14 +95,14 @@ public class MessageService {
      * 查询系统信息
      */
     public RestResp queryGlobalMsg(Long userId, Integer pageNum, Integer pageSize){
-        return queryMessage(userId, pageNum, pageSize, MessageType.GLOBAL);
+        return queryMessage(userId, pageNum, pageSize, MessageType.GLOBAL, true);
     }
 
     /**
      * 查询私信
      */
     public RestResp queryPrivateMsg(Long userId, Integer pageNum, Integer pageSize){
-        return queryMessage(userId, pageNum, pageSize, MessageType.PRIVATE_LETTET);
+        return queryMessage(userId, pageNum, pageSize, MessageType.PRIVATE_LETTET, true);
     }
 
     /**
@@ -135,6 +135,7 @@ public class MessageService {
             pageDTO.setRowCount(page.getTotalElements());
             pageDTO.setTotalPage(page.getTotalPages());
             pageDTO.setPageNum(pageNum);
+            pageDTO.setPageSize(pageSize);
             return RestResp.success("操作成功", pageDTO);
         }catch (Exception e){
             LOG.error("站内信：获取公告信息异常", e);
@@ -254,7 +255,30 @@ public class MessageService {
         }
     }
 
-    private RestResp queryMessage(Long userId, Integer pageNum, Integer pageSize, int messageType) {
+    /**
+     * 获取订单相关信息
+     */
+    private boolean getOrderInfo(Long userId, MessageText messageText) {
+        String orderId = messageText.getOrderId();
+        Order orders = orderDao.findById(orderId);
+        Long buyerId = orders.getBuyerId();
+        Long sellerId = orders.getSellerId();
+        if (userId.equals(buyerId)){
+            messageText.setPartnerId(sellerId);
+            User user = userDao.findOne(sellerId);
+            messageText.setFriendUsername(user.getLoginname());
+            return true;
+        }else if (userId.equals(sellerId)){
+            messageText.setPartnerId(buyerId);
+            User user = userDao.findOne(buyerId);
+            messageText.setFriendUsername(user.getLoginname());
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    private RestResp queryMessage(Long userId, Integer pageNum, Integer pageSize, int messageType, boolean needOrder) {
         try {
             Pageable pageable = new PageRequest(pageNum - 1, pageSize, new Sort(Sort.Direction.DESC, "id"));
             Page<Message> page = messageDao.findByReceiverIdAndMessageType(userId, messageType, pageable);
@@ -263,6 +287,13 @@ public class MessageService {
             while (it.hasNext()){
                 Message message = it.next();
                 MessageText messageText = messageTextDao.findByIdAndMessageType(message.getMessageTextId(), messageType);
+
+                if (needOrder){
+                    boolean isSuccess = getOrderInfo(userId, messageText);
+                    if (!isSuccess){
+                        return RestResp.fail("站内信：获取订单信息失败");
+                    }
+                }
 
                 message.setMessageText(messageText);
                 mList.add(new MessageDTO(message));

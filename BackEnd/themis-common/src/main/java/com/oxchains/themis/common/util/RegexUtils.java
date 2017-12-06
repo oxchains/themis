@@ -18,6 +18,8 @@ public class RegexUtils {
     public static final String REGEX_EMAIL="^[0-9a-z_]+@(([0-9a-z]+)[.]){1,2}[a-z]{2,3}$";//[a-zA-Z_]{1,}[0-9]{0,}@(([a-zA-z0-9]-*){1,}\.){1,3}[a-zA-z\-]{1,}
     public static final String REGEX_ZH="^[\\u0391-\\uFFE5]+$";
     public static final String REGEX_URL="^((http|https)://)?([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$ ";
+    public static final String REGEX_NAME = "^[a-zA-Z][a-zA-Z_0-9]*$";
+    public static final String REGEX_NAME_LEN32 = "^[a-zA-Z][a-zA-Z_0-9]{5,31}$";
 
     public static boolean match(String str ,String regex){
         Pattern pattern = Pattern.compile(regex);

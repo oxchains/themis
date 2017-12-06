@@ -31,6 +31,12 @@ public class MessageText {
 
     private String orderId;     // 订单id
 
+    @Transient
+    private Long partnerId;
+
+    @Transient
+    private String friendUsername; // 交易伙伴
+
     public MessageText(Long senderId, String message, Integer messageType, Long userGroup, String postDate, String orderId) {
         this.senderId = senderId;
         this.message = message;

@@ -26,9 +26,15 @@ public class MessageDTO {
 
     private Integer messageType;   // 信息类型 1.global(系统消息) 2.public(公告) 3.private(私信)
 
+    private Long userGroup;     // 用户组ID 1.admin 2.仲裁 3.客服 4.普通用户
+
     private String postDate;   // 站内信发送时间
 
     private String orderId;     // 订单id
+
+    private Long partnerId;
+
+    private String friendUsername;
 
     public MessageDTO(Message message) {
         receiverId = message.getReceiverId();
@@ -37,7 +43,10 @@ public class MessageDTO {
         senderId = message.getMessageText().getSenderId();
         content = message.getMessageText().getMessage();
         messageType = message.getMessageType();
+        userGroup = message.getMessageText().getUserGroup();
         postDate = message.getMessageText().getPostDate();
         orderId = message.getMessageText().getOrderId();
+        partnerId = message.getMessageText().getPartnerId();
+        friendUsername = message.getMessageText().getFriendUsername();
     }
 }
