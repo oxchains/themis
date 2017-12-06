@@ -24,6 +24,7 @@ import {
     FETCH_TRUSTED,
     OTHER_DETAIL,
     ISTRUST_OR_ISSHIELD,
+    FETCH_ADDRESS_PAY,
     getAuthorizedHeader,
     requestError
 } from './types';
@@ -240,7 +241,7 @@ export function fetctBaseInfo({ formdata }, callback) {
             headers: { 'content-type': 'multipart/form-data', getAuthorizedHeader },
             withCredentials: true
         }).then(response => {
-            console.log(response);
+            // console.log(response);
             // dispatch({type: FETCH_BASE_INFO, payload: response})
             if (response.data.status == 1) {
                 callback();
@@ -259,7 +260,7 @@ export function fetctTrusted({ userId, type, pageNo, pageSize }, callback) {
     return function (dispatch) {
         axios.get(`${ROOT_URLC}/user/trust?userId=${userId}&pageNo=${pageNo}&pageSize=${pageSize}&type=${type}`,
             { headers: getAuthorizedHeader() }).then(response => {
-                console.log(response);
+                // console.log(response);
                 dispatch({ type: FETCH_TRUSTED, payload: response });
 
             })
@@ -268,6 +269,27 @@ export function fetctTrusted({ userId, type, pageNo, pageSize }, callback) {
             });
     };
 }
+//用户中心 收款地址
+
+export function fetctAddressPay({loginname, firstAddress}, callback) {
+    return function (dispatch) {
+        axios.post(`${ROOT_URLC}/user/btcaddress?loginname=${loginname}&firstAddress=${firstAddress}`, { headers: getAuthorizedHeader() })
+        .then(response => {
+            console.log(response);
+                dispatch({ type: FETCH_ADDRESS_PAY, payload: response });
+                if (response.data.status == 1) {
+                    callback();
+                } else {
+                    callback(response.data.message);
+                }
+            })
+            .catch(err => {
+                dispatch(requestError(err.message));
+            });
+    };
+}
+
+
 
 //查看别人详细信息
 

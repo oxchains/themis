@@ -2,23 +2,24 @@
  * Created by oxchain on 2017/10/18.
  */
 
-// export const ROOT_URLC = 'http://192.168.1.111:8081';
-// export const ROOT_CHAT = 'http://192.168.1.112:8881';
-// export const ROOT_SOCKET = 'ws://192.168.1.112:9999';
-// export const ROOT_ORDER= 'http://192.168.1.112:8882';
-// export const ROOT_URLZ = 'http://192.168.1.112:8882';
-// export const ROOT_ARBITRATE = 'http://192.168.1.112:8883';
-// export const ROOT_URLL = 'http://192.168.1.185:8083';
-// export const ROOT_MESSAGE = 'http://192.168.1.185:9491';
+export const ROOT_URLC = 'http://192.168.1.111:8081';
+export const ROOT_CHAT = 'http://192.168.1.112:8881';
+export const ROOT_SOCKET = 'ws://192.168.1.112:9999';
+export const ROOT_ORDER= 'http://192.168.1.112:8882';
+export const ROOT_URLZ = 'http://192.168.1.112:8882';
+export const ROOT_ARBITRATE = 'http://192.168.1.112:8883';
+export const ROOT_URLL = 'http://192.168.1.185:8083';
+export const ROOT_MESSAGE = 'http://192.168.1.185:9491';
 
+// export const ROOT_URLC = 'http://47.93.163.113:8081';
+// export const ROOT_CHAT = 'http://47.93.163.113:8881';
+// export const ROOT_SOCKET = 'ws://47.93.163.113:9999';
+// export const ROOT_URLL = 'http://47.93.163.113:8083';
+// export const ROOT_ORDER = 'http://47.93.163.113:8882';
+// export const ROOT_URLZ = 'http://47.93.163.113:8882';
+// export const ROOT_ARBITRATE = 'http://47.93.163.113:8883';
+// export const ROOT_MESSAGE = 'http://47.93.163.113:9491';
 
-export const ROOT_URLC = 'http://47.93.163.113:8081';
-export const ROOT_CHAT = 'http://47.93.163.113:8881';
-export const ROOT_SOCKET = 'ws://47.93.163.113:9999';
-export const ROOT_URLL = 'http://47.93.163.113:8083';
-export const ROOT_ORDER = 'http://47.93.163.113:8882';
-export const ROOT_URLZ = 'http://47.93.163.113:8882';
-export const ROOT_ARBITRATE = 'http://47.93.163.113:8883';
 
 
 
@@ -72,11 +73,13 @@ export const ARBITRATE_RESULT = 'arbitrate_result';                       //仲�
 export const FETCH_OFF_MYBTC = 'fetch_off_mybtc';                         //下架我的广告
 export const FETCH_BASE_INFO = 'fetch_base_info';                         //用户中心基本信息
 export const FETCH_TRUSTED = 'fetch_trusted';                             //用户中心受信任的
+export const FETCH_ADDRESS_PAY = 'fetch_address_pay';                    //用户中心收款地址
+
 export const FETCH_PHONE = 'fetch_phone';                                 //用户中心修改手机号
 export const FETCH_PASSWORD = 'fetch_password';                           //用户中心修改密码
 export const FETCH_MESSAGES_NUMBER = 'fetch_messages_number';             //获取未读消息
-export const FETCH_MESSAGES_NOTICE = 'fetch_messages_notice';              //获取公告消息
-export const FETCH_MESSAGE_SYSTEM = 'fetch_message_system';               //获取系统消息
+export const FETCH_MESSAGE_NOTICE = 'fetch_message_notice';              //获取公告消息
+export const FETCH_MESSAGE_SYSTEM = 'fetch_message_system';                 //获取系统消息
 export const FETCH_MESSAGE_LETTER = 'fetch_message_letter';                //获取私信消息
 
 

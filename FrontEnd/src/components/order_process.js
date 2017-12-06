@@ -3,7 +3,6 @@
  */
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-// import {Alert} from 'react-bootstrap';
 import Chat from './chat';
 import QRCode from 'qrcode.react';
 import {Upload, Button, Icon, Modal, message, Popconfirm, Alert} from 'antd';
@@ -36,18 +35,17 @@ class OrderProgress extends Component {
             loading:false,
             uri:"",
             partnerId:'',
-            partnerName:''
         };
-        // this.renderDangerAlert = this.renderDangerAlert.bind(this);
         this.renderOrderMessageDetails=this.renderOrderMessageDetails.bind(this);
     }
     componentWillMount() {
         const userId=localStorage.getItem("userId");
-        const partner=JSON.parse(localStorage.getItem("partner"));
-        const data={id:partner.id, userId:userId};
-        this.setState({orderId: partner.id});
+        const data={id:this.props.match.params.id, userId:userId};
+        this.setState({orderId: this.props.match.params.id});
         this.props.fetchOrdersDetails({data}, (msg)=>{
-            this.setState({orderStatus:msg.orderStatus, partnerId :  msg.sellerId==userId ? msg.buyerId :msg.sellerId, partnerName:msg.friendUsername
+            this.setState({
+                orderStatus: msg.orderStatus,
+                partnerId : msg.partnerUserId,
             });
             switch(this.state.orderStatus){
                 case 1:
@@ -75,9 +73,9 @@ class OrderProgress extends Component {
                     this.setState({tip:"退款处理中", status:"退款中"});
                     break;
             }
-            const partner= {userId:this.state.partnerId};
-            this.props.fetchTradePartnerMessage({partner});
         });
+        this.props.fetchTradePartnerMessage({data});
+
     }
     renderOrderStatus1() {
         return (
@@ -174,7 +172,7 @@ class OrderProgress extends Component {
             <div className="container-fluid" style={{"height":"381.42px"}}>
                 <ul className="row text-left g-pt-40 partner">
                     <li className="col-sm-12 text-center">
-                        <img src="./public/img/touxiang.png" alt=""/>
+                        <img src="/public/img/touxiang.png" alt=""/>
                         <h4 className="h4">{partner.loginname}</h4>
 
                     </li>
@@ -262,6 +260,7 @@ class OrderProgress extends Component {
                  orderId:orderId
              };
              this.props.addPaymentInfo({paymentInfo}, (msg)=>{
+                 console.log(msg);
                  if(msg.status == 1){
                      this.setState({uri:msg.data.uri, error:false, p2shAddress:msg.data.p2shAddress, amount:msg.data.amount, show:false, shownext:true});
                  }
@@ -272,7 +271,6 @@ class OrderProgress extends Component {
                     });
                  }
              });
-
         }
     }
     handleTransactionId(){
@@ -432,6 +430,7 @@ class OrderProgress extends Component {
             });
         }
     }
+
     render(){
         let close = () => {
             this.setState({show:false, shownext:false, evidence:false, error:false});
@@ -496,8 +495,8 @@ class OrderProgress extends Component {
                         <div className="col-sm-8">
                             <div className="order-chat clearfix text-center">
                                 <TabsControl>
-                                    <div name="聊天"><Chat/></div>
-                                    <div name="卖家信息">
+                                    <div name="聊天"><Chat orderId={this.props.match.params.id} partnerName={partnerName}  partnerId={this.state.partnerId} /></div>
+                                    <div name="对方信息">
                                         {this.renderPartnerMessage(partner)}
                                     </div>
                                 </TabsControl>

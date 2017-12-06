@@ -82,6 +82,7 @@ export function fetchOrdersDetails({data}, callback) {
                     type: FETCH_ORDERS_DETAILS,
                     payload: res.data.data
                 });
+
             }
         }).catch(err => dispatch(requestError(err.message)));
     };
@@ -90,12 +91,12 @@ export function fetchOrdersDetails({data}, callback) {
  * 获取交易伙伴详情
  * @returns {Function}
  */
-export function fetchTradePartnerMessage({partner}) {
+export function fetchTradePartnerMessage({data}) {
     return function (dispatch) {
         axios({
             method: 'post',
             url: `${ROOT_ORDER}/order/findUserTxDetail`,
-            data: partner,
+            data: data,
             headers: getAuthorizedHeader()
         }).then((res) => {
             if (res.data.status == 1) {

@@ -93,7 +93,7 @@ class OtherInfodetail extends Component {
             <div className="maincontent">
                 <div className="otherdetail-title clear">
                     <div className="detailTitle" style={{ padding: 0 }}>
-                        <img src="./public/img/touxiang.png" style={{ width: 100 + 'px', borderRadius: 50 + '%' }} alt="" />
+                        <img src="/public/img/touxiang.png" style={{ width: 100 + 'px', borderRadius: 50 + '%' }} alt="" />
 
                         <h4 style={{ marginBottom: 10 + 'px' }}>{datanum.loginname}</h4>
                         <ul className="detailul">
