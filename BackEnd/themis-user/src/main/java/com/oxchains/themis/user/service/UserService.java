@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -169,6 +170,7 @@ public class UserService extends BaseService {
         return RestResp.success("操作成功",null);
     }
     public RestResp updateUser(User user, ParamType.UpdateUserInfoType uuit) {
+        Object res = null;
         if(null == user){
             return RestResp.fail("参数不能为空");
         }
@@ -182,24 +184,6 @@ public class UserService extends BaseService {
         switch (uuit){
             case INFO:
                 boolean flag = false;
-                MultipartFile file = user.getFile();
-                if(null != file){
-                    String fileName = file.getOriginalFilename();
-                    String suffix = fileName.substring(fileName.lastIndexOf("."));
-                    String newFileName = tfsConsumer.saveTfsFile(file,u.getId());
-                    if(null == newFileName){
-                        return RestResp.fail("头像上传失败");
-                    }
-                    u.setImage(newFileName);
-                    flag = true;
-                }else if(null!=user.getImage() && !"".equals(user.getImage().trim())) {
-                    String newFileName = tfsConsumer.saveTfsFile(ImageBase64.getImageBytes(user.getImage()),u.getLoginname(),u.getId());
-                    if(null == newFileName){
-                        return RestResp.fail("头像上传失败");
-                    }
-                    u.setImage(newFileName);
-                    flag = true;
-                }
                 if(null!=user.getDescription() && !"".equals(user.getDescription().trim())) {
                     u.setDescription(user.getDescription());
                     flag = true;
@@ -240,12 +224,34 @@ public class UserService extends BaseService {
                     break;
         }
         reSaveRedis(u, token);
-        return save(u);
+        return save(u, res);
     }
-    private RestResp save(User user){
+    public RestResp avatar(User user){
+        if(null == user){
+            return RestResp.fail("参数不能为空");
+        }
+        if(user.getLoginname()==null){
+            return RestResp.fail("用户名不能为空");
+        }
+        User u = userDao.findByLoginname(user.getLoginname());
+        MultipartFile file = user.getFile();
+        if(null != file) {
+            String fileName = file.getOriginalFilename();
+            String suffix = fileName.substring(fileName.lastIndexOf("."));
+            String newFileName = tfsConsumer.saveTfsFile(file, u.getId());
+            if (null == newFileName) {
+                return RestResp.fail("头像上传失败");
+            }
+            u.setImage(newFileName);
+            userDao.save(u);
+            return RestResp.success("头像上传成功",newFileName);
+        }
+        return RestResp.fail("上传头像失败");
+    }
+    private RestResp save(User user,Object res){
         try {
             userDao.save(user);
-            return RestResp.success("操作成功",null);
+            return RestResp.success("操作成功",res);
         }catch (Exception e){
             log.error("保存用户信息异常", e);
             return RestResp.fail("操作失败");
