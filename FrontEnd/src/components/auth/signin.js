@@ -22,7 +22,7 @@ class Signin extends Component {
         const { from } =  { from: { pathname: '/' } };
         if (this.props.loggedIn) {
             // location.reload();
-            alert('密码错误');
+            // alert('密码错误');
             return (
                 <Redirect to={from} />
             );
