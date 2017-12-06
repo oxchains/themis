@@ -11,7 +11,10 @@ import {
     FETCH_PHONE,
     FETCH_PASSWORD,
     EMAIL_FIND_PSW,
-    RESET_PSW
+    RESET_PSW,
+    PHONE_FIND_PSW,
+    EMAIL_SIGNUP_USER,
+    EMAIL_ISLIVE
 } from '../actions/types';
 
 const INITIAL_STATE = { all: null, array: [], data: null };
@@ -36,8 +39,12 @@ export default function (state = INITIAL_STATE, action) {
             return { ...state, all: action.payload.data };
         case RESET_PSW:
             return { ...state, all: action.payload.data };
-
-
+        case PHONE_FIND_PSW:
+            return { ...state, all: action.payload.data };
+        case EMAIL_SIGNUP_USER:
+            return { ...state, all: action.payload.data };
+        case EMAIL_ISLIVE:
+            return { ...state, all: action.payload.data };
     }
 
     return state;

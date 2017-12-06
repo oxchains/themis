@@ -21,8 +21,6 @@ class Emialforget extends Component {
     handleEmailSubmit() {
         const email = this.refs.email.value;
         localStorage.setItem('email', email);
-
-        console.log(email);
         if (email){
             var timestamp = Date.parse(new Date());
             this.setState({
@@ -40,7 +38,6 @@ class Emialforget extends Component {
             this.props.EmialAction({ email, vcode }, () => { });
         }
         renderAlert(){
-            // const vcode = this.refs.vcode.value;
             const data = this.props.all || [];
             const { from } =  { from: { pathname: '/jumptip' } };
             if(data.status == 1){
@@ -73,8 +70,8 @@ class Emialforget extends Component {
                     </div>
                     <div className="form-style">
                         <div className="form-signin" >
-                            <input className="input form-group" type="text" placeholder="请输入邮箱地址" ref="email" /> <br />
-                            <input className="vcode form-group" type="text" placeholder="请输入验证码" ref="vcode" />
+                            <input className="input inputwidth form-group" type="text" placeholder="请输入邮箱地址" ref="email" /> <br />
+                            <input className="input vcode form-group" type="text" placeholder="请输入验证码" ref="vcode" />
                             <img src={srcurl ? srcurl : "./public/img/touxiang.png"} className="imgVcode" onClick={this.handleEmailSubmit.bind(this)} alt="" />
                             <div className="form-group">
                                 <button className="btn form-login" onClick={this.handleSendEmail}>发送</button>
@@ -89,7 +86,6 @@ class Emialforget extends Component {
 
 
 function mapStateToProps(state) {
-    // console.log(state.auth.all);
     return {
         all: state.auth.all
     };
