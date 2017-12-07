@@ -44,13 +44,13 @@ class Header extends Component {
                             <ul className="dropdown-menu">
                                 <li className="info-self">
                                     <div className="info-style">
-                                        <a href="/usercenter" >用户中心</a>
+                                        <Link to="/usercenter" >用户中心</Link>
                                     </div>
                                     <div className="info-style">
-                                        <a href="/myadvert" >我的广告</a>
+                                        <Link to="/myadvert" >我的广告</Link>
                                     </div>
                                     <div className="info-style">
-                                        <a href="/signout" >退出登录</a>
+                                        <Link to="/signout" >退出登录</Link>
                                     </div>
                                 </li>
                             </ul>
@@ -70,17 +70,17 @@ class Header extends Component {
                             <img src="/public/img/logo4.png" className="navimg" alt="" />
                         </div>
                         <ul className="headerul" >
-                            <li><a href="/" >首页</a></li>
-                            <li ><a href="/buybtc"  >购买比特币</a></li>
-                            <li ><a href="/sellbtc" >出售比特币</a></li>
-                            <li ><a href="/releaseadvert" >发布广告</a></li>
+                            <li ><Link to="/" >首页</Link></li>
+                            <li ><Link to="/buybtc"  >购买比特币</Link></li>
+                            <li ><Link to="/sellbtc" >出售比特币</Link></li>
+                            <li ><Link to="/releaseadvert" >发布广告</Link></li>
 
                         </ul>
                     </div>
                     <div className={`navbar-custom-menu ${this.props.authenticated ? "hidden" : ""}`}>
                         <ul className="nav navbar-nav">
-                            <li className={`registerlia order-style `} ><a href="/signup" >注册</a></li>
-                            <li className={`loginlia order-style `}><a href="/signin"  >登录</a></li>
+                            <li className={`registerlia order-style `} ><Link to="/signup" >注册</Link></li>
+                            <li className={`loginlia order-style `}><Link to="/signin"  >登录</Link></li>
                         </ul>
                     </div>
                     {this.renderUserInfo()}

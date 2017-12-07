@@ -77,10 +77,10 @@ class Signup extends Component {
                     count: count
                 });
             }.bind(this), 1000);
+            this.props.GetverifyCode({ mobilephone });
         }else{
             alert("请先输入手机号");
         }
-        this.props.GetverifyCode({ mobilephone }, () => { });
     }
     handleChange(e) {
         let { index } = this.state;
@@ -122,9 +122,11 @@ class Signup extends Component {
         // if (this.props.all) {
         //     return alert("验证码是");
         // }
+        // const data = this.props.all || [];
+        // console.log(data.status);
 
         var text = this.state.liked ? '发送验证码' : this.state.count + ' s后重新发';
-        const url = this.state.error === '操作失败' ? "/signup" : "/signin";
+        const url = this.state.error ? "/signup" : "/signin";
 
         return (
             <div>

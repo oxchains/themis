@@ -87,7 +87,7 @@ ReactDOM.render(
                         <Route path="/message/letter" component={MessageLetter} />
                         <Route path="/forgetpsw" component={Forgetpsw} />
                         <Route path="/resetpsw" component={Resetpsw} />
-                        <Route path="/emailforget" components={Emialforget} />
+                        <Route path="/emailforget" component={Emialforget} />
                         <Route path="/otherInfodetail:id" component={OtherInfodetail} />
                         <Route path="/jumptip" component={JumpTip} />
                         <Route path="/registerjumptip" component={RegisterJumptip} />
