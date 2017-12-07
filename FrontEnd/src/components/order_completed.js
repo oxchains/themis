@@ -4,7 +4,8 @@
 import React, { Component }from 'react';
 import {connect} from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Pagination } from 'antd';
+//import { Pagination } from 'antd';
+import { Pagination } from 'nl-design';
 import {fetchCompletedOrders} from '../actions/order';
 
 class OrderCompleted extends Component {

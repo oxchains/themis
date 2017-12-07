@@ -3,7 +3,8 @@
  */
 import React, { Component }from 'react';
 import {connect} from 'react-redux';
-import { Pagination, Radio, Modal, Button} from 'antd';
+import { Radio, Modal, Button} from 'antd';
+import { Pagination } from 'nl-design';
 import {fetchArbitrateList, fetchEvidence, arbitrateResult} from '../actions/arbitrate';
 import {ROOT_ARBITRATE} from '../actions/types';
 const RadioGroup = Radio.Group;

@@ -4,7 +4,8 @@
 
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import {Pagination} from 'antd';
+//import {Pagination} from 'antd';
+import { Pagination } from 'nl-design';
 import { connect } from 'react-redux';
 import {fetchMessageLetter} from "../../actions/message";
 class MessageLetter extends Component{

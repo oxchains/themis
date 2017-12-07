@@ -4,8 +4,9 @@
 import React, { Component }from 'react';
 import {connect} from 'react-redux';
 import { Link } from 'react-router-dom';
-import {Pagination, Alert, Upload, Button, Icon, Modal, Popconfirm} from 'antd';
+import {Alert, Upload, Button, Icon, Modal, Popconfirm} from 'antd';
 // import {Alert, Upload, Button, Icon, Modal} from 'antd';
+import { Pagination } from 'nl-design';
 import {ROOT_ARBITRATE} from '../actions/types';
 import {uploadEvidence} from '../actions/arbitrate';
 import {fetchNoCompletedOrders} from '../actions/order';
