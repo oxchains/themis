@@ -19,9 +19,9 @@ class OtherInfodetail extends Component {
     }
     componentWillMount(){
         const fromUserId = localStorage.getItem("userId");
-        const toUserId = this.props.match.params.id.slice(1);
+        const toUserId = this.props.match.params.id;
         this.props.LookOthersdetail({fromUserId, toUserId});
-        const userId = this.props.match.params.id.slice(1);
+        const userId = this.props.match.params.id;
         const noticeType = this.state.status;
         const txStatus = 1;
         const pageNum = 1;
@@ -34,7 +34,7 @@ class OtherInfodetail extends Component {
     }
     onlineBuyorSell(status) {
         this.state.status = status;
-        const userId = this.props.match.params.id.slice(1);
+        const userId = this.props.match.params.id;
         const noticeType = this.state.status;
         const txStatus = 1;
         const pageNum = 1;
@@ -60,7 +60,7 @@ class OtherInfodetail extends Component {
            alert("请先登录!");
        }
         const fromUserId = localStorage.getItem("userId");
-        const toUserId = this.props.match.params.id.slice(1);
+        const toUserId = this.props.match.params.id;
         const status = this.state.buttonStatus;
         this.props.isTrustAndisShield({fromUserId, toUserId, status });
     }
@@ -78,7 +78,7 @@ class OtherInfodetail extends Component {
                 <td>{item.minTxLimit} CNY- {item.maxTxLimit} CNY</td>
                 <td>{item.price} CNY</td>
                 <td>
-                    <button className="tablebuy" ><a href={`/buydetail:${item.id}`}>{item.noticeType == 1 ? "购买" : "出售"}</a></button>
+                    <button className="tablebuy" ><a href={`/buydetail/${item.id}`}>{item.noticeType == 1 ? "购买" : "出售"}</a></button>
                 </td>
             </tr>);
         });

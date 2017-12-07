@@ -4,7 +4,8 @@
 
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import {Pagination, Badge} from 'antd';
+// import {Pagination} from 'antd';
+import { Pagination } from 'nl-design';
 import { connect } from 'react-redux';
 import {fetchMessageSystem} from "../../actions/message";
 class MessageSystem extends Component{
@@ -37,7 +38,7 @@ class MessageSystem extends Component{
                     </div>
                     <div className="col-xs-10 message-item-content">
                         <div className="message-item-tip"><span>{item.messageType == 2 ? "公告" :""}</span><span>{item.postDate}</span></div>
-                        <Link className={`message-item-detail ${item.readStatus == 2  ? "readed":"" }`} to={`/orderprogress/${item.orderId}`}>{item.content}</Link>
+                        <Link className={`message-item-detail ${item.readStatus == 2  ? "readed":"" }`} to={`/order/progress/${item.orderId}`}>{item.content}</Link>
                     </div>
                 </li>
             );

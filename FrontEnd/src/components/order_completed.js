@@ -4,7 +4,8 @@
 import React, { Component }from 'react';
 import {connect} from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Pagination } from 'antd';
+//import { Pagination } from 'antd';
+import { Pagination } from 'nl-design';
 import {fetchCompletedOrders} from '../actions/order';
 
 class OrderCompleted extends Component {
@@ -41,7 +42,7 @@ class OrderCompleted extends Component {
         return this.props.completed_orders.data.map((item, index)=>{
             return(
                 <tr key={index}>
-                    <td><Link to={`/otherInfodetail:${item.partnerUserId}`}>{item.friendUsername}</Link></td>
+                    <td><Link to={`/otherInfodetail/${item.partnerUserId}`}>{item.friendUsername}</Link></td>
                     <td>{item.id}</td>
                     <td>{item.orderType}</td>
                     <td>{item.money}</td>

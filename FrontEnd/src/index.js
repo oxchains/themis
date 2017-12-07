@@ -79,8 +79,8 @@ ReactDOM.render(
                         <Route path="/releaseadvert" component={Releaseadvert} />
                         <Route path="/buybtc" component={Buybtc} />
                         <Route path="/sellbtc" component={Sellbtc} />
-                        <Route path="/selldetail:id" component={Selldetail} />
-                        <Route path="/buydetail:id" component={Buydetail} />
+                        <Route path="/selldetail/:id" component={Selldetail} />
+                        <Route path="/buydetail/:id" component={Buydetail} />
                         <Route path="/myadvert" component={Myadvert} />
                         <Route path="/message/notice" component={MessageNotice} />
                         <Route path="/message/system" component={MessageSystem} />
