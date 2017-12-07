@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { signupUser, GetverifyCode } from '../../actions/auth';
 import { Alert } from 'antd';
+
 import {
     Modal,
     ModalHeader,
@@ -59,7 +60,8 @@ class Signup extends Component {
     }
 
     handlesend() {
-        if (this.state.liked) {
+        const mobilephone = localStorage.getItem("mobilephone");
+        if (this.state.liked && mobilephone) {
             this.timer = setInterval(function () {
                 var count = this.state.count;
                 this.state.liked = false;
@@ -75,8 +77,9 @@ class Signup extends Component {
                     count: count
                 });
             }.bind(this), 1000);
+        }else{
+            alert("请先输入手机号");
         }
-        const mobilephone = localStorage.getItem("mobilephone");
         this.props.GetverifyCode({ mobilephone }, () => { });
     }
     handleChange(e) {
@@ -108,7 +111,7 @@ class Signup extends Component {
     renderField({ input, label, type, icon, meta: { touched, error } }) {
         return (
             <div className={`form-style ${touched && error ? 'has-error' : ''}`}>
-                <input {...input} placeholder={label} type={type} className="form-control " />
+                <input {...input} placeholder={label} type={type} className="form-control-phone form-control" />
                 <div className="help-block ">{touched && error ? error : ''}</div>
             </div>
         );

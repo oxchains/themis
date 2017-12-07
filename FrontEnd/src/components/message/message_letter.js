@@ -3,7 +3,12 @@
  */
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+<<<<<<< HEAD
+//import {Pagination} from 'antd';
+import { Pagination } from 'nl-design';
+=======
 import {Pagination, Badge} from 'antd';
+>>>>>>> 970d9c5d52c5c486837009291753edcac5a06dc7
 import { connect } from 'react-redux';
 import {fetchMessageLetter} from "../../actions/message";
 class MessageLetter extends Component{
@@ -36,7 +41,7 @@ class MessageLetter extends Component{
                     </div>
                     <div className="col-xs-10 message-item-content">
                         <div className="message-item-tip"><span className="h5 g-pr-10">{item.messageType == 1 ? item.friendUsername:""}</span><span>{item.postDate}</span></div>
-                        <Link className={`message-item-detail ${item.readStatus == 2  ? "readed":"" }`} to={`/orderprogress/${item.orderId}`}>{item.content}</Link>
+                        <Link className={`message-item-detail ${item.readStatus == 2  ? "readed":"" }`} to={`/order/progress/${item.orderId}`}>{item.content}</Link>
                     </div>
                 </li>
             );
