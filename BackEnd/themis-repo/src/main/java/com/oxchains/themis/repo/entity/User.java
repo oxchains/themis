@@ -244,7 +244,7 @@ public class User {
         setEmail(user.getEmail());
         setLoginname(user.getLoginname());
         setUsername(user.getUsername());
-        setFirstAddress(user.getFirstAddress());
+        setFirstAddress((user.getFirstAddress()==null||"".equals(user.getFirstAddress().trim()))?"未填写":user.getFirstAddress());
         setId(user.getId());
         setMobilephone(user.getMobilephone());
         setLoginStatus(user.getLoginStatus());

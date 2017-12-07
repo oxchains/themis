@@ -40,7 +40,7 @@ export default function (state = INITIAL_STATE, action) {
         case RESET_PSW:
             return { ...state, all: action.payload.data };
         case PHONE_FIND_PSW:
-            return { ...state, all: action.payload.data };
+            return { ...state, data: action.payload.data };
         case EMAIL_SIGNUP_USER:
             return { ...state, all: action.payload.data };
         case EMAIL_ISLIVE:

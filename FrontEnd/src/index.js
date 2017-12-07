@@ -70,25 +70,25 @@ ReactDOM.render(
                         <Route path="/signupemail" component={Signupemail} />
                         <Route path="/signout" component={Signout} />
                         <Route path="/usercenter" component={Usercenter} />
-                        <Route path="/orderinprogress" component={OrderInProgress} />
-                        <Route path="/ordercompleted" component={OrderCompleted} />
-                        <Route path="/orderprogress" component={OrderProgress} />
+                        <Route path="/order/inprogress" component={OrderInProgress} />
+                        <Route path="/order/completed" component={OrderCompleted} />
+                        <Route path="/order/progress/:id" component={OrderProgress} />
                         <Route path="/arbitrationbuyer" component={ArbitrationBuyer} />
                         <Route path="/arbitrationmanage" component={ArbitrationManage} />
                         <Route path="/refereelist" component={RefereeList} />
                         <Route path="/releaseadvert" component={Releaseadvert} />
                         <Route path="/buybtc" component={Buybtc} />
                         <Route path="/sellbtc" component={Sellbtc} />
-                        <Route path="/selldetail:id" component={Selldetail} />
-                        <Route path="/buydetail:id" component={Buydetail} />
+                        <Route path="/selldetail/:id" component={Selldetail} />
+                        <Route path="/buydetail/:id" component={Buydetail} />
                         <Route path="/myadvert" component={Myadvert} />
-                        <Route path="/messagenotice" component={MessageNotice} />
-                        <Route path="/messagesystem" component={MessageSystem} />
-                        <Route path="/messageletter" component={MessageLetter} />
+                        <Route path="/message/notice" component={MessageNotice} />
+                        <Route path="/message/system" component={MessageSystem} />
+                        <Route path="/message/letter" component={MessageLetter} />
                         <Route path="/forgetpsw" component={Forgetpsw} />
                         <Route path="/resetpsw" component={Resetpsw} />
-                        <Route path="/emailforget" component={Emialforget} />
-                        <Route path="/otherInfodetail:id" component={OtherInfodetail} />
+                        <Route path="/emailforget" components={Emialforget} />
+                        <Route path="/otherInfodetail/:id" component={OtherInfodetail} />
                         <Route path="/jumptip" component={JumpTip} />
                         <Route path="/registerjumptip" component={RegisterJumptip} />
                         <Route path="/islive" component={EmailIslive} />

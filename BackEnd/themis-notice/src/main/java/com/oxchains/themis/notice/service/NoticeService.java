@@ -531,6 +531,16 @@ public class NoticeService {
     private void setUserTxDetail(List<Notice> subList, int i) {
         Long userId = subList.get(i).getUserId();
         UserTxDetail userTxDetail = userTxDetailDao.findByUserId(userId);
+        // 查找头像名
+        User user = userDao.findOne(userId);
+        String imageName = user.getImage();
+
+        if (null == imageName){
+            subList.get(i).setImageName("T1xRETByJT1RCvBVdK.png");
+        } else {
+            subList.get(i).setImageName(imageName);
+        }
+
         if (null == userTxDetail){
             subList.get(i).setTxNum(0);
             subList.get(i).setTrustNum(0);

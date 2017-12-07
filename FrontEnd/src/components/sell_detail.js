@@ -50,22 +50,22 @@ class Selldetail extends Component {
         });
     };
     componentWillMount() {
-        const noticeId = this.props.match.params.id.slice(1);
-        // console.log(this.props.match.params.id.slice(1));
+        const noticeId = this.props.match.params.id;
+        // console.log(this.props.match.params.id);
         this.props.fetctSellBtcDetail({ noticeId });
     }
 
     handleSubmit() {
         const formdata = {
             userId: localStorage.getItem("userId"),
-            noticeId: this.props.match.params.id.slice(1),
+            noticeId: this.props.match.params.id,
             money: this.state.messmoney,
             amount: this.state.messnum
         };
         if(this.props.authenticated){
-        this.props.fetctSellnow({ formdata }, err => {
-            this.setState({ isModalOpen: true, error: err, actionResult: err || '下单成功!' });
-        });
+            this.props.fetctSellnow({ formdata }, err => {
+                this.setState({ isModalOpen: true, error: err, actionResult: err || '下单成功!' });
+            });
         }else {
             alert("请先登录!");
         }
@@ -89,7 +89,7 @@ class Selldetail extends Component {
         const userId = localStorage.getItem('userId');
         const orderData = { id: item.id, userId: userId, partnerId: item.sellerId == userId ? item.buyerId : item.sellerId };
         localStorage.setItem("partner", JSON.stringify(orderData));
-        window.location.href = '/orderprogress';
+        window.location.href = '/order/progress';
     }
     render() {
         const userId = localStorage.getItem("userId");
@@ -176,7 +176,8 @@ class Selldetail extends Component {
                     <ModalFooter>
                         <button className='btn btn-default' onClick={this.hideModal}>
                             {/*<a href="/myadvert" >关闭</a>*/}
-                            <div className="close-modal" onClick={this.showOrderDetail.bind(this, this.props.data)}>关闭</div>
+                            <Link className="close-modal" to={`/order/progress/${this.props.data.id}`}>关闭</Link>
+                            {/*<div className="close-modal" onClick={this.showOrderDetail.bind(this, this.props.data)}>关闭</div>*/}
                             {/*<a className="close-modal" href="/orderprogress" >关闭</a>*/}
                         </button>
                     </ModalFooter>

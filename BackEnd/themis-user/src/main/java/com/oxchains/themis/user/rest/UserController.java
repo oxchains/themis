@@ -94,30 +94,34 @@ public class UserController {
 
     @RequestMapping(value = "/info")
     public RestResp info(@ModelAttribute User user) throws Exception{
-        if(null == user){
-            return RestResp.fail("参数不能为空");
-        }
-        MultipartFile file = user.getFile();
-        if(null != file){
-            String fileName = file.getOriginalFilename();
-            String suffix = fileName.substring(fileName.lastIndexOf("."));
-            String newFileName = user.getLoginname() + suffix;
-            String pathName = imageUrl + newFileName;
-            File f =new File(pathName);
-            if(f.exists()){
-                f.delete();
-            }
-            file.transferTo(new File(pathName));
-            user.setImage(newFileName);
-            return userService.updateUser(user,ParamType.UpdateUserInfoType.INFO);
-        }
-
-        String image = user.getLoginname()+".jpg";
-        if(null != user.getImage() && !"undefined".equals(user.getImage())) {
-            ImageBase64.generateImage(user.getImage(), imageUrl + image);
-            user.setImage(image);
-        }
+//        if(null == user){
+//            return RestResp.fail("参数不能为空");
+//        }
+//        MultipartFile file = user.getFile();
+//        if(null != file){
+//            String fileName = file.getOriginalFilename();
+//            String suffix = fileName.substring(fileName.lastIndexOf("."));
+//            String newFileName = user.getLoginname() + suffix;
+//            String pathName = imageUrl + newFileName;
+//            File f =new File(pathName);
+//            if(f.exists()){
+//                f.delete();
+//            }
+//            file.transferTo(new File(pathName));
+//            user.setImage(newFileName);
+//            return userService.updateUser(user,ParamType.UpdateUserInfoType.INFO);
+//        }
+//
+//        String image = user.getLoginname()+".jpg";
+//        if(null != user.getImage() && !"undefined".equals(user.getImage())) {
+//            ImageBase64.generateImage(user.getImage(), imageUrl + image);
+//            user.setImage(image);
+//        }
         return userService.updateUser(user,ParamType.UpdateUserInfoType.INFO);
+    }
+    @RequestMapping(value = "/avatar")
+    public RestResp vatar(@ModelAttribute User user) throws Exception{
+        return userService.avatar(user);
     }
     /*
    *下载图片
@@ -325,6 +329,11 @@ public class UserController {
     @PostMapping(value = "/mail")
     public RestResp sendMail(String email, String subject,String content){
         return userService.sendMail(email,subject,content);
+    }
+
+    @PostMapping(value = "/btcaddress")
+    public RestResp addBitcoinAddress(String loginname, String firstAddress){
+        return userService.addBitcoinAddress(loginname,firstAddress);
     }
 
 }

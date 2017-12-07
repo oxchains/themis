@@ -21,9 +21,9 @@ class Home extends Component {
             return (
                 <div key={index} className="list-border">
                     <div className="title-bgc">
-                    <a href={`/otherInfodetail:${item.userId}`}> <img src={item.src ? item.src : "/public/img/touxiang.png"} alt="" /></a>
+                    <a href={`/otherInfodetail/${item.userId}`}> <img src={item.src ? item.src : "/public/img/touxiang.png"} alt="" /></a>
                         <p>
-                           <a href={`/otherInfodetail:${item.userId}`}>{item.loginname}</a>
+                           <a href={`/otherInfodetail/${item.userId}`}>{item.loginname}</a>
                         </p>
                     </div>
                     <div className="col-lg-4">
@@ -45,8 +45,8 @@ class Home extends Component {
                         <p>付款方式:{item.payType == 1 ? "现金" : item.payType == 2 ? "转账" : item.payType == 3 ? "支付宝" : item.payType == 4 ? "微信" : item.payType == 5 ? "Apple Pay" : ""}</p>
                     </div>
                     <button className="home-button" >
-                        <a href={`/buydetail:${item.id}`} className={`${item.noticeType == 1 ? 'hidden' : ''}`}>{item.noticeType == 2 ? "购买比特币" : ""}</a>
-                        <a href={`/selldetail:${item.id}`} className={`${item.noticeType == 2 ? 'hidden' : ''}`}>{item.noticeType == 1 ? "出售比特币" : ""}</a>
+                        <a href={`/buydetail/${item.id}`} className={`${item.noticeType == 1 ? 'hidden' : ''}`}>{item.noticeType == 2 ? "购买比特币" : ""}</a>
+                        <a href={`/selldetail/${item.id}`} className={`${item.noticeType == 2 ? 'hidden' : ''}`}>{item.noticeType == 1 ? "出售比特币" : ""}</a>
                     </button>
                 </div>
             );
@@ -65,9 +65,9 @@ class Home extends Component {
     }
     render() {
         const ArrayLinks = [
-            { src: "./public/img/买卖-.png", title: "快速买卖", content: "themis是一个不涉及第三方的P2P交易平台，交易过程方便快捷" },
-            { src: "./public/img/安全.png", title: "安全交易", content: "冷存储、SSL、多重加密等银行级别安全技术，十年金融安全经验安全团队" },
-            { src: "./public/img/快速.png", title: "及时掌控", content: "行情及时掌握,交易随时随地" },
+            { src: "/public/img/买卖-.png", title: "快速买卖", content: "themis是一个不涉及第三方的P2P交易平台，交易过程方便快捷" },
+            { src: "/public/img/安全.png", title: "安全交易", content: "冷存储、SSL、多重加密等银行级别安全技术，十年金融安全经验安全团队" },
+            { src: "/public/img/快速.png", title: "及时掌控", content: "行情及时掌握,交易随时随地" },
         ];
         return (
             <div className="clear">

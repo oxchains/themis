@@ -8,10 +8,8 @@ html, body, div, span, applet, object, iframe,  h1, h2, h3, h4, h5, h6, p, block
     background: transparent;
 }
 ul{list-style: none;}
-div {
-    -moz-user-select:none;
-    -webkit-user-select:none;
-    user-select:none;
+.text-center{
+    text-align: center !important;
 }
 .headerwidth
 {
@@ -148,17 +146,23 @@ div {
     margin: 0 auto;
     display: inline-block;
 }
-.form-control
+.form-control-phone
 {
     display:block;
-    width:85%!important;
+    width:100%!important;
     height: 40px;
     margin-bottom: 15px;
     border-radius:1px;
+    border: 1px solid #bbbbbb
 }
 .form-control-email
 {
     width:81%!important;
+    display:block;
+    height: 40px;
+    margin-bottom: 15px;
+    border-radius:1px;
+    border: 1px solid #bbbbbb
 }
 .form-register
 {
@@ -293,7 +297,7 @@ div {
     border-bottom: 1px solid #E9E9E9;
 }
 
-.liheight:nth-child(3)
+.liheight:nth-child(4)
 {
     border-bottom:none;
 }
@@ -1528,9 +1532,6 @@ html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
 {
     box-shadow: 0 0 20px #bbbbbb;
 }
-.table a{
-    line-height: 30px;
-}
 td {
     word-break: keep-all; /* 不换行 */
     white-space: nowrap;
@@ -1583,25 +1584,40 @@ td {
     padding: 15px 0;
     margin:0 30px;
     border-bottom: 1px solid lightgray;
+    background:#fff;
+    transition: all .3s ease;
 }
 .message-item-tip{
     color: #C9C9C9;
     padding-left: 20px;
     font-weight: 400;
+    transition: all .3s ease;
+}
+.message-item-list .readed{
+    color: #cccccc;
 }
 .message-item-detail{
+    transition: all .3s ease;
+    color: #232323;
     padding-top: 10px;
     padding-left: 20px;
 }
+.message-item-detail:hover{
+    color: #232323;
+}
 .message-item-list:hover{
     cursor: pointer;
-    background: lightgray;
+    background: #CCCCCC;
+    color: #232323;
 }
-.message-item-list:hover .message-item-content .message-item-tip{
+.message-item-list:hover .message-item-content, .message-item-list:hover .message-item-tip, .message-item-list:hover .message-item-detail{
     color: black;
 }
 .message-item-list:hover .message-item-content{
     color: black;
+}
+.no-message{
+    color: #CCCCCC;
 }
 .ant-pagination-item, .ant-pagination-item-link, .ant-pagination-item-link
 {
@@ -1702,4 +1718,12 @@ td {
     font-size: 18px;
     font-weight: 500;
     text-decoration: underline;
+}
+.address_pay
+{
+    padding: 60px;
+}
+.changeAddress
+{
+    margin: 30px auto;
 }

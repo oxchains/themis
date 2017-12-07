@@ -19,7 +19,8 @@ import {
     FETCH_BASE_INFO,
     FETCH_TRUSTED,
     ISTRUST_OR_ISSHIELD,
-    OTHER_DETAIL
+    OTHER_DETAIL,
+    FETCH_ADDRESS_PAY
 } from '../actions/types';
 
 const INITIAL_STATE = { all: [], array: [], data: [] };
@@ -53,6 +54,8 @@ export default function (state = INITIAL_STATE, action) {
             return { ...state, all: action.payload.data.data };
         case FETCH_TRUSTED:
             return { ...state, all: action.payload.data.data };
+        case FETCH_ADDRESS_PAY:
+            return { ...state, data: action.payload.data };
          case OTHER_DETAIL:
             return { ...state, array: action.payload.data.data };
         case ISTRUST_OR_ISSHIELD:

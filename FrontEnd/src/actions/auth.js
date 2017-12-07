@@ -40,6 +40,7 @@ function setAuthToLocalStorage(data) {
     localStorage.setItem('believeNum', data.userTxDetail.believeNum);//信任人数
     localStorage.setItem('sellAmount', data.userTxDetail.sellAmount); //出售的累计交易数量
     localStorage.setItem('buyAmount', data.userTxDetail.buyAmount); //购买的累计交易数量
+    localStorage.setItem('firstAddress', data.firstAddress); //用户中心 收款地址
 }
 
 /**
@@ -50,10 +51,14 @@ export function signinAction({ mobilephone, password }) {
     return function (dispatch) {
         axios.post(`${ROOT_URLC}/user/login`, { mobilephone, password })
             .then(response => {
+                console.log(response);
                 if (response.data.status == 1) {
                     setAuthToLocalStorage(response.data.data);
                     dispatch({ type: AUTH_USER });
                 } else {
+                    dispatch(
+                        authError(response.data.message)
+                    );
                     dispatch(authError(response.data.message));
                 }
             })
@@ -71,6 +76,7 @@ export function EmailsigninAction({ email, password }) {
     return function (dispatch) {
         axios.post(`${ROOT_URLC}/user/login`, { email, password })
             .then(response => {
+                console.log(response);
                 if (response.data.status == 1) {
                     setAuthToLocalStorage(response.data.data);
                     // browserHistory.push('/');
@@ -145,8 +151,8 @@ export function GetverifyCode({ mobilephone }) {
     return function (dispatch) {
         axios.get(`${ROOT_URLC}/user/phoneVcode?mobilephone=${mobilephone}`, { headers: getAuthorizedHeader() })
             .then(response => {
-                // console.log("获取验证码的接口通了");
-                // console.log(response);
+                console.log("获取验证码的接口通了");
+                console.log(response);
                 dispatch({ type: FETCH_VERIFY_CODE, payload: response });
 
             })
@@ -158,7 +164,7 @@ export function GetverifyCode({ mobilephone }) {
  */
 
 export function GetverifyCodePhone({ loginname, mobilephone }) {
-    console.log("修改手机号" + mobilephone, loginname);
+    console.log("修改手机号获取验证码" + mobilephone, loginname);
     return function (dispatch) {
         axios.get(`${ROOT_URLC}/user/phoneVcode?loginname=${loginname}&mobilephone=${mobilephone}`, { headers: getAuthorizedHeader() })
             .then(response => {
@@ -238,7 +244,7 @@ export function EmialAction({ email, vcode}, callback) {
 export function PhoneAction({ mobilephone, vcode}, callback) {
     console.log("手机找回密码" + mobilephone, vcode );
     return function (dispatch) {
-        axios.get(`${ROOT_URLC}/user/sendVmail?vcode=${vcode}&key=${mobilephone}`, { headers: getAuthorizedHeader() })
+        axios.get(`${ROOT_URLC}/user/verifyICode?vcode=${vcode}&key=${mobilephone}`, { headers: getAuthorizedHeader() })
             .then(response => {
                 console.log(response);
                 dispatch({ type: PHONE_FIND_PSW, payload: response });
@@ -246,8 +252,6 @@ export function PhoneAction({ mobilephone, vcode}, callback) {
             .catch(err => (err.message));
     };
 }
-
-
 /**
  * 重置密码
  */

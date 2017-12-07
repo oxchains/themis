@@ -14,6 +14,7 @@ class Forgetpsw extends Component {
             liked: true,
         };
         this.handlesend = this.handlesend.bind(this);
+        this.handlePhoneSubmit = this.handlePhoneSubmit.bind(this);
     }
     handlePhoneSubmit() {
         const mobilephone = this.refs.mobilephone.value;
@@ -24,28 +25,34 @@ class Forgetpsw extends Component {
         }
     }
     handlesend() {
-        if (this.state.liked) {
+        const mobilephone = localStorage.getItem("mobilephone");
+        if (this.state.liked && mobilephone) {
             this.timer = setInterval(function () {
                 var count = this.state.count;
                 this.state.liked = false;
                 count -= 1;
+
+                // count < 1 ? this.setState({liked: true,  count : 60}) : this.setState({ count : count});
+
                 if (count < 1) {
                     this.setState({
-                        liked: true
+                        liked: true,
+                        count : 60
                     });
-                    count = 60;
                     clearInterval(this.timer);
+                }else {
+                    this.setState({
+                        count: count
+                    });
                 }
-                this.setState({
-                    count: count
-                });
+
             }.bind(this), 1000);
+        }else{
+            alert("请先输入手机号");
         }
-        const mobilephone = localStorage.getItem("mobilephone");
         this.props.GetverifyCode({ mobilephone }, () => { });
     }
     phoneChange(e) {
-        console.log(e.target.value);
        localStorage.setItem("mobilephone", e.target.value);
 
         var regex = /^1[3|4|5|7|8][0-9]\d{4,8}$/;
@@ -98,16 +105,17 @@ class Forgetpsw extends Component {
                                 </div>
                             </div>
                         </div>
+                        {this.renderAlert()}
                     </div>
-                    {this.renderAlert()}
                 </div>
             </div>
         );
     }
 }
 function mapStateToProps(state) {
+    // console.log(state.auth.data);
     return {
-        all: state.auth.all
+        all: state.auth.data
     };
 }
 export default connect(mapStateToProps, { PhoneAction, GetverifyCode })(Forgetpsw);
