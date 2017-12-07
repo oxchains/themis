@@ -36,6 +36,8 @@ public class MessageDTO {
 
     private String friendUsername;
 
+    private String imageName;   // 头像名
+
     public MessageDTO(Message message) {
         receiverId = message.getReceiverId();
         messageTextId = message.getMessageTextId();
@@ -48,5 +50,6 @@ public class MessageDTO {
         orderId = message.getMessageText().getOrderId();
         partnerId = message.getMessageText().getPartnerId();
         friendUsername = message.getMessageText().getFriendUsername();
+        imageName = message.getMessageText().getImageName();
     }
 }
