@@ -256,9 +256,29 @@ public class MessageService {
     }
 
     /**
-     * 获取订单相关信息
+     * 获取订单相关信息和头像
      */
-    private boolean getOrderInfo(Long userId, MessageText messageText) {
+    private boolean getOrderInfoAndImage(Long userId, MessageText messageText) {
+        // 获取头像
+        Long sendId = messageText.getSenderId();
+        if (null == sendId){
+            sendId = 0L;
+        }
+        if (sendId == 0){
+            // 设置系统头像
+            messageText.setImageName("T1xaETByJT1RCvBVdK.png");
+        } else {
+            User user = userDao.findOne(sendId);
+            String imageName = user.getImage();
+            if (null == imageName){
+                // 设置默认用户头像
+                messageText.setImageName("T1xRETByJT1RCvBVdK.png");
+            } else {
+                messageText.setImageName(imageName);
+            }
+        }
+
+        // 获取
         String orderId = messageText.getOrderId();
         Order orders = orderDao.findById(orderId);
         Long buyerId = orders.getBuyerId();
@@ -289,7 +309,7 @@ public class MessageService {
                 MessageText messageText = messageTextDao.findByIdAndMessageType(message.getMessageTextId(), messageType);
 
                 if (needOrder){
-                    boolean isSuccess = getOrderInfo(userId, messageText);
+                    boolean isSuccess = getOrderInfoAndImage(userId, messageText);
                     if (!isSuccess){
                         return RestResp.fail("站内信：获取订单信息失败");
                     }

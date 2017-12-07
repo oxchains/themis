@@ -536,7 +536,7 @@ public class NoticeService {
         String imageName = user.getImage();
 
         if (null == imageName){
-            subList.get(i).setImageName("T1IaETByJT1RCvBVdK.png");
+            subList.get(i).setImageName("T1xRETByJT1RCvBVdK.png");
         } else {
             subList.get(i).setImageName(imageName);
         }

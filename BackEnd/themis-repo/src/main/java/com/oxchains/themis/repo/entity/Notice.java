@@ -81,7 +81,7 @@ public class Notice {
     private String searchName;
 
     @Transient
-    private String defaultHead;
+    private String imageName;
 
     public Notice(){}
 }
