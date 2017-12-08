@@ -30,8 +30,8 @@
     <!-- 以下是日志管理系统的配置 -->
     <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
         <!--logstash服务器，目前有两个-->
-        <destination>192.168.1.191:4560</destination>
-        <destination>192.168.1.192:4560</destination>
+        <destination>101.254.183.32:14560</destination>
+        <destination>101.254.183.32:24560</destination>
         <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder">
             <!--应用的名称，每个应用最好区分开-->
             <customFields>{"appname":"${APP_NAME}"}</customFields>

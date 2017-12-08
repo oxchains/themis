@@ -36,7 +36,7 @@ public class UserChat implements InfoStrategy{
     public UserChat() {
     }
     @Override
-    public void disposeInfo(ChatContent chatContent) {
+    public void disposeInfo(ChatContent chatContent,ChannelHandlerContext ctx) {
         try {
             //接收到消息后  先给自己转发一份 在给对方转法一份 如果对方不在线则 发到私信里面 然后将消息存到kafka队列里 由kafka存到mongo里
             String keyIDs = ChatUtil.getIDS(chatContent.getSenderId().toString(),chatContent.getReceiverId().toString());

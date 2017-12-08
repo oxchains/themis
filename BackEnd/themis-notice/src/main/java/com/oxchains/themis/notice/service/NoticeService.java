@@ -18,6 +18,7 @@ import com.oxchains.themis.repo.entity.UserTxDetail;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -52,6 +53,7 @@ public class NoticeService {
     @Resource private SearchTypeDao searchTypeDao;
     @Resource private UserTxDetailDao userTxDetailDao;
     @Resource private UserDao userDao;
+    @Value("${themis.user.default}") private String userDefaultImage;
 
     public RestResp broadcastNotice(Notice notice){
         try {
@@ -536,7 +538,7 @@ public class NoticeService {
         String imageName = user.getImage();
 
         if (null == imageName){
-            subList.get(i).setImageName("T1xRETByJT1RCvBVdK.png");
+            subList.get(i).setImageName(userDefaultImage);
         } else {
             subList.get(i).setImageName(imageName);
         }
