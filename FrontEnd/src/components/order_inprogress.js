@@ -5,7 +5,10 @@ import React, { Component }from 'react';
 import {connect} from 'react-redux';
 import { Link } from 'react-router-dom';
 import {Alert, Upload, Button, Icon, Modal, Popconfirm} from 'antd';
-import {Pagenation} from 'nl-design';
+
+// import {Alert, Upload, Button, Icon, Modal} from 'antd';
+import { Pagination } from 'nl-design';
+
 import {ROOT_ARBITRATE} from '../actions/types';
 import {uploadEvidence} from '../actions/arbitrate';
 import {fetchNoCompletedOrders} from '../actions/order';
@@ -86,7 +89,7 @@ class OrderInProgress extends Component {
         return this.props.not_completed_orders.data.map((item, index) =>{
             return(
                 <tr key={index} >
-                    <td> <Link to={`/otherInfodetail:${item.partnerUserId}`}>{item.friendUsername}</Link></td>
+                    <td> <Link to={`/otherInfodetail/${item.partnerUserId}`}>{item.friendUsername}</Link></td>
                     <td>{item.id}</td>
                     <td>{item.orderType}</td>
                     <td>{item.money}</td>

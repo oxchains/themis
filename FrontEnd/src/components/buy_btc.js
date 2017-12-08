@@ -4,7 +4,8 @@
 
 import React, { Component } from 'react';
 import { Select } from 'antd';
-import { Pagination } from 'antd';
+//import { Pagination } from 'antd';
+import {Pagination} from 'nl-design';
 import 'antd/dist/antd.css';
 import { connect } from 'react-redux';
 import { fetcAdvertSeach, fetctArray } from '../actions/releaseadvert';
@@ -51,13 +52,13 @@ class Buybtc extends Component {
         return arraydata.map((item, index) => {
             return (
                 <tr key={index} className="contentborder">
-                    <td className="tabletitle"><a href={`/otherInfodetail:${item.userId}`}>{item.loginname}</a></td>
+                    <td className="tabletitle"><a href={`/otherInfodetail/${item.userId}`}>{item.loginname}</a></td>
                     <td className="tabletitle">交易 {item.txNum} | 好评度 {item.goodPercent} | 信任 {item.trustNum}</td>
                     <td className="tabletitle"> {item.payType == 1 ? "现金" : item.payType == 2 ? "转账" : item.payType == 3 ? "支付宝" : item.payType == 4 ? "微信" : item.payType == 5 ? "Apple Pay" : ""} </td>
                     <td className="tabletitle"> {item.minTxLimit} - {item.maxTxLimit} CNY</td>
                     <td className="tabletitle">{item.price}</td>
                     <td className="tabletitle ">
-                        <button className="tablebuy" ><a href={`/buydetail:${item.id}`}>购买</a></button>
+                        <button className="tablebuy" ><a href={`/buydetail/${item.id}`}>购买</a></button>
                     </td>
                 </tr>
             );

@@ -79,15 +79,15 @@ ReactDOM.render(
                         <Route path="/releaseadvert" component={Releaseadvert} />
                         <Route path="/buybtc" component={Buybtc} />
                         <Route path="/sellbtc" component={Sellbtc} />
-                        <Route path="/selldetail:id" component={Selldetail} />
-                        <Route path="/buydetail:id" component={Buydetail} />
+                        <Route path="/selldetail/:id" component={Selldetail} />
+                        <Route path="/buydetail/:id" component={Buydetail} />
                         <Route path="/myadvert" component={Myadvert} />
                         <Route path="/message/notice" component={MessageNotice} />
                         <Route path="/message/system" component={MessageSystem} />
                         <Route path="/message/letter" component={MessageLetter} />
                         <Route path="/forgetpsw" component={Forgetpsw} />
                         <Route path="/resetpsw" component={Resetpsw} />
-                        <Route path="/emailforget" components={Emialforget} />
+                        <Route path="/emailforget" component={Emialforget} />
                         <Route path="/otherInfodetail:id" component={OtherInfodetail} />
                         <Route path="/jumptip" component={JumpTip} />
                         <Route path="/registerjumptip" component={RegisterJumptip} />
