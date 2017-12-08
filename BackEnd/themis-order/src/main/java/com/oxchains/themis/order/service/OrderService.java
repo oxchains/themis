@@ -32,6 +32,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.http.HttpService;
+
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -61,7 +64,6 @@ public class OrderService {
     @Resource
     private RestTemplate restTemplate;
     private static final String remoteError = "服务器繁忙,请稍后重试!";
-
     /*
     * 查询所有订单  用来测试
     * */
@@ -103,6 +105,7 @@ public class OrderService {
             //生成仲裁者用户的公私匙 存到 订单买家卖家仲裁者表里 order_address_key 每个订单对应一条
 
             OrderAddresskeys orderAddresskeys = new OrderAddresskeys(orders.getId(),addressKeys.getPublicKey(),addressKeys.getPrivateKey(),addressKeys.getPublicKey(),addressKeys.getPrivateKey());
+
             orderAddresskeys = orderAddresskeyRepo.save(orderAddresskeys);
 
             //将仲裁者用户的私匙 分为三个密匙碎片分别分给三个人 存储在 订单仲裁表里面 每个订单对应三条信息
@@ -215,10 +218,12 @@ public class OrderService {
                 if(o.getBuyerId().longValue() == pojo.getUserId()){
                     ordersInfo.setOrderType("购买");
                     ordersInfo.setFriendUsername(this.getLoginNameByUserId(o.getSellerId()));
+                    ordersInfo.setPartnerUserId(o.getSellerId());
                 }
                 else{
                     ordersInfo.setOrderType("出售");
                     ordersInfo.setFriendUsername(this.getLoginNameByUserId(o.getBuyerId()));
+                    ordersInfo.setPartnerUserId(o.getBuyerId());
                 }
                 this.setOrderStatusName(ordersInfo);
                 ordersInfoList.add(ordersInfo);
@@ -249,11 +254,13 @@ public class OrderService {
                 if(o.getBuyerId().longValue() == pojo.getUserId()){
                     ordersInfo.setOrderType("购买");
                     ordersInfo.setFriendUsername(this.getLoginNameByUserId(o.getSellerId()));
+                    ordersInfo.setPartnerUserId(o.getSellerId());
 
                 }
                 else{
                     ordersInfo.setOrderType("出售");
                     ordersInfo.setFriendUsername(this.getLoginNameByUserId(o.getBuyerId()));
+                    ordersInfo.setPartnerUserId(o.getBuyerId());
                 }
                 this.setOrderStatusName(ordersInfo);
                 ordersInfoList.add(ordersInfo);
@@ -489,7 +496,20 @@ public class OrderService {
         }
         return userTxDetails;
     }
-
+    public RestResp getPartnerTxDetails(Pojo pojo){
+        Long userId = null;
+        try {
+            Orders one = orderRepo.findOne(pojo.getId());
+            userId = one.getSellerId().longValue() == pojo.getUserId() ? one.getBuyerId():one.getSellerId();
+            pojo.setUserId(userId);
+            UserTxDetails userTxDetails = this.findUserTxDetails(pojo);
+            return userTxDetails != null ? RestResp.success(userTxDetails):RestResp.fail();
+        }
+        catch (Exception e){
+            LOG.error("get Partner Tx Details faild ",e);
+            return RestResp.fail();
+        }
+    }
 
     /*
     * 卖家上传交易凭据 txid
@@ -505,6 +525,9 @@ public class OrderService {
                 Integer status = (Integer) jsonObject.get("status");
                 if(status == 1){
                     messageService.postUploadTxId(orderRepo.findOne(pojo.getId()));
+                    //if(pojo.getUploadType() == 2){
+                        callService.uploadTxInform(pojo);
+                   // }
                     return RestResp.success();
                 }
             }
@@ -543,15 +566,16 @@ public class OrderService {
             OrderAddresskeys orderAddresskeys = orderAddresskeyRepo.findOrderAddresskeysByOrderId(pojo.getId());
             if(orderAddresskeys.getSellerPubAuth()!=null && orderAddresskeys.getSellerPriAuth()!=null){
                 Orders orders = orderRepo.findOne(pojo.getId());
-                String address = callService.getP2shAddressByOrderId(orders.getId());
+                Transaction transaction = callService.getTransactionById(orders.getId());
                 ordersInfo = new OrdersInfo(orders);
-                ordersInfo.setP2shAddress(address);
-                return orders!=null?RestResp.success(ordersInfo):RestResp.fail(remoteError);
+                ordersInfo.setP2shAddress(transaction.getP2shAddress());
+                ordersInfo.setTxId(transaction.getUtxoTxid());
+                return orders!=null?RestResp.success(ordersInfo):RestResp.fail("未上传");
             }
         } catch (Exception e) {
             LOG.error("judge seller public private auth faild : {}",e);
         }
-        return RestResp.fail(remoteError);
+        return RestResp.fail("未上传");
     };
     public RestResp releaseBTC(Pojo pojo){
         OrderAddresskeys save = null;

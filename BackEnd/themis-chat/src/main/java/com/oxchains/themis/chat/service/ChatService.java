@@ -3,11 +3,14 @@ package com.oxchains.themis.chat.service;
 import com.alibaba.fastjson.JSONObject;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.oxchains.themis.chat.entity.ChatContent;
+import com.oxchains.themis.chat.entity.UploadTxIdPojo;
 import com.oxchains.themis.chat.repo.MongoRepo;
+import com.oxchains.themis.chat.websocket.ChannelHandler;
 import com.oxchains.themis.common.constant.ThemisUserAddress;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.util.JsonUtil;
 import com.oxchains.themis.repo.entity.User;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,5 +88,19 @@ public class ChatService {
     private String getLoginNameByUserId(Long userId){
         User userById = this.getUserById(userId);
         return userById != null?userById.getLoginname():null;
+    }
+    public boolean uploadTxInform(UploadTxIdPojo pojo){
+        try {
+            ChannelHandler channelHandler = ChatUtil.txChannels.get(pojo.getId());
+            if(channelHandler != null){
+                LOG.info("连接存在 :"+pojo.getId());
+                String message = JsonUtil.toJson(pojo);
+                channelHandler.getChannel().writeAndFlush(new TextWebSocketFrame(message));
+                return true;
+            }
+        } catch (Exception e) {
+            LOG.error("upload tx inform faild",e.getMessage());
+        }
+        return false;
     }
 }

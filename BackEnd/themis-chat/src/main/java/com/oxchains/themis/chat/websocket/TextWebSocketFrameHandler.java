@@ -1,14 +1,13 @@
 package com.oxchains.themis.chat.websocket;
 import com.oxchains.themis.chat.entity.ChatContent;
-import com.oxchains.themis.chat.entity.MsgType;
+import com.oxchains.themis.chat.entity.ChatParam;
 import com.oxchains.themis.chat.service.KafkaService;
 import com.oxchains.themis.chat.service.MessageService;
 import com.oxchains.themis.chat.websocket.chatfunction.ChatContext;
-import com.oxchains.themis.chat.websocket.chatfunction.function.HealthCheck;
+import com.oxchains.themis.chat.websocket.chatfunction.function.ChatHealthCheck;
+import com.oxchains.themis.chat.websocket.chatfunction.function.UploadTxHealthCheck;
 import com.oxchains.themis.chat.websocket.chatfunction.function.UserChat;
-import com.oxchains.themis.common.util.DateUtil;
 import com.oxchains.themis.common.util.JsonUtil;
-import com.oxchains.themis.repo.entity.Message;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -17,7 +16,6 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.util.concurrent.GlobalEventExecutor;
-import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,13 +42,21 @@ public class TextWebSocketFrameHandler extends
 								TextWebSocketFrame msg) throws Exception {
 		ChatContent chatContent= (ChatContent) JsonUtil.fromJson(msg.text(), ChatContent.class);
 		ChatContext chatContext = null;
-		if(chatContent.getMsgType() == MsgType.HEALTH_CHECK){
-			chatContext = new ChatContext(new HealthCheck());
-			chatContext.disposeInfo(chatContent);
+		//消息类型是健康心跳
+		if(chatContent.getMsgType() == ChatParam.MsgType.HEALTH_CHECK.getStatus().intValue()){
+			if(chatContent.getHealthType() == ChatParam.HealthType.CHAT_HEALTH.getStatus().intValue()){
+				chatContext = new ChatContext(new ChatHealthCheck());
+				chatContext.disposeInfo(chatContent,ctx);
+			}
+			if(chatContent.getHealthType() == ChatParam.HealthType.UPLOAD_TXID_HEALTH.getStatus().intValue()){
+				chatContext = new ChatContext(new UploadTxHealthCheck());
+				chatContext.disposeInfo(chatContent,ctx);
+			}
 		}
-		if(chatContent.getMsgType() == MsgType.USER_CHAT){
+		//消息类型是聊天
+		if(chatContent.getMsgType() == ChatParam.MsgType.USER_CHAT.getStatus().intValue()){
 			chatContext = new ChatContext(new UserChat(kafkaService,ctx,messageService));
-			chatContext.disposeInfo(chatContent);
+			chatContext.disposeInfo(chatContent,ctx);
 		}
 	}
 	@Override

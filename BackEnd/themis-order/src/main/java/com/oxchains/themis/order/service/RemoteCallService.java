@@ -7,6 +7,7 @@ import com.oxchains.themis.common.model.AddressKeys;
 import com.oxchains.themis.common.model.OrdersKeyAmount;
 import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.common.util.JsonUtil;
+import com.oxchains.themis.order.entity.ValidaPojo.UploadTxIdPojo;
 import com.oxchains.themis.repo.entity.Notice;
 import com.oxchains.themis.repo.entity.OrderArbitrate;
 import com.oxchains.themis.repo.entity.Transaction;
@@ -111,11 +112,11 @@ public class RemoteCallService {
     }
     //从用户中心获取协商地址
     @HystrixCommand(fallbackMethod = "getP2shAddressByOrderIdError")
-    public String getP2shAddressByOrderId(String id){
+    public Transaction getTransactionById(String id){
         try {
            String str  = (String) hashOperations.get(txAddressHK, id);
            if(StringUtils.isNotBlank(str)){
-               return str;
+               return JsonUtil.jsonToEntity(str,Transaction.class);
            }
             String jsonObject = restTemplate.getForObject(ThemisUserAddress.GET_PTSHADDRESS+id, String.class);
            if(jsonObject != null){
@@ -124,8 +125,8 @@ public class RemoteCallService {
                    if(restResp.status == 1){
                        Transaction transaction = JsonUtil.objectToEntity(restResp.data, Transaction.class);
                        if(transaction != null){
-                           hashOperations.put(txAddressHK,id,transaction.getP2shAddress());
-                           return transaction .getP2shAddress();
+                           hashOperations.put(txAddressHK,id,JsonUtil.toJson(transaction));
+                           return transaction;
                        }
                    }
                }
@@ -136,7 +137,7 @@ public class RemoteCallService {
         }
         return null;
     }
-    public String getP2shAddressByOrderIdError(){
+    public Transaction getP2shAddressByOrderIdError(String s){
         return null;
     }
     //从仲裁系统添加仲裁信息
@@ -267,6 +268,14 @@ public class RemoteCallService {
             LOG.error("releaseBTC faild : {}",e.getMessage(),e);
         }
         return jsonObject;
+    }
+    public void uploadTxInform(UploadTxIdPojo pojo){
+        try {
+            HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(pojo), this.getHttpHeader());
+            restTemplate.postForObject(ThemisUserAddress.TX_INFORM,formEntity,JSONObject.class);
+        } catch (RestClientException e) {
+            LOG.error("uploadTx inform fail",e);
+        }
     }
     public JSONObject moveBTCError(OrdersKeyAmount ordersKeyAmount){
         return null;

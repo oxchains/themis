@@ -9,6 +9,8 @@ import com.oxchains.themis.order.entity.vo.OrdersInfo;
 import com.oxchains.themis.order.entity.vo.UserTxDetails;
 import com.oxchains.themis.order.service.OrderService;
 import com.oxchains.themis.repo.entity.OrderAddresskeys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +22,7 @@ import javax.validation.Valid;
  */
 @RestController
 public class OrderController {
+    private final Logger LOG = LoggerFactory.getLogger(this.getClass());
     @Resource
     private OrderService orderService;
     /*
@@ -30,6 +33,7 @@ public class OrderController {
         if(bindingResult.hasErrors()){
             return RestResp.fail(bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
+        LOG.info("添加订单："+pojo.toString());
         return orderService.addOrders(pojo);
     }
     /*
@@ -40,6 +44,7 @@ public class OrderController {
         if(bindingResult.hasErrors()){
             return RestResp.fail(bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
+        LOG.info("上传公私钥："+saveAddresskeyPojo.toString());
         return orderService.saveAddresskey(saveAddresskeyPojo);
     }
     /*
@@ -50,6 +55,8 @@ public class OrderController {
         if(bindingResult.hasErrors()){
             return RestResp.fail(bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
+        pojo.setUploadType(1);
+        LOG.info("上传交易凭据 pc版："+pojo.toString());
         return orderService.uploadTxId(pojo);
     }
     //移动端
@@ -61,6 +68,8 @@ public class OrderController {
         if(bindingResult.hasErrors()){
             return RestResp.fail(bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
+        pojo.setUploadType(2);
+        LOG.info("上传交易凭据 移动版："+pojo.toString());
         return orderService.uploadTxId(pojo);
     }
     /*
@@ -68,6 +77,7 @@ public class OrderController {
     * */
     @RequestMapping("/order/confirmOrders")
     public RestResp confirmOrders(@RequestBody Pojo pojo){
+        LOG.info("确认订单："+pojo.toString());
         return orderService.confirmOrders(pojo);
     }
 
@@ -76,6 +86,7 @@ public class OrderController {
     * */
     @RequestMapping("/order/confirmSendMoney")
     public RestResp confirmSendMoney(@RequestBody Pojo pojo){
+        LOG.info("确认付款："+pojo.toString());
         return orderService.confirmSendMoney(pojo);
     }
     /*
@@ -83,6 +94,7 @@ public class OrderController {
     * */
     @RequestMapping("/order/releaseBTC")
     public RestResp releaseBTC(@RequestBody Pojo pojo){
+        LOG.info("释放BTC："+pojo.toString());
         return orderService.releaseBTC(pojo);
     }
     /*
@@ -90,6 +102,7 @@ public class OrderController {
     * */
     @RequestMapping("/order/confirmReciveBTC")
     public RestResp confirmReciveBTC(@RequestBody Pojo pojo){
+        LOG.info("确认收到BTC："+pojo.toString());
         return orderService.confirmReciveBTC(pojo);
     }
     /*
@@ -97,6 +110,7 @@ public class OrderController {
     * */
     @RequestMapping("/order/cancelOrders")
     public RestResp cancelOrders(@RequestBody Pojo pojo){
+        LOG.info("取消订单："+pojo.toString());
         return orderService.cancelOrders(pojo.getId(),pojo.getUserId());
     }
     /*
@@ -104,6 +118,7 @@ public class OrderController {
    * */
     @RequestMapping("/order/confirmReceiveRefund")
     public RestResp confirmReceiveRefund(@RequestBody Pojo pojo){
+        LOG.info("确认收到退款："+pojo.toString());
         return orderService.confirmReceiveRefund(pojo);
     }
     /*
@@ -114,6 +129,7 @@ public class OrderController {
         if(bindingResult.hasErrors()){
             return RestResp.fail(bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
+        LOG.info("提交评论："+pojo.toString());
         return orderService.saveComment(pojo);
     }
 
@@ -147,8 +163,7 @@ public class OrderController {
     * */
     @RequestMapping("/order/findUserTxDetail")
     public RestResp findUserTxDetails(@RequestBody Pojo pojo){
-        UserTxDetails UserTxDetails = orderService.findUserTxDetails(pojo);
-        return UserTxDetails!=null?RestResp.success(UserTxDetails):RestResp.fail("未知错误");
+        return orderService.getPartnerTxDetails(pojo);
     }
     /*
     * 购买出售详情页面需要查的用户的历史交易信息 和公告的信息
