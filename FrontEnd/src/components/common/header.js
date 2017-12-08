@@ -70,11 +70,10 @@ class Header extends Component {
                             <img src="/public/img/logo4.png" className="navimg" alt="" />
                         </div>
                         <ul className="headerul" >
-                            <li ><Link to="/" >首页</Link></li>
+                            <li ><a href="/" >首页</a></li>
                             <li ><Link to="/buybtc"  >购买比特币</Link></li>
                             <li ><Link to="/sellbtc" >出售比特币</Link></li>
                             <li ><Link to="/releaseadvert" >发布广告</Link></li>
-
                         </ul>
                     </div>
                     <div className={`navbar-custom-menu ${this.props.authenticated ? "hidden" : ""}`}>
