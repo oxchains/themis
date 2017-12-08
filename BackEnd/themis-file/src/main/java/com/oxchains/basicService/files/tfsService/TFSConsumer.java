@@ -19,7 +19,7 @@ public class TFSConsumer {
      @Value("${oxchians.appKey}")
      private Integer appKey;
     //将文件存入文件服务器 并返回一个新的文件name
-    public String saveTfsFile(MultipartFile multipartFile,Long userId) {
+    public String saveTfsFile(MultipartFile multipartFile,Long userId){
         String s = null;
         try {
             if(this.checkParam(multipartFile,userId,appKey)){
@@ -32,7 +32,7 @@ public class TFSConsumer {
                 s = tfsService.saveTfsFile(fileInfos);
             }
         } catch (Exception e) {
-            LOG.error("save file faild : {}",e);
+            LOG.error("save file faild ",e);
             return null;
         }
         return s;
@@ -50,7 +50,7 @@ public class TFSConsumer {
                 s = tfsService.saveTfsFile(fileInfos);
             }
         } catch (SaveFileExecption e) {
-            LOG.error("save file faild : {}",e);
+            LOG.error("save file faild",e);
             return null;
         }
         return s;
@@ -68,7 +68,7 @@ public class TFSConsumer {
                 s = tfsService.saveTfsLargeFile(fileInfos);
             }
         } catch (Exception e) {
-            LOG.error("save large file faild : {}",e);
+            LOG.error("save large file faild ",e);
             return null;
         }
         return s;
@@ -86,7 +86,7 @@ public class TFSConsumer {
                 s = tfsService.saveTfsLargeFile(fileInfos);
             }
         } catch (SaveFileExecption e) {
-            LOG.error("save large file faild : {}",e.getMessage(),e);
+            LOG.error("save large file faild ",e);
             return null;
         }
         return s;
@@ -100,7 +100,7 @@ public class TFSConsumer {
                 tfsFile = tfsService.getTfsFile(tfsFileName);
             }
         } catch (Exception e) {
-            LOG.error("get file faild : {}",e);
+            LOG.error("get file faild ",e);
             return null;
         }
         return tfsFile;

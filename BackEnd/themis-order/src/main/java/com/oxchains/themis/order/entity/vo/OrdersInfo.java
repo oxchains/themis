@@ -27,6 +27,7 @@ public class OrdersInfo implements Serializable{
     private Integer status;
     private String amount;
     private Long partnerUserId;
+    private String txId;
     public OrdersInfo(Orders orders) {
         if(orders != null){
             this.setId(orders.getId());
