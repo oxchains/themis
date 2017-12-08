@@ -19,6 +19,7 @@ export const ROOT_URLZ = 'http://47.93.163.113:8882';
 export const ROOT_ARBITRATE = 'http://47.93.163.113:8883';
 export const ROOT_MESSAGE = 'http://47.93.163.113:9491';
 
+
 export const AUTH_USER = 'auth_user';                               //登录
 export const UNAUTH_USER = 'unauth_user';                           //退出登录
 export const AUTH_ERROR = 'auth_error';                             //登录失败
@@ -27,6 +28,10 @@ export const REQUEST_ERROR = 'request_error';                       //http请求
 export const FETCH_VERIFY_CODE = 'request_verifycode';              //注册获取验证码
 export const FETCH_VERIFY_CODE_PHONE = 'request_verifycode_phone';  //修改手机获取验证码
 export const EMAIL_FIND_PSW = 'email_find_psw';                     //邮箱找回密码
+export const PHONE_FIND_PSW = 'phone_find_psw';                     //手机找回密码
+export const EMAIL_SIGNUP_USER = 'email_signup_user';                //邮箱注册
+export const EMAIL_ISLIVE = 'email_islive';                          //邮箱是否激活提示
+
 export const RESET_PSW = 'reset_psw';                               //重置密码
 
 export const FETCH_ADVERT = 'FETCH_ADVERT';                          //发布广告
@@ -64,11 +69,13 @@ export const ARBITRATE_RESULT = 'arbitrate_result';                       //仲�
 export const FETCH_OFF_MYBTC = 'fetch_off_mybtc';                         //下架我的广告
 export const FETCH_BASE_INFO = 'fetch_base_info';                         //用户中心基本信息
 export const FETCH_TRUSTED = 'fetch_trusted';                             //用户中心受信任的
+export const FETCH_ADDRESS_PAY = 'fetch_address_pay';                    //用户中心收款地址
+
 export const FETCH_PHONE = 'fetch_phone';                                 //用户中心修改手机号
 export const FETCH_PASSWORD = 'fetch_password';                           //用户中心修改密码
 export const FETCH_MESSAGES_NUMBER = 'fetch_messages_number';             //获取未读消息
-export const FETCH_MESSAGES_NOTICE = 'fetch_messages_notice';              //获取公告消息
-export const FETCH_MESSAGE_SYSTEM = 'fetch_message_system';               //获取系统消息
+export const FETCH_MESSAGE_NOTICE = 'fetch_message_notice';              //获取公告消息
+export const FETCH_MESSAGE_SYSTEM = 'fetch_message_system';                 //获取系统消息
 export const FETCH_MESSAGE_LETTER = 'fetch_message_letter';                //获取私信消息
 
 

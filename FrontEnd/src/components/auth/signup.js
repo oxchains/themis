@@ -60,7 +60,8 @@ class Signup extends Component {
     }
 
     handlesend() {
-        if (this.state.liked) {
+        const mobilephone = localStorage.getItem("mobilephone");
+        if (this.state.liked && mobilephone) {
             this.timer = setInterval(function () {
                 var count = this.state.count;
                 this.state.liked = false;
@@ -76,9 +77,10 @@ class Signup extends Component {
                     count: count
                 });
             }.bind(this), 1000);
+            this.props.GetverifyCode({ mobilephone });
+        }else{
+            alert("请先输入手机号");
         }
-        const phonenum = localStorage.getItem("phonenum");
-        this.props.GetverifyCode({ phonenum }, () => { });
     }
     handleChange(e) {
         let { index } = this.state;
@@ -95,7 +97,7 @@ class Signup extends Component {
     }
     phoneChange(e) {
         console.log(e.target.value);
-        const phonenum = localStorage.setItem("phonenum", e.target.value);
+     localStorage.setItem("mobilephone", e.target.value);
 
         var regex = /^1[3|4|5|7|8][0-9]\d{4,8}$/;
         if (regex.test(e.target.value)) {
@@ -109,7 +111,7 @@ class Signup extends Component {
     renderField({ input, label, type, icon, meta: { touched, error } }) {
         return (
             <div className={`form-style ${touched && error ? 'has-error' : ''}`}>
-                <input {...input} placeholder={label} type={type} className="form-control " />
+                <input {...input} placeholder={label} type={type} className="form-control-phone form-control" />
                 <div className="help-block ">{touched && error ? error : ''}</div>
             </div>
         );
@@ -120,9 +122,11 @@ class Signup extends Component {
         // if (this.props.all) {
         //     return alert("验证码是");
         // }
+        // const data = this.props.all || [];
+        // console.log(data.status);
 
         var text = this.state.liked ? '发送验证码' : this.state.count + ' s后重新发';
-        const url = this.state.error === '操作失败' ? "/signup" : "/signin";
+        const url = this.state.error ? "/signup" : "/signin";
 
         return (
             <div>

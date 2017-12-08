@@ -4,7 +4,8 @@
 import React, { Component }from 'react';
 import {connect} from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Pagination } from 'antd';
+//import { Pagination } from 'antd';
+import { Pagination } from 'nl-design';
 import {fetchCompletedOrders} from '../actions/order';
 
 class OrderCompleted extends Component {
@@ -13,7 +14,6 @@ class OrderCompleted extends Component {
         this.renderrow = this.renderrow.bind(this);
         this.state={
             pageSize:8, //每页显示的条数8条
-            totalNum:0
         };
     }
     componentWillMount() {
@@ -28,6 +28,7 @@ class OrderCompleted extends Component {
     componentWillReceiveProps(nextProps){
     }
     handlePagination(pageNum) {
+        console.log(pageNum);
         const userIdInfo= localStorage.getItem('userId');
         const userId={
             userId:userIdInfo,
@@ -41,33 +42,28 @@ class OrderCompleted extends Component {
         return this.props.completed_orders.data.map((item, index)=>{
             return(
                 <tr key={index}>
-                    <td>{item.friendUsername}</td>
+                    <td><Link to={`/otherInfodetail/${item.partnerUserId}`}>{item.friendUsername}</Link></td>
                     <td>{item.id}</td>
                     <td>{item.orderType}</td>
                     <td>{item.money}</td>
                     <td>{item.amount}</td>
                     <td>{item.createTime}</td>
                     <td>{item.orderStatusName}<span>{item.arbitrate == 2 ? "(仲裁完成)": ""}</span></td>
-                    <td><button className="ant-btn ant-btn-primary ant-btn-lg" onClick={this.handleOrderDetail.bind(this, item)}>详情</button></td>
+                    <td><Link className="ant-btn ant-btn-primary ant-btn-lg" to={`/order/progress/${item.id}`}>详情</Link></td>
                 </tr>
             );
         });
     }
-    handleOrderDetail(item){
-        const userId= localStorage.getItem('userId');
-        const orderData={id:item.id, userId:userId, partnerId:item.sellerId == userId ? item.buyerId : item.sellerId, friendUsername:item.friendUsername};
-        localStorage.setItem("partner", JSON.stringify(orderData));
-        window.location.href='/orderprogress';
-    }
     render() {
         const completed_orders = this.props.completed_orders;
         const totalNum = completed_orders && completed_orders.pageCount;
+        console.log(totalNum);
         return (
             <div className="container g-pb-150">
                 <div className="orderType text-center g-pt-50 g-pb-50">
                     <ul className="row">
-                        <li className="col-xs-6"> <Link className="g-pb-3" to="/orderinprogress">进行中的交易</Link></li>
-                        <li className="col-xs-6"><Link className="orderTypeBar g-pb-3" to="/ordercompleted">已完成的交易</Link></li>
+                        <li className="col-xs-6"> <Link className="g-pb-3" to="/order/inprogress">进行中的交易</Link></li>
+                        <li className="col-xs-6"><Link className="orderTypeBar g-pb-3" to="/order/completed">已完成的交易</Link></li>
                     </ul>
                 </div>
                 <div className="table-responsive">
@@ -91,9 +87,11 @@ class OrderCompleted extends Component {
                         </table>
                     </div>
                 </div>
-                <div className="pagecomponent">
+                { !completed_orders || totalNum == 0  ? '' :
+                    <div className="pagecomponent">
                     <Pagination  defaultPageSize={this.state.pageSize} total={totalNum}  onChange={e => this.handlePagination(e)}/>
-                </div>
+                </div>}
+
             </div>
         );
     }

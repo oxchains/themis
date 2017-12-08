@@ -23,6 +23,7 @@ class Header extends Component {
     }
     renderUserInfo() {
         const role = localStorage.getItem('role');
+        let allUnRead=this.props.message_number && this.props.message_number.allUnRead;
         if (this.props.authenticated) {
             const loginname = localStorage.getItem('loginname');
             return (
@@ -30,12 +31,12 @@ class Header extends Component {
                     <ul className="nav navbar-nav">
                         {role == 3 ? <li className="order-style" style={{ width: "135px" }}><Link to="/refereelist">仲裁列表</Link></li> : ""}
                         <li className="order-style">
-                            <Link to="/messagenotice">
-                                消息{this.props.message_number != undefined && this.props.message_number > 0 ? <Badge count={this.props.message_number} /> : ""}
+                            <Link to="/message/notice">
+                                消息<Badge count={allUnRead} />
                             </Link>
                         </li>
-                        <li className="order-style"><Link to="/orderinprogress">订单</Link></li>
-                        <li className="order-style"><Link to="/orderinprogress">钱包</Link></li>
+                        <li className="order-style"><Link to="/order/inprogress">订单</Link></li>
+                        <li className="order-style"><Link to="/order/inprogress">钱包</Link></li>
                         <li className="ordermenu-style dropdown user user-menu">
                             <a href="#" className="dropdown-toggle" data-toggle="dropdown">
                                 <span className="hidden-xs">{loginname}</span>
@@ -43,13 +44,13 @@ class Header extends Component {
                             <ul className="dropdown-menu">
                                 <li className="info-self">
                                     <div className="info-style">
-                                        <a href="/usercenter" >用户中心</a>
+                                        <Link to="/usercenter" >用户中心</Link>
                                     </div>
                                     <div className="info-style">
-                                        <a href="/myadvert" >我的广告</a>
+                                        <Link to="/myadvert" >我的广告</Link>
                                     </div>
                                     <div className="info-style">
-                                        <a href="/signout" >退出登录</a>
+                                        <Link to="/signout" >退出登录</Link>
                                     </div>
                                 </li>
                             </ul>
@@ -66,20 +67,20 @@ class Header extends Component {
                 <nav className="header ">
                     <div className="header-position">
                         <div className="navdivimg">
-                            <img src="./public/img/logo4.png" className="navimg" alt="" />
+                            <img src="/public/img/logo4.png" className="navimg" alt="" />
                         </div>
                         <ul className="headerul" >
-                            <li><a href="/" >首页</a></li>
-                            <li ><a href="/buybtc"  >购买比特币</a></li>
-                            <li ><a href="/sellbtc" >出售比特币</a></li>
-                            <li ><a href="/releaseadvert" >发布广告</a></li>
+                            <li ><Link to="/" >首页</Link></li>
+                            <li ><Link to="/buybtc"  >购买比特币</Link></li>
+                            <li ><Link to="/sellbtc" >出售比特币</Link></li>
+                            <li ><Link to="/releaseadvert" >发布广告</Link></li>
 
                         </ul>
                     </div>
                     <div className={`navbar-custom-menu ${this.props.authenticated ? "hidden" : ""}`}>
                         <ul className="nav navbar-nav">
-                            <li className={`registerlia order-style `} ><a href="/signup" >注册</a></li>
-                            <li className={`loginlia order-style `}><a href="/signin"  >登录</a></li>
+                            <li className={`registerlia order-style `} ><Link to="/signup" >注册</Link></li>
+                            <li className={`loginlia order-style `}><Link to="/signin"  >登录</Link></li>
                         </ul>
                     </div>
                     {this.renderUserInfo()}

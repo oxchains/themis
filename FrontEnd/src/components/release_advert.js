@@ -129,7 +129,7 @@ class Releaseadvert extends Component {
         const price = parseFloat(this.state.price || money.buy).toFixed(2);
 console.log(userId);
 
-        const url = this.state.status == 1 ? `/buydetail:${userId}`: `/selldetail:${userId}`;
+        const url = this.state.status == 1 ? `/buydetail/${userId}`: `/selldetail/${userId}`;
 
 
 

@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { EmailsigninAction } from '../../actions/auth';
 import { Route, Redirect } from 'react-router-dom';
 import { Alert } from 'antd';
+import { Link } from 'react-router-dom';
 class Emiallogin extends Component {
     // let Emiallogin = React.createClass({
     handleEmailSubmit() {
@@ -37,14 +38,14 @@ class Emiallogin extends Component {
                 <div className="login-box-body">
                     <div className="signinWay text-center g-pt-50">
                         <ul className="row loginul">
-                            <li className="col-xs-6 loginli"> <a className="g-pb-3" href="/signin">手机登录</a></li>
-                            <li className="col-xs-6 loginli"><a className="signinTypeBar g-pb-3" href="/signinemail">邮箱登录</a></li>
+                            <li className="col-xs-6 loginli"> <Link className="g-pb-3" to="/signin">手机登录</Link></li>
+                            <li className="col-xs-6 loginli"><Link className="signinTypeBar g-pb-3" to="/signinemail">邮箱登录</Link></li>
                         </ul>
                     </div>
                     <div className="form-style">
                         <div className="form-signin" >
-                            <input className="input form-group" type="text" placeholder="请输入邮箱" ref="email" /> <br />
-                            <input className="input form-group" type="password" placeholder="请输入密码" ref="password" /><br />
+                            <input className="input inputwidth form-group" type="text" placeholder="请输入邮箱" ref="email" /> <br />
+                            <input className="input inputwidth form-group" type="password" placeholder="请输入密码" ref="password" /><br />
                             <div className="form-group">
                                 <button className="btn form-login" onClick={this.handleEmailSubmit.bind(this)}>登录</button>
                             </div>

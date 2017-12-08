@@ -5,18 +5,20 @@
 
 import React, { Component } from 'react';
 
-class JumpTip extends Component {
-
+class RegisterJumptip extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
     render() {
-        // const tip = localStorage.getItem("tip");
-        const message = localStorage.getItem("message");
+       const register = localStorage.getItem("registertip");
         return (
             <div className="jumptip">
                 <div className="text-center">
-                    <h1>{message}</h1>
+                    <h1>{register}</h1>
                 </div>
             </div>);
     }
 }
 
-export default JumpTip;
+export default RegisterJumptip ;

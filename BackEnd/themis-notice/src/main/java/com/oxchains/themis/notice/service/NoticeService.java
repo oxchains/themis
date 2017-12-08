@@ -15,8 +15,10 @@ import com.oxchains.themis.repo.dao.UserDao;
 import com.oxchains.themis.repo.dao.UserTxDetailDao;
 import com.oxchains.themis.repo.entity.*;
 import com.oxchains.themis.repo.entity.UserTxDetail;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -51,9 +53,17 @@ public class NoticeService {
     @Resource private SearchTypeDao searchTypeDao;
     @Resource private UserTxDetailDao userTxDetailDao;
     @Resource private UserDao userDao;
+    @Value("${themis.user.default}") private String userDefaultImage;
 
     public RestResp broadcastNotice(Notice notice){
         try {
+            // 判断用于信息是否完善（收货地址）
+            Long userId = notice.getUserId();
+            User user = userDao.findOne(userId);
+            String firstAddress = user.getFirstAddress();
+            if (StringUtils.isBlank(firstAddress)){
+                return RestResp.fail("请完善用户信息：收货地址");
+            }
             // 必填项判断
             if (null == notice.getNoticeType()){
                 return RestResp.fail("请选择广告类型");
@@ -523,6 +533,16 @@ public class NoticeService {
     private void setUserTxDetail(List<Notice> subList, int i) {
         Long userId = subList.get(i).getUserId();
         UserTxDetail userTxDetail = userTxDetailDao.findByUserId(userId);
+        // 查找头像名
+        User user = userDao.findOne(userId);
+        String imageName = user.getImage();
+
+        if (null == imageName){
+            subList.get(i).setImageName(userDefaultImage);
+        } else {
+            subList.get(i).setImageName(imageName);
+        }
+
         if (null == userTxDetail){
             subList.get(i).setTxNum(0);
             subList.get(i).setTrustNum(0);

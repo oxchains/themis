@@ -34,7 +34,7 @@ class Buydetail extends Component {
         });
     };
     componentWillMount() {
-        const noticeId = this.props.match.params.id.slice(1);
+        const noticeId = this.props.match.params.id;
         this.props.fetctBuyBtcDetail({ noticeId });
     }
     handelChange(e) {
@@ -55,7 +55,7 @@ class Buydetail extends Component {
     handleSubmit() {
         const formdata = {
             userId: localStorage.getItem("userId"),
-            noticeId: this.props.match.params.id.slice(1),
+            noticeId: this.props.match.params.id,
             money: this.state.messmoney,
             amount: this.state.messnum
         };
@@ -73,7 +73,7 @@ class Buydetail extends Component {
         const userId = localStorage.getItem('userId');
         const orderData = { id: item.id, userId: userId, partnerId: item.sellerId == userId ? item.buyerId : item.sellerId };
         localStorage.setItem("partner", JSON.stringify(orderData));
-        window.location.href = '/orderprogress';
+        window.location.href = '/order/progress';
     }
     render() {
         // const userId=localStorage.getItem("userId");
@@ -120,9 +120,9 @@ class Buydetail extends Component {
                                 <li>付款期限 : &#x3000;&#x3000;&#x3000;{time} 分钟</li>
                             </ul>
                             <h4 className="sellwhat">你想购买多少？</h4>
-                            <input type="text" className="inputmoney sellmoney" onChange={this.handelChange} name="money" value={messmoney} placeholder="请输入你想购买的金额" />
+                            <input type="text" className="input inputmoney sellmoney" onChange={this.handelChange} name="money" value={messmoney} placeholder="请输入你想购买的金额" />
                             <i className="fa fa-exchange" aria-hidden="true"></i>
-                            <input type="text" className="inputmoney sellmoney" onChange={this.handelChange} name="btc" value={messnum} placeholder="请输入你想购买的数量" />
+                            <input type="text" className="input inputmoney sellmoney" onChange={this.handelChange} name="btc" value={messnum} placeholder="请输入你想购买的数量" />
                             <button className="form-sell" onClick={this.handleSubmit}>立刻购买</button>
                         </div>
                     </div>
@@ -152,7 +152,8 @@ class Buydetail extends Component {
                     <ModalFooter>
                         <button className='btn btn-default' onClick={this.hideModal}>
                             {/*<a href="/myadvert" >关闭</a>*/}
-                            <div className="close-modal" onClick={this.showOrderDetail.bind(this, this.props.data)}>关闭</div>
+                            <Link className="close-modal" to={`/order/progress/${this.props.data.id}`}>关闭</Link>
+                            {/*<div className="close-modal" onClick={this.showOrderDetail.bind(this, this.props.data)}>关闭</div>*/}
                         </button>
                     </ModalFooter>
                 </Modal>

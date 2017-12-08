@@ -15,12 +15,13 @@ class Resetpsw extends Component {
         this.state = {};
     }
     handleEmailSubmit() {
-        const resetkey = localStorage.getItem("email");
+        const resetkey = localStorage.getItem("email") ? localStorage.getItem("email") : localStorage.getItem("mobilephone");
         // console.log(resetkey);
         const newpassword = this.refs.newpassword.value;
         const password = this.refs.password.value;
         if (newpassword === password){
             this.props.ResetpswAction({ resetkey, password });
+
         }else{
             alert("两次密码输入不一致");
         }
@@ -47,8 +48,8 @@ class Resetpsw extends Component {
                     </div>
                     <div className="form-style">
                         <div className="form-signin" >
-                            <input className="input form-group" type="password" placeholder="请输入新密码" ref="newpassword" /> <br />
-                            <input className="input form-group" type="password" placeholder="请再次输入新密码" ref="password" /><br />
+                            <input className="input inputwidth form-group" type="password" placeholder="请输入新密码" ref="newpassword" /> <br />
+                            <input className="input inputwidth form-group" type="password" placeholder="请再次输入新密码" ref="password" /><br />
                             <div className="form-group">
                                 <button className="btn form-login" onClick={this.handleEmailSubmit.bind(this)}>确定</button>
                             </div>

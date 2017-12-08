@@ -3,6 +3,7 @@ package com.oxchains.themis.repo.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 
 /**
  * 站内信文本
@@ -30,6 +31,15 @@ public class MessageText {
     private String postDate;   // 站内信发送时间
 
     private String orderId;     // 订单id
+
+    @Transient
+    private Long partnerId;
+
+    @Transient
+    private String friendUsername; // 交易伙伴
+
+    @Transient
+    private String imageName;   // 头像名
 
     public MessageText(Long senderId, String message, Integer messageType, Long userGroup, String postDate, String orderId) {
         this.senderId = senderId;

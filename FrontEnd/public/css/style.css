@@ -7,11 +7,14 @@ html, body, div, span, applet, object, iframe,  h1, h2, h3, h4, h5, h6, p, block
     vertical-align: baseline;
     background: transparent;
 }
+/* div {
+       -moz-user-select:none;
+        -webkit-user-select:none;
+       user-select:none;
+} */
 ul{list-style: none;}
-div {
-    -moz-user-select:none;
-    -webkit-user-select:none;
-    user-select:none;
+.text-center{
+    text-align: center !important;
 }
 .headerwidth
 {
@@ -22,7 +25,6 @@ div {
 }
 .input
 {
-    width: 100%;
     height: 40px;
     border:1px solid #ccc;
     border-radius:1px;
@@ -30,28 +32,23 @@ div {
     padding: 0 10px;
     font-size: 16px;
     background-color: #fff;
+}
+.inputwidth
+{
+    width: 81%;
 }
 .vcode
 {
     width: 65%;
-    height: 40px;
-    border:1px solid #ccc;
-    border-radius:1px;
-    margin-bottom: 20px;
-    padding: 0 10px;
-    font-size: 16px;
-    background-color: #fff;
+}
+.registervcode
+{
+    width: 52%;
 }
 .inputmoney
 {
     width: 41%;
-    height: 40px;
-    border:1px solid #ccc;
-    border-radius:1px;
-    margin-bottom: 20px;
-    padding: 0 10px;
     font-size: 13px;
-    background-color: #fff;
 }
 .form-style
 {
@@ -154,18 +151,33 @@ div {
     margin: 0 auto;
     display: inline-block;
 }
-.form-control
+.form-control-phone
 {
     display:block;
     width:100%!important;
     height: 40px;
     margin-bottom: 15px;
     border-radius:1px;
+    border: 1px solid #bbbbbb
+}
+.form-control-email
+{
+    width:81%!important;
+    display:block;
+    height: 40px!important;
+    margin-bottom: 15px;
+    border-radius:1px;
+    border: 1px solid #bbbbbb;
+}
+.form-control-error
+{
+    width:81%!important;
+    height: auto;
 }
 .form-register
 {
     display:block;
-    width:100%!important;
+    width:95%!important;
     height: 36px;
     margin-bottom: 15px;
     border-radius:3px;
@@ -182,7 +194,7 @@ div {
 .form-login
 {
     display:block;
-    width:100%!important;
+    width:81%!important;
     height: 36px;
     margin-bottom: 15px;
     border-radius:3px;
@@ -295,7 +307,7 @@ div {
     border-bottom: 1px solid #E9E9E9;
 }
 
-.liheight:nth-child(3)
+.liheight:nth-child(4)
 {
     border-bottom:none;
 }
@@ -356,7 +368,7 @@ div {
 }
 .forgetpwd
 {
-    /* width: 100%; */
+    width: 81%;
     display: flex;
     justify-content: flex-end;
     padding-right: 15px;
@@ -712,7 +724,7 @@ div {
 {
     width: 100%;
     margin: 0 auto;
-    border:1px solid #dddddd;
+    /* border:1px solid #dddddd; */
 }
 .contentborder>td,.contentborder>th,.contenttrust>td,.contenttrust>th
 {
@@ -892,7 +904,7 @@ div {
 {
     margin: 20px 0;
 }
-.form-sellƒƒ
+.form-sell
 {
     display:block;
     width:88.5%!important;
@@ -973,6 +985,7 @@ div {
 .headerul>li>a
 {
     color: black;
+    text-decoration: none;
 }
 .loginlia,.registerlia
 {
@@ -1285,10 +1298,10 @@ html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
 }
 .ordermenu-style
 {
-    height: 36px;
+    height: 53px;
     text-align: center;
-    /* padding: 6px 0; */
-    margin-top: 16px;
+    padding: 15px 0;
+    /* margin-top: 16px; */
 }
 .ordermenu-style>a
 {
@@ -1530,9 +1543,6 @@ html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
 {
     box-shadow: 0 0 20px #bbbbbb;
 }
-.table a{
-    line-height: 30px;
-}
 td {
     word-break: keep-all; /* 不换行 */
     white-space: nowrap;
@@ -1585,25 +1595,40 @@ td {
     padding: 15px 0;
     margin:0 30px;
     border-bottom: 1px solid lightgray;
+    background:#fff;
+    transition: all .3s ease;
 }
 .message-item-tip{
     color: #C9C9C9;
     padding-left: 20px;
     font-weight: 400;
+    transition: all .3s ease;
+}
+.message-item-list .readed{
+    color: #cccccc;
 }
 .message-item-detail{
+    transition: all .3s ease;
+    color: #232323;
     padding-top: 10px;
     padding-left: 20px;
 }
+.message-item-detail:hover{
+    color: #232323;
+}
 .message-item-list:hover{
     cursor: pointer;
-    background: lightgray;
+    background: #CCCCCC;
+    color: #232323;
 }
-.message-item-list:hover .message-item-content .message-item-tip{
+.message-item-list:hover .message-item-content, .message-item-list:hover .message-item-tip, .message-item-list:hover .message-item-detail{
     color: black;
 }
 .message-item-list:hover .message-item-content{
     color: black;
+}
+.no-message{
+    color: #CCCCCC;
 }
 .ant-pagination-item, .ant-pagination-item-link, .ant-pagination-item-link
 {
@@ -1683,4 +1708,33 @@ td {
     height: 300px;
     padding: 80px 20px 20px 20px;
     box-shadow: 0 0 10px #bbbbbb;
+}
+.islivetip
+{
+    width: 400px;
+    margin: 7% auto;
+    display: flex;
+    justify-content: center;
+    height: 300px;
+    padding: 80px 20px 20px 20px;
+}
+.gologin
+{
+   margin-top: 60px;
+   cursor: pointer;
+}
+.gologin>a,.gologin>a:hover,.gologin>a:active
+{
+    color: #16F6EA;
+    font-size: 18px;
+    font-weight: 500;
+    text-decoration: underline;
+}
+.address_pay
+{
+    padding: 60px;
+}
+.changeAddress
+{
+    margin: 30px auto;
 }

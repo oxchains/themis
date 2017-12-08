@@ -34,13 +34,7 @@ div {
 .inputmoney
 {
     width: 40%;
-    height: 40px;
-    border:1px solid #ccc;
-    border-radius:1px;
-    margin-bottom: 20px;
-    padding: 0 10px;
     font-size: 13px;
-    background-color: #fff;
 }
 .form-style
 {
@@ -701,7 +695,7 @@ div {
 {
     width: 100%;
     margin: 0 auto;
-    border:1px solid #dddddd;
+    /* border:1px solid #dddddd; */
 }
 .contentborder>td,.contentborder>th,.contenttrust>td,.contenttrust>th
 {

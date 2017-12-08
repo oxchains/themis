@@ -4,7 +4,8 @@
  */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Pagination } from 'antd';
+//import { Pagination } from 'antd';
+import { Pagination } from 'nl-design';
 import 'antd/dist/antd.css';
 import { fetctTrusted } from '../actions/releaseadvert';
 class Trust extends Component {
@@ -76,10 +77,11 @@ class Trust extends Component {
                         </tbody>
 
                     </table>
-                    <div className="pagecomponent">
+                    <div className={`pagecomponent ${totalNum == 0 || !arrayList? "hidden":"" }`}>
                         <Pagination defaultPageSize={this.state.pageSize} total={totalNum} onChange={e => this.onPagination(e)} />
                     </div>
                 </div>
+                <div className={`text-center h4 ${totalNum== 0 || !arrayList? "":"hidden" }`}>暂无数据</div>
             </div>
         );
     }
