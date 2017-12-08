@@ -5,12 +5,10 @@ import React, { Component }from 'react';
 import {connect} from 'react-redux';
 import { Link } from 'react-router-dom';
 import {Alert, Upload, Button, Icon, Modal, Popconfirm} from 'antd';
-<<<<<<< HEAD
+
 // import {Alert, Upload, Button, Icon, Modal} from 'antd';
 import { Pagination } from 'nl-design';
-=======
-import {Pagenation} from 'nl-design';
->>>>>>> 970d9c5d52c5c486837009291753edcac5a06dc7
+
 import {ROOT_ARBITRATE} from '../actions/types';
 import {uploadEvidence} from '../actions/arbitrate';
 import {fetchNoCompletedOrders} from '../actions/order';

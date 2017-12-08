@@ -20,7 +20,7 @@ class SignupEmial extends Component {
         const loginname = this.refs.loginname.value;
         const email = this.refs.email.value;
         const password = this.refs.password.value;
-        console.log(loginname, email, password);
+        // console.log(loginname, email, password);
         if (loginname && email && password){
             this.props.EmialsignupUser({ loginname, email, password }, err => {
                 this.setState({spin: false });
@@ -36,7 +36,7 @@ class SignupEmial extends Component {
                 );
             }else if(data.status == -1 ){
                 return(
-                    <Alert className="form-control-email" message= {data.message} type="error" showIcon />
+                    <Alert className="form-control-error" message= {data.message} type="error" showIcon />
                 );
             }
         }

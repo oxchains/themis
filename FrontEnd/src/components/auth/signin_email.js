@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { EmailsigninAction } from '../../actions/auth';
 import { Route, Redirect } from 'react-router-dom';
 import { Alert } from 'antd';
+import { Link } from 'react-router-dom';
 class Emiallogin extends Component {
     // let Emiallogin = React.createClass({
     handleEmailSubmit() {
@@ -37,8 +38,8 @@ class Emiallogin extends Component {
                 <div className="login-box-body">
                     <div className="signinWay text-center g-pt-50">
                         <ul className="row loginul">
-                            <li className="col-xs-6 loginli"> <a className="g-pb-3" href="/signin">手机登录</a></li>
-                            <li className="col-xs-6 loginli"><a className="signinTypeBar g-pb-3" href="/signinemail">邮箱登录</a></li>
+                            <li className="col-xs-6 loginli"> <Link className="g-pb-3" to="/signin">手机登录</Link></li>
+                            <li className="col-xs-6 loginli"><Link className="signinTypeBar g-pb-3" to="/signinemail">邮箱登录</Link></li>
                         </ul>
                     </div>
                     <div className="form-style">

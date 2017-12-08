@@ -1,4 +1,3 @@
-
 /**
  * Created by oxchain on 2017/10/20.
  */
@@ -35,10 +34,6 @@ class AddressPay extends Component {
             isChange:true
         });
     }
-    // componentWillMount(){
-    //     const loginname = localStorage.getItem("loginname");
-    //     this.props.fetctAddressPay({loginname});
-    // }
     handleAddresspay(){
         const loginname = localStorage.getItem("loginname");
         const firstAddress = this.refs.addressPay.value;

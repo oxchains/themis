@@ -7,6 +7,11 @@ html, body, div, span, applet, object, iframe,  h1, h2, h3, h4, h5, h6, p, block
     vertical-align: baseline;
     background: transparent;
 }
+/* div {
+       -moz-user-select:none;
+        -webkit-user-select:none;
+       user-select:none;
+} */
 ul{list-style: none;}
 .text-center{
     text-align: center !important;
@@ -30,7 +35,7 @@ ul{list-style: none;}
 }
 .inputwidth
 {
-    width: 100%;
+    width: 81%;
 }
 .vcode
 {
@@ -159,10 +164,15 @@ ul{list-style: none;}
 {
     width:81%!important;
     display:block;
-    height: 40px;
+    height: 40px!important;
     margin-bottom: 15px;
     border-radius:1px;
-    border: 1px solid #bbbbbb
+    border: 1px solid #bbbbbb;
+}
+.form-control-error
+{
+    width:81%!important;
+    height: auto;
 }
 .form-register
 {
@@ -184,7 +194,7 @@ ul{list-style: none;}
 .form-login
 {
     display:block;
-    width:100%!important;
+    width:81%!important;
     height: 36px;
     margin-bottom: 15px;
     border-radius:3px;
@@ -358,7 +368,7 @@ ul{list-style: none;}
 }
 .forgetpwd
 {
-    /* width: 100%; */
+    width: 81%;
     display: flex;
     justify-content: flex-end;
     padding-right: 15px;
@@ -714,7 +724,7 @@ ul{list-style: none;}
 {
     width: 100%;
     margin: 0 auto;
-    border:1px solid #dddddd;
+    /* border:1px solid #dddddd; */
 }
 .contentborder>td,.contentborder>th,.contenttrust>td,.contenttrust>th
 {
@@ -975,6 +985,7 @@ ul{list-style: none;}
 .headerul>li>a
 {
     color: black;
+    text-decoration: none;
 }
 .loginlia,.registerlia
 {
@@ -1287,10 +1298,10 @@ html, body{font-family:Helvetica,"Microsoft YaHei",Arial,sans-serif;}
 }
 .ordermenu-style
 {
-    height: 36px;
+    height: 53px;
     text-align: center;
-    /* padding: 6px 0; */
-    margin-top: 16px;
+    padding: 15px 0;
+    /* margin-top: 16px; */
 }
 .ordermenu-style>a
 {

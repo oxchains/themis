@@ -4,12 +4,8 @@
 
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-<<<<<<< HEAD
 // import {Pagination} from 'antd';
 import { Pagination } from 'nl-design';
-=======
-import {Pagination, Badge} from 'antd';
->>>>>>> 970d9c5d52c5c486837009291753edcac5a06dc7
 import { connect } from 'react-redux';
 import {fetchMessageSystem} from "../../actions/message";
 class MessageSystem extends Component{

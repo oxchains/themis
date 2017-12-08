@@ -66,6 +66,7 @@ class Safeset extends Component {
         this.setState({ visiblepsw: false });
     };
     handlesend() {
+        const loginname = localStorage.getItem("loginname");
         const mobilephone = localStorage.getItem("mobilephone");
         if (this.state.liked && mobilephone) {
             this.timer = setInterval(function () {
@@ -83,11 +84,10 @@ class Safeset extends Component {
                     count: count
                 });
             }.bind(this), 1000);
+            this.props.GetverifyCodePhone({ loginname, mobilephone });
         }else{
             alert("请先输入手机号");
         }
-        const loginname = localStorage.getItem("loginname");
-        this.props.GetverifyCodePhone({ loginname, mobilephone }, () => { });
     }
     phoneChange(e) {
         // console.log(e.target.value);

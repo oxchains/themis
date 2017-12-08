@@ -1,15 +1,13 @@
 /**
  * Created by oxchain on 2017/11/09.
  */
-
-
 import React, { Component } from 'react';
-import { Field } from 'redux-form';
 import { connect } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
 import { EmialAction } from '../../actions/auth';
 import { ROOT_URLC } from '../../actions/types';
 import { Alert } from 'antd';
+import { Link } from 'react-router-dom';
 class Emialforget extends Component {
     constructor(props) {
         super(props);
@@ -31,11 +29,10 @@ class Emialforget extends Component {
            }
         }
 
-        handleSendEmail(e){
-            // e.preventDeafult();
+        handleSendEmail(){
             const email = this.refs.email.value;
             const vcode = this.refs.vcode.value;
-            this.props.EmialAction({ email, vcode }, () => { });
+            this.props.EmialAction({ email, vcode });
         }
         renderAlert(){
             const data = this.props.all || [];
@@ -53,9 +50,8 @@ class Emialforget extends Component {
     render() {
         const data = this.props.all || [];
 
-        localStorage.setItem("tip", data.data);
+        // localStorage.setItem("tip", data.data);
         localStorage.setItem("message", data.message);
-        localStorage.setItem("tipstatus", data.status);
 
         const srcurl =  this.state.Imgurl;
 
@@ -63,10 +59,14 @@ class Emialforget extends Component {
             <div className="login-box">
                 <div className="login-box-body">
                     <div className="signinWay text-center g-pt-50">
-                        <ul className="row loginul">
-                            <li className="col-xs-6 loginli"> <a className="g-pb-3" href="/forgetpsw">手机找回</a></li>
-                            <li className="col-xs-6 loginli"><a className="signinTypeBar g-pb-3" href="/emailforget">邮箱找回</a></li>
-                        </ul>
+                           <ul className="row loginul">
+                                <li className="col-xs-6 loginli"> <Link className="g-pb-3" to="/forgetpsw">手机找回</Link></li>
+                                <li className="col-xs-6 loginli"><Link className="signinTypeBar g-pb-3" to="/emailforget">邮箱找回</Link></li>
+                            </ul>
+                        {/* <ul className="row loginul">
+                            <li className="col-xs-6 loginli"> <Link className="g-pb-3" to="/forgetpsw">手机找回</Link></li>
+                            <li className="col-xs-6 loginli"><Link className="signinTypeBar g-pb-3" to="/emailforget">邮箱找回</Link></li>
+                        </ul> */}
                     </div>
                     <div className="form-style">
                         <div className="form-signin" >
@@ -86,6 +86,7 @@ class Emialforget extends Component {
 
 
 function mapStateToProps(state) {
+    console.log("666");
     return {
         all: state.auth.all
     };

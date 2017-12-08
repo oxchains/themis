@@ -6,6 +6,7 @@ import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { signinAction } from '../../actions/auth';
 import { Alert } from 'antd';
+import { Link } from 'react-router-dom';
 class Signin extends Component {
     constructor(props) {
         super(props);
@@ -41,8 +42,8 @@ class Signin extends Component {
                     <div className="login-box-body">
                         <div className=" signinWay text-center g-pt-50">
                             <ul className="row loginul">
-                                <li className="col-xs-6 loginli"> <a className="signinTypeBar g-pb-3" href="/signin">手机登录</a></li>
-                                <li className="col-xs-6 loginli"><a className=" g-pb-3" href="/signinemail">邮箱登录</a></li>
+                                <li className="col-xs-6 loginli"> <Link className="signinTypeBar g-pb-3" to="/signin">手机登录</Link></li>
+                                <li className="col-xs-6 loginli"><Link className=" g-pb-3" to="/signinemail">邮箱登录</Link></li>
                             </ul>
                         </div>
                         <div className="form-style">
