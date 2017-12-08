@@ -1,4 +1,10 @@
 package com.oxchains.themis.chat.websocket;
+import com.oxchains.themis.chat.entity.SocketPojo;
+import com.oxchains.themis.chat.entity.SocketType;
+import com.oxchains.themis.chat.websocket.socketFunction.SocketContext;
+import com.oxchains.themis.chat.websocket.socketFunction.function.ChatCheck;
+import com.oxchains.themis.chat.websocket.socketFunction.function.TXCheck;
+import com.oxchains.themis.common.util.JsonUtil;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -6,7 +12,6 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 /**
@@ -20,36 +25,27 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
         this.wsUri = wsUri;
     }
     @Override
-    public void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
-        String requestUri =  request.getUri().toString();
+    public void channelRead0(ChannelHandlerContext ctx, FullHttpRequest httpRequest) throws Exception {
+        String requestUri =  httpRequest.getUri().toString();
         if (requestUri.contains(wsUri)){
-            String id = null;
-            String receiverId = null;
+            //连接参数
             String message = requestUri.substring(requestUri.lastIndexOf("?")+1);
-            String[] ids = message.split("_");
-            if(ids.length>=2){
-                id = ids[0];
-                receiverId = ids[1];
+            SocketPojo socketPojo = JsonUtil.jsonToEntity(message, SocketPojo.class);
+            SocketContext socketContext = null;
+            if(socketPojo.getSocketType() == SocketType.CHAT.intValue()){
+                socketContext = new SocketContext(new ChatCheck());
+                socketContext.disposeInfo(socketPojo,ctx);
             }
-            if(id != null && receiverId != null){
-                //判断当前用户的channel分区是否已经创建，如未创建 则创建之
-                if(ChatUtil.userChannels.get(id) == null){
-                    ChatUtil.userChannels.put(id,new ConcurrentHashMap<String ,ChannelHandler>());
-                }
-                Map<String,ChannelHandler> channelHandlerMap =  ChatUtil.userChannels.get(id);
-                String keyIds = ChatUtil.getIDS(id,receiverId);
-                //如果连接存在 则把以前的连接关闭掉 建立新的连接
-                if(channelHandlerMap.get(keyIds) != null){
-                    channelHandlerMap.get(keyIds).close();
-                    channelHandlerMap.remove(keyIds);
-                }
-                channelHandlerMap.put(keyIds,new ChannelHandler(ctx.channel(),System.currentTimeMillis()));
-                ctx.fireChannelRead(request.retain());
+            if(socketPojo.getSocketType() == SocketType.TX.intValue()){
+                socketContext = new SocketContext(new TXCheck());
+                socketContext.disposeInfo(socketPojo,ctx);
             }
+            ctx.fireChannelRead(httpRequest.retain());
+
         }
         else {
-            HttpResponse response = new DefaultHttpResponse(request.getProtocolVersion(), HttpResponseStatus.OK);
-                boolean keepAlive = HttpHeaders.isKeepAlive(request);
+            HttpResponse response = new DefaultHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
+                boolean keepAlive = HttpHeaders.isKeepAlive(httpRequest);
             if (keepAlive) {
                 response.headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
             }
@@ -58,7 +54,6 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
             if (!keepAlive) {
                 future.addListener(ChannelFutureListener.CLOSE);
             }
-
         }
     }
     @Override

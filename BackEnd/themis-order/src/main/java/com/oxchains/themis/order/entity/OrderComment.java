@@ -1,7 +1,14 @@
 package com.oxchains.themis.order.entity;
 import lombok.Data;
+import org.web3j.crypto.CipherException;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.WalletUtils;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.response.Web3ClientVersion;
+import org.web3j.protocol.http.HttpService;
 
 import javax.persistence.*;
+import java.io.IOException;
 
 /**
  * Created by huohuo on 2017/10/28.
@@ -47,4 +54,5 @@ public class OrderComment {
                 ", content='" + content + '\'' +
                 '}';
     }
+
 }

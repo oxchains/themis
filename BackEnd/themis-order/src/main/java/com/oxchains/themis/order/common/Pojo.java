@@ -30,4 +30,24 @@ public class Pojo implements Serializable {
     public Integer getPageNum() {
         return pageNum;
     }
+
+    @Override
+    public String toString() {
+        return "Pojo{" +
+                "userId=" + userId +
+                ", id='" + id + '\'' +
+                ", successId=" + successId +
+                ", noticeId=" + noticeId +
+                ", txId='" + txId + '\'' +
+                ", content='" + content + '\'' +
+                ", status=" + status +
+                ", amount='" + amount + '\'' +
+                ", money=" + money +
+                ", fileName='" + fileName + '\'' +
+                ", thumbUrl='" + thumbUrl + '\'' +
+                ", pageNum=" + pageNum +
+                ", pageSize=" + pageSize +
+                ", token='" + token + '\'' +
+                '}';
+    }
 }

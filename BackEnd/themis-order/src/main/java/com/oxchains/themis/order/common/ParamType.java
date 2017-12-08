@@ -66,6 +66,7 @@ public interface ParamType {
         FINISH(6L, "已完成"),
         CANCEL(7L, "已取消"),
         WAIT_REFUND(8L, "退款中");
+
         private Long status;
         private String name;
         OrderStatus(Long value, String name) {

@@ -21,4 +21,6 @@ public class ChatContent {
     private Integer msgType;
     private String status;
     private String orderId;
+    @Transient
+    private Integer healthType;
 }

@@ -17,6 +17,7 @@ import com.oxchains.themis.repo.entity.Order;
 import com.oxchains.themis.repo.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -56,6 +57,9 @@ public class MessageService {
     @Resource private MessageTextDao messageTextDao;
     @Resource private OrderDao orderDao;
     @Resource private UserDao userDao;
+
+    @Value("${themis.user.default}") private String userDefaultImage;
+    @Value("${themis.system.default}") private String systemDefaultImage;
 
     /**
      * 测试，快速添加数据
@@ -266,13 +270,13 @@ public class MessageService {
         }
         if (sendId == 0){
             // 设置系统头像
-            messageText.setImageName("T1xaETByJT1RCvBVdK.png");
+            messageText.setImageName(systemDefaultImage);
         } else {
             User user = userDao.findOne(sendId);
             String imageName = user.getImage();
             if (null == imageName){
                 // 设置默认用户头像
-                messageText.setImageName("T1xRETByJT1RCvBVdK.png");
+                messageText.setImageName(userDefaultImage);
             } else {
                 messageText.setImageName(imageName);
             }
