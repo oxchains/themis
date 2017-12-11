@@ -4,8 +4,8 @@
 
 import React, { Component } from 'react';
 import { Select } from 'antd';
-//import { Pagination } from 'antd';
-import {Pagination} from 'nl-design';
+import { Pagination } from 'antd';
+// import {Pagination} from 'nl-design';
 import 'antd/dist/antd.css';
 import { connect } from 'react-redux';
 import { fetcAdvertSeach, fetctArray } from '../actions/releaseadvert';
