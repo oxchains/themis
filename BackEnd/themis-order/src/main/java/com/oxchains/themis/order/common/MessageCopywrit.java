@@ -1,7 +1,7 @@
 package com.oxchains.themis.order.common;
 
 /**
- * Created by xuqi on 2017/11/10.
+ * Created by huohuo on 2017/11/10.
  */
 public class MessageCopywrit {
     public static final String ADD_ORDERS_NOTICE = "你的公告已经被用户 {0} 拍下,订单号{1}";

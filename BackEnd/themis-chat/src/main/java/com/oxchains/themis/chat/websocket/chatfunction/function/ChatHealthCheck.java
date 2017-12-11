@@ -23,6 +23,7 @@ public class ChatHealthCheck implements InfoStrategy{
             ChannelHandler channelHandler = channelHandlerMap.get(keyIDs);
             if(channelHandler!=null){
                 channelHandler.setLastUseTime(System.currentTimeMillis());
+                System.out.println("聊天心跳");
                 chatContent.setStatus("success");
                 channelHandler.getChannel().writeAndFlush(new TextWebSocketFrame(JsonUtil.toJson(chatContent)));
             }

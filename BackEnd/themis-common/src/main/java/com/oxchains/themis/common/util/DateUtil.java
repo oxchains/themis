@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.Random;
 
 /**
- * Created by xuqi on 2017/10/24.
+ * Created by huohuo on 2017/10/24.
  */
 public class DateUtil {
     /*

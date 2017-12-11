@@ -23,6 +23,7 @@ import com.oxchains.themis.repo.entity.*;
 import org.apache.commons.collections.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -63,6 +64,7 @@ public class OrderService {
     private MessageService messageService;
     @Resource
     private RestTemplate restTemplate;
+    private String defaultImageName = "123";
     private static final String remoteError = "服务器繁忙,请稍后重试!";
     /*
     * 查询所有订单  用来测试
@@ -450,7 +452,14 @@ public class OrderService {
             userTxDetails = this.findUserTxDetails(pojo);
             if(userTxDetails!=null){
                 userTxDetails.setNotice(notice);
-                userTxDetails.setLoginname(this.getLoginNameByUserId(notice.getUserId()));
+                User user = callService.getUserById(notice.getUserId());
+                if(user !=null){
+                    userTxDetails.setLoginname(user.getLoginname());
+                    userTxDetails.setImageName(this.defaultImageName);
+                    if(user.getImage() != null){
+                        userTxDetails.setImageName(user.getImage());
+                    }
+                }
             }
         } catch (Exception e) {
             LOG.error("find user transaction and notice  faild : {}",e);
