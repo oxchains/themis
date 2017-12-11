@@ -24,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.processor.ITextNodeProcessorMatcher;
 
 import javax.annotation.Resource;
@@ -36,6 +37,7 @@ import java.util.*;
  * @create 2017-11-06 15:02
  **/
 @Service
+@Transactional(rollbackFor=Exception.class)
 public class MessageService {
 
     private final Logger LOG = LoggerFactory.getLogger(MessageService.class);
