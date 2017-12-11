@@ -115,38 +115,7 @@ public class MessageService {
      * 查询公告信息
      */
     public RestResp queryNoticeMsg(Long userId, Integer pageNum, Integer pageSize){
-        try {
-            // 获取自己所在的用户组
-            User user = userDao.findOne(userId);
-            Long userGroup = user.getRoleId();
-
-            Pageable pageable = new PageRequest(pageNum - 1, pageSize, new Sort(Sort.Direction.DESC, "id"));
-            Page<Message> page = messageDao.findByReceiverIdAndMessageType(userId, MessageType.PUBLIC, pageable);
-            Iterator<Message>it = page.iterator();
-            List<MessageDTO> mList = new ArrayList<>();
-            while (it.hasNext()){
-                Message message = it.next();
-                MessageText messageText = messageTextDao.findByIdAndMessageType(message.getMessageTextId(), MessageType.PUBLIC);
-                messageText.setUserGroup(userGroup);
-                messageTextDao.save(messageText);
-                message.setMessageText(messageText);
-                message.setReadStatus(MessageReadStatus.READ);
-                message.setReceiverId(userId);
-                messageDao.save(message);
-
-                mList.add(new MessageDTO(message));
-            }
-            PageDTO<MessageDTO> pageDTO = new PageDTO<>();
-            pageDTO.setPageList(mList);
-            pageDTO.setRowCount(page.getTotalElements());
-            pageDTO.setTotalPage(page.getTotalPages());
-            pageDTO.setPageNum(pageNum);
-            pageDTO.setPageSize(pageSize);
-            return RestResp.success("操作成功", pageDTO);
-        }catch (Exception e){
-            LOG.error("站内信：获取公告信息异常", e);
-        }
-        return RestResp.fail("操作失败");
+        return queryMessage(userId, pageNum, pageSize, MessageType.PUBLIC, false);
     }
 
     /**
@@ -233,8 +202,7 @@ public class MessageService {
         User user = userDao.findOne(userId);
         if (user != null) {
             Long userGroup = user.getRoleId();
-            // TODO 待修改，只能查找指定用户组，如果当前userGroup是2（仲裁），不能查找4（所有人，包括2）的
-            List<MessageText> messageTextList = messageTextDao.findByMessageTypeAndUserGroup(MessageType.PUBLIC, userGroup);
+            List<MessageText> messageTextList = messageTextDao.findByMessageTypeAndUserGroup(MessageType.PUBLIC, userGroup, 4L);
 
             if (messageTextList.size() != 0) {
                 for (MessageText mt : messageTextList) {
