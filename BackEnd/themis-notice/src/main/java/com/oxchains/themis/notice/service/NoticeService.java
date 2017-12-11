@@ -24,9 +24,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -37,7 +37,7 @@ import java.util.List;
  * @create 2017-10-25 10:21
  **/
 @Service
-@Transactional
+@Transactional(rollbackFor=Exception.class)
 public class NoticeService {
 
     private final Logger LOG = LoggerFactory.getLogger(NoticeService.class);

@@ -4,8 +4,8 @@
 
 import React, { Component } from 'react';
 import { Select } from 'antd';
-//import { Pagination } from 'antd';
-import { Pagination } from 'nl-design';
+import { Pagination } from 'antd';
+// import { Pagination } from 'nl-design';
 import 'antd/dist/antd.css';
 import { connect } from 'react-redux';
 
@@ -157,6 +157,7 @@ class Sellbtc extends Component {
 
 
 function mapStateToProps(state) {
+    // console.log(state.advert.all);
     return {
         array: state.advert.array,   //select选择框
         all: state.advert.all,       //表格数据

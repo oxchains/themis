@@ -17,13 +17,15 @@ class Home extends Component {
     }
     renderRows() {
         const arraydata = this.props.all || [];   //列表数组的数据
+        console.log(arraydata);
         return arraydata.map((item, index) => {
+            const actionUrl = "http://192.168.1.200/v1/tfs/" + item.imageName;
             return (
                 <div key={index} className="list-border">
                     <div className="title-bgc">
-                    <a href={`/otherInfodetail/${item.userId}`}> <img src={item.src ? item.src : "/public/img/touxiang.png"} alt="" /></a>
+                        <a href={`/otherInfodetail/${item.userId}`}> <img src={actionUrl ? actionUrl : "/public/img/touxiang.png"} alt="" /></a>
                         <p>
-                           <a href={`/otherInfodetail/${item.userId}`}>{item.loginname}</a>
+                            <a href={`/otherInfodetail/${item.userId}`}>{item.loginname}</a>
                         </p>
                     </div>
                     <div className="col-lg-4">
@@ -99,6 +101,7 @@ class Home extends Component {
 }
 
 function mapStateToProps(state) {
+    // console.log(state.advert.all);
     return {
         all: state.advert.all
     };

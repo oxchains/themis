@@ -25,4 +25,6 @@ public interface TransactionDao extends CrudRepository<Transaction,Long> {
      * @return
      */
     Transaction findByOrderId(String orderId);
+
+    Transaction findByUtxoTxid(String utxoTxid);
 }

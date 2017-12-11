@@ -103,6 +103,10 @@ public class BitcoinService {
         try{
             log.info("*** 订单{}, 添加UTXO_ID: {}" ,orderId, txId);
 
+            Transaction tx = transactionDao.findByUtxoTxid(txId);
+            if(null == tx){
+                return RestResp.fail("该交易已经执行，订单为："+ tx.getOrderId()+"，请问重复添加。");
+            }
             Transaction transaction = transactionDao.findByOrderId(orderId);
             if(null != transaction){
                 transaction.setUtxoTxid(txId);

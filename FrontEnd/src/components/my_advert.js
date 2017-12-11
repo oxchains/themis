@@ -3,8 +3,8 @@
  */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-//import { Pagination } from 'antd';
-import { Pagination } from 'nl-design';
+import { Pagination } from 'antd';
+// import { Pagination } from 'nl-design';
 import 'antd/dist/antd.css';
 import { fetctMyAdvert, fetctOffMyAd } from '../actions/releaseadvert';
 import {

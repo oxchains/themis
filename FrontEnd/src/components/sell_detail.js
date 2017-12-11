@@ -96,9 +96,9 @@ class Selldetail extends Component {
         const messmoney = this.state.messmoney;
         const messnum = this.state.messnum;
         const data = this.props.all.notice || [];
-        const datanum = this.props.all;
+        const datanum = this.props.all ||[];
         const time = data.validPayTime / 1000 / 60;
-        const imgUrl = 'http://192.168.1.201/v1/tfs/T19RETByhT1RCvBVdK';
+        const imgUrl = 'http://192.168.1.200/v1/tfs/' + datanum.imageName;
         return (
             <div className="maincontent">
                 <div className="detail-title">

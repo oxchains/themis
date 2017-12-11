@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Pagination } from 'nl-design';
-
+import { Badge } from 'antd';
 import { connect } from 'react-redux';
 import {fetchMessageNotice} from "../../actions/message";
 

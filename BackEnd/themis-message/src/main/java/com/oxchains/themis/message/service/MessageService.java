@@ -17,12 +17,14 @@ import com.oxchains.themis.repo.entity.Order;
 import com.oxchains.themis.repo.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.processor.ITextNodeProcessorMatcher;
 
 import javax.annotation.Resource;
@@ -35,6 +37,7 @@ import java.util.*;
  * @create 2017-11-06 15:02
  **/
 @Service
+@Transactional(rollbackFor=Exception.class)
 public class MessageService {
 
     private final Logger LOG = LoggerFactory.getLogger(MessageService.class);
@@ -56,6 +59,9 @@ public class MessageService {
     @Resource private MessageTextDao messageTextDao;
     @Resource private OrderDao orderDao;
     @Resource private UserDao userDao;
+
+    @Value("${themis.user.default}") private String userDefaultImage;
+    @Value("${themis.system.default}") private String systemDefaultImage;
 
     /**
      * 测试，快速添加数据
@@ -109,38 +115,7 @@ public class MessageService {
      * 查询公告信息
      */
     public RestResp queryNoticeMsg(Long userId, Integer pageNum, Integer pageSize){
-        try {
-            // 获取自己所在的用户组
-            User user = userDao.findOne(userId);
-            Long userGroup = user.getRoleId();
-
-            Pageable pageable = new PageRequest(pageNum - 1, pageSize, new Sort(Sort.Direction.DESC, "id"));
-            Page<Message> page = messageDao.findByReceiverIdAndMessageType(userId, MessageType.PUBLIC, pageable);
-            Iterator<Message>it = page.iterator();
-            List<MessageDTO> mList = new ArrayList<>();
-            while (it.hasNext()){
-                Message message = it.next();
-                MessageText messageText = messageTextDao.findByIdAndMessageType(message.getMessageTextId(), MessageType.PUBLIC);
-                messageText.setUserGroup(userGroup);
-                messageTextDao.save(messageText);
-                message.setMessageText(messageText);
-                message.setReadStatus(MessageReadStatus.READ);
-                message.setReceiverId(userId);
-                messageDao.save(message);
-
-                mList.add(new MessageDTO(message));
-            }
-            PageDTO<MessageDTO> pageDTO = new PageDTO<>();
-            pageDTO.setPageList(mList);
-            pageDTO.setRowCount(page.getTotalElements());
-            pageDTO.setTotalPage(page.getTotalPages());
-            pageDTO.setPageNum(pageNum);
-            pageDTO.setPageSize(pageSize);
-            return RestResp.success("操作成功", pageDTO);
-        }catch (Exception e){
-            LOG.error("站内信：获取公告信息异常", e);
-        }
-        return RestResp.fail("操作失败");
+        return queryMessage(userId, pageNum, pageSize, MessageType.PUBLIC, false);
     }
 
     /**
@@ -227,8 +202,7 @@ public class MessageService {
         User user = userDao.findOne(userId);
         if (user != null) {
             Long userGroup = user.getRoleId();
-            // TODO 待修改，只能查找指定用户组，如果当前userGroup是2（仲裁），不能查找4（所有人，包括2）的
-            List<MessageText> messageTextList = messageTextDao.findByMessageTypeAndUserGroup(MessageType.PUBLIC, userGroup);
+            List<MessageText> messageTextList = messageTextDao.findByMessageTypeAndUserGroup(MessageType.PUBLIC, userGroup, 4L);
 
             if (messageTextList.size() != 0) {
                 for (MessageText mt : messageTextList) {
@@ -266,13 +240,13 @@ public class MessageService {
         }
         if (sendId == 0){
             // 设置系统头像
-            messageText.setImageName("T1xaETByJT1RCvBVdK.png");
+            messageText.setImageName(systemDefaultImage);
         } else {
             User user = userDao.findOne(sendId);
             String imageName = user.getImage();
             if (null == imageName){
                 // 设置默认用户头像
-                messageText.setImageName("T1xRETByJT1RCvBVdK.png");
+                messageText.setImageName(userDefaultImage);
             } else {
                 messageText.setImageName(imageName);
             }
