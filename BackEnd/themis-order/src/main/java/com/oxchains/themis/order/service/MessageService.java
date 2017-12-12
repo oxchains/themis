@@ -16,6 +16,8 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import java.text.MessageFormat;
+import java.util.Optional;
+
 /**
  * Created by huohuo on 2017/11/7.
  * @author huohuo
@@ -51,7 +53,6 @@ public class MessageService {
             messageRepo.save(message2);
         } catch (Exception e) {
             LOG.error("MESSAGE -- post add orders faild : {}",e);
-            throw  e;
         }
     }
     //卖家上传公私钥的站内信
@@ -69,11 +70,14 @@ public class MessageService {
     //卖家上传交易id的站内信
     public void postUploadTxId(Orders orders){
         try {
-            String message = MessageFormat.format(MessageCopywrit.UPLOAD_TXID,orders.getId());
-            MessageText messageText = new MessageText(0L,message, MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
-            MessageText save = messageTextRepo.save(messageText);
-            Message message1 = new Message(orders.getSellerId(),save.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
-            messageRepo.save(message1);
+            Optional<Orders> ordersOptional = Optional.ofNullable(orders);
+            ordersOptional.ifPresent(orders1 -> {
+                String message = MessageFormat.format(MessageCopywrit.UPLOAD_TXID,orders.getId());
+                MessageText messageText = new MessageText(0L,message, MessageType.GLOBAL,0L,DateUtil.getPresentDate(),orders.getId());
+                MessageText save = messageTextRepo.save(messageText);
+                Message message1 = new Message(orders.getSellerId(),save.getId(), MessageReadStatus.UN_READ,MessageType.GLOBAL);
+                messageRepo.save(message1);
+            });
         } catch (Exception e) {
             LOG.error("MESSAGE -- post upload tx id faild : {}",e);
         }

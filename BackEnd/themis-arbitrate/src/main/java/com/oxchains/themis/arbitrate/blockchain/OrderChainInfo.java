@@ -14,5 +14,7 @@ public class OrderChainInfo {
     private String sellerPrivKey; //卖家私钥
     private String K;             //门限方案中的K值
     private String N;             //门限方案中的N值
+    private String arbitratePubKey; //仲裁者公钥
+    private String arbitratePriKey; //仲裁者私钥
 
 }

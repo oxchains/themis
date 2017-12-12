@@ -16,6 +16,5 @@ import java.util.List;
 public interface OrderDao extends CrudRepository<Order,Long> {
     List<Order> findByBuyerIdOrSellerId(Long buyId, Long sellerId);
     int countByBuyerIdOrSellerId(Long buyId,Long sellerId);
-
     Order findById(String orderId);
 }

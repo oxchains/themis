@@ -54,6 +54,7 @@ public class ChainHandler {
         return contract;
 
     }
+    //添加订单时 在链中存入一条订单信息 包括买家公私钥 仲裁者公私钥 买家id,卖家id 卖家私钥碎片 们现方案的K N值
     public void setOrderInfoToChain(OrderChainInfo orderChainInfo, String buyerPriKey[],String sellerPrikey[], List<User> list,Integer K){
         try {
             Order order = this.getOrder();
@@ -65,16 +66,47 @@ public class ChainHandler {
             LOG.error("set order info to chain faild:{}",e.getMessage(),e);
         }
     }
+    //获取买家私钥
     public String getBuyerPriKeyByOrderid(String orderId) throws Exception {
         Order order = this.getOrder();
         String str = order.GetEncryBuyerPrivKey(orderId).send();
         return str;
     }
-    public String getSllerPriKeyByOrderid(String orderId) throws Exception {
+    //获取买家公钥
+    public String getBuyerPubKeyByOrderId(String orderId){
+        return null;
+    }
+    //获取卖家私钥
+    public String getSellerPriKeyByOrderid(String orderId) throws Exception {
         Order order = this.getOrder();
         String str = order.GetEncrySellerPrivKey(orderId).send();
         return str;
     }
+    //获取卖家公钥
+    public String getSellerPubKeyByOrderId(String orderId){
+        return null;
+    }
+    //获取仲裁者公钥
+    public String getArbitratePubKey(String orderId,Long userId){
+        return null;
+    }
+    //上传卖家的公私钥
+    public void setSellerPriPubKeyToChain(OrderChainInfo orderChainInfo,String priKey[]){
+
+    }
+    //获取订单的胜利者
+    public Integer getArbitrateWin(String orderId){
+        return null;
+    }
+    //仲裁者判断买家或者卖家胜利
+    public void arbitrateToUser(Long arbitrateUserId,String orderId,String userId){
+
+    }
+    //获取用户的私钥碎片
+    public void getUserShardKeyByOrderId(String orderId,String userId){
+
+    }
+
     public String getArbitrateBuyerPriKey(String orderId,Long userId) throws Exception {
         Order order = this.getOrder();
         String str = order.GetTrusteeStoreBuyerOrSellerEncryPrivKey(orderId, userId.toString(), buyer).send();

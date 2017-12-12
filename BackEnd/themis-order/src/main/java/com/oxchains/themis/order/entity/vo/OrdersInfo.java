@@ -44,7 +44,6 @@ public class OrdersInfo implements Serializable{
             this.setPaymentId(orders.getPaymentId());
             this.setOrderStatus(orders.getOrderStatus());
             this.setUri(orders.getUri());
-
         }
     }
 
