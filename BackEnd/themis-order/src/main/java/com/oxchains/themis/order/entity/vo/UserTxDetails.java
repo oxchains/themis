@@ -14,6 +14,7 @@ import java.math.BigDecimal;
  */
 @Data
 public class UserTxDetails extends UserTxDetail{
+    private String imageName;
     private String createTime;     //用户创建时间
     private Notice notice;      //公告详细信息
     private String emailVerify; //电子邮箱是否验证

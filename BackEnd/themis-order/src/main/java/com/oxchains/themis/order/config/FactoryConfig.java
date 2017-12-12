@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
 /**
- * Created by xuqi on 2017/12/4.
+ * Created by huohuo on 2017/12/4.
  */
 @Configuration
 @EnableAutoConfiguration

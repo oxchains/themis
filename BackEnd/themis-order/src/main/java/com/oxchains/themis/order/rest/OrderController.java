@@ -98,7 +98,7 @@ public class OrderController {
         return orderService.releaseBTC(pojo);
     }
     /*
-    * 七 ：买家确认收货
+    * 七 ：买家确认收到BTC
     * */
     @RequestMapping("/order/confirmReciveBTC")
     public RestResp confirmReciveBTC(@RequestBody Pojo pojo){

@@ -10,7 +10,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
 /**
- * Created by xuqi on 2017/12/8.
+ * Created by huohuo on 2017/12/8.
  */
 public class UploadTxHealthCheck implements InfoStrategy {
     @Override
@@ -20,6 +20,7 @@ public class UploadTxHealthCheck implements InfoStrategy {
         if(channelHandler != null){
             channelHandler.setLastUseTime(System.currentTimeMillis());
             chatContent1.setStatus("success");
+            System.out.println("交易id心跳");
             channelHandler.getChannel().writeAndFlush(new TextWebSocketFrame(JsonUtil.toJson(chatContent1)));
         }
         else{

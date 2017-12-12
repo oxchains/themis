@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 /**
- * Created by xuqi on 2017/12/1.
+ * Created by huohuo on 2017/12/1.
  */
 @Service
 public class TFSConsumer {

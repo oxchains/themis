@@ -20,9 +20,11 @@ import com.oxchains.themis.repo.dao.OrderRepo;
 import com.oxchains.themis.repo.dao.PaymentRepo;
 import com.oxchains.themis.repo.dao.UserTxDetailDao;
 import com.oxchains.themis.repo.entity.*;
+import jnr.x86asm.OP;
 import org.apache.commons.collections.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +32,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.web3j.protocol.Web3j;
@@ -63,6 +66,7 @@ public class OrderService {
     private MessageService messageService;
     @Resource
     private RestTemplate restTemplate;
+    private String defaultImageName = "123";
     private static final String remoteError = "服务器繁忙,请稍后重试!";
     /*
     * 查询所有订单  用来测试
@@ -83,7 +87,7 @@ public class OrderService {
             Notice notice = callService.findNoticeById(pojo.getNoticeId());
             AddressKeys addressKeys = callService.getAddressKeys();
             List<User> userList = callService.getArbitrateUser();
-            if(userList == null || addressKeys == null || notice == null){
+            if(userList == null || addressKeys == null || notice == null || userList.size() < ShamirUtil.N){
                 return RestResp.fail(remoteError);
             }
             //生成一条订单信息 订单状态为1 是否仲裁为0
@@ -98,32 +102,37 @@ public class OrderService {
                     ParamType.OrderStatus.WAIT_CONFIRM.getStatus(),
                     notice.getId(),
                     ParamType.ArbitrateStatus.NOARBITRATE.getStatus());
-            orders =orderRepo.save(orders);
-            //发给发布公告的人和拍订单的人的站内信
-            messageService.postAddOrderMessage(orders,pojo.getUserId(),notice.getUserId());
-            //生成买家用户的公私匙 存到 order_address_key table 每个订单对应一条
-            //生成仲裁者用户的公私匙 存到 订单买家卖家仲裁者表里 order_address_key 每个订单对应一条
-
-            OrderAddresskeys orderAddresskeys = new OrderAddresskeys(orders.getId(),addressKeys.getPublicKey(),addressKeys.getPrivateKey(),addressKeys.getPublicKey(),addressKeys.getPrivateKey());
-
-            orderAddresskeys = orderAddresskeyRepo.save(orderAddresskeys);
-
-            //将仲裁者用户的私匙 分为三个密匙碎片分别分给三个人 存储在 订单仲裁表里面 每个订单对应三条信息
-            String[] strArr = ShamirUtil.splitAuth(orderAddresskeys.getUserPriAuth());
-            List<OrderArbitrate> arbitrateList = new ArrayList<>(ShamirUtil.N);
-            OrderArbitrate orderArbitrate = null;
-            for(int i = 0;i<strArr.length;i++){
-                orderArbitrate = new OrderArbitrate(orders.getId(),userList.get(i).getId(),ParamType.ArbitrateStatus.NOARBITRATE.getStatus(),strArr[i]);
-                arbitrateList.add(orderArbitrate);
-            }
-            callService.saveOrderAbritrate(arbitrateList);
-            //处理双方的交易信息
-            this.handleUserTxDetail(pojo.getUserId(),notice.getUserId(),ParamType.UserTxDetailHandle.FIRST_BUY_TIME.getStatus(),null);
+            orders = orderRepo.save(orders);
+            Optional<Orders> ordersOptional = Optional.of(orders);
+            ordersOptional.ifPresent((orders1) -> {
+                //发给发布公告的人和拍订单的人的站内信
+                messageService.postAddOrderMessage(orders1,pojo.getUserId(),notice.getUserId());
+                OrderAddresskeys orderAddresskeys = new OrderAddresskeys(orders1.getId(),addressKeys.getPublicKey(),addressKeys.getPrivateKey(),addressKeys.getPublicKey(),addressKeys.getPrivateKey());
+                //生成买家用户的公私匙 存到 order_address_key table 每个订单对应一条
+                orderAddresskeys = orderAddresskeyRepo.save(orderAddresskeys);
+                Optional<OrderAddresskeys> addresskeysOptional = Optional.of(orderAddresskeys);
+                //将仲裁者用户的私匙 分为三个密匙碎片分别分给三个人 存储在 订单仲裁表里面 每个订单对应三条信息
+                String[] strArr = ShamirUtil.splitAuth(addresskeysOptional.get().getUserPriAuth());
+                //生成仲裁者用户的公私匙 存到 订单买家卖家仲裁者表里 order_address_key 每个订单对应一条
+                List<OrderArbitrate> arbitrateList = new ArrayList<>(ShamirUtil.N);
+                OrderArbitrate orderArbitrate = null;
+                for(int i = 0;i<strArr.length;i++){
+                    orderArbitrate = new OrderArbitrate(orders1.getId(),userList.get(i).getId(),ParamType.ArbitrateStatus.NOARBITRATE.getStatus(),strArr[i]);
+                    arbitrateList.add(orderArbitrate);
+                }
+                Integer saveStatus = callService.saveOrderAbritrate(arbitrateList);
+                if(saveStatus == -1){
+                    throw new RuntimeException();
+                }
+                //处理双方的交易信息
+                this.handleUserTxDetail(pojo.getUserId(),notice.getUserId(),ParamType.UserTxDetailHandle.FIRST_BUY_TIME.getStatus(),null);
+            });
         }catch (Exception e){
             LOG.error("add orders faild : {}",e.getMessage(),e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return RestResp.fail(remoteError);
         }
-        return orders!=null?RestResp.success(new OrdersInfo(orders)):RestResp.fail(remoteError);
+        return RestResp.success(new OrdersInfo(orders));
     }
            private void handleUserTxDetail(Long userId,Long ortherUserId,Integer status,Pojo pojo){
                try {
@@ -204,8 +213,8 @@ public class OrderService {
     public RestRespPage findCompletedOrdersById(Pojo pojo){
         Pageable pageable = new PageRequest(pojo.getPageNum()-1,pojo.getPageSize(),new Sort(Sort.Direction.DESC,"createTime"));
         List<OrdersInfo> ordersInfoList = null;
-        OrdersInfo ordersInfo = null;
         Page<Orders> ordersPage = null;
+        OrdersInfo ordersInfo = null;
         try {
             List<Long> longList = new ArrayList<>();
             longList.add(ParamType.OrderStatus.FINISH.getStatus());
@@ -279,7 +288,6 @@ public class OrderService {
         OrdersInfo ordersInfo = null;
         try {
             Orders orders = orderRepo.findOne(id);
-
             if(orders.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_CONFIRM.getStatus()){
                 //当订单状态为1 时 买家已拍下 但商家还未确认 可以直接取消订单 不采取任何操作
                 orders.setOrderStatus(ParamType.OrderStatus.CANCEL.getStatus());
@@ -329,22 +337,24 @@ public class OrderService {
             Orders o = orderRepo.findOne(pojo.getId());
                 //查询BTC有没有到协商地址如果到了地址
                 JSONObject restResp = restTemplate.getForObject(ThemisUserAddress.CHECK_BTC+pojo.getId(), JSONObject.class);
-                Integer status  = (Integer) restResp.get("status");
-                if(status==1){
-                    o.setOrderStatus(ParamType.OrderStatus.WAIT_PAY.getStatus());
-                    o = orderRepo.save(o);
-                    ordersInfo = new OrdersInfo(o);
-                    this.setOrderStatusName(ordersInfo);
-                    messageService.postConfirmOrder(o);
-                    return RestResp.success(ordersInfo);
-                }
-                else{
+                if(restResp != null){
+                    Integer status  = (Integer) restResp.get("status");
+                    if(status==1){
+                        o.setOrderStatus(ParamType.OrderStatus.WAIT_PAY.getStatus());
+                        o = orderRepo.save(o);
+                        ordersInfo = new OrdersInfo(o);
+                        this.setOrderStatusName(ordersInfo);
+                        messageService.postConfirmOrder(o);
+                        return RestResp.success(ordersInfo);
+                    }
                     return RestResp.fail("你的支付还未到账,请稍后重试");
                 }
         } catch (Exception e) {
             LOG.error("confirm order faild : {}",e.getMessage(),e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return RestResp.fail(remoteError);
         }
+        return RestResp.fail(remoteError);
     }
     /*
     * 买家确认收到退款   将买家的私匙给卖家 订单状态改为6
@@ -355,9 +365,7 @@ public class OrderService {
             Orders orders = orderRepo.findOne(pojo.getId());
             if(orders.getBuyerId().longValue() == pojo.getUserId() && orders.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_REFUND.getStatus()){
                 User user = callService.getUserById(orders.getSellerId());
-                if(user == null){
-                    return RestResp.fail("Network error:get user inof faild  by confirmReceiveRefund");
-                }
+                Optional.of(user);
                 OrderAddresskeys orderAddresskeys = orderAddresskeyRepo.findOrderAddresskeysByOrderId(orders.getId());
                 orderAddresskeys.setSellerBuyerPriAuth(orderAddresskeys.getBuyerPriAuth());
                 orderAddresskeyRepo.save(orderAddresskeys);
@@ -391,42 +399,40 @@ public class OrderService {
     * @Param sellerPriAuth 卖家私钥
     * */
     public RestResp saveAddresskey(SaveAddresskeyPojo orderAddresskeys){
-        OrderAddresskeys orderAddresskeys1 = null;
-        OrdersInfo ordersInfo = null;
         try {
             //将卖家的公私匙上传到公私匙表里
-            orderAddresskeys1 = orderAddresskeyRepo.findOrderAddresskeysByOrderId(orderAddresskeys.getOrderId());
-            //调用用户中心接口生成协商地址
-            Orders orders = orderRepo.findOne(orderAddresskeys1.getOrderId());
+            OrderAddresskeys addressKeys = orderAddresskeyRepo.findOrderAddresskeysByOrderId(orderAddresskeys.getOrderId());
+                //调用用户中心接口生成协商地址
+            Optional<Orders> orders = Optional.of(orderRepo.findOne(addressKeys.getOrderId()));
             StringBuilder sb = new StringBuilder();
-            sb.append(orderAddresskeys1.getBuyerPubAuth());
+            sb.append(addressKeys.getBuyerPubAuth());
             sb.append(",");
-            sb.append(orderAddresskeys.getSellerPubAuth());
+            sb.append(addressKeys.getSellerPubAuth());
             sb.append(",");
-            sb.append(orderAddresskeys1.getUserPubAuth());
-            OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(orderAddresskeys1.getOrderId(),sb.toString(),orders.getAmount().doubleValue());
+            sb.append(addressKeys.getUserPubAuth());
+            OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount(addressKeys.getOrderId(),sb.toString(),orders.get().getAmount().doubleValue());
             JSONObject jsonObject = callService.createCenterAddress(ordersKeyAmount);
             if(jsonObject != null){
                 Integer status = (Integer) jsonObject.get("status");
                 if(status == 1){
-                    orderAddresskeys1.setSellerPubAuth(orderAddresskeys.getSellerPubAuth());
-                    orderAddresskeys1.setSellerPriAuth(orderAddresskeys.getSellerPriAuth());
-                    orderAddresskeyRepo.save(orderAddresskeys1);
-                    ordersInfo = new OrdersInfo(orders);
+                    addressKeys.setSellerPubAuth(orderAddresskeys.getSellerPubAuth());
+                    addressKeys.setSellerPriAuth(orderAddresskeys.getSellerPriAuth());
+                    orderAddresskeyRepo.save(addressKeys);
+                    OrdersInfo ordersInfo = new OrdersInfo(orders.get());
                     LinkedHashMap data = (LinkedHashMap) jsonObject.get("data");
                     ordersInfo.setP2shAddress((String) data.get("address"));
                     ordersInfo.setUri((String)data.get("URI"));
-                    orders.setUri((String)data.get("URI"));
-                    orderRepo.save(orders);
-                    messageService.postAddAddressKey(orders);
+                    orders.get().setUri((String)data.get("URI"));
+                    orderRepo.save(orders.get());
+                    messageService.postAddAddressKey(orders.get());
                     return RestResp.success(ordersInfo);
                 }else{
                     return RestResp.fail("公钥验证失败,请输入正确的公私钥");
                 }
-            }
-
+            };
         } catch (Exception e) {
             LOG.error("save address key faild : {}",e.getMessage(),e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return RestResp.fail(remoteError);
         }
         return RestResp.fail(remoteError);
@@ -450,7 +456,14 @@ public class OrderService {
             userTxDetails = this.findUserTxDetails(pojo);
             if(userTxDetails!=null){
                 userTxDetails.setNotice(notice);
-                userTxDetails.setLoginname(this.getLoginNameByUserId(notice.getUserId()));
+                User user = callService.getUserById(notice.getUserId());
+                if(user !=null){
+                    userTxDetails.setLoginname(user.getLoginname());
+                    userTxDetails.setImageName(this.defaultImageName);
+                    if(user.getImage() != null){
+                        userTxDetails.setImageName(user.getImage());
+                    }
+                }
             }
         } catch (Exception e) {
             LOG.error("find user transaction and notice  faild : {}",e);
@@ -520,16 +533,14 @@ public class OrderService {
         try {
             OrdersKeyAmount ordersKeyAmount = new OrdersKeyAmount();
             ordersKeyAmount.setTxId(pojo.getTxId());
-            JSONObject jsonObject = callService.uploadTxId(ordersKeyAmount, pojo.getId());
-            if(jsonObject != null){
-                Integer status = (Integer) jsonObject.get("status");
-                if(status == 1){
-                    messageService.postUploadTxId(orderRepo.findOne(pojo.getId()));
-                    //if(pojo.getUploadType() == 2){
-                        callService.uploadTxInform(pojo);
-                   // }
-                    return RestResp.success();
+            Optional<JSONObject> jsonObjectOptional = Optional.of(callService.uploadTxId(ordersKeyAmount, pojo.getId()));
+            Integer status = (Integer) jsonObjectOptional.get().get("status");
+            if(status == 1){
+                messageService.postUploadTxId(orderRepo.findOne(pojo.getId()));
+                if(pojo.getUploadType() == 2){
+                    callService.uploadTxInform(pojo);
                 }
+                return RestResp.success();
             }
         } catch (Exception e) {
             LOG.error("faild upload tx id : {}",e.getMessage(),e);
@@ -543,19 +554,21 @@ public class OrderService {
     public RestResp confirmSendMoney(Pojo pojo){
         OrdersInfo ordersInfo = null;
         try {
-            Orders orders = orderRepo.findOne(pojo.getId());
-            if(orders.getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_PAY.getStatus()){
-                orders.setOrderStatus(ParamType.OrderStatus.WAIT_SEND.getStatus());
-                orders = orderRepo.save(orders);
-                ordersInfo = new OrdersInfo(orders);
-                messageService.postConfirmSendMoney(orders);
-                return orders!=null?RestResp.success(ordersInfo):RestResp.fail(remoteError);
+            Optional<Orders> orders = Optional.of(orderRepo.findOne(pojo.getId()));
+            if(orders.get().getOrderStatus().longValue() == ParamType.OrderStatus.WAIT_PAY.getStatus()){
+                orders.get().setOrderStatus(ParamType.OrderStatus.WAIT_SEND.getStatus());
+                Orders orders1 = orderRepo.save(orders.get());
+                Optional<Orders> ordersOptional = Optional.of(orders1);
+                ordersInfo = new OrdersInfo(ordersOptional.get());
+                messageService.postConfirmSendMoney(ordersOptional.get());
+                return RestResp.success(ordersInfo);
             }
         } catch (Exception e) {
             LOG.error("confirm send money faild : {}",e.getMessage(),e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return RestResp.fail(remoteError);
         }
-        return RestResp.fail(remoteError);
+        return RestResp.fail("操作异常");
     }
     /*
     *判断卖家有没有上传公私钥并且生成协商地址
@@ -583,9 +596,7 @@ public class OrderService {
             OrderAddresskeys orderAddresskeys = orderAddresskeyRepo.findOrderAddresskeysByOrderId(pojo.getId());
             Orders orders = orderRepo.findOne(pojo.getId());
             User user = callService.getUserById(orders.getBuyerId());
-            if(user == null){
-                return RestResp.fail("Network error,Please click retry");
-            }
+            Optional.of(user);
             //只有卖家可以释放BTC
             if(orders.getSellerId().longValue() == pojo.getUserId()){
                 //将卖家的私匙给买家
@@ -601,15 +612,17 @@ public class OrderService {
                         orders.setOrderStatus(ParamType.OrderStatus.WAIT_RECIVE.getStatus());
                         orders = orderRepo.save(orders);
                         messageService.postReleaseBtc(orders);
-                        return save!=null?RestResp.success(save):RestResp.fail(remoteError);
+                        return RestResp.success(save);
                     }
                 }
+                return RestResp.fail("释放失败,请稍后再试");
             }
         } catch (Exception e) {
             LOG.error("release BTC faild : {}",e.getMessage(),e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return RestResp.fail(remoteError);
         }
-        return  RestResp.fail(remoteError);
+        return  RestResp.fail("操作异常");
     };
     public boolean sellerReleaseBTCIsOrNot(Pojo pojo){
         return orderAddresskeyRepo.findOrderAddresskeysByOrderId(pojo.getId()).getBuyerSellerPriAuth()!=null?true:false;
@@ -617,20 +630,21 @@ public class OrderService {
     //确认收到BTC
     public RestResp confirmReciveBTC(Pojo pojo){
         OrdersInfo ordersInfo = null;
-        Orders orders = null;
         try {
-            orders = orderRepo.findOne(pojo.getId());
+            Orders orders = orderRepo.findOne(pojo.getId());
             if(orders.getBuyerId().longValue() == pojo.getUserId() && orders.getOrderStatus().longValue() ==ParamType.OrderStatus.WAIT_RECIVE.getStatus()){
                 orders.setOrderStatus(ParamType.OrderStatus.WAIT_COMMENT.getStatus());
                 orders = orderRepo.save(orders);
                 messageService.postConfirmReceive(orders);
+                ordersInfo = new OrdersInfo(orders);
+                return RestResp.success(ordersInfo);
             }
         } catch (RestClientException e) {
             LOG.error("confirm recive BTC faild : {} ",e.getMessage(),e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return RestResp.fail(remoteError);
         }
-        ordersInfo = new OrdersInfo(orders);
-        return orders!=null?RestResp.success(ordersInfo):RestResp.fail(remoteError);
+        return RestResp.fail("操作异常");
     }
     //上传评价
     public RestResp saveComment(Pojo pojo){
@@ -672,6 +686,7 @@ public class OrderService {
             }
         } catch (Exception e) {
             LOG.error("faild save comment : {}",e.getMessage(),e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return RestResp.fail(remoteError);
         }
         return orderComment1!=null?RestResp.success(orderComment1):RestResp.fail(remoteError);

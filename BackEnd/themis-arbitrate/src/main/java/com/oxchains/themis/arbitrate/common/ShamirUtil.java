@@ -21,7 +21,7 @@ public class ShamirUtil {
         BigInteger secret = BigIntUtilities.Human.createBigInteger(suth);
         SecretShare.SplitSecretOutput split = SPLIT.split(secret);
         List<SecretShare.ShareInfo> shareInfos = split.getShareInfos();
-        String[] arr = {"","",""};
+        String[] arr = new String[N];
         for(int i = 0;i<shareInfos.size();i++){
             arr[i] = shareInfos.get(i).getShare().toString()+"_"+(i+1);
         }

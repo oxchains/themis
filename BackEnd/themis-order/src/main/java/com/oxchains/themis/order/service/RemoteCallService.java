@@ -146,14 +146,12 @@ public class RemoteCallService {
         try {
             HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(orderArbitrate), this.getHttpHeader());
             String jsonObject = restTemplate.postForObject(ThemisUserAddress.SAVE_ARBITRATE, formEntity, String.class);
-            if(jsonObject != null){
                 if(jsonObject != null){
                     RestResp restResp = JsonUtil.jsonToEntity(jsonObject,RestResp.class);
                     if(restResp != null){
                         return restResp.status;
                     }
                 }
-            }
         } catch (RestClientException e) {
             LOG.error("save order arbitrate faild : {}",e.getMessage(),e);
             return -1;
@@ -233,7 +231,7 @@ public class RemoteCallService {
         try {
             if(ordersKeyAmount != null){
                 HttpEntity<String> formEntity = new HttpEntity<String>(JsonUtil.toJson(ordersKeyAmount), this.getHttpHeader());
-                jsonObject = restTemplate.postForObject(ThemisUserAddress.CREATE_CENTET_ADDRESS,formEntity,JSONObject.class);
+                 jsonObject = restTemplate.postForObject(ThemisUserAddress.CREATE_CENTET_ADDRESS,formEntity,JSONObject.class);
             }
         } catch (RestClientException e) {
             LOG.error("create center address faild：{}",e.getMessage(),e);
@@ -252,6 +250,7 @@ public class RemoteCallService {
             jsonObject = restTemplate.postForObject(ThemisUserAddress.CHECK_BTC + id, formEntity, JSONObject.class);
         } catch (RestClientException e) {
             LOG.error("upload txid faild：{}",e);
+            return null;
         }
         return jsonObject;
     }

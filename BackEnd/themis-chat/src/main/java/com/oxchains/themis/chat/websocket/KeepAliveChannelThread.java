@@ -32,14 +32,14 @@ public class KeepAliveChannelThread implements Runnable {
                 }
             }
         }
-        /*for (String s : ChatUtil.txChannels.keySet()){
+        for (String s : ChatUtil.txChannels.keySet()){
             if(System.currentTimeMillis() - ChatUtil.txChannels.get(s).getLastUseTime() > 3*1000){
                 ChannelFuture channelFuture = ChatUtil.txChannels.get(s).getChannel().closeFuture();
                 channelFuture.channel().close().sync();
                 ChatUtil.txChannels.remove(s);
                 TextWebSocketFrameHandler.channels.remove(channelFuture.channel());
             }
-        }*/
+        }
         }catch (Exception e){
             LOG.error("Keep Alive websocket channel faild : {}",e);
         }

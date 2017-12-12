@@ -27,13 +27,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
+import java.nio.file.OpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by huohuo on 2017/10/25.
@@ -125,7 +128,6 @@ public class ArbitrateService {
     public RestResp uploadEvidence(RegisterRequest pojo){
         OrderEvidence orderEvidence = null;
         try {
-
             orderEvidence = orderEvidenceRepo.findByOrderId(pojo.getId());
             Orders orders = orderRepo.findOne(pojo.getId());
             if(orderEvidence == null){
@@ -160,11 +162,9 @@ public class ArbitrateService {
                 return RestResp.fail("对不起,你上传的凭据超出限额,系统上限为五张,你已上传"+hasNum+"张");
             }
             for(MultipartFile mf:multipartFileList){
-                String filename = mf.getOriginalFilename();
-                String suffix = filename.substring(filename.lastIndexOf("."));
-                String fileName = tfsConsumer.saveTfsFile(mf,pojo.getUserId());
+                Optional<String> fileName = Optional.of(tfsConsumer.saveTfsFile(mf, pojo.getUserId()));
                 imageName.append(",");
-                imageName.append(fileName);
+                imageName.append(fileName.get());
             }
             if(orders.getBuyerId() == pojo.getUserId().longValue()){
                 orderEvidence.setBuyerContent(orderEvidence.getBuyerContent()!=null?orderEvidence.getBuyerContent()+"."+pojo.getContent():pojo.getContent());
@@ -178,6 +178,7 @@ public class ArbitrateService {
             messageService.postUploadEvidence(orders,pojo.getUserId());
         } catch (Exception e) {
             LOG.error("upload evidence faild : {}",e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return RestResp.fail("申请仲裁失败");
         }
         return  orderEvidence!=null? RestResp.success():RestResp.fail();
