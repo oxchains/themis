@@ -9,10 +9,9 @@ import com.oxchains.themis.message.dao.MessageTextDao;
 import com.oxchains.themis.message.rest.dto.MessageDTO;
 import com.oxchains.themis.message.rest.dto.PageDTO;
 import com.oxchains.themis.message.rest.dto.UnReadSizeDTO;
+import com.oxchains.themis.repo.dao.OrderRepo;
 import com.oxchains.themis.repo.dao.UserDao;
-import com.oxchains.themis.repo.entity.Message;
-import com.oxchains.themis.repo.entity.MessageText;
-import com.oxchains.themis.repo.entity.User;
+import com.oxchains.themis.repo.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,7 +51,7 @@ public class MessageService {
 
     @Resource private MessageDao messageDao;
     @Resource private MessageTextDao messageTextDao;
-    @Resource private OrderDao orderDao;
+    @Resource private OrderRepo orderDao;
     @Resource private UserDao userDao;
 
     @Value("${themis.user.default}") private String userDefaultImage;
@@ -249,7 +248,7 @@ public class MessageService {
 
         // 获取
         String orderId = messageText.getOrderId();
-        Order orders = orderDao.findById(orderId);
+        Orders orders = orderDao.findOne(orderId);
         Long buyerId = orders.getBuyerId();
         Long sellerId = orders.getSellerId();
         if (userId.equals(buyerId)){
