@@ -24,8 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -58,7 +56,7 @@ public class UserService extends BaseService {
     private UserTxDetailDao userTxDetailDao;
 
     @Resource
-    private OrderDao orderDao;
+    private OrderRepo orderRepo;
 
     @Resource
     private UserRelationDao userRelationDao;
@@ -410,7 +408,7 @@ public class UserService extends BaseService {
             UserRelation relation = it.next();
             trustu = new UserTrust();
             User u = userDao.findOne(relation.getToUserId());
-            int txToNum = orderDao.countByBuyerIdOrSellerId(body.getUserId(),relation.getToUserId()) + orderDao.countByBuyerIdOrSellerId(relation.getToUserId(),body.getUserId());
+            int txToNum = orderRepo.countByBuyerIdOrSellerId(body.getUserId(),relation.getToUserId()) + orderRepo.countByBuyerIdOrSellerId(relation.getToUserId(),body.getUserId());
             trustu.setTxToNum(txToNum);
             trustu.setFromUserId(relation.getFromUserId());
             trustu.setFromUserName(u.getLoginname());
@@ -452,7 +450,7 @@ public class UserService extends BaseService {
             UserRelation relation = it.next();
             trustu = new UserTrust();
             User u = userDao.findOne(relation.getFromUserId());
-            int txToNum = orderDao.countByBuyerIdOrSellerId(body.getUserId(),relation.getFromUserId()) + orderDao.countByBuyerIdOrSellerId(relation.getFromUserId(),body.getUserId());
+            int txToNum = orderRepo.countByBuyerIdOrSellerId(body.getUserId(),relation.getFromUserId()) + orderRepo.countByBuyerIdOrSellerId(relation.getFromUserId(),body.getUserId());
             trustu.setTxToNum(txToNum);
             trustu.setFromUserId(relation.getFromUserId());
             trustu.setFromUserName(u.getLoginname());
@@ -480,10 +478,10 @@ public class UserService extends BaseService {
         if(null == userTxDetail){
             return null;
         }
-        List<Order> orders = orderDao.findByBuyerIdOrSellerId(userId, userId);
+        List<Orders> orders = orderRepo.findByBuyerIdOrSellerId(userId, userId);
         double buyAmount = 0d;
         double sellAmount = 0d;
-        for (Order order : orders) {
+        for (Orders order : orders) {
             if (userId.equals(order.getBuyerId())) {
                 buyAmount += order.getAmount() == null ? 0d : order.getAmount().doubleValue();
             }

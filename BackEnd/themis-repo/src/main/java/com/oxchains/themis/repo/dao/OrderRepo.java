@@ -23,4 +23,8 @@ public interface OrderRepo extends CrudRepository<Orders,String> {
     List<Orders> findOrdersByOrderStatus(Long status);
     List<Orders> findByArbitrate(Integer status);
 
+    List<Orders> findByBuyerIdOrSellerId(Long buyId, Long sellerId);
+    int countByBuyerIdOrSellerId(Long buyId,Long sellerId);
+
+    Orders findById(String orderId);
 }
