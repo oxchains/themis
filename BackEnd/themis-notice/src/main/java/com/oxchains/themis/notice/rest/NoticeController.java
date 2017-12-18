@@ -6,6 +6,7 @@ import com.oxchains.themis.notice.common.NoticeConst;
 import com.oxchains.themis.notice.service.NoticeService;
 import com.oxchains.themis.repo.entity.Notice;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 
@@ -19,6 +20,21 @@ public class NoticeController {
 
     @Resource
     private NoticeService noticeService;
+
+    @Resource
+    private RestTemplate restTemplate;
+
+    @GetMapping("/hi")
+    public String callMessageHome(){
+        System.out.println("调用追踪1：themis-notice");
+        return restTemplate.getForObject("http://192.168.1.185:9491/message/miya", String.class);
+    }
+
+    @GetMapping("/info")
+    public String info(){
+        System.out.println("调用追踪2：themis-notice");
+        return "我是themis-notice的info函数";
+    }
 
     /**
      * 发布公告

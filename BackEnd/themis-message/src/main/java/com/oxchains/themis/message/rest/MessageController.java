@@ -4,6 +4,7 @@ import com.oxchains.themis.common.model.RestResp;
 import com.oxchains.themis.message.service.MessageService;
 import com.oxchains.themis.repo.entity.MessageText;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 
@@ -17,6 +18,20 @@ public class MessageController {
 
     @Resource
     private MessageService messageService;
+    @Resource
+    RestTemplate restTemplate;
+
+    @GetMapping("/hi")
+    public String home(){
+        System.out.println("我是themis-message的home函数");
+        return "你好，我是themis-message的home函数";
+    }
+
+    @GetMapping("/miya")
+    public String info(){
+        System.out.println("我是themis-message的info函数");
+        return restTemplate.getForObject("http://192.168.1.185:8083/notice/info", String.class);
+    }
 
     /**
      * Admin发送系统消息
