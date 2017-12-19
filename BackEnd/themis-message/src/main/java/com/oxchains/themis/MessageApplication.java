@@ -30,9 +30,4 @@ public class MessageApplication {
         SpringApplication.run(MessageApplication.class, args);
     }
 
-    @Bean
-    public RestTemplate getRestTemplate(){
-        return new RestTemplate();
-    }
-
 }
