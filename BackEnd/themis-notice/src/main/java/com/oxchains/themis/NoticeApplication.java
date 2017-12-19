@@ -30,8 +30,4 @@ public class NoticeApplication {
         SpringApplication.run(NoticeApplication.class, args);
     }
 
-    @Bean
-    public RestTemplate getRestTemplate(){
-        return new RestTemplate();
-    }
 }
